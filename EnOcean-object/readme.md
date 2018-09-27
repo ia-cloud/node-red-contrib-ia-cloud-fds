@@ -48,6 +48,7 @@
 |:----------|:-----:|:--------------------|
 |オブジェクトキー|string| ia-cloudオブジェクトのobjectKeyとして使われる。|
 | センサID | string | データを取得するEnOcean通信のセンサID |
+| notify | string | データを取得するEnOcean通信のセンサID |
 |オブジェクトの説明|string| ia-cloudオブジェクトのobjectDiscriptionとして使われる。|
 |データitem情報| object| objectContentとして挿入されるオブジェクトを生成するための情報。|
 

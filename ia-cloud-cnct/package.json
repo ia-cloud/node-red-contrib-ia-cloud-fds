@@ -1,0 +1,16 @@
+{
+    "name": "ia-cloud-cnct",
+    "version": "0.0.1",
+    "description": "ia-cloud connection node prototype",
+    "main": "ia-cloud-cnct.js",
+    "scripts": {
+        "test": "iacloudtest"
+    },
+    "author": "hashisan",
+    "license": "ISC",
+    "node-red": {
+        "nodes": {
+            "ia-cloud-cnct": "ia-cloud-cnct.js"
+        }
+    }
+}

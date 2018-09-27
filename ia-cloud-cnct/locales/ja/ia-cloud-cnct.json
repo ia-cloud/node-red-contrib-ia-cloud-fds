@@ -1,0 +1,36 @@
+{
+    "common": {
+        "label": {
+            "payload": "ペイロード",
+            "topic": "トピック",
+            "name": "名前",
+            "username": "ユーザ名",
+            "password": "パスワード",
+            "property": "プロパティ"
+        },
+        "status": {
+            "connected": "接続済",
+            "not-connected": "未接続",
+            "disconnected": "切断",
+            "connecting": "接続中",
+            "error": "エラー",
+            "ok": "OK"
+        },
+        "notification": {
+            "error": "<strong>エラー</strong>: __message__",
+            "errors": {
+                "not-deployed": "ノードがデプロイされていません",
+                "no-response": "サーバの応答がありません",
+                "unexpected": "想定外のエラー (__status__) __message__"
+            }
+        },
+        "errors": {
+            "nooverride": "警告: メッセージで設定したプロパティは、ノードのプロパティを上書きできません。詳細はbit.ly/nr-override-msg-propsを参照してください。"
+        }
+    },
+    "ia-cloud": {
+        "url": "接続先のia-cloud CCS URL",
+        "FDSKey": "データソースのユニークキー",
+        "comment": "データソースの説明"
+    }
+}
