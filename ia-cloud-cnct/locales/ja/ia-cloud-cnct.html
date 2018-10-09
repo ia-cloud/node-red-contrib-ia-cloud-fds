@@ -1,0 +1,42 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/x-red" data-help-name="ia-cloud-cnct">
+    <p>ia-cloud CCS接続ノード</p>
+
+<h3>入力メーッセージ</h3>
+<dl class="message-properties">
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud Web API で定められている、CCSへ送出する<code>request</code>の内容。 "store"、 "retrieve" あるいは "convey"のいずれかでなければならない。</dd>
+    <dt>CCSへ<code>request</code>と共に送出する<code>dataObject</code><span class="property-type">object</span></dt>
+    <dd> </dd>
+</dl>
+
+<h3>出力メッセージ</h3>
+<dl class="message-properties">
+    <dt>payload <span class="property-type">string | object</span></dt>
+    <dd>CCSから受け取ったレスポンス。エラーが発生した場合は、エラーコメント。</dd>
+    <dt>statusCode <span class="property-type">number</span></dt>
+    <dd>Httpsレスポンスのステータスコード。通信の下位層でのエラーが発生しや場合は、そのエラーコード。</dd>
+</dl>
+
+<h3>詳細説明</h3>
+<p>The set of url,id and password is supposed tobe provided from a ia-cloud CCS service provider. </p>
+
+<h4>Proxy</h4>
+<p>If running behind a proxy, the standard <code>http_proxy=...</code> environment
+variable should be set and Node-RED restarted.</p>
+
+<h4>Do not use multiple nodes with same FDSKey.</h4>
+<p>When multiple ia-cloud connection nodes used, FDSKey has to be unique. </p>
+
+</script>

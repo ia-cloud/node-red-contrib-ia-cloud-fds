@@ -18,8 +18,8 @@
         <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-input-url"><i class="fa fa-globe"></i> <span data-i18n="ia-cloud.url"></span></label>
-        <input id="node-input-url" type="text" placeholder="http://">
+        <label for="node-input-url"><i class="fa fa-globe"></i> <span data-i18n="ia-cloud-cnct.url"></span></label>
+        <input id="node-input-url" type="text" placeholder="https://">
     </div>
     <div class="form-row">
         <label for="node-input-userID"><i class="fa fa-user"></i> <span data-i18n="common.label.username"></span></label>
@@ -30,11 +30,11 @@
         <input type="password" id="node-input-password">
     </div>
     <div class="form-row">
-        <label for="node-input-FDSKey"><span data-i18n="ia-cloud.FDSKey"></span></label>
+        <label for="node-input-FDSKey"><span data-i18n="ia-cloud-cnct.FDSKey"></span></label>
         <input type="text" id="node-input-FDSKey">
     </div>
     <div class="form-row">
-        <label for="node-input-comment"> <span data-i18n="ia-cloud.comment"></span></label>
+        <label for="node-input-comment"> <span data-i18n="ia-cloud-cnct.comment"></span></label>
         <input type="text" id="node-input-comment">
 </script>
 
@@ -78,13 +78,12 @@ variable should be set and Node-RED restarted.</p>
         color:"rgb(231, 231, 174)",
         defaults: {
             name: {value:"ia-cloud-cnct"},
-            userID: {value: ""},
             url:{value:"", required: true, validate:function(v) { return (v.trim().indexOf("https://") === 0)} },
             FDSKey: {value:"", required: true},
             comment:{value:""}
         },
         credentials: {
-            user: {type:"text"},
+            userID: {type:"text"},
             password: {type: "password"}
         },
 

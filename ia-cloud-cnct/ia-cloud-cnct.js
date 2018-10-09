@@ -19,239 +19,249 @@ module.exports = function(RED) {
     var request = require("request");
     var moment = require("moment");
 
-  function iaCloudCnct(config) {
-    RED.nodes.createNode(this,config);
 
-this.log("start");
-this.log(config.name);
-this.log(config.FDSKey);
-this.log(config.url);
+    function iaCloudRequest(opts, callback){
 
-    var node = this;
-    // node status をconnecting に
-    node.status({fill:"blue",shape:"dot",text:"connecting to ia-cloud CCS"});
-
-    // 接続情報を保持するオブジェクト
-    this.info = {};
-
-    // httpリクエストのoptionを設定
-    var opts = {};
-    opts.url = config.url;
-    opts.method = "POST";
-    opts.headers = {contentType : "application/json"};
-    opts.encoding = null;  // Force NodeJs to return a Buffer (instead of a string)
-    opts.maxRedirects = 21;
-
-    // proxy設定を取得
-    var prox;
-    var noprox;
-    if (process.env.http_proxy != null) { prox = process.env.http_proxy; }
-    if (process.env.HTTP_PROXY != null) { prox = process.env.HTTP_PROXY; }
-    if (process.env.no_proxy != null) { noprox = process.env.no_proxy.split(","); }
-    if (process.env.NO_PROXY != null) { noprox = process.env.NO_PROXY.split(","); }
-
-    var noproxy;
-
-    if (noprox) {
-        for (var i in noprox) {
-            if (opts.url.indexOf(noprox[i]) !== -1) { noproxy=true; }
-        }
-    }
-    if (prox && !noproxy) {
-        var match = prox.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
-        if (match) {
-            opts.proxy = prox;
-        } else {
-            node.warn("Bad proxy url: "+ prox);
-            opts.proxy = null;
-        }
+        request(opts, function(err, res, body) {
+            if(err){
+                if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
+                    node.error(RED._("common.notification.errors.no-response"),);
+                }else{
+                    node.error(err);
+                }
+            }else{
+                // レスポンスは受けた
+                if (res.statusCode != 200){
+                    // レスポンスコードが 200 OK ではない
+                    node.status({fill:"yellow", shape:"ring", text:"CCS Bad response"});
+                    msg.payload = res.statusCode;
+                    node.send(msg);
+                } else {
+                    // Convert the JSON body to the object
+                    try { var resbody = JSON.parse(body); }
+                    catch(e) { node.warn(RED._("httpin.errors.json-error")); }
+                    callback(resbody);
+                }
+            }
+        });
     }
 
-    // このタイムアウトの設定の詳細を調査する必要あり
-    if (RED.settings.httpRequestTimeout) { opts.reqTimeout = parseInt(RED.settings.httpRequestTimeout) || 120000; }
-    else { opts.reqTimeout = 120000; }
+    function iaCloudCnct(config) {
 
-    // CCS のIDパスワードを設定
-    if (this.credentials && this.credentials.user) {
+        RED.nodes.createNode(this,config);
+
+        var node = this;
+        var context = this.context();
+
+        // 接続情報を保持するオブジェクト
+        this.info = {};
+
+        // httpリクエストのoptionを設定
+        var opts = {};
+        opts.url = config.url;
+
         opts.auth = {
-            user: this.credentials.user,
-            pass: this.credentials.password||""
+            user: this.credentials.userID,
+            pass: this.credentials.password
         };
-    }
-    // connect リクエストのタイムスタンプ
-    var ts = moment().format();
+        opts.method = "POST";
+        opts.headers = {};
+        opts.headers["Content-Type"] =  "application/json";
+        opts.encoding = null;  // Force NodeJs to return a Buffer (instead of a string)
+        opts.maxRedirects = 21;
 
-    // connect リクエストのリクエストボディ
-    var reqbody = {
-      request: "connect",
-      userID: config.iaCloudID,
-      FDSKey: config.FDSKey,
-      FDSType: "iaCloudFDS",
-      timestamp: ts,
-      comment: config.comment
-    }
-    opts.body = reqbody;
+        // proxy設定を取得
+        var prox;
+        var noprox;
+        if (process.env.http_proxy != null) { prox = process.env.http_proxy; }
+        if (process.env.HTTP_PROXY != null) { prox = process.env.HTTP_PROXY; }
+        if (process.env.no_proxy != null) { noprox = process.env.no_proxy.split(","); }
+        if (process.env.NO_PROXY != null) { noprox = process.env.NO_PROXY.split(","); }
 
-    // nodeの出力メッセージ（CCS接続状態）
-    var msg = {};
-console.dir(opts.body.request);
-console.dir(opts.body.userID);
-console.dir(opts.body.FDSKey);
-console.dir(opts.body.timestamp);
-console.dir(opts.body.comment);
+        var noproxy;
 
-    request(opts, function(err, res, body) {
-
-      if(err){
-        //http(s)レベルのエラー
-this.log(errが起きた);
-
-        msg.payload = err.toString() + " : " + opts.url;
-        msg.statusCode = err.code;
-        if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
-            node.error(RED._("common.notification.errors.no-response"), msg);
-            node.status({fill:"red", shape:"ring", text:"common.notification.errors.no-response"});
-        }else{
-            node.error(err,msg);
-            node.status({fill:"red", shape:"ring", text:err.code});
+        if (noprox) {
+            for (var i in noprox) {
+                if (opts.url.indexOf(noprox[i]) !== -1) { noproxy=true; }
+            }
         }
-        node.send(msg);
-
-      }else{
-        // レスポンスは受けた
-        msg.statusCode = res.statusCode;
-        msg.payload = body;
-
-        if (msg.statusCode != 200){
-          // レスポンスコードが 200 OK ではない
-          msg.payload = "Bad response";
-          node.status({fill:"yellow", shape:"ring", text:"CCS Bad response"});
-          node.send(msg);
-
-        } else {
-          // Convert the JSON body to the object
-          try { msg.payload = JSON.parse(msg.payload); }
-          catch(e) { node.warn(RED._("httpin.errors.json-error")); }
-
-          if (msg.statusCode == 200 && msg.payload.userID == opts.body.userID
-              && msg.payload.FDSKey == opts.body.FDSKey
-              && msg.payload.FDSType == opts.body.FDSType ) {
-
-            // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-            info = rbody;
-            delete info.request;
-            info.serviceID = body.serviceID;
-
-            node.status({fill:"green", shape:"dot", text:"CCS connected"});
-            node.send(msg);
-
-          }
-          else{
-            node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
-            msg.payload = "Invalid JSON Message";
-            node.send(msg);
-          }
+        if (prox && !noproxy) {
+            var match = prox.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
+            if (match) {
+                opts.proxy = prox;
+            } else {
+                node.warn("Bad proxy url: "+ prox);
+                opts.proxy = null;
+            }
         }
-      }
-    });
 
-    this.on("input",function(msg) {
+        // このタイムアウトの設定の詳細を調査する必要あり
+        if (RED.settings.httpRequestTimeout) {
+          opts.reqTimeout = parseInt(RED.settings.httpRequestTimeout) || 120000;
+        }
+        else { opts.reqTimeout = 120000; }
 
-      if (msg.request == "store" || msg.request == "retrieve" || msg.request == "convey"){
-
-        node.status({fill:"blue", shape:"dot", text:"Requesting....."});
         // connect リクエストのタイムスタンプ
         var ts = moment().format();
 
+        // node status をconnecting に
+        node.status({fill:"blue",shape:"dot",text:"connecting to ia-cloud CCS"});
+
         // connect リクエストのリクエストボディ
         var reqbody = {
-          request: msg.request,
-          serviceID: info.serviceID,
-          dataObject: msg.dataObject
-        }
-        opts.body = reqbody;
+          request: "connect",
+          userID: opts.auth.user,
+          FDSKey: config.FDSKey,
+          FDSType: "iaCloudFDS",
+          timeStamp: ts,
+          comment: config.comment
+        };
+        opts.body = JSON.stringify(reqbody);
 
-        request(opts, function(err, res, body) {
+        // nodeの出力メッセージ（CCS接続状態）
+        var msg = {};
 
-          if(err){
-            msg.payload = err.toString() + " : " + opts.url;
-            msg.statusCode = err.code;
-            if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
-                node.error(RED._("common.notification.errors.no-response"), msg);
-                node.status({fill:"red", shape:"ring", text:"common.notification.errors.no-response"});
-            }else{
-                node.error(err,msg);
-                node.status({fill:"red", shape:"ring", text:err.code});
-            }
-            node.send(msg);
+        iaCloudRequest(opts, function(body) {
 
-          }else{
+            if (body.userID == reqbody.userID &&
+              body.FDSKey == reqbody.FDSKey && body.FDSType == reqbody.FDSType ) {
 
-            msg.statusCode = res.statusCode;
-            msg.payload = body;
+              // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
+              var info = reqbody;
+              delete info.request;
+              info.serviceID = body.serviceID;
+              context.set("info", info);
 
-            if (msg.statusCode != 200){
-
-              msg.payload = "Bad response";
-              node.status({fill:"yellow", shape:"ring", text:"CCS Bad response"});
+              node.status({fill:"green", shape:"dot", text:"CCS connected"});
+              msg.payload = body;
               node.send(msg);
 
-            } else {
-
-              // Convert the JSON body to the object
-              try { msg.payload = JSON.parse(msg.payload); }
-              catch(e) { node.warn(RED._("httpin.errors.json-error")); }
-
-              if (msg.payload.serviceID == info.serviceID ) {
-                // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-                info.serviceID = msg.payload.newServiceID;
-
-                node.status({fill:"green", shape:"dot", text:"request done"});
-                node.send(msg);
-              }
-              else{
-                node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
-                msg.payload = "Invalid JSON Message";
-                node.send(msg);
-              }
             }
-          }
+            else{
+              node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+              msg.payload = "Invalid JSON Message";
+              node.send(msg);
+            }
         });
-      }
-    });
 
-    this.on("close",function() {
+        setInterval(function(){
+            node.log("interval");
 
-      //terminateリクエストのリクエストボディ
-      var rbody = {
-        request: "terminate",
-        serviceID: info.serviceID,
-      }
-      opts.body = reqbody;
+            // node status をconnecting に
+            node.status({fill:"blue",shape:"dot",text:"connecting to ia-cloud CCS"});
 
-      request(opts, function(err, res, body) {
-        if(err){
-          if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
-              node.error(RED._("common.notification.errors.no-response"),);
+            // getStatus リクエストのタイムスタンプ
+            var ts = moment().format();
+
+            var info = context.get("info");
+
+            // getStatus リクエストのリクエストボディ
+            var reqbody = {
+              request: "getStatus",
+              serviceID: info.serviceID,
+              timeStamp: ts,
+              comment: config.comment
+            };
+            opts.body = JSON.stringify(reqbody);
+
+            // nodeの出力メッセージ（CCS接続状態）
+            var msg = {};
+            iaCloudRequest(opts, function(body) {
+
+                if (body.oldServiceID == reqbody.serviceID && body.FDSKey == info.FDSKey ) {
+
+                  // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
+                  info.serviceID = body.newServiceID;
+                  info.timeStamp = reqbody.timeStamp;
+                  context.set("info", info);
+                  node.status({fill:"green", shape:"dot", text:"request done"});
+                  msg.payload = body;
+                  node.send(msg);
+                }
+                else{
+                  node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+                  msg.payload = "Invalid JSON Message";
+                  node.send(msg);
+                }
+            });
+        }, 3600000);
+
+        this.on("input",function(msg) {
+
+          if (msg.request == "store"
+              || msg.request == "retrieve" || msg.request == "convey"){
+
+              // node status をconnecting に
+              node.status({fill:"blue", shape:"dot", text:"Requesting....."});
+
+              // connect リクエストのタイムスタンプ
+              var ts = moment().format();
+
+              var info = context.get("info");
+
+              // connect リクエストのリクエストボディ
+              var reqbody = {
+                  request: msg.request,
+                  serviceID: info.serviceID,
+                  dataObject: msg.dataObject
+              }
+              opts.body = JSON.stringify(reqbody);
+
+              iaCloudRequest(opts, function(body) {
+
+                  if (body.serviceID == reqbody.serviceID && body.status.toLowerCase() == "ok" ) {
+
+                      // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
+                      info.serviceID = body.newServiceID;
+                      context.set("info", info);
+                      node.status({fill:"green", shape:"dot", text:"request done"});
+                      msg.payload = body;
+                      node.send(msg);
+                  }
+                  else{
+                      node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+                      msg.payload = "Invalid JSON Message";
+                      node.send(msg);
+                  }
+              });
+
           }else{
-            node.error(err);
-          }
-        }else{
-          // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-          if (body.userID != opts.body.userID || body.FDSKey != opts.body.FDSKey
-              || body.serviceID != opts.body.serviceID ) {
+              //requestが   "store" "retrieve" "convey" 以外
+              node.status({fill:"yellow", shape:"ring", text:"Invalid ia-cloud request"});
+              msg.payload = "Invalid ia-cloud request";
+              node.send(msg);
+          };
+        });
 
-            node.error("Could not terminate CCS connection");
-          }
-        }
-      });
-    });
-  }
+        this.on("close",function(done) {
 
-  RED.nodes.registerType("ia-cloud-cnct",iaCloudCnct,{
-    credentials: {
-      user: {type:"text"},
-      password: {type: "password"}
+            var info = context.get("info");
+
+            //terminateリクエストのリクエストボディ
+            var reqbody = {
+                request: "terminate",
+                serviceID: info.serviceID,
+            }
+
+            opts.body = JSON.stringify(reqbody);
+
+            iaCloudRequest(opts, function(body) {
+
+                if (body.FDSKey == info.FDSKey && body.serviceID == reqbody.serviceID ) {
+                    //node.log("ia-cloud-cnct node terminated");
+                }
+                else{
+                    node.log("someting wrong with  terminating ia-cloud-cnct node");
+                }
+                done();
+            });
+        });
     }
-  });
+
+    RED.nodes.registerType("ia-cloud-cnct",iaCloudCnct,{
+        credentials: {
+            userID: {type:"text"},
+            password: {type: "password"}
+        }
+    });
 }

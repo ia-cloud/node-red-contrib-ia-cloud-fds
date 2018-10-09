@@ -1,0 +1,28 @@
+{
+    "common": {
+        "label": {
+            "payload": "payload",
+            "topic": "topic",
+            "name": "name",
+            "username": "User ID",
+            "password": "Password",
+            "property": "property"
+        },
+        "status": {
+            "connected": "connected",
+            "not-connected": "not-connected",
+            "disconnected": "disconnected",
+            "connecting": "connecting",
+            "error": "error",
+            "ok": "OK"
+        },
+        "errors": {
+
+        }
+    },
+    "ia-cloud-cnct": {
+        "url": "ia-cloud CCS URL to connect",
+        "FDSKey": "Unique Key of the data source",
+        "comment": "Discription of the data source"
+    }
+}
