@@ -17,8 +17,8 @@
 <dl class="message-properties">
     <dt>request <span class="property-type">string</span></dt>
     <dd>ia-cloud Web API で定められている、CCSへ送出する<code>request</code>の内容。 "store"、 "retrieve" あるいは "convey"のいずれかでなければならない。</dd>
-    <dt>CCSへ<code>request</code>と共に送出する<code>dataObject</code><span class="property-type">object</span></dt>
-    <dd> </dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>CCSへ<code>request</code>と共に送出する<code>dataObject</code><span class="property-type">object</span></dd>
 </dl>
 
 <h3>出力メッセージ</h3>
@@ -30,13 +30,15 @@
 </dl>
 
 <h3>詳細説明</h3>
-<p>The set of url,id and password is supposed tobe provided from a ia-cloud CCS service provider. </p>
+<p>指定されたia-cloudの　Cloud Center Server(CCS) への接続を保持し、入力メッセージに記述されたリクエストとデータオブジェクトを送出する。</p>
+<h4>詳細設定</h4>
+<p>CCSへの接続ができない場合は、自動でリトライを行う。最大のリトライ間隔を設定できる。</p>
+<p>入力メッセージがない場合でも、CCSへの接続確認を自動で実施する。接続確認間隔を設定できる。</p>
 
 <h4>Proxy</h4>
-<p>If running behind a proxy, the standard <code>http_proxy=...</code> environment
-variable should be set and Node-RED restarted.</p>
+<p>Proxyサーバを利用する場合、OSの環境線数<code>http_proxy=...</code> で設定してください。Node-REDの再起動が必要です。</p>
 
-<h4>Do not use multiple nodes with same FDSKey.</h4>
-<p>When multiple ia-cloud connection nodes used, FDSKey has to be unique. </p>
+<h4>データソースのユニークキー</h4>
+<p>複数のia-cloud-cnctノードを「同時に使用できますが、FDSKey（デーラソースのユニークキー）は重複させないこと。 </p>
 
 </script>

@@ -28,14 +28,32 @@
     <div class="form-row">
         <label for="node-input-password"><i class="fa fa-lock"></i> <span data-i18n="common.label.password"></span></label>
         <input type="password" id="node-input-password">
-    </div>
+    </div
     <div class="form-row">
-        <label for="node-input-FDSKey"><span data-i18n="ia-cloud-cnct.FDSKey"></span></label>
+        <label for="node-input-FDSKey"> <span data-i18n="ia-cloud-cnct.FDSKey"></span></label>
         <input type="text" id="node-input-FDSKey">
     </div>
     <div class="form-row">
         <label for="node-input-comment"> <span data-i18n="ia-cloud-cnct.comment"></span></label>
         <input type="text" id="node-input-comment">
+    </div>
+    <div class="form-row">
+         <input type="checkbox" id="node-input-details" style="display: inline-block; width: auto; vertical-align: top;">
+         <label for="node-input-details" style="width: 70%;"><span data-i18n="common.label.details"></span></label>
+         <div style="margin-left: 20px" class="node-input-details-row hide">
+            <div class="form-row">
+                 <label for="node-input-cnctRetryInterval"><span data-i18n="ia-cloud-cnct.cnctRetryInterval"></span></label>
+                 <input type="number" min="0" id="node-input-cnctRetryInterval">
+            </div>
+            <div class="form-tips" id="tip-cnctRetryInterval"><span data-i18n="ia-cloud-cnct.tip-cnctRetryInterval"></span></div>
+            <div class="form-row">
+                 <label for="node-input-tappingInterval"><span data-i18n="ia-cloud-cnct.tappingInterval"></span></label>
+                 <input type="number"  min="0" id="node-input-tappingInterval">
+            </div>
+            <div class="form-tips" id="tip-tappingInterval"><span data-i18n="ia-cloud-cnct.tip-tappingInterval"></span></div>
+         </div>
+    </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="ia-cloud-cnct">
@@ -73,6 +91,7 @@ variable should be set and Node-RED restarted.</p>
 </script>
 
 <script type="text/javascript">
+
     RED.nodes.registerType('ia-cloud-cnct',{
         category: 'iaCloud',
         color:"rgb(231, 231, 174)",
@@ -80,7 +99,9 @@ variable should be set and Node-RED restarted.</p>
             name: {value:"ia-cloud-cnct"},
             url:{value:"", required: true, validate:function(v) { return (v.trim().indexOf("https://") === 0)} },
             FDSKey: {value:"", required: true},
-            comment:{value:""}
+            comment:{value:""},
+            cnctRetryInterval:{value:60, validate: RED.validators.number()},
+            tappingInterval:{value:24, validate: RED.validators.number()}
         },
         credentials: {
             userID: {type:"text"},
@@ -95,6 +116,27 @@ variable should be set and Node-RED restarted.</p>
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+            $("#node-input-details").change(function() {
+                if ($(this).is(":checked")) {
+                    $(".node-input-details-row").show();
+                } else {
+                    $(".node-input-details-row").hide();
+                    $('#node-input-cnctRetryInterval').val(60);
+                    $('#node-input-tappingInterval').val(24);
+                }
+            });
+            if ($('#node-input-cnctRetryInterval').val() != 60
+                || $('#node-input-tappingInterval').val() != 24)
+            {
+                $('#node-input-details').prop('checked', true);
+            } else {
+                $('#node-input-details').prop('checked', false);
+            }
+            $("#node-input-details").change();
+
         }
     });
+
 </script>

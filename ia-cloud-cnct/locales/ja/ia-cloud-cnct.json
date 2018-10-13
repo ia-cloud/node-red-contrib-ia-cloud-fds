@@ -4,9 +4,10 @@
             "payload": "ペイロード",
             "topic": "トピック",
             "name": "名前",
-            "username": "ユーザ名",
+            "username": "ユーザID",
             "password": "パスワード",
-            "property": "プロパティ"
+            "property": "プロパティ",
+            "details": "詳細設定有効"
         },
         "status": {
             "connected": "接続済",
@@ -17,12 +18,17 @@
             "ok": "OK"
         },
         "errors": {
-
+            "no-response": "CCSが応答しません",
+            "json-error": "不正なJSONメッセージです"
         }
     },
     "ia-cloud-cnct": {
-        "url": "ia-cloud CCS URL",
+        "url": "ia-cloud URL",
         "FDSKey": "データソースのユニークキー",
-        "comment": "データソースの説明"
+        "comment": "データソースの説明",
+        "cnctRetryInterval": "CCS接続リトライ間隔",
+        "tappingInterval": "接続確認間隔",
+        "tip-cnctRetryInterval": "CCSへの接続が切断された時のリトライ間隔。分単位で設定。0はリトライを行わない",
+        "tip-tappingInterval": "CCSへの接続の確認のため、リクエストがなくとも、getStausリクエストを送出する間隔を、時間単位で設定。0はリトライを行わない"
     }
 }

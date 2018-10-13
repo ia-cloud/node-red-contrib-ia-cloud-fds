@@ -61,3 +61,8 @@ typings/
 .next
 .DS_Store
 ia-cloud-cnct/package-lock.json
+ia-cloud-cnct/参考/old_ia-cloud-cnct.js
+ia-cloud-cnct/参考/標準のhttprequest.js
+ia-cloud-cnct/参考/ステートマシン図.pdf
+ia-cloud-cnct/参考/ステートマシン図.xml
+ia-cloud-cnct/参考/標準のhttprequest.html

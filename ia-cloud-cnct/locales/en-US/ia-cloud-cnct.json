@@ -6,7 +6,8 @@
             "name": "name",
             "username": "User ID",
             "password": "Password",
-            "property": "property"
+            "property": "property",
+            "details": "use details"
         },
         "status": {
             "connected": "connected",
@@ -17,12 +18,18 @@
             "ok": "OK"
         },
         "errors": {
-
+          "no-response": "CCS did not respond",
+          "json-error": "Invalid JSON messages"
         }
     },
     "ia-cloud-cnct": {
         "url": "ia-cloud CCS URL to connect",
         "FDSKey": "Unique Key of the data source",
-        "comment": "Discription of the data source"
+        "comment": "Discription of the data source",
+        "cnctRetryInterval": "CCS Retry Interval",
+        "tappingInterval": "CCS Tapping Interval",
+        "tip-cnctRetryInterval": "Retry interval in minutes for CCS connection error.Use 0 for no-retry.",
+        "tip-tappingInterval": "Tapping CCS interval in hours to check connection using getStatus request.Use 0 for no-retry."
+
     }
 }
