@@ -1,0 +1,17 @@
+{
+    "name": "modbus-PLC",
+    "version": "0.0.1",
+    "description": "ia-cloud modbusPLC object",
+    "main": "mobus-PLC.js",
+    "scripts": {
+        "test": "iacloudtest"
+    },
+    "author": "hashisan",
+    "license": "ISC",
+    "node-red": {
+        "nodes": {
+            "modbus-PLC": "modbus-PLC.js",
+            "modbus-dataItems": "modbus-dataItems.js"
+        }
+    }
+}
