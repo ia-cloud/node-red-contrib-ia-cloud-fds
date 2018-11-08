@@ -100,7 +100,7 @@
 
     RED.nodes.registerType('modbusPLC-object',{
         category: 'iaCloud',
-        color:"rgb(231, 231, 174)",
+        color:"rgb(231, 180, 100)",
         defaults: {
             name: {value:"modbusPLC"},
             configSel: {value:"propertySel", required:true},
@@ -113,7 +113,7 @@
         },
         inputs:1,
         outputs:1,
-        icon: "white-globe.png",  //アイコンはTBD
+        icon: "bridge.png",  //アイコンはTBD
         label: function() {
             return this.name||this._("Plc-object");
         },

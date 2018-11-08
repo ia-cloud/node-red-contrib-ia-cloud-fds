@@ -94,7 +94,8 @@ variable should be set and Node-RED restarted.</p>
 
     RED.nodes.registerType('ia-cloud-cnct',{
         category: 'iaCloud',
-        color:"rgb(231, 231, 174)",
+        color:"rgb(231, 180, 100)",
+        align: "right",
         defaults: {
             name: {value:"ia-cloud-cnct"},
             url:{value:"", required: true, validate:function(v) { return (v.trim().indexOf("https://") === 0)} },

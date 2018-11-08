@@ -27,7 +27,7 @@ module.exports = function(RED) {
 
         this.on("input",function(msg) {});
 
-        this.on("close",function(done) {});
+        this.on("close",function() {});
     }
 
     RED.nodes.registerType("modbusPLC-object",modbusPLC);

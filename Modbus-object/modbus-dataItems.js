@@ -29,7 +29,7 @@ console.log(dataItems);
 
         this.on("input",function(msg) {});
 
-        this.on("close",function(done) {});
+        this.on("close",function() {});
     }
 
     RED.nodes.registerType("modbus-dataItems",modbusDataItems);

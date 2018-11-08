@@ -215,23 +215,23 @@ console.log(dataItems);
             .appendTo("#blocks")
             .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
             .end() // 一度適用する
-            .find('input, select').each(function(index, obj) {
+            .find('div, input, select, label').each(function(index, obj) {
               if ($(obj).attr('id') != null) {
                 if($(obj).attr("id").substr(0,5) == "dItem"){
                     $(obj).val("" + (idx + 1));
                 }
                 $(obj).attr({
-                  id: $(obj).attr('id').replace(/\[[0-9]\]+$/, '[' + idx + ']')
+                  id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
                 });
               }
               if ($(obj).attr('name') != null) {
                 $(obj).attr({
-                    name: $(obj).attr('name').replace(/\[[0-9]\]+$/, '[' + idx + ']')
+                    name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
                  });
               }
               if ($(obj).attr('for') != null) {
                 $(obj).attr({
-                    for: $(obj).attr('for').replace(/\[[0-9]\]+$/, '[' + idx + ']')
+                    for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
                 });
               }
           });
@@ -267,61 +267,66 @@ console.log(dataItems);
           }
           var block = $('#form_block\\[' + idx + '\\]');
           if (idx != 0) block.find('input[name="del_btn"]').show();
-          $("select[name='dataType\\[" + idx + "\\]']").val(itemType);
+//          $("select[name='dataType\\[" + idx + "\\]']").val(itemType);
           block.children('div[id ^= "block-"]').each(function(ind,obj){
               if ($(obj).attr("name") == itemType) $(obj).show();
               else $(obj).hide();
           });
+          $(function(){
+              $("select[name='dataType\\[" + idx + "\\]']").val(itemType);
+          });
+
           block.slideDown('slow');
           frm_cnt = idx;
+console.log("open" + frm_cnt);
+console.log($("select[id='dataType\\[" + idx + "\\]']").val());
           });
 // $("input[name='dataType\\[ 0\\]'][value='bit']").prop("checked", true);
         }
         //追加ボタンが押されたら
         $("#form_add").off("click");
         $("#form_add").on("click", function() {
+
           var original = $('#form_block\\[' + frm_cnt + '\\]');
-          var originCnt = frm_cnt;
-          var itemType = $("select[name='dataType\\[" + frm_cnt + "\\]']").val();
+          var itemType =
+              original.find("select[id='dataType\\[" + frm_cnt + "\\]']").val();
           frm_cnt++;
           original
           .clone()
           .hide()
           .insertAfter(original)
-          .attr('id', 'form_block[' + frm_cnt + ']') // クローンのid属性を変更。
-          .end() // 一度適用する
-          .find('input, select, label').each(function(idx, obj) {
+          .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
+          var clone = $('#form_block\\[' + frm_cnt + '\\]');
+          clone.find('div, input, select, label').each(function(idx, obj) {
             if ($(obj).attr('id') != null) {
               if($(obj).attr("id").substr(0,5) == "dItem"){
                   $(obj).val("" + (frm_cnt + 1));
               }
               $(obj).attr({
-                id: $(obj).attr('id').replace(/\[[0-9]\]+$/, '[' + frm_cnt + ']')
+                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
               });
             }
             if ($(obj).attr('name') != null) {
               $(obj).attr({
-                name: $(obj).attr('name').replace(/\[[0-9]\]+$/, '[' + frm_cnt + ']')
+                name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
                });
             }
             if ($(obj).attr('for') != null) {
               $(obj).attr({
-                for: $(obj).attr('for').replace(/\[[0-9]\]+$/, '[' + frm_cnt + ']')
+                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
               });
             }
           });
-          // clone取得
-          var clone = $('#form_block\\[' + frm_cnt + '\\]');
           clone.find('input[name="del_btn"]').show();
-          clone.find("select[id='dataType\\[" + frm_cnt + "\\]']").val(itemType);
-          clone.children('div[id ^= "block-"]').each(function(ind,obj){
+          clone.children("div[id = 'block-\\[" + frm_cnt + "\\]']").each(function(ind,obj){
               if ($(obj).attr("name") == itemType) $(obj).show();
               else $(obj).hide();
           });
-console.log(frm_cnt);
-console.log(clone.find("select[id ^= 'dataType']").val());
-          clone.slideDown('slow');
+          clone.find("select[id='dataType\\[" + frm_cnt + "\\]']").val(itemType);
+          clone.slideDown('fast');
         });
+
+
         //削除ボタンが押されたら
         $("#blocks").off('click', 'input[name="del_btn"]');
         $("#blocks").on('click', 'input[name="del_btn"]', function() {
@@ -335,31 +340,31 @@ console.log(clone.find("select[id ^= 'dataType']").val());
                 frm_cnt++;
                 $(formObj)
                   .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
-                  .find('input').each(function(idx, obj) {
+                  .find('div, input, select, label').each(function(idx, obj) {
                    if ($(obj).attr('id') != null) {
                       if($(obj).attr("id").substr(0,5) == "dItem"){
                             $(obj).val("" + (frm_cnt + 1));
                       }
                       $(obj).attr({
-                        id: $(obj).attr('id').replace(/\[[0-9]\]+$/,'['+frm_cnt+']')
+                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
                       });
                     }
                     if ($(obj).attr('name') != null) {
                       $(obj).attr({
-                        name: $(obj).attr('name').replace(/\[[0-9]\]+$/,'['+frm_cnt+']')
+                        name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
                       });
                     }
                     if ($(obj).attr('for') != null) {
                       $(obj).attr({
-                        for: $(obj).attr('for').replace(/\[[0-9]\]+$/,'['+frm_cnt+']')
+                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
                       });
                     }
                   });
               }
             });
           });
-      });
-        //データタイプラジオボタンが変化したら
+        });
+        //データタイプボタンが変化したら
         $("#blocks").off('change', 'select[name^="dataType"]');
         $("#blocks").on('change', 'select[name^="dataType"]', function() {
             var val = $(this).val();
@@ -370,12 +375,17 @@ console.log(clone.find("select[id ^= 'dataType']").val());
                 else $(obj).hide();
             });
         });
-      },
+    },
+
       oneditsave: function() {
+
         var dataItems = [];
+
         $(".form-block[id^='form_block']").each(function(idx, obj){
+console.log(obj);
           var itemType = $(obj)
               .find("select[name='dataType\\[" + idx + "\\]']").val();
+console.log(itemType);
           var item ={options:{}};
           item.options.itemType = itemType;
           switch(itemType) {
@@ -405,11 +415,15 @@ console.log(clone.find("select[id ^= 'dataType']").val());
               item.options.type = $("#numList-logic\\[" + idx + "\\]").val();
               break;
           }
+console.log("save" + idx);
+console.log(item);
         dataItems[idx]=item;
-        });
+
         //フォームの各要素をobjectに記述し、JSON文字列に変換する。
         $("#node-config-input-configObject").val(JSON.stringify(dataItems));
-      }
+
+      });
+    }
   });
 
 </script>
