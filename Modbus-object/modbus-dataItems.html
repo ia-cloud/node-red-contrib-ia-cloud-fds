@@ -200,7 +200,6 @@
         if(conf != ""){
           //設定データがあった
           var dataItems = JSON.parse(conf);
-console.log(dataItems);
           //フォームを一つ保存
           var original = $('#form_block\\[0\\]');
 
@@ -278,11 +277,9 @@ console.log(dataItems);
 
           block.slideDown('slow');
           frm_cnt = idx;
-console.log("open" + frm_cnt);
-console.log($("select[id='dataType\\[" + idx + "\\]']").val());
           });
-// $("input[name='dataType\\[ 0\\]'][value='bit']").prop("checked", true);
         }
+
         //追加ボタンが押されたら
         $("#form_add").off("click");
         $("#form_add").on("click", function() {
@@ -325,7 +322,6 @@ console.log($("select[id='dataType\\[" + idx + "\\]']").val());
           clone.find("select[id='dataType\\[" + frm_cnt + "\\]']").val(itemType);
           clone.slideDown('fast');
         });
-
 
         //削除ボタンが押されたら
         $("#blocks").off('click', 'input[name="del_btn"]');
@@ -382,10 +378,8 @@ console.log($("select[id='dataType\\[" + idx + "\\]']").val());
         var dataItems = [];
 
         $(".form-block[id^='form_block']").each(function(idx, obj){
-console.log(obj);
           var itemType = $(obj)
               .find("select[name='dataType\\[" + idx + "\\]']").val();
-console.log(itemType);
           var item ={options:{}};
           item.options.itemType = itemType;
           switch(itemType) {
@@ -415,8 +409,6 @@ console.log(itemType);
               item.options.type = $("#numList-logic\\[" + idx + "\\]").val();
               break;
           }
-console.log("save" + idx);
-console.log(item);
         dataItems[idx]=item;
 
         //フォームの各要素をobjectに記述し、JSON文字列に変換する。
