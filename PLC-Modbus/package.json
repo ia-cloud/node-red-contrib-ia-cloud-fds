@@ -1,0 +1,19 @@
+{
+    "name": "PLC-Modbus",
+    "version": "0.0.1",
+    "description": "ia-cloud PLCModbus object",
+    "main": "PLC-Modbus.js",
+    "scripts": {
+        "test": "iacloudtest"
+    },
+    "author": "hashisan",
+    "license": "ISC",
+    "node-red": {
+        "nodes": {
+            "PLC-Modbus": "PLC-Modbus.js",
+            "Modbus-dItems": "Modbus-dItems.js",
+            "Modbus-AandE": "Modbus-AandE.js",
+            "Modbus-com": "Modbus-com.js"
+        }
+    }
+}

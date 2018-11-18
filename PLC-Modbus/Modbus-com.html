@@ -1,0 +1,156 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="Modbus-com">
+  <div class="form-group" id="modbus-com-block">
+    <div class="form-row">
+      <label for="node-config-input-name"><i class="fa fa-tag"></i>i_Node name</label>
+      <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-requiredSet">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-refreshCycle">i_通信周期
+          <span style="color: #ff0000;">*</span></label>
+        <input type="number" min="1" style="width: 300px" id="node-config-input-refreshCycle">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-comType">i_通信種別</label>
+        <select style="width: 150px;" id="node-config-input-comType">
+            <option selected="selected" value="TCP">i_Modbus/TCP</option>
+            <option value="RTU">i_Modbus/RTU</option>
+            <option value="ASCII">i_Modbus/ASCII</option>
+        </select>
+    </div>
+    <div class="form-group" id="etherConf">
+        <div class="form-row">
+            <label for="node-config-input-etherPort">i_etherPort
+              <span style="color: #ff0000;">*</span></label>
+            <input type="text" style="width: 300px" id="node-config-input-etherPort">
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-etherAdd">i_アドレス
+              <span style="color: #ff0000;">*</span></label>
+            <input type="text" style="width: 300px" id="node-config-input-etherAdd">
+        </div>
+    </div>
+    <div class="form-group hide" id="serialConf">
+        <div class="form-row">
+            <label for="node-config-input-serialPort">i_シリアルPort
+              <span style="color: #ff0000;">*</span></label>
+            <input type="text" style="width: 300px" id="node-config-input-serialPort">
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-serialAdd">i_アドレス
+              <span style="color: #ff0000;">*</span></label>
+            <input type="text" style="width: 300px" id="node-config-input-serialAdd">
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-board">i_ボーレート</label>
+            <select style="width: 150px;" id="node-config-input-board">
+                <option selected="selected" value="115200">115200</option>
+                <option value="38400">38400</option>
+                <option value="19200">19200</option>
+                <option value="9600">9600</option>ß
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-parity">i_パリティ</label>
+            <select style="width: 150px;" id="node-config-input-parity">
+                <option selected="selected" value="even">Even</option>
+                <option value="odd">Odd</option>
+                <option value="none">None</option>
+            </select>
+        </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="Modbus-com">
+    <p>preparing ia-cloud objects for store to CCS</p>
+
+<h3>Inputs</h3>
+<dl class="message-properties">
+  TBD
+</dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+
+<h3>Details</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('Modbus-com',{
+      category: 'config',
+      defaults: {
+          name: {value:"modbusCom"},
+          refreshCycle: {value:"60", required:true},
+          comType: {value:"TCP"},
+          etherPort:{value:"" },
+          etherAdd:{value:"" },
+          serialPort:{value:"" },
+          serialAdd:{value:"1" },
+          board:{value:"115200" },
+          parity:{value:"even" },
+          requiredSet: {value: "", required:true},
+      },
+      label: function() {
+          return this.name||this._("Modbus-com");
+      },
+
+      oneditprepare: function() {
+        //通信種別ボタンが変化したら
+        $("#node-config-input-comType").off('change');
+        $("#node-config-input-comType").on('change', function() {
+            if ($("#node-config-input-comType").val() == "TCP") {
+              $("#etherConf").show();
+              $("#serialConf").hide();
+            } else {
+              $("#etherConf").hide();
+              $("#serialConf").show();
+            }
+        });
+        $("#node-config-input-comType").change();
+      },
+
+      oneditsave: function() {
+        var comType = $("#node-config-input-comType").val();
+        var requiredSet = "ready";
+        $("#modbus-com-block").find("input[type='text']").each(function(idx, obj){
+          switch($(obj).attr("id")) {
+            case "node-config-input-etherPort":
+            case "node-config-input-etherAdd":
+              if (!$(obj).val() && (comType == "TCP")) requiredSet = "";
+              break;
+            case "node-config-input-serialPort":
+            case "node-config-input-serialAdd":
+            case "node-config-input-board":
+              if (!$(obj).val() && ((comType == "RTU") || (comType == "ASCII"))) requiredSet = "";
+              break;
+            default:
+              break;
+          }
+        });
+      $("#node-config-input-requiredSet").val(requiredSet);
+      }
+  });
+
+</script>
