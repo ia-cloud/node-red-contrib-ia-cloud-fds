@@ -14,6 +14,7 @@
             "serial": "EnOcean-com",
             "linkObjName": "リンクデータオブジェクト",
             "sensor_id": "センサID",
+            "sensor_kind": "センサ種別",
             "notify": "通知有無",
             "value": "EnOceanデータ",
             "objectName": "オブジェクト名",
