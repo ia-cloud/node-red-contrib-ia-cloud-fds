@@ -311,15 +311,25 @@ module.exports = function(RED) {
             // 5Byte以上でなければ空リスト返却
             return ret;
         }
+        // javascriptでは32bit以上の数値をビットシフトできないため
+        // 数値を10bit毎に分割してから計算する
         var dec = parseInt(data, 16);
+        var bin = dec.toString(2);
+        var dec1 = parseInt(bin.substr(0,10),2);
+        var dec2 = parseInt(bin.substr(10,10),2);
+        var dec3 = parseInt(bin.substr(20,10),2);
+        var dec4 = parseInt(bin.substr(30,10),2);
+        var decList = [];
+        decList.push(dec1);
+        decList.push(dec2);
+        decList.push(dec3);
+        decList.push(dec4);
+        
         var tempList = [];
-        for (var num = 3; num >= 0; num--) {
-            var ch_val = (dec >> 10*num) & 0b1111111111;
-            console.log('ch_val = ' + ch_val);
+        for (var ch_val of decList) {
             var temp = 130.0 - (parseFloat(ch_val) / 1024.0 * 170.0);
             tempList.push(temp);
         }
-
         return tempList;
     }
 
@@ -396,7 +406,7 @@ module.exports = function(RED) {
             }
             var new_msg = { payload: value };
             node.send(new_msg);
-            node.status({fill:"blue",shape:"dot",text:"データ送信済み"});
+            node.status({fill:"green",shape:"dot",text:"データ送信済み"});
         });
 
         this.on("close", function(done) {
