@@ -21,6 +21,7 @@
             "serial": "serial",
             "linkObjName": "linkObjName",
             "sensor_id": "sensor ID",
+            "sensor_kind": "sensor kind",
             "notify": "notify flag",
             "value": "EnOcean Data",
             "objectName": "object name",
