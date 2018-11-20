@@ -1,4 +1,11 @@
 {
+    "collect": {
+        "label": {
+            "object_key": "オブジェクトキー",
+            "object_desc": "オブジェクトの説明",
+            "dataname": "データ名称"
+         }
+    },
     "serial": {
         "label": {
             "serialport": "シリアルポート",
@@ -12,6 +19,7 @@
             "deliver": "分割後の配信データ",
             "output": "出力",
             "serial": "EnOcean-com",
+            "collectDataObjName": "収集データオブジェクト",
             "linkObjName": "リンクデータオブジェクト",
             "sensor_id": "センサID",
             "sensor_kind": "センサ種別",
