@@ -1,4 +1,11 @@
 {
+    "collect": {
+        "label": {
+            "object_key": "Object Key",
+            "object_desc": "Object Description",
+            "dataname": "Data Name"
+         }
+    },
     "serial": {
         "status": {
             "waiting": "waiting",
@@ -19,6 +26,7 @@
             "responsetimeout": "Default response timeout",
             "ms": "ms",
             "serial": "serial",
+            "collectDataObjName": "Collect Data Object Name",
             "linkObjName": "linkObjName",
             "sensor_id": "sensor ID",
             "sensor_kind": "sensor kind",
