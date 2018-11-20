@@ -45,6 +45,7 @@
     });
 </script>
 
+<!-- EnOcean-object Node の記述 -->
 <script type="text/x-red" data-template-name="EnOcean-obj">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
@@ -65,6 +66,10 @@
         <label for="node-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
         <input type="text" id="node-input-linkdataobj">
     </div>
+    <div class="form-row">
+        <label for="node-input-collectdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.collectDataObjName"></span></label>
+        <input type="text" id="node-input-collectdataobj">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="EnOcean-obj" charset="utf-8">
@@ -78,7 +83,8 @@
             name: {name:""},
             sensor_kind: {value:"ur-d", required:true},
             sensor_id: {value:"", required:true},
-            linkdataobj: {type:"link-data-object", required:true, value:""}
+            linkdataobj: {type:"link-data-object", required:true, value:""},
+            collectdataobj: {type:"collect-data-object", required:true, value:""}
         },
         color:"#C7E9C0",
         inputs:1,
@@ -93,6 +99,68 @@
     });
 </script>
 
+<!-- collect-data-object Config Node の記述 -->
+<script type="text/x-red" data-template-name="collect-data-object">
+    <div class="form-row">
+        <label for="node-config-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="collect.label.object_key"></span></label>
+        <input type="text" id="node-config-input-object_key" data-i18n="collect.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="collect.label.object_desc"></span></label>
+        <input type="text" id="node-config-input-object_desc" data-i18n="collect.label.object_desc">
+    </div>
+    <div class="form-row">
+        <table width="100%">
+        <tr id="entry_1">
+            <td>
+                <label for="node-config-input-dataname_1"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_1">
+            </td>
+        </tr>
+        <tr id="entry_2">
+            <td>
+                <label for="node-config-input-dataname_2"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_2">
+            </td>
+        </tr>
+        <tr id="entry_3">
+            <td>
+                <label for="node-config-input-dataname_3"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_3">
+            </td>
+        </tr>
+        <tr id="entry_4">
+            <td>
+                <label for="node-config-input-dataname_4"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_4">
+            </td>
+        </tr>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="collect-data-object" charset="utf-8">
+    <p>ia-cloudオブジェクトの情報を設定するノードです。ここでクラウドに通知する必要な情報を設定します。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('collect-data-object',{
+        category: 'config',
+        defaults: {
+            object_key: {value:""},
+            object_desc: {value:""},
+            dataname_1: {value:""},
+            dataname_2: {value:""},
+            dataname_3: {value:""},
+            dataname_4: {value:""}
+        },
+        label: function() {
+            return this.object_key||("CollectDataObject");
+        }
+    });
+</script>
+
+<!-- link-data-object Config Node の記述 -->
 <script type="text/x-red" data-template-name="link-data-object">
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="serial.label.objectName"></label>

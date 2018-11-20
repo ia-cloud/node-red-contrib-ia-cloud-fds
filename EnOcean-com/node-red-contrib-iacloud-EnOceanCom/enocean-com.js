@@ -375,6 +375,8 @@ module.exports = function(RED) {
         this.sensor_id = n.sensor_id;
         this.sensor_kind = n.sensor_kind;
         this.linkdataobj = n.linkdataobj;
+        this.collectdataobj = n.collectdataobj;
+        this.collectConfig = RED.nodes.getNode(this.collectdataobj);
         var gContext = this.context().global;
         var node = this;
         
@@ -382,6 +384,16 @@ module.exports = function(RED) {
             var sensor_id = msg.payload;
             var common_info = gContext.get("common_info");
             var en_data = "";
+            var output = {
+                objectType: "iaCloudObject",
+                objectKey: node.collectConfig.object_key,
+                objectDiscription: node.collectConfig.object_desc,
+                timeStamp: "2018-11-20T14:00:00+09:00",
+                objectContent: {
+                    contentType: "iaCloudData",
+                    contentData: []
+                }
+            };
             
             if (node.sensor_id == sensor_id) {
                 node.log('Match the sensor-ID of this node [' + node.sensor_id + ' : ' + sensor_id + ']');
@@ -400,11 +412,13 @@ module.exports = function(RED) {
             if (node.sensor_kind == "u-rd") {
                var value = calc_ac(en_data);
                node.log('calculate ac value = ' + value);
+               output.objectContent.contentData = value;
             } else {
                var value = calc_temperature(en_data);
                node.log('calculate temp value = ' + value);
+               output.objectContent.contentData = value;
             }
-            var new_msg = { payload: value };
+            var new_msg = { payload: output };
             node.send(new_msg);
             node.status({fill:"green",shape:"dot",text:"データ送信済み"});
         });
@@ -419,7 +433,19 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("EnOcean-obj",EnOceanObjNode);
-    
+
+    // collect-data-object config node function definition
+    function CollectDataObjectNode(n) {
+        RED.nodes.createNode(this,n);
+        this.object_key = n.object_key;
+        this.object_desc = n.object_desc;
+        this.dataname_1 = n.dataname_1;
+        this.dataname_2 = n.dataname_2;
+        this.dataname_3 = n.dataname_3;
+        this.dataname_4 = n.dataname_4;
+    }
+    RED.nodes.registerType("collect-data-object",CollectDataObjectNode);
+
     var serialPool = (function() {
         var connections = {};
         return {
