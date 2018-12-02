@@ -24,13 +24,21 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         var node = this;
-        var dItems = JSON.parse(config.configObject);
-console.log(dItems);
-
+        var confObj = config.configObject;
+        this.contentType = config.contentType;
+        this.dItems = {};
+        if (confObj) {
+          try { this.dItems = JSON.parse(confObj); }
+          catch(e) {
+            // nodeのエラーを通知してして終了
+            node.error("JSON parse error on parsing dataItem object", confObj);
+          }
+        } else {
+            // nodeのエラーを通知してして終了
+            node.error("JSON parse error on parsing dataItem object", confObj);
+        }
         this.on("input",function(msg) {});
-
         this.on("close",function() {});
     }
-
     RED.nodes.registerType("Modbus-dItems",modbusdItems);
 }

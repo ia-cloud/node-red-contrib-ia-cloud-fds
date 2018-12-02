@@ -1,0 +1,174 @@
+{
+  	"configName": "modbusConfig.json",
+  	"comment": "modbus ia-cloud object configration data for test.",
+    "dataObjects":
+        [{
+        "objectName": "bit系データ",
+    		"objectKey": "com.atbridge-cnsltg.node-RED.test1",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusのビット系データ",
+    		"options":{"storeInterval": 300, "storeAsync": true},
+    		"ObjectContent": {
+      			"contentType": "PLC-bit",
+      			"contentData": [{
+        				"dataName": "装置I稼働",
+        				"options": {
+                    "itemType": "bit",
+                    "deviceType": "coil",
+          					"source":123,
+          					"number": 1,
+          					"logic": "pos"
+        				  }
+          			},{
+                  "dataName": "装置II稼働",
+          				"options": {
+                      "itemType": "bit",
+                      "deviceType": "coil",
+            					"source":124,
+            					"number": 1,
+            					"logic": "neg"
+          				}
+          			},{
+                  "dataName": "装置IV稼働",
+          				"options": {
+                      "itemType": "bit",
+                      "deviceType": "IS",
+            					"source":345,
+            					"number": 6,
+            					"logic": "pos"
+          				}
+          			}]
+    		}
+  	},{
+        "name": "数値系データ",
+        "objectKey": "com.atbridge-cnsltg.node-RED.test2",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusのワード系データ",
+    		"options":{
+          "period": 300,
+          "storeAsync": true
+    		},
+    		"ObjectContent": {
+    				"contentType": "iaCloudData",
+    				"contentData": [{
+        				"dataName": "装置消費電流",
+                "unint": "A",
+                "options": {
+                    "itemType": "number",
+                    "deviceType": "IR",
+                    "source":213,
+                    "type": "Word",
+                    "offset": 0,
+                    "gain": 1
+                }
+        			},{
+                "dataName": "電気炉内部温度",
+                "unint": "°C",
+                "options": {
+                    "itemType": "number",
+                    "deviceType": "IR",
+                    "source":213,
+                    "type": "BCD",
+                    "offset": 30,
+                    "gain": 1.3
+                }
+        			},{
+                "dataName": "ソレノイド動作回数",
+                "unint": "",
+                "options": {
+                    "itemType": "number",
+                    "deviceType": "HR",
+                    "source":488,
+                    "type": "dBCD",
+                    "offset": 0,
+                    "gain": 1
+                }
+        			},{
+                "dataName": "生産個数",
+                "unint": "",
+                "options": {
+                    "itemType": "number",
+                    "deviceType": "IR",
+                    "source":220,
+                    "type": "dWord",
+                    "offset": 0,
+                    "gain": 1
+                }
+    			  }]
+    		}
+	  },{
+        "name": "文字列データ",
+        "objectKey": "com.atbridge-cnsltg.node-RED.test3",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusの文字列データ",
+    		"options":{
+          "period": 100,
+          "storeAsync": false
+    		},
+    		"ObjectContent": {
+      			"contentType": "iaCloudData",
+      			"contentData": [{
+        				"dataName": "実行中作業名",
+        				"options": {
+                  "itemType": "string",
+                  "deviceType": "IR",
+                  "source":56,
+                  "number": 32,
+                  "encode": "utf-8"
+      				}
+            }]
+		    }
+	  },{
+        "name": "混合データ",
+        "objectKey": "com.atbridge-cnsltg.node-RED.test4",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusのいろいろ混合データ",
+    		"options":{
+          "period": 30,
+          "storeAsync": false
+    		},
+    		"ObjectContent": {
+    				"contentType": "iaCloudData",
+    				"contentData": [{
+              "dataName": "装置消費電流",
+              "unint": "A",
+              "options": {
+                  "itemType": "number",
+                  "deviceType": "IR",
+                  "source":213,
+                  "type": "Word",
+                  "offset": 0,
+                  "gain": 1
+              }
+            },{
+              "dataName": "装置II稼働",
+              "options": {
+                  "itemType": "bit",
+                  "deviceType": "coil",
+                  "source":124,
+                  "number": 1,
+                  "logic": "neg"
+              }
+            },{
+              "dataName": "温度トレンド",
+              "unint": "",
+              "options": {
+                  "itemType": "numList",
+                  "deviceType": "HR",
+                  "source":488,
+                  "number": 256,
+                  "type": "Word"
+              }
+      			},{
+              "dataName": "実行中作業名",
+      				"options": {
+                  "itemType": "string",
+                  "deviceType": "IR",
+                  "source":56,
+                  "number": 32,
+                  "encode": "utf-8"
+    				}
+          }]
+    		}
+	  }]
+}

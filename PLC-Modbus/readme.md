@@ -44,7 +44,7 @@
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 |オブジェクトキー|string| ia-cloudオブジェクトのobjectKeyとして使われる。|
-|オブジェクトの説明|string| ia-cloudオブジェクトのobjectDiscriptionとして使われる。|
+|オブジェクトの説明|string| ia-cloudオブジェクトのobjectdescriptionとして使われる。|
 |データitem情報| object| objectContentとして挿入されるオブジェクトを生成するための情報。|
 
 **データitem情報**
@@ -91,7 +91,7 @@
 {
 	"objectType": "iaCloudObject",
 	"objectKey": "「オブジェクトキー」",
-	"objectDiscription": "『オブジェクトの説明』"
+	"objectdescription": "『オブジェクトの説明』"
 	"timeStamp": "2018-07-26T23:59:09+09:00",
 	"ObjectContent": {
 		"contentType": "iaCloudData",

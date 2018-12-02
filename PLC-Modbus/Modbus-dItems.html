@@ -21,18 +21,12 @@
       </div>
       <div class="form-row hidden">
           <input type="text" id="node-config-input-configObject">
+          <input type="text" id="node-config-input-configReady">
       </div>
       <div class="form-row">
         <label for="node-config-input-contentType"><i class="fa fa-tag"></i>
-            i_データ型名称<span style="color: #ff0000;">*</span></label>
-        <input type="text" id="node-config-input-contentType" list="contentType"
-            placeholder="選択or任意入力" autocomplete="off" >
-        <datalist id="contentType">
-          <option value="Modbus-coil">
-          <option value="Modbus-data">
-          <option value="Modbus-string">
-          <option value="Modbus-list">
-        </datalist>
+            i_データ型<span style="color: #ff0000;">*</span></label>
+        <input type="text" id="node-config-input-contentType" autocomplete="on" >
       </div>
     </div>
     <div id="blocks">
@@ -60,17 +54,27 @@
                         <input type="text" style="width: 150px;" id="bit-dName[0]">
                     </div>
                 </div>
-                <div class="form-inline" style="vertical-align: middle;">
-                    <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
-                    <input type="text" style="margin-right: 10px; width: 80px"
-                        id="bit-src[0]">
-                    <label>i_ビット数<span style="color: #ff0000;">*</span></label>
-                    <input type="number" min="1" style="margin-right: 10px; width: 50px"
-                        id="bit-num[0]" value="1">
-                    <select style="width: 70px" id="bit-logic[0]">
-                        <option selected="selected"　value= "pos">正論理</option>
-                        <option value= "neg">負論理</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-inline" style="vertical-align: middle;">
+                        <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                        <select id="bit-deviceType[0]" style="width: 50px;">
+                            <option selected="selected"　value="Coil">Coil</option>
+                            <option value="IS">IS</option>
+                        </select>
+                        <input type="text" style="margin-right: 10px; width: 150px"
+                            id="bit-src[0]">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-inline" style="vertical-align: middle;">
+                        <label>i_ビット数<span style="color: #ff0000;">*</span></label>
+                        <input type="number" min="1" style="margin-right: 10px; width: 50px"
+                            id="bit-num[0]" value="1">
+                        <select style="width: 70px" id="bit-logic[0]">
+                            <option selected="selected"　value= "pos">正論理</option>
+                            <option value= "neg">負論理</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="form-row hidden" id="block-number[0]" name="number"
@@ -87,28 +91,32 @@
                 </div>
                 <div class="form-row">
                     <div class="form-row">
-                    <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
-                        <input type="text" style="width: 80px; margin-right: 10px;"
-                            id="number-src[0]">
-                        <label>i_データ型</label>
-                        <select id="number-type[0]" style="width: 100px;">
-                            <option selected="selected"　value="Word">ワード</option>
-                            <option value="dWord">倍ワード</option>
-                            <option value="BCD">BCD</option>
-                            <option value="dBCD">倍BCD</option>
-                        </select>
-                    </div>
+                        <div class="form-inline" style="vertical-align: middle;">
+                            <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                            <select id="number-deviceType[0]" style="width: 50px;">
+                                <option selected="selected" value="IR">IR</option>
+                                <option value="HR">HR</option>
+                            </select>
+                            <input type="text" style="width: 120px; margin-right: 10px;"
+                                id="number-src[0]">
+                        </div>
                     </div>
                     <div class="form-row">
-                    <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_ゼロ</label>
-                        <input type="number" style="width: 50px; margin-right: 10px;"
-                            id="numbe-offset[0]" value="0">
-                        <label>i_倍率</label>
-                        <input type="number" style="width: 50px; margin-right: 10px;"
-                            id="number-gain[0]" value="1">
-                    </div>
+                        <div class="form-inline" style="vertical-align: middle;">
+                            <label>i_データ型</label>
+                            <select id="number-type[0]" style="width: 100px;">
+                                <option selected="selected"　value="Word">ワード</option>
+                                <option value="dWord">倍ワード</option>
+                                <option value="BCD">BCD</option>
+                                <option value="dBCD">倍BCD</option>
+                            </select>
+                            <label style="width:50px; margin-left: 10px;">i_ゼロ</label>
+                            <input type="number" style="width: 50px; margin-right: 10px;"
+                                id="numbe-offset[0]" value="0">
+                            <label style="width:50px;">i_倍率</label>
+                            <input type="number" style="width: 50px;"
+                                id="number-gain[0]" value="1">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,6 +136,10 @@
                 </div>
                 <div class="form-inline" style="vertical-align: middle;">
                     <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                    <select id="string-deviceType[0]" style="width: 50px;">
+                        <option selected="selected" value="IR">IR</option>
+                        <option value="HR">HR</option>
+                    </select>
                     <input type="text" style="width: 80px; margin-right: 10px;"
                         id="string-src[0]">
                     <label>i_ワード数<span style="color: #ff0000;">*</span></label>
@@ -152,6 +164,10 @@
                 </div>
                 <div class="form-inline" style="vertical-align: middle;">
                     <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                    <select id="numList-deviceType[0]" style="width: 50px;">
+                        <option selected="selected" value="IR">IR</option>
+                        <option value="HR">HR</option>
+                    </select>
                     <input type="text" style="width: 80px; margin-right: 10px;"
                         id="numList-src[0]">
                     <label>i_ワード数<span style="color: #ff0000;">*</span></label>
@@ -195,8 +211,9 @@
       category: 'config',
       defaults: {
           name: {value:"modbusdItems"},
-          contentType: {value:"", required: true},
-          configObject:{value:"", required: true}
+          contentType: {value:"PLCData", required: true},
+          configObject:{value:"", required: true},
+          configReady:{value:"", required: true}
       },
       label: function() {
           return this.name||this._("Modbus-dItems");
@@ -206,9 +223,14 @@
         var frm_cnt = 0;
        //あれば設定データを取り出して、formに展開する。
         var conf = $("#node-config-input-configObject").val();
+        if (conf) {
+          var dItems = {};
+          try { dItems = JSON.parse(conf); }
+          catch(e) { conf = "";}
+        }
+
         if(conf != ""){
           //設定データがあった
-          var dItems = JSON.parse(conf);
           //フォームを一つ保存
           var original = $('#form_block\\[0\\]');
 
@@ -250,13 +272,15 @@
             case "bit":
                 $("#bit-dName\\[" + idx + "\\]").val(value.dataName);
                 $("#bit-src\\[" + idx + "\\]").val(value.options.source);
+                $("#bit-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#bit-num\\[" + idx + "\\]").val(value.options.number);
                 $("#bit-logic\\[" + idx + "\\]").val(value.options.logic);
                 break;
             case "number":
                 $("#number-dName\\[" + idx + "\\]").val(value.dataName);
+                $("#number-unit\\[" + idx + "\\]").val(value.unit);
                 $("#number-src\\[" + idx + "\\]").val(value.options.source);
-                $("#number-unit\\[" + idx + "\\]").val(value.options.unit);
+                $("#number-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#number-type\\[" + idx + "\\]").val(value.options.type);
                 $("#number-offset\\[" + idx + "\\]").val(value.options.offset);
                 $("#number-gain\\[" + idx + "\\]").val(value.options.gain);
@@ -264,12 +288,14 @@
             case "string":
                 $("#string-dName\\[" + idx + "\\]").val(value.dataName);
                 $("#string-src\\[" + idx + "\\]").val(value.options.source);
+                $("#string-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#string-num\\[" + idx + "\\]").val(value.options.number);
                 $("#string-encode\\[" + idx + "\\]").val(value.options.encode);
                 break;
             case "numList":
                 $("#numList-dName\\[" + idx + "\\]").val(value.dataName);
                 $("#numList-src\\[" + idx + "\\]").val(value.options.source);
+                $("#numList-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#numList-num\\[" + idx + "\\]").val(value.options.number);
                 $("#numList-type\\[" + idx + "\\]").val(value.options.type);
                 break;
@@ -386,7 +412,7 @@
       oneditsave: function() {
 
         var dItems = [];
-        var configObject = "ready";
+        var configReady = "ready";
 
         $(".form-block[id^='form_block']").each(function(idx, obj){
           var itemType = $(obj)
@@ -396,51 +422,57 @@
           switch(itemType) {
             case "bit":
               item.dataName = $("#bit-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configObject = "";
+              if (!item.dataName) configReady = "";
               item.options.source = $("#bit-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configObject = "";
+              if (!item.options.source) configReady = "";
+              item.options.deviceType = $("#bit-deviceType\\[" + idx + "\\]").val();
+              if (!item.options.deviceType) configReady = "";
               item.options.number = $("#bit-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configObject = "";
+              if (!item.options.number) configReady = "";
               item.options.logic = $("#bit-logic\\[" + idx + "\\]").val();
               break;
             case "number":
               item.dataName = $("#number-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configObject = "";
-              item.options.unit = $("#number-unit\\[" + idx + "\\]").val();
+              if (!item.dataName) configReady = "";
+              item.unit = $("#number-unit\\[" + idx + "\\]").val();
               item.options.source = $("#number-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configObject = "";
+              if (!item.options.source) configReady = "";
+              item.options.deviceType = $("#number-deviceType\\[" + idx + "\\]").val();
+              if (!item.options.deviceType) configReady = "";
               item.options.type = $("#number-type\\[" + idx + "\\]").val();
               item.options.offset = $("#number-offset\\[" + idx + "\\]").val();
               item.options.gain = $("#number-gain\\[" + idx + "\\]").val();
               break;
             case "string":
               item.dataName = $("#string-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configObject = "";
+              if (!item.dataName) configReady = "";
               item.options.source = $("#string-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configObject = "";
+              if (!item.options.source) configReady = "";
+              item.options.deviceType = $("#string-deviceType\\[" + idx + "\\]").val();
+              if (!item.options.deviceType) configReady = "";
               item.options.number = $("#string-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configObject = "";
+              if (!item.options.number) configReady = "";
               item.options.encode = $("#string-encode\\[" + idx + "\\]").val();
               break;
             case "numList":
               item.dataName = $("#numList-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configObject = "";
+              if (!item.dataName) configReady = "";
               item.options.source = $("#numList-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configObject = "";
+              if (!item.options.source) configReady = "";
+              item.options.deviceType = $("#numList-deviceType\\[" + idx + "\\]").val();
+              if (!item.options.deviceType) configReady = "";
               item.options.number = $("#numList-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configObject = "";
+              if (!item.options.number) configReady = "";
               item.options.type = $("#numList-type\\[" + idx + "\\]").val();
               break;
           }
         dItems[idx]=item;
       });
-      if (configObject) {
-        //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-        try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
-        catch(e) {$("#node-config-input-configObject").val("")}
-      } else {
-        $("#node-config-input-configObject").val("");
-      }
+
+      $("#node-config-input-configReady").val(configReady);
+      //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+      try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+      catch(e) {$("#node-config-input-configObject").val("")}
     }
   });
 

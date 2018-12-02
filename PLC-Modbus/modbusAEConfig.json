@@ -1,0 +1,76 @@
+{
+  	"name": "modbusAEConfig.json",
+  	"comment": "modbus ia-cloud A&E object configration data for test.",
+    "AandEObjects":
+      [{
+        "name": "アラームブロック1",
+    		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusのアラームデータ",
+    		"ObjectContent": {
+      			"contentType": "Alarm&Event",
+      			"contentData": [
+              {
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "E201",
+                "A&EDescription": "インバータNo.3異常"
+                },
+              "options": {"deviceType": "coil", "source": "58", "logic": "positive"}
+              },{
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "E202",
+                "A&EDescription": "インバータNo.5異常"
+                },
+              "options": {"deviceType": "IS", "source": "152", "logic": "negative"}
+              },{
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "E887",
+                "A&EDescription": "異常温度上昇"
+                },
+              "options": {"deviceType": "IS", "source": "552", "logic": "negative"}
+              }
+            ]
+        }
+      },{
+        "name": "アラームブロック2",
+    		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
+    		"objectType": "iaCloudObject",
+    		"objectDescription": "modbusのアラームデータ",
+    		"ObjectContent": {
+      			"contentType": "Alarm&Event",
+      			"contentData": [
+              {
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "W401",
+                "A&EDescription": "インバータNo.3警報"
+                },
+              "options": {"deviceType": "coil", "source": "158", "logic": "positive"}
+              },{
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "W402",
+                "A&EDescription": "インバータNo.5警報"
+                },
+              "options": {"deviceType": "IS", "source": "252", "logic": "negative"}
+              },{
+              "commonName":"Alarm&Event",
+              "dataValue": {
+                "A&EStatus": "",
+                "A&ECode": "W1087",
+                "A&EDescription": "温度上昇警報"
+                },
+              "options": {"deviceType": "IS", "source": "652", "logic": "negative"}
+              }
+            ]
+        }
+    }]
+}

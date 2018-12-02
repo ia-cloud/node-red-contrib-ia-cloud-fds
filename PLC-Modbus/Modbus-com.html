@@ -26,6 +26,13 @@
         <input type="number" min="1" style="width: 300px" id="node-config-input-refreshCycle">
     </div>
     <div class="form-row">
+        <label for="node-config-input-maxDataNum">
+            i_連続読出数<span style="color: #ff0000;">*</span></label>
+        <input type="number" min="1" style="display: inline-block; width: 70px;" id="node-config-input-maxDataNum">
+        <label for="node-input-noBlanck" style="margin-left: 20px;">i_連続限定</label>
+        <input type="checkbox" id="node-input-noBlanck" style="display: inline-block; width: auto;">
+    </div>
+    <div class="form-row">
         <label for="node-config-input-comType">i_通信種別</label>
         <select style="width: 150px;" id="node-config-input-comType">
             <option selected="selected" value="TCP">i_Modbus/TCP</option>
@@ -103,6 +110,8 @@
       defaults: {
           name: {value:"modbusCom"},
           refreshCycle: {value:"60", required:true},
+          maxDataNum: {value:64, required:true},
+          noBlanck: {value:false, required:true},
           comType: {value:"TCP"},
           etherPort:{value:"" },
           etherAdd:{value:"" },

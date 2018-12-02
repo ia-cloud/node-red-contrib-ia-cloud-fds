@@ -11,7 +11,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="PLC-Modbus">
+<script type="text/x-red" data-template-name="PLC-Modbus-AE">
 
     <div class="form-row">
         <label for="node-input-name" ><i class="fa fa-tag"></i>i_Node name</label>
@@ -38,13 +38,6 @@
     <!-- object propertyの設定　-->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
-            <label style="margin-right: 10px;" for="node-input-storeInterval">
-                i_収集周期</label>
-            <input type="number" min="10" style="display: inline-block; width: auto;" id="node-input-storeInterval">
-            <label for="node-input-storeAsync" style="margin-left: 20px;">i_非同期収集</label>
-            <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;">
-        </div>
-        <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-objectName">
                 i_Objectname</label>
             <input type="text" style="width: 300px" id="node-input-objectName">
@@ -61,13 +54,14 @@
                 for="node-input-objectdescription">i_Objectdescription</label>
             <input type="text" style="width: 300px" id="node-input-objectDescription">
         </div>
-        <!-- contentData Item の設定ーPLCデータNodeの選択　-->
-        <div class="form-row" id="node-row-dItems">
+
+        <!-- contentData Item の設定ーA&E情報Nodeの選択　-->
+        <div class="form-row" id="node-row-AandE">
             <label style="margin-right: 10px; vertical-align: middle;"
-              for="node-input-dItems">i_Data items
-              <span style="color: #ff0000;">*</span>
-            </label>
-            <input type="text" style="width: 300px" id="node-input-dItems">
+                for="node-input-AandE">i_A&E情報
+                <span style="color: #ff0000;">*</span>
+              </label>
+            <input type="text" style="width: 300px" id="node-input-AandE">
         </div>
     </div>
 <hr>
@@ -78,12 +72,12 @@
         <input type="text" style="width: 300px" id="node-input-ModbusCom">
     </div>
     <div class="form-row hide">
-        <input type="text" style="width: 300px" id="node-input-configReady">
+        <input type="text" style="width: 300px" id="node-input-objectConfig">
     </div>
 
 </script>
 
-<script type="text/x-red" data-help-name="PLC-Modbus">
+<script type="text/x-red" data-help-name="PLC-Modbus-AE">
     <p>preparing ia-cloud objects for store to CCS</p>
 
 <h3>Inputs</h3>
@@ -104,21 +98,19 @@
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('PLC-Modbus',{
+  RED.nodes.registerType('PLC-Modbus-AE',{
     category: 'iaCloud',
     color:"rgb(231, 180, 100)",
     defaults: {
-        name: {value:"PLCModbus"},
+        name: {value:"PLCModbusAE"},
         confsel: {value:"propertySet"},
         configfile: {value:"", required: false},
-        storeInterval: {value:"10"},
-        storeAsync: {value: false},
         objectName: {value:""},
         objectKey: {value:""},
         objectDescription: {value:""},
-        dItems: {value:"", type:"Modbus-dItems", required: true},
+        AandE: {value:"", type:"Modbus-AandE", required: true},
         ModbusCom: {value:"", type:"Modbus-com", required: true},
-        configReady: {value: "", required: true}
+        objectConfig: {value: "", required: true}
     },
     inputs:1,
     outputs:1,
@@ -150,12 +142,12 @@
     },
 
     oneditsave: function() {
-      var configReady = "ready";
+      var objectConfig = "ready";
       if ($("#node-input-confsel").val() == "propertySet") {
-        if (!$("#node-input-objectKey").val()) configReady = "";
+        if (!$("#node-input-objectKey").val()) objectConfig = "";
       }
-      if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) configReady = "";
-      $("#node-input-configReady").val(configReady);
+      if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) objectConfig = "";
+      $("#node-input-objectConfig").val(objectConfig);
     }
   });
 
