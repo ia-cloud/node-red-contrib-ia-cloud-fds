@@ -25,7 +25,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('EnOcean-com',{
-        category: 'input',
+        category: 'iaCloud',
         defaults: {
             name: {name:""},
             serial: {type:"serial-port",required:true},
@@ -45,34 +45,238 @@
     });
 </script>
 
+<!-- EnOcean-object Node の記述 -->
+<script type="text/x-red" data-template-name="EnOcean-obj">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-sensor_kind"><i class="fa fa-thermometer-half"></i> <span data-i18n="serial.label.sensor_kind"></span></label>
+        <select type="text" id="node-input-sensor_kind">
+            <option value="u-rd">電流センサー(U-RD)</option>
+            <option value="watty">温度センサー(Watty)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
+    <div class="form-row">
+        <label for="node-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
+        <input type="text" id="node-input-linkdataobj">
+    </div>
+    <div class="form-row">
+        <label for="node-input-collectdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.collectDataObjName"></span></label>
+        <input type="text" id="node-input-collectdataobj">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="EnOcean-obj" charset="utf-8">
+    <p>一定周期あるいは非同期にia-cloudオブジェクトを生成して出力します</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('EnOcean-obj',{
+        category: 'iaCloud',
+        defaults: {
+            name: {name:""},
+            sensor_kind: {value:"ur-d", required:true},
+            sensor_id: {value:"", required:true},
+            linkdataobj: {type:"link-data-object", required:true, value:""},
+            collectdataobj: {type:"collect-data-object", required:true, value:""}
+        },
+        color:"#C7E9C0",
+        inputs:1,
+        outputs:1,
+        icon: "swap.png",
+        label: function() {
+            return this.name || "EnOcean Object";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+
+<!-- collect-data-object Config Node の記述 -->
+<script type="text/x-red" data-template-name="collect-data-object">
+    <div class="form-row">
+        <label for="node-config-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="collect.label.object_key"></span></label>
+        <input type="text" id="node-config-input-object_key" data-i18n="collect.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="collect.label.object_desc"></span></label>
+        <input type="text" id="node-config-input-object_desc" data-i18n="collect.label.object_desc">
+    </div>
+    <div class="form-row">
+        <table width="100%">
+        <tr id="entry_1">
+            <td>
+                <label for="node-config-input-dataname_1"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_1">
+            </td>
+        </tr>
+        <tr id="entry_2">
+            <td>
+                <label for="node-config-input-dataname_2"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_2">
+            </td>
+        </tr>
+        <tr id="entry_3">
+            <td>
+                <label for="node-config-input-dataname_3"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_3">
+            </td>
+        </tr>
+        <tr id="entry_4">
+            <td>
+                <label for="node-config-input-dataname_4"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
+                <input type="text" id="node-config-input-dataname_4">
+            </td>
+        </tr>
+        </table>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="collect-data-object" charset="utf-8">
+    <p>ia-cloudオブジェクトの情報を設定するノードです。ここでクラウドに通知する必要な情報を設定します。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('collect-data-object',{
+        category: 'config',
+        defaults: {
+            object_key: {value:""},
+            object_desc: {value:""},
+            dataname_1: {value:""},
+            dataname_2: {value:""},
+            dataname_3: {value:""},
+            dataname_4: {value:""}
+        },
+        label: function() {
+            return this.object_key||("CollectDataObject");
+        }
+    });
+</script>
+
+<!-- link-data-object Config Node の記述 -->
 <script type="text/x-red" data-template-name="link-data-object">
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="serial.label.objectName"></label>
         <input type="text" id="node-config-input-name">
     </div>
     <div class="form-row">
-        <label for="node-config-input-entry_sensor"><i class="fa fa-wifi"></i> <span data-i18n="serial.label.entryID"></label>
-        <input type="text" id="node-config-input-entry_sensor" style="width:66%;">
+        <label for="node-config-input-entry_sensor"><i class="fa fa-flag"></i> <span data-i18n="serial.label.entryID"></label>
+        <input type="text" id="node-config-input-entry_sensor" style="width:50%;">
         <a id="node-config-input-entry_sensor" class="btn"><i id="node-config-input-addbtn">追加</i></a>
     </div>
     <div class="form-row">
         <table width="100%"><tr>
-            <td width="120px"><span data-i18n="serial.label.sensor_id"></span></td>
-            <td width="80px" data-i18n="serial.label.notify"></td>
-            <td width="300px" data-i18n="serial.label.value"></td>
+            <td width="150px"><span data-i18n="serial.label.sensor_id"></span></td>
+            <td width="100px" data-i18n="serial.label.notify"></td>
+            <td width="80px"></td>
         </tr>
-        <tr>
-        <td><input type="text" id="node-config-input-sensor_id"></td>
+        <tr id="entry_1">
+        <td><input type="text" id="node-config-input-sensor_1"></td>
         <td>
-        <select type="text" id="node-config-input-notify" style="width:90%;">
+        <select type="text" id="node-config-input-notify_1" style="width:90%;">
             <option value="true">true</option>
             <option value="false">false</option>
         </select>
         </td>
-        <td><input type="text" id="node-config-input-value"></td>
+        <td><input type="button" id="node-config-input-delete_1" data-n="1" value="削除"></td>
         </tr>
-        </table>
-        <table id="table1" width="100%">
+        <tr id="entry_2">
+        <td><input type="text" id="node-config-input-sensor_2"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_2" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_2" data-n="2" value="削除"></td>
+        </tr>
+        <tr id="entry_3">
+        <td><input type="text" id="node-config-input-sensor_3"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_3" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_3" data-n="3" value="削除"></td>
+        </tr>
+        <tr id="entry_4">
+        <td><input type="text" id="node-config-input-sensor_4"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_4" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_4" data-n="4" value="削除"></td>
+        </tr>
+        <tr id="entry_5">
+        <td><input type="text" id="node-config-input-sensor_5"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_5" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_5" data-n="5" value="削除"></td>
+        </tr>
+        <tr id="entry_6">
+        <td><input type="text" id="node-config-input-sensor_6"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_6" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_6" data-n="6" value="削除"></td>
+        </tr>
+        <tr id="entry_7">
+        <td><input type="text" id="node-config-input-sensor_7"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_7" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_7" data-n="7" value="削除"></td>
+        </tr>
+        <tr id="entry_8">
+        <td><input type="text" id="node-config-input-sensor_8"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_8" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_8" data-n="8" value="削除"></td>
+        </tr>
+        <tr id="entry_9">
+        <td><input type="text" id="node-config-input-sensor_9"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_9" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_9" data-n="9" value="削除"></td>
+        </tr>
+        <tr id="entry_10">
+        <td><input type="text" id="node-config-input-sensor_10"></td>
+        <td>
+        <select type="text" id="node-config-input-notify_10" style="width:90%;">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>
+        </td>
+        <td><input type="button" id="node-config-input-delete_10" data-n="10" value="削除"></td>
+        </tr>
         </table>
     </div>
 </script>
@@ -87,42 +291,90 @@
         defaults: {
             name: {value:""},
             entry_sensor: {value:""},
-            sensor_id: {value:"0400F5D8"},
-            notify: {value:"true"},
-            value: {value:"0eefa09281654cb01afe"}
+            sensor_1: {value:""},
+            notify_1: {value:"false"},
+            sensor_2: {value:""},
+            notify_2: {value:"false"},
+            sensor_3: {value:""},
+            notify_3: {value:"false"},
+            sensor_4: {value:""},
+            notify_4: {value:"false"},
+            sensor_5: {value:""},
+            notify_5: {value:"false"},
+            sensor_6: {value:""},
+            notify_6: {value:"false"},
+            sensor_7: {value:""},
+            notify_7: {value:"false"},
+            sensor_8: {value:""},
+            notify_8: {value:"false"},
+            sensor_9: {value:""},
+            notify_9: {value:"false"},
+            sensor_10: {value:""},
+            notify_10: {value:"false"}
         },
         label: function() {
             return this.name||("enOceanLinkObj");
         },
         oneditprepare: function() {
-            //var recvData = 0;
-            //var SerialPort = require('serialport');
-            //var port = new SerialPort('COM3', {
-            //    baudRate: 57600,
-            //    dataBits: 8,
-            //    parity: "none",
-            //    stopBits: 1,
-                //parser: SerialPort.parsers.raw,
-            //    autoOpen: true
-            //});
-            //port.on('data', function (data) {
-            //    recvData = data;
-            //});
-            addRow = function() {
-                $('#table1').append('<tr><td width="120px"><input type="text" value="' + $("#node-config-input-entry_sensor").val() + '"></td><td width="80px"><select type="text" style="width:90%;"><option value="true">true</option><option value="false">false</option></select></td><td width="300px"><input type="text" value="0000000000000000000000000000"></td></tr>');
-            }
-            $("#node-config-input-entry_sensor").on('focus', function() {
-                $("#node-config-input-entry_sensor").val('04009EFC');
+            var notify_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+            var tr_prefix = "#entry_";
+            var sensor_prefix = "#node-config-input-sensor_";
+            var notify_prefix = "#node-config-input-notify_";
+            $.each(notify_list, function(index, value) {
+                var tr_id = tr_prefix + value;
+                var sensor_id = sensor_prefix + value;
+                var notify_id = notify_prefix + value;
+                if ($(sensor_id).val() == "") {
+                    $(tr_id).hide();
+                } else {
+                    $(tr_id).show();
+                }
             });
+            
+            //$("#node-config-input-entry_sensor").on('focus', function() {
+            //    $("#node-config-input-entry_sensor").val('04009EFC');
+            //});
+            addRow = function(sensor_id) {
+                var counter = 0;
+                $("[id^='node-config-input-sensor_']").each(function(){
+                   var index = $(this).attr("id").replace("node-config-input-sensor_", "");
+                   var tr_id = "#entry_" + index;
+                   counter++;
+                   if ($(this).val() == "") {
+                       $(tr_id).show();
+                       $(this).val(sensor_id);
+                       return false;
+                   }
+                });
+            }
             $("#node-config-input-addbtn").click(function() {
-                addRow();
+                //addRow();
+                $("#node-config-input-addbtn").addClass('disabled');
+                var sensor_id = $("#node-config-input-entry_sensor").val();
+                addRow(sensor_id);
+                
+                //$.getJSON('endata',function(data) {
+                //    $("#node-config-input-addbtn").removeClass('disabled');
+                //    var endata = "";
+                //    $.each(data, function(key, value) {
+                //        endata = value;
+                //    });
+                //    $("#node-config-input-value").val(endata);
+                //});
             });
             // $('#table1').on('click', 'tr', function(event){$(this).remove();});
+            $("[id^='node-config-input-delete_']").click(function() {
+                var index = $(this).data("n");
+                var delete_tr = tr_prefix + index;
+                var sensor_id = sensor_prefix + index;
+                var notify_id = notify_prefix + index;
+                $(delete_tr).hide();
+            });
+            
             $("#node-config-input-name").val(this.name);
             $("#node-config-input-value").on('focus', function() {
-                $("#node-config-input-value").val('0123456789abcdef');
+                $("#node-config-input-value").val('focus');
             });
-            this.log('test test');
         },
         oneditsave: function() {
             if ($("#node-config-input-name").val() == "") {
@@ -195,6 +447,7 @@
         </select>
     </div>
     <br/>
+<!--
     <div id="node-config-addchar">
         <div class="form-row">
             <label><i class="fa fa-sign-out"></i> <span data-i18n="serial.label.output"></span></label>
@@ -215,6 +468,7 @@
         </div>
     </div>
     <div class="form-tips" id="tip-responsetimeout" hidden><span data-i18n="serial.tip.responsetimeout"></span></div>
+-->
     <div class="form-tips" id="tip-split"><span data-i18n="serial.tip.split"></span></div>
     <div class="form-tips" id="tip-timeout" hidden><span data-i18n="serial.tip.timeout"></span></div>
     <div class="form-tips" id="tip-silent" hidden><span data-i18n="serial.tip.silent"></span></div>
@@ -284,7 +538,7 @@
                 if ($("#node-config-input-out").val() == "char") {
                     if (previous != "char") { $("#node-config-input-newline").val("\\n"); }
                     $("#node-units").text("");
-                    $("#node-config-addchar").show();
+                    //$("#node-config-addchar").show();
                     $("#tip-split").show();
                     $("#tip-timeout").hide();
                     $("#tip-silent").hide();
@@ -293,7 +547,7 @@
                     if (previous != "time") { $("#node-config-input-newline").val("0"); }
                     $("#node-units").text("ms");
                     $("#node-config-addchar").hide();
-                    $("#node-config-input-addchar").val("false");
+                    //$("#node-config-input-addchar").val("false");
                     $("#tip-split").hide();
                     $("#tip-timeout").show();
                     $("#tip-silent").hide();
@@ -302,7 +556,7 @@
                     if (previous != "interbyte") { $("#node-config-input-newline").val("0"); }
                     $("#node-units").text("ms");
                     $("#node-config-addchar").hide();
-                    $("#node-config-input-addchar").val("false");
+                    //$("#node-config-input-addchar").val("false");
                     $("#tip-split").hide();
                     $("#tip-timeout").hide();
                     $("#tip-silent").show();
@@ -311,14 +565,14 @@
                     if (previous != "count") { $("#node-config-input-newline").val(""); }
                     $("#node-units").text("chars");
                     $("#node-config-addchar").hide();
-                    $("#node-config-input-addchar").val("false");
+                    //$("#node-config-input-addchar").val("false");
                     $("#tip-split").hide();
                     $("#tip-timeout").hide();
                     $("#tip-silent").hide();
                 }
             });
 
-            $("#node-config-input-responsetimeout").on('focus', function () { $("#tip-responsetimeout").show(); });
+            //$("#node-config-input-responsetimeout").on('focus', function () { $("#tip-responsetimeout").show(); });
 
             try {
                 $("#node-config-input-serialport").autocomplete( "destroy" );
