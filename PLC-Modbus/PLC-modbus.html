@@ -35,7 +35,7 @@
         <input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">
     </div>
 
-    <!-- object propertyの設定　-->
+    <!-- object propertyの設定 -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-storeInterval">
@@ -61,7 +61,7 @@
                 for="node-input-objectdescription">i_Objectdescription</label>
             <input type="text" style="width: 300px" id="node-input-objectDescription">
         </div>
-        <!-- contentData Item の設定ーPLCデータNodeの選択　-->
+        <!-- contentData Item の設定ーPLCデータNodeの選択 -->
         <div class="form-row" id="node-row-dItems">
             <label style="margin-right: 10px; vertical-align: middle;"
               for="node-input-dItems">i_Data items
@@ -156,6 +156,8 @@
       }
       if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) configReady = "";
       $("#node-input-configReady").val(configReady);
+
+console.log(configReady);
     }
   });
 

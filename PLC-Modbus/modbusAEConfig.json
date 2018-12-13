@@ -17,7 +17,7 @@
                 "A&ECode": "E201",
                 "A&EDescription": "インバータNo.3異常"
                 },
-              "options": {"deviceType": "coil", "source": "58", "logic": "positive"}
+              "options": {"deviceType": "Coil", "source": "58", "logic": "positive"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {
@@ -52,7 +52,7 @@
                 "A&ECode": "W401",
                 "A&EDescription": "インバータNo.3警報"
                 },
-              "options": {"deviceType": "coil", "source": "158", "logic": "positive"}
+              "options": {"deviceType": "Coil", "source": "158", "logic": "positive"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {

@@ -27,7 +27,7 @@ module.exports = function(RED) {
         var node = this;
         var AandEObjects = [{}];
         var storeObj;
-
+console.log("Hi");
         var mbCom = (RED.nodes.getNode(config.ModbusCom));
         if (config.confsel == "fileSet"){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
@@ -52,7 +52,7 @@ module.exports = function(RED) {
         }
         if (AandEObjects) {
             // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
-            var linkObj = {coil:[], inputStatus:[], inputRegister:[], holdingRegister:[]};
+            var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
             var address = "";
             AandEObjects.forEach(function(objItem, idx) {
 
@@ -62,10 +62,10 @@ module.exports = function(RED) {
                 linkData.address = options.source;
                 linkData.nodeId = node.id;
                 linkData.objectKey = objItem.objectKey;
-                if (options.deviceType == "Coil") linkObj.coil.push(linkData);
-                else if (options.deviceType == "IS") linkObj.inputStatus.push(linkData);
-                else if (options.deviceType == "IR") linkObj.inputRegister.push(linkData);
-                else if (options.deviceType == "HR") linkObj.holdingRegister.push(linkData);
+                if (options.deviceType == "Coil") linkObj.Coil.push(linkData);
+                else if (options.deviceType == "IS") linkObj.IS.push(linkData);
+                else if (options.deviceType == "IR") linkObj.IR.push(linkData);
+                else if (options.deviceType == "HR") linkObj.HR.push(linkData);
               });
             });
             //modbusCom nodeのデータ追加メソッドを呼ぶ

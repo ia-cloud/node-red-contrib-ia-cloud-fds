@@ -58,7 +58,7 @@
                     <div class="form-inline" style="vertical-align: middle;">
                         <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
                         <select id="bit-deviceType[0]" style="width: 50px;">
-                            <option selected="selected"　value="Coil">Coil</option>
+                            <option selected="selected" value="Coil">Coil</option>
                             <option value="IS">IS</option>
                         </select>
                         <input type="text" style="margin-right: 10px; width: 150px"
@@ -71,7 +71,7 @@
                         <input type="number" min="1" style="margin-right: 10px; width: 50px"
                             id="bit-num[0]" value="1">
                         <select style="width: 70px" id="bit-logic[0]">
-                            <option selected="selected"　value= "pos">正論理</option>
+                            <option selected="selected" value= "pos">正論理</option>
                             <option value= "neg">負論理</option>
                         </select>
                     </div>
@@ -99,20 +99,24 @@
                             </select>
                             <input type="text" style="width: 120px; margin-right: 10px;"
                                 id="number-src[0]">
+                            <select id="number-type[0]" style="width: 100px;">
+                                <option selected="selected" value="1w">1word</option>
+                                <option value="2w-b">2word-big</option>
+                                <option value="2w-l">2word-little</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-inline" style="vertical-align: middle;">
                             <label>i_データ型</label>
-                            <select id="number-type[0]" style="width: 100px;">
-                                <option selected="selected"　value="Word">ワード</option>
-                                <option value="dWord">倍ワード</option>
+                            <select id="number-encode[0]" style="width: 100px;">
+                                <option selected="selected" value="unsigned">符号なし</option>
+                                <option value="signed">符号付</option>
                                 <option value="BCD">BCD</option>
-                                <option value="dBCD">倍BCD</option>
                             </select>
                             <label style="width:50px; margin-left: 10px;">i_ゼロ</label>
                             <input type="number" style="width: 50px; margin-right: 10px;"
-                                id="numbe-offset[0]" value="0">
+                                id="number-offset[0]" value="0">
                             <label style="width:50px;">i_倍率</label>
                             <input type="number" style="width: 50px;"
                                 id="number-gain[0]" value="1">
@@ -129,7 +133,7 @@
                         <select id="string-encode[0]"
                             style="width: 100px; margin-right: 10px;">
                             <option value="sJIS">シフトJIS</option>
-                            <option selected="selected"　value="utf-8">UTF-8</option>
+                            <option selected="selected" value="utf-8">UTF-8</option>
                             <option value="EUC">EUC</option>
                         </select>
                     </div>
@@ -153,28 +157,37 @@
                     <div class="form-inline" style="vertical-align: middle;" >
                         <label>i_データ名称<span style="color: #ff0000;">*</span></label>
                         <input type="text" style="width: 150px" id="numList-dName[0]">
-                        <select id="numList-type[0]"
-                            style="width: 100px; margin-right: 10px;">
-                            <option selected="selected"　value="Word">ワード</option>
-                            <option value="dWord">倍ワード</option>
-                            <option value="BCD">BCD</option><
-                            option value="dBCD">倍BCD</option>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-inline" style="vertical-align: middle;">
+                        <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                        <select id="numList-deviceType[0]" style="width: 50px;">
+                            <option selected="selected" value="IR">IR</option>
+                            <option value="HR">HR</option>
+                        </select>
+                        <input type="text" style="width: 120px; margin-right: 10px;"
+                            id="numList-src[0]">
+                        <select id="numList-type[0]" style="width: 100px;">
+                            <option selected="selected" value="1w">1word</option>
+                            <option value="2w-b">2word-big</option>
+                            <option value="2w-l">2word-little</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-inline" style="vertical-align: middle;">
-                    <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
-                    <select id="numList-deviceType[0]" style="width: 50px;">
-                        <option selected="selected" value="IR">IR</option>
-                        <option value="HR">HR</option>
-                    </select>
-                    <input type="text" style="width: 80px; margin-right: 10px;"
-                        id="numList-src[0]">
-                    <label>i_ワード数<span style="color: #ff0000;">*</span></label>
-                    <input type="number" min="1"style="width: 50px; margin-right: 10px;"
-                        id="numList-num[0]">
+                <div class="form-row">
+                    <div class="form-inline" style="vertical-align: middle;">
+                        <label>i_ワード数<span style="color: #ff0000;">*</span></label>
+                        <input type="number" min="1"style="width: 50px; margin-right: 10px;"
+                            id="numList-num[0]">
+                        <select id="numList-encode[0]"
+                            style="width: 100px; margin-right: 10px;">
+                            <option selected="selected" value="unsigned">符号なし</option>
+                            <option value="signed">符号付</option>
+                            <option value="BCD">BCD</option>
+                        </select>
+                    </div>
                 </div>
-                <br>
             </div>
         </div>
     </div>
@@ -282,6 +295,7 @@
                 $("#number-src\\[" + idx + "\\]").val(value.options.source);
                 $("#number-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#number-type\\[" + idx + "\\]").val(value.options.type);
+                $("#number-encode\\[" + idx + "\\]").val(value.options.encode);
                 $("#number-offset\\[" + idx + "\\]").val(value.options.offset);
                 $("#number-gain\\[" + idx + "\\]").val(value.options.gain);
                 break;
@@ -298,6 +312,7 @@
                 $("#numList-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
                 $("#numList-num\\[" + idx + "\\]").val(value.options.number);
                 $("#numList-type\\[" + idx + "\\]").val(value.options.type);
+                $("#numList-encode\\[" + idx + "\\]").val(value.options.encode);
                 break;
           }
           var block = $('#form_block\\[' + idx + '\\]');
@@ -440,6 +455,7 @@
               item.options.deviceType = $("#number-deviceType\\[" + idx + "\\]").val();
               if (!item.options.deviceType) configReady = "";
               item.options.type = $("#number-type\\[" + idx + "\\]").val();
+              item.options.encode = $("#number-encode\\[" + idx + "\\]").val();
               item.options.offset = $("#number-offset\\[" + idx + "\\]").val();
               item.options.gain = $("#number-gain\\[" + idx + "\\]").val();
               break;
@@ -464,6 +480,7 @@
               item.options.number = $("#numList-num\\[" + idx + "\\]").val();
               if (!item.options.number) configReady = "";
               item.options.type = $("#numList-type\\[" + idx + "\\]").val();
+              item.options.encode = $("#numList-encode\\[" + idx + "\\]").val();
               break;
           }
         dItems[idx]=item;

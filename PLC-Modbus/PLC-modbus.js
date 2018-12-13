@@ -19,15 +19,17 @@ module.exports = function(RED) {
     var request = require("request");
     var moment = require("moment");
     var fs = require("fs");
+    const iconv = require("iconv-lite");
 
     function PLCModbus(config) {
 
         RED.nodes.createNode(this,config);
-
         var node = this;
         var dataObjects = [{}];
         var storeObj;
         var mbCom = RED.nodes.getNode(config.ModbusCom);
+        var minCycle = 10; // 最小収集周期を10秒に設定
+
         if (config.confsel == "fileSet"){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
           try{
@@ -51,13 +53,18 @@ module.exports = function(RED) {
           dataObjects[0].ObjectContent.contentType = dItemsNode.contentType;
           dataObjects[0].ObjectContent.contentData = dItemsNode.dItems;
         }
+console.log(dataObjects[0].ObjectContent.contentData);
+
         // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
         if (dataObjects) {
-            var linkObj = {coil:[], inputStatus:[], inputRegister:[], holdingRegister:[]};
+            var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
             var address = "";
             dataObjects.forEach(function(objItem, idx) {
               var objectKey = objItem.objectKey;
               var nodeId = (objItem.options.storeAsync)? node.id: "";
+              // 定期収集のためのカウンターをセット
+              objItem.options.timeCount = objItem.options.period;
+
               objItem.ObjectContent.contentData.forEach(function(dataItem, index) {
                 var options = dataItem.options;
                 switch(options.itemType) {
@@ -68,8 +75,8 @@ module.exports = function(RED) {
                       linkData.address =  Number(options.source) + i;
                       linkData.nodeId = nodeId;
                       linkData.objectKey = objectKey;
-                      if (options.deviceType == "Coil") linkObj.coil.push(linkData);
-                      else if (options.deviceType == "IS") linkObj.inputStatus.push(linkData);
+                      if (options.deviceType == "Coil") linkObj.Coil.push(linkData);
+                      else if (options.deviceType == "IS") linkObj.IS.push(linkData);
                     }
                     break;
                   case "number":
@@ -78,17 +85,17 @@ module.exports = function(RED) {
                     linkData.address = options.source;
                     linkData.nodeId = nodeId;
                     linkData.objectKey = objectKey;
-                    if (options.deviceType == "IR") linkObj.inputRegister.push(linkData);
-                    else if (options.deviceType == "HR") linkObj.holdingRegister.push(linkData);
+                    if (options.deviceType == "IR") linkObj.IR.push(linkData);
+                    else if (options.deviceType == "HR") linkObj.HR.push(linkData);
 
-                    if (options.type == "dWord" || options.type == "dBCD") {
+                    if (options.type == "2w-b" || options.type == "2w-l") {
                       var linkData = {address: "", value: "", preValue: ""
                           , nodeId: null, objectKey: ""};
-                      linkData.address = options.source + 1;
+                      linkData.address = Number(options.source) + 1;
                       linkData.nodeId = nodeId;
                       linkData.objectKey = objectKey;
-                      if (options.deviceType == "IR") linkObj.inputRegister.push(linkData);
-                      else if (options.deviceType == "HR") linkObj.holdingRegister.push(linkData);
+                      if (options.deviceType == "IR") linkObj.IR.push(linkData);
+                      else if (options.deviceType == "HR") linkObj.HR.push(linkData);
                     }
                     break;
                   case "string":
@@ -98,57 +105,172 @@ module.exports = function(RED) {
                       linkData.address = Number(options.source) + i;
                       linkData.nodeId = nodeId;
                       linkData.objectKey = objectKey;
-                      if (options.deviceType == "IR") linkObj.inputRegister.push(linkData);
-                      else if (options.deviceType == "HR") linkObj.holdingRegister.push(linkData);
+                      if (options.deviceType == "IR") linkObj.IR.push(linkData);
+                      else if (options.deviceType == "HR") linkObj.HR.push(linkData);
                     }
                     break;
                   case "numList":
-                    var wd;
-                    if (options.type == "dWord" || options.type == "dBCD") wd = 2;
-                    else wd = 1
+                    var wd = (options.type == "1w") ? 1: 2;
                     for (var i = 0, l = options.number * wd; i < l; i++) {
                       var linkData = {address: "", value: "", preValue: ""
                           , nodeId: null, objectKey: ""};
                       linkData.address = Number(options.source) + i;
                       linkData.nodeId = nodeId;
                       linkData.objectKey = objectKey;
-                      if (options.deviceType == "IR") linkObj.inputRegister.push(linkData);
-                      else if (options.deviceType == "HR") linkObj.holdingRegister.push(linkData);
+                      if (options.deviceType == "IR") linkObj.IR.push(linkData);
+                      else if (options.deviceType == "HR") linkObj.HR.push(linkData);
                     }
                     break;
                   default:
                   }
               });
             });
-
             //modbusCom nodeのデータ追加メソッドを呼ぶ
             mbCom.addLinkData(linkObj);
 
-            setInterval(function(){
-              //設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを生成、メッセージで送出
-              //いろいろな処理
-              //複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、オブジェクト生成、メッセージ出力を行う。
-              //this.send(storeObj);
-            }, 10 * 1000);
+            var sendObjectId = setInterval(function(){
+              // 設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを
+              // 生成しメッセージで送出
+              // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
+              // オブジェクト生成、メッセージ出力を行う。
+
+              dataObjects.forEach(function(objItem, idx) {
+                // 収集周期前であれば何もせず
+                objItem.options.timeCount = objItem.options.timeCount - minCycle;
+                if (objItem.options.timeCount > 0) return;
+                // 収集周期がきた。収集周期を再設定。
+                objItem.options.timeCount = objItem.options.storeInterval;
+                iaCloudObjectSend(objItem.objectKey);
+              });
+            }, (minCycle * 1000));
         }
 
+
+        PLCModbus.prototype.linkDatachangeListener = function (objectKeys) {
+console.log("modbus:changeLstenerが呼ばれた");
+          //登録したlinkObに変化があったら呼ばれる。
+          //そのlinkObjを参照するia-cloudオブエクトをstoreする。
+          objectKeys.forEach(function(key, idx) {
+            iaCloudObjectSend(key);
+          });
+        }
+
+        // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
+        var iaCloudObjectSend = function(objectKey) {
+
+          var msg = {request:{}, object:{ObjectContent:{}}};
+          var contentData = [];
+
+          var iaObject = dataObjects.find(function(objItem, idx) {
+            return (objItem.objectKey == objectKey);
+          });
+          msg.object.objectKey = objectKey;
+          msg.object.timestamp = moment().format();
+          msg.object.objectType = "iaCloudObject";
+          msg.object.objectDescription = iaObject.objectDescription;
+          msg.object.ObjectContent.contentType = iaObject.ObjectContent.contentType;
+          contentData = [];
+
+          iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
+            // 対象のデータアイテムのシャローコピーを作成
+            var dItem = Object.assign( {}, dataItem);
+            var options = dataItem.options;
+            delete dItem.options;
+            switch(options.itemType) {
+              case "bit":
+                var value = false;
+                dItem.dataValue = [];
+                for (var i = 0, l = options.number; i < l; i++) {
+                  var value = linkObj[options.deviceType].find(function(lData){
+                    return (lData.address == Number(options.source) + i);
+                  }).value;
+                  value = (value != "0") ? true: false;
+                  if (options.logic == "neg") value = !value;
+                  dItem.dataValue.push(value);
+                }
+                break;
+              case "number":
+                var value = "", uValue = "", lValue = "";
+                dItem.dataValue = 0;
+                if (options.type == "1w") {
+                  value = linkObj[options.deviceType]
+                      .find(function(lData){
+                        return (lData.address == Number(options.source));
+                      }).value.slice(-4);
+                } else {
+                  uValue = linkObj[options.deviceType].find(function(lData){
+                    return (lData.address == Number(options.source));
+                  }).value.slice(-4);
+                  lValue = linkObj[options.deviceType].find(function(lData){
+                    return (lData.address == Number(options.source) + 1);
+                  }).value.slice(-4);
+                  if (options.type == "2w-b") value = uValue + lValue;
+                  if (options.type == "2w-l") value = lValue + uValue;
+                }
+                if (options.encode == "signed") dItem.dataValue = -1 - ~parseInt(value, 16);
+                if (options.encode == "unsigned") dItem.dataValue = parseInt("0" + value, 16);
+                if (options.encode == "BCD") dItem.dataValue = parseInt(value, 10);
+                dItem.dataValue = dItem.dataValue * options.gain + Number(options.offset);
+                break;
+              case "string":
+                var value = "";
+                dItem.dataValue = [];
+                for (var i = 0, l = options.number; i < l; i++) {
+                  value = value + linkObj[options.deviceType]
+                      .find(function(lData){
+                        return (lData.address == Number(options.source) + i);
+                      }).value.slice(-4);
+                }
+                if (options.encode == "utf-8") {
+                  dItem.dataValue = Buffer.from(value, "hex").toString("utf-8");
+                }
+                else if (options.encode == "sJIS") {
+                  dItem.dataValue = iconv.decode(Buffer.from(value, "hex"), "shiftjis");
+                }
+                else if (options.encode == "EUC") {
+                  dItem.dataValue = iconv.decode(Buffer.from(value, "hex"), "eucjp");
+                }
+                break;
+
+              case "numList":
+                dItem.dataValue = [];
+                for (var i = 0, l = options.number; i < l; i++) {
+                  if (options.type == "1w") {
+                    value = linkObj[options.deviceType]
+                        .find(function(lData){
+                          return (lData.address == Number(options.source) + i);
+                        }).value.slice(-4);
+                  } else {
+                    uValue = linkObj[options.deviceType].find(function(lData){
+                        return (lData.address == Number(options.source) + 2 * i);
+                    }).value.slice(-4);
+                    lValue = linkObj[options.deviceType].find(function(lData){
+                        return (lData.address == Number(options.source) + 2 * i + 1);
+                    }).value.slice(-4);
+                    if (options.type == "2w-b") value = uValue + lValue;
+                    if (options.type == "2w-l") value = lValue + uValue;
+                  }
+                  if (options.encode == "signed") dItem.dataValue.push(-1 - ~parseInt(value, 16));
+                  if (options.encode == "unsigned") dItem.dataValue.push(parseInt("0" + value, 16));
+                  if (options.encode == "BCD") dItem.dataValue.push(parseInt(value, 10));
+                }
+                break;
+              default:
+              }
+console.log(dItem.dataValue);
+              contentData.push(dItem);
+          });
+          msg.object.ObjectContent.contentData = contentData;
+console.log(msg.object);
+          msg.request = "store";
+          node.send(msg);
+        }
         this.on("input",function(msg) {
           //何もしない
         });
-
         this.on("close",function() {
-
+          clearInterval(sendObjectId);
         });
-
-
-        PLCModbus.prototype.linkDatachangeListener = function (objectKey) {
-
-console.log("modbus:changeLstenerが呼ばれた");
-
-          //登録したlinkObに変化があったら呼ばれる。
-          //そのlinkObjを参照するia-cloudオブエクトをstoreする。
-
-        }
     }
 
     RED.nodes.registerType("PLC-Modbus",PLCModbus);

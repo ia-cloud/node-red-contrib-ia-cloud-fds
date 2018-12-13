@@ -24,7 +24,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         var node = this;
-        var linkObj = {coil:[], inputStatus:[], inputRegister:[], holdingRegister:[]};
+        var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
         var refreshCycle = config.refreshCycle;
         var maxDataNum = config.maxDataNum;
         var noBlanck = config.noBlanck;
@@ -74,23 +74,20 @@ module.exports = function(RED) {
                 }
               }
             });
-            //更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
-            // 変化通知を要求したNodeのリスナーをコール
-console.log(listeners);
+            // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
+            // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
             Object.keys(listeners).forEach(function(nodeId) {
               if (nodeId) {
                 var modbusNode = RED.nodes.getNode(nodeId);
-                listeners[nodeId].forEach(function(objectKey) {
-                  if (modbusNode) modbusNode.linkDatachangeListener(objectKey);
-                });
+                if (modbusNode) modbusNode.linkDatachangeListener(listeners[nodeId]);
               }
             });
-          }, refreshCycle);
+          }, refreshCycle * 100);
 
         }
         // modbus通信のコールバック関数
         // 通信のレスポンスフレームのデータでlinkObjのvalueを更新、
-        // さらに、変化イベントのリスナーが登録されていたらコール
+        // さらに、変化イベントのリスナーが登録されていたら、各Nodeのリストイに追加
         var storeToLinkObj = function(dev, start, num, list){
           for (var i = 0; i < num; i++) {
             var linkData = linkObj[dev].find(function(elm) {
@@ -101,7 +98,7 @@ console.log(listeners);
               var nodeId = linkData.nodeId;
               // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
               if(nodeId && linkData.preValue && linkData.value != linkData.preValue) {
-                // 要求元のModcus Object Nodeとオブジェクトキーを登録
+                // 要求元のModbus Object Nodeとオブジェクトキーを登録
                 // 重複の無いように
                 if (!listeners[nodeId]) listeners[nodeId] = [linkData.objectKey,];
                 else if (listeners[nodeId].indexOf(linkData.objectKey) == -1) {
@@ -121,29 +118,69 @@ console.log(listeners);
         modbusCom.prototype.addLinkData = function (lObj) {
 console.log("addlinkDataが呼ばれた");
           // linkObjに新たなリンクデータを追加
-          Array.prototype.push.apply(linkObj.coil, lObj.coil);
-          Array.prototype.push.apply(linkObj.inputStatus, lObj.inputStatus);
-          Array.prototype.push.apply(linkObj.inputRegister, lObj.inputRegister);
-          Array.prototype.push.apply(linkObj.holdingRegister, lObj.holdingRegister);
+          Array.prototype.push.apply(linkObj.Coil, lObj.Coil);
+          Array.prototype.push.apply(linkObj.IS, lObj.IS);
+          Array.prototype.push.apply(linkObj.IR, lObj.IR);
+          Array.prototype.push.apply(linkObj.HR, lObj.HR);
+        }
+
+var gContext = this.context().global;
+var list1 = [123,234,345,-456,567,-678,789,-3450,4561,5672];
+var list2 = [1,1,0,0,1,1,1,0,0,0];
+var list3 = ["0x4142","0x4344","0x4546","0x4a4b","0x4c4d","0x3a3c","0x7273","0x6b6e","0x2f32","0x5100"];
+var list4 = ["0x0291","0x0032","0x4546","0x9529","0x2893","0x8166","0x7545","0x9001","0x1337","0x5161"];
+gContext.set("list1", list1);
+gContext.set("list2", list2);
+gContext.set("list3", list4);
+gContext.set("list4", list4);
+        var modbusRead = function(dev, start, number, callback) {
+          var fcode;
+          switch(dev) {
+            case "Coil" : fcode = 1;   break;
+            case "IS" : fcode = 2;   break;
+            case "HR" : fcode = 3;   break;
+            case "IR" : fcode = 4;   break;
+          }
+          // プロパティを基に、modbus通信（TCP,RTU,ASCIIのいずれか）を実施
+          // modbus通信で取得したデータは、ビットデバイスは、"1" or "0"（文字列表現）、
+          // ワードデバイスは、2桁16進文字列表現で（例："2b" "fc" "e3"）、
+          // 以下のコールバック関数のlist引数で返される。
+          // 以下はダミーデータ
+
+list1 = gContext.get("list1");
+list2 = gContext.get("list2");
+
+var top1 = list1[0];
+var top2 = list2[0];
+var top3 = list3[0];
+var top4 = list4[0];
+list1.shift();
+list1.push(top1);
+list2.shift();
+list2.push(top2);
+list3.shift();
+list3.push(top3);
+list4.shift();
+list4.push(top4);
+gContext.set("list1", list1);
+gContext.set("list2", list2);
+gContext.set("list3", list3);
+gContext.set("list4", list4);
+number = 10;
+var list = [];
+// bit のテストデータ
+// for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
+// number、nnumListのテストデータ
+// for (var i = 0; i < number; i++) {list.push("0x" + ("0000" + (list1[i] >>> 0).toString(16)).slice(-4));}
+// stringのテストデータ
+ list = list3;
+// BCDのテストデータ
+// list = list4;
+console.log(list);
+callback(dev, start, number, list);
         }
     }
 
     RED.nodes.registerType("Modbus-com",modbusCom);
 
-
-    var modbusRead = function(dev, start, number, callback) {
-      var fcode;
-      switch(dev) {
-        case "coil" : fcode = 1;   break;
-        case "inputStatus" : fcode = 2;   break;
-        case "holdingRegister" : fcode = 3;   break;
-        case "inputRegister" : fcode = 4;   break;
-      }
-      // プロパティを基に、modbus通信（TCP,RTU,ASCIIのいずれか）を実施
-      // 以下はダミーデータ
-      var list = [moment().seconds(),2,3,moment().seconds(),5,6,7,8,9,10];
-      number = 10;
-
-      callback(dev, start, number, list);
-    }
 }

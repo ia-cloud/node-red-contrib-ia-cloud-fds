@@ -14,7 +14,7 @@
         				"dataName": "装置I稼働",
         				"options": {
                     "itemType": "bit",
-                    "deviceType": "coil",
+                    "deviceType": "Coil",
           					"source":123,
           					"number": 1,
           					"logic": "pos"
@@ -23,7 +23,7 @@
                   "dataName": "装置II稼働",
           				"options": {
                       "itemType": "bit",
-                      "deviceType": "coil",
+                      "deviceType": "Coil",
             					"source":124,
             					"number": 1,
             					"logic": "neg"
@@ -52,45 +52,49 @@
     				"contentType": "iaCloudData",
     				"contentData": [{
         				"dataName": "装置消費電流",
-                "unint": "A",
+                "unit": "A",
                 "options": {
                     "itemType": "number",
                     "deviceType": "IR",
                     "source":213,
-                    "type": "Word",
+                    "type": "1w",
+                    "encode": "unsigned",
                     "offset": 0,
                     "gain": 1
                 }
         			},{
                 "dataName": "電気炉内部温度",
-                "unint": "°C",
+                "unit": "°C",
                 "options": {
                     "itemType": "number",
                     "deviceType": "IR",
                     "source":213,
-                    "type": "BCD",
+                    "type": "1w",
+                    "encode": "BCD",
                     "offset": 30,
                     "gain": 1.3
                 }
         			},{
                 "dataName": "ソレノイド動作回数",
-                "unint": "",
+                "unit": "",
                 "options": {
                     "itemType": "number",
                     "deviceType": "HR",
                     "source":488,
-                    "type": "dBCD",
+                    "type": "2w-l",
+                    "encode": "BCD",
                     "offset": 0,
                     "gain": 1
                 }
         			},{
                 "dataName": "生産個数",
-                "unint": "",
+                "unit": "",
                 "options": {
                     "itemType": "number",
                     "deviceType": "IR",
                     "source":220,
-                    "type": "dWord",
+                    "type": "2w-b",
+                    "encode": "unsigned",
                     "offset": 0,
                     "gain": 1
                 }
@@ -131,12 +135,13 @@
     				"contentType": "iaCloudData",
     				"contentData": [{
               "dataName": "装置消費電流",
-              "unint": "A",
+              "unit": "A",
               "options": {
                   "itemType": "number",
                   "deviceType": "IR",
                   "source":213,
-                  "type": "Word",
+                  "type": "1w",
+                  "encode": "unsigned",
                   "offset": 0,
                   "gain": 1
               }
@@ -144,20 +149,21 @@
               "dataName": "装置II稼働",
               "options": {
                   "itemType": "bit",
-                  "deviceType": "coil",
+                  "deviceType": "Coil",
                   "source":124,
                   "number": 1,
                   "logic": "neg"
               }
             },{
               "dataName": "温度トレンド",
-              "unint": "",
+              "unit": "",
               "options": {
                   "itemType": "numList",
                   "deviceType": "HR",
                   "source":488,
                   "number": 256,
-                  "type": "Word"
+                  "type": "2w",
+                  "encode": "signed"
               }
       			},{
               "dataName": "実行中作業名",
