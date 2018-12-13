@@ -13,7 +13,7 @@
             "PLC-Modbus": "PLC-Modbus.js",
             "PLC-Modbus-AE": "PLC-Modbus-AE.js",
             "Modbus-dItems": "Modbus-dItems.js",
-            "Modbus-AandE": "Modbus-AandE.js",
+            "Modbus-AnE": "Modbus-AnE.js",
             "Modbus-com": "Modbus-com.js"
         }
     }

@@ -19,16 +19,16 @@ module.exports = function(RED) {
     var request = require("request");
     var moment = require("moment");
 
-    function modbusAandE(config) {
+    function modbusAnE(config) {
 
         RED.nodes.createNode(this,config);
 
         var node = this;
         var confObj = config.configObject;
         this.contentType = config.contentType;
-        this.AandE = {};
+        this.AnE = {};
         if (confObj) {
-          try { this.AandE = JSON.parse(confObj); }
+          try { this.AnE = JSON.parse(confObj); }
           catch(e) {
             // nodeのエラーを通知してして終了
             node.error("JSON parse error on parsing dataItem object", e);
@@ -40,5 +40,5 @@ module.exports = function(RED) {
         this.on("input",function(msg) {});
         this.on("close",function() {});
     }
-    RED.nodes.registerType("Modbus-AandE",modbusAandE);
+    RED.nodes.registerType("Modbus-AnE",modbusAnE);
 }

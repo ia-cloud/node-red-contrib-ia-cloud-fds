@@ -45,7 +45,7 @@
     		"objectType": "iaCloudObject",
     		"objectDescription": "modbusのワード系データ",
     		"options":{
-          "period": 300,
+          "storeInterval": 300,
           "storeAsync": true
     		},
     		"ObjectContent": {
@@ -106,7 +106,7 @@
     		"objectType": "iaCloudObject",
     		"objectDescription": "modbusの文字列データ",
     		"options":{
-          "period": 100,
+          "storeInterval": 100,
           "storeAsync": false
     		},
     		"ObjectContent": {
@@ -128,7 +128,7 @@
     		"objectType": "iaCloudObject",
     		"objectDescription": "modbusのいろいろ混合データ",
     		"options":{
-          "period": 30,
+          "storeInterval": 30,
           "storeAsync": false
     		},
     		"ObjectContent": {

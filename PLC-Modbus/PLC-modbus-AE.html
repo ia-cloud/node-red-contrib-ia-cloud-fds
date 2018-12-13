@@ -38,6 +38,13 @@
     <!-- object propertyの設定 -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
+            <label style="margin-right: 10px;" for="node-input-storeInterval">
+                i_収集周期</label>
+            <input type="number" min="10" style="display: inline-block; width: auto;" id="node-input-storeInterval">
+            <label for="node-input-storeAsync" style="margin-left: 20px;">i_非同期収集</label>
+            <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;" disabled='disabled'>
+        </div>
+        <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-objectName">
                 i_Objectname</label>
             <input type="text" style="width: 300px" id="node-input-objectName">
@@ -56,12 +63,12 @@
         </div>
 
         <!-- contentData Item の設定ーA&E情報Nodeの選択 -->
-        <div class="form-row" id="node-row-AandE">
+        <div class="form-row" id="node-row-AnE">
             <label style="margin-right: 10px; vertical-align: middle;"
-                for="node-input-AandE">i_A&E情報
+                for="node-input-AnE">i_A&E情報
                 <span style="color: #ff0000;">*</span>
               </label>
-            <input type="text" style="width: 300px" id="node-input-AandE">
+            <input type="text" style="width: 300px" id="node-input-AnE">
         </div>
     </div>
 <hr>
@@ -105,10 +112,12 @@
         name: {value:"PLCModbusAE"},
         confsel: {value:"propertySet"},
         configfile: {value:"", required: false},
+        storeInterval: {value:"10"},
+        storeAsync: {value: true},
         objectName: {value:""},
         objectKey: {value:""},
         objectDescription: {value:""},
-        AandE: {value:"", type:"Modbus-AandE", required: true},
+        AnE: {value:"", type:"Modbus-AnE", required: true},
         ModbusCom: {value:"", type:"Modbus-com", required: true},
         objectConfig: {value: "", required: true}
     },

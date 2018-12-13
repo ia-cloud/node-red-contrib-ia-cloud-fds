@@ -11,7 +11,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="Modbus-AandE">
+<script type="text/x-red" data-template-name="Modbus-AnE">
 
     <div class="form-row">
         <label for="node-config-input-name">
@@ -57,11 +57,11 @@
           </div>
           <div class="form-row">
               <label>i_A&Eコード</label>
-              <input type="text" style="width: 100px;" id="AandECode[0]">
+              <input type="text" style="width: 100px;" id="AnECode[0]">
           </div>
           <div class="form-row">
               <label>i_A&Eの説明</label>
-              <textarea style="width: 300px" id="AandEdescription[0]" rows="2"></textarea>
+              <textarea style="width: 300px" id="AnEdescription[0]" rows="2"></textarea>
           </div>
           <br>
       </div>
@@ -73,7 +73,7 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="Modbus-AandE">
+<script type="text/x-red" data-help-name="Modbus-AnE">
     <p>preparing ia-cloud objects for store to CCS</p>
 
 <h3>Inputs</h3>
@@ -94,16 +94,16 @@
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('Modbus-AandE',{
+  RED.nodes.registerType('Modbus-AnE',{
       category: 'config',
       defaults: {
-          name: {value:"modbusA&E"},
+          name: {value:"modbusAnE"},
           contentType: {value:"Alarm&Event", required: true},
           configObject:{value:"", required: true },
           configReady:{value:"", required: true }
       },
       label: function() {
-          return this.name||this._("Modbus-A&E");
+          return this.name||this._("Modbus-AnE");
       },
       oneditprepare: function() {
         var frm_cnt = 0;
@@ -154,8 +154,8 @@
           $("#deviceType\\[" + idx + "\\]").val(value.options.deviceType);
           $("#source\\[" + idx + "\\]").val(value.options.source);
           $("#logic\\[" + idx + "\\]").val(value.options.logic);
-          $("#AandECode\\[" + idx + "\\]").val(value.dataValue.AandECode);
-          $("#AandEdescription\\[" + idx + "\\]").val(value.dataValue.AandEdescription);
+          $("#AnECode\\[" + idx + "\\]").val(value.dataValue.AnECode);
+          $("#AnEdescription\\[" + idx + "\\]").val(value.dataValue.AnEdescription);
 
           var block = $('#form_block\\[' + idx + '\\]');
           if (idx != 0) block.find('input[name="del_btn"]').show();
@@ -250,8 +250,8 @@
               item.options.source = $("#source\\[" + idx + "\\]").val();
               if (!item.options.source) configReady = "";
               item.options.logic = $("#logic\\[" + idx + "\\]").val();
-              item.dataValue.AandECode = $("#AandECode\\[" + idx + "\\]").val();
-              item.dataValue.AandEdescription = $("#AandEdescription\\[" + idx + "\\]").val();
+              item.dataValue.AnECode = $("#AnECode\\[" + idx + "\\]").val();
+              item.dataValue.AnEdescription = $("#AnEdescription\\[" + idx + "\\]").val();
 
               dItems[idx]=item;
           });

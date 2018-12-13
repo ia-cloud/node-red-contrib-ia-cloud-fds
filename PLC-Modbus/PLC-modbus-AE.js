@@ -25,15 +25,16 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         var node = this;
-        var AandEObjects = [{}];
+        var AnEObjects = [{}];
         var storeObj;
-console.log("Hi");
         var mbCom = (RED.nodes.getNode(config.ModbusCom));
+        var minCycle = 10; // 最小収集周期を10秒に設定
+
         if (config.confsel == "fileSet"){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
           try{
-            AandEObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
-              .AandEObjects;
+            AnEObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
+              .AnEObjects;
           } catch(e) {
             //エラーの場合は、nodeステータスを変更。
             node.status({fill:"red",shape:"ring",text:"bad file path !"});
@@ -42,20 +43,24 @@ console.log("Hi");
           }
         } else {
           // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
-          var AandENode = (RED.nodes.getNode(config.AandE));
-          AandEObjects = [{ObjectContent:{}}];
-          AandEObjects[0].objectName = config.objectName;
-          AandEObjects[0].objectKey = config.objectKey;
-          AandEObjects[0].objectDescription = config.objectDescription;
-          AandEObjects[0].ObjectContent.contentType = AandENode.contentType;
-          AandEObjects[0].ObjectContent.contentData = AandENode.AandE;
+          var AnENode = (RED.nodes.getNode(config.AnE));
+          AnEObjects = [{options:{}, ObjectContent:{}}];
+          AnEObjects[0].options.storeInterval = config.storeInterval;
+          AnEObjects[0].options.storeAsync = config.storeAsync;
+          AnEObjects[0].objectName = config.objectName;
+          AnEObjects[0].objectKey = config.objectKey;
+          AnEObjects[0].objectDescription = config.objectDescription;
+          AnEObjects[0].ObjectContent.contentType = AnENode.contentType;
+          AnEObjects[0].ObjectContent.contentData = AnENode.AnE;
         }
-        if (AandEObjects) {
+console.log(AnEObjects);
+        if (AnEObjects) {
             // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
             var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
             var address = "";
-            AandEObjects.forEach(function(objItem, idx) {
-
+            AnEObjects.forEach(function(objItem, idx) {
+              // 定期収集のためのカウンターをセット
+              objItem.options.timeCount = objItem.options.storeInterval;
               objItem.ObjectContent.contentData.forEach(function(dataItem, index) {
                 var options = dataItem.options;
                 var linkData = {};
@@ -70,6 +75,80 @@ console.log("Hi");
             });
             //modbusCom nodeのデータ追加メソッドを呼ぶ
             mbCom.addLinkData(linkObj);
+
+            var sendObjectId = setInterval(function(){
+              // 設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを
+              // 生成しメッセージで送出
+              // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
+              // オブジェクト生成、メッセージ出力を行う。
+
+              AnEObjects.forEach(function(objItem, idx) {
+                // 収集周期前であれば何もせず
+                objItem.options.timeCount = objItem.options.timeCount - minCycle;
+                if (objItem.options.timeCount > 0) return;
+                // 収集周期がきた。収集周期を再設定。
+                objItem.options.timeCount = objItem.options.storeInterval;
+                iaCloudObjectSend(objItem.objectKey);
+              });
+            }, (minCycle * 1000));
+        }
+
+        PLCModbusAE.prototype.linkDatachangeListener = function (objectKeys) {
+console.log("modbusAE:changeLstenerが呼ばれた");
+          //登録したlinkObに変化があったら呼ばれる。
+          //そのlinkObjを参照するia-cloudオブエクトをstoreする。
+          objectKeys.forEach(function(key, idx) {
+            iaCloudObjectSend(key);
+          });
+        }
+
+        // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
+        var iaCloudObjectSend = function(objectKey) {
+
+          var msg = {request:{}, object:{ObjectContent:{}}};
+          var contentData = [];
+
+          var iaObject = AnEObjects.find(function(objItem, idx) {
+            return (objItem.objectKey == objectKey);
+          });
+          msg.object.objectKey = objectKey;
+          msg.object.timestamp = moment().format();
+          msg.object.objectType = "iaCloudObject";
+          msg.object.objectDescription = iaObject.objectDescription;
+          msg.object.ObjectContent.contentType = "Alarm&Event";
+          contentData = [];
+//
+          iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
+              // 対象のデータアイテムのシャローコピーを作成
+              var dItem = Object.assign( {}, dataItem);
+              var options = dataItem.options;
+              delete dItem.options;
+              dItem.dataValue.AnEStatus = "";
+
+              var value = linkObj[options.deviceType].find(function(lData){
+                return (lData.address == Number(options.source));
+              }).value;
+              var preValue = linkObj[options.deviceType].find(function(lData){
+                return (lData.address == Number(options.source));
+              }).preValue;
+              value = (value == "1") ? true: false;
+              preValue = (preValue == "1") ? true: false;
+console.log(preValue);
+console.log(value);
+              if (options.logic == "neg") {
+                value = !value;
+                preValue = !preValue;
+              }
+              if (value) {dItem.dataValue.AnEStatus = (preValue)? "on": "set";}
+              else {dItem.dataValue.AnEStatus = (!preValue)? "off": "reset";}
+console.log(dItem.dataValue);
+            contentData.push(dItem);
+          });
+
+          msg.object.ObjectContent.contentData = contentData;
+console.log(msg.object);
+          msg.request = "store";
+          node.send(msg);
         }
 
         this.on("input",function(msg) {
@@ -78,15 +157,6 @@ console.log("Hi");
         this.on("close",function() {
           //何もしない
         });
-
-        PLCModbusAE.prototype.linkDatachangeListener = function (objectKey) {
-
-console.log("modbusAE:changeLstenerが呼ばれた");
-
-          //登録したlinkObに変化があったら呼ばれる。
-          //そのlinkObjを参照するia-cloudオブエクトをstoreする。
-
-        }
     }
 
     RED.nodes.registerType("PLC-Modbus-AE",PLCModbusAE);

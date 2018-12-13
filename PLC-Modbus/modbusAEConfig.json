@@ -1,7 +1,7 @@
 {
   	"name": "modbusAEConfig.json",
   	"comment": "modbus ia-cloud A&E object configration data for test.",
-    "AandEObjects":
+    "AnEObjects":
       [{
         "name": "アラームブロック1",
     		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
@@ -13,27 +13,27 @@
               {
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "E201",
-                "A&EDescription": "インバータNo.3異常"
-                },
-              "options": {"deviceType": "Coil", "source": "58", "logic": "positive"}
+                "AnEStatus": "",
+                "AnECode": "E201",
+                "AnEDescription": "インバータNo.3異常"
+              },
+              "options": {"deviceType": "Coil", "source": "58", "logic": "pos"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "E202",
-                "A&EDescription": "インバータNo.5異常"
-                },
-              "options": {"deviceType": "IS", "source": "152", "logic": "negative"}
+                "AnEStatus": "",
+                "AnECode": "E202",
+                "AnEDescription": "インバータNo.5異常"
+              },
+              "options": {"deviceType": "IS", "source": "152", "logic": "neg"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "E887",
-                "A&EDescription": "異常温度上昇"
-                },
-              "options": {"deviceType": "IS", "source": "552", "logic": "negative"}
+                "AnEStatus": "",
+                "AnECode": "E887",
+                "AnEDescription": "異常温度上昇"
+              },
+              "options": {"deviceType": "IS", "source": "552", "logic": "neg"}
               }
             ]
         }
@@ -48,27 +48,27 @@
               {
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "W401",
-                "A&EDescription": "インバータNo.3警報"
+                "AnEStatus": "",
+                "AnECode": "W401",
+                "AnEDescription": "インバータNo.3警報"
                 },
-              "options": {"deviceType": "Coil", "source": "158", "logic": "positive"}
+              "options": {"deviceType": "Coil", "source": "158", "logic": "pos"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "W402",
-                "A&EDescription": "インバータNo.5警報"
+                "AnEStatus": "",
+                "AnECode": "W402",
+                "AnEDescription": "インバータNo.5警報"
                 },
-              "options": {"deviceType": "IS", "source": "252", "logic": "negative"}
+              "options": {"deviceType": "IS", "source": "252", "logic": "neg"}
               },{
               "commonName":"Alarm&Event",
               "dataValue": {
-                "A&EStatus": "",
-                "A&ECode": "W1087",
-                "A&EDescription": "温度上昇警報"
+                "AnEStatus": "",
+                "AnECode": "W1087",
+                "AnEDescription": "温度上昇警報"
                 },
-              "options": {"deviceType": "IS", "source": "652", "logic": "negative"}
+              "options": {"deviceType": "IS", "source": "652", "logic": "neg"}
               }
             ]
         }

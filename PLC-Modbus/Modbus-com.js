@@ -127,7 +127,12 @@ console.log("addlinkDataが呼ばれた");
 var gContext = this.context().global;
 var list1 = [123,234,345,-456,567,-678,789,-3450,4561,5672];
 var list2 = [1,1,0,0,1,1,1,0,0,0];
-var list3 = ["0x4142","0x4344","0x4546","0x4a4b","0x4c4d","0x3a3c","0x7273","0x6b6e","0x2f32","0x5100"];
+// utf-8
+ var list3 = ["0xE381","0x93E3","0x828C","0xE381","0xAFE3","0x8386","0xE382","0xB9E3","0x8388","0x0000"];
+// shiftjis
+// var list3 = ["0x82B1","0x82EA","0x82CD","0x8365","0x8358","0x8367","0x82C5","0x82B7","0x8142","0x0000"];
+// eucjP
+// var list3 = ["0xA4B3","0xA4EC","0xA4CF","0xA5C6","0xA5B9","0xA5C8","0xA4C7","0xA4B9","0xA1A3","0x0000"];
 var list4 = ["0x0291","0x0032","0x4546","0x9529","0x2893","0x8166","0x7545","0x9001","0x1337","0x5161"];
 gContext.set("list1", list1);
 gContext.set("list2", list2);
@@ -169,11 +174,11 @@ gContext.set("list4", list4);
 number = 10;
 var list = [];
 // bit のテストデータ
-// for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
+ for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
 // number、nnumListのテストデータ
 // for (var i = 0; i < number; i++) {list.push("0x" + ("0000" + (list1[i] >>> 0).toString(16)).slice(-4));}
 // stringのテストデータ
- list = list3;
+// list = list3;
 // BCDのテストデータ
 // list = list4;
 console.log(list);

@@ -63,7 +63,7 @@ console.log(dataObjects[0].ObjectContent.contentData);
               var objectKey = objItem.objectKey;
               var nodeId = (objItem.options.storeAsync)? node.id: "";
               // 定期収集のためのカウンターをセット
-              objItem.options.timeCount = objItem.options.period;
+              objItem.options.timeCount = objItem.options.storeInterval;
 
               objItem.ObjectContent.contentData.forEach(function(dataItem, index) {
                 var options = dataItem.options;
