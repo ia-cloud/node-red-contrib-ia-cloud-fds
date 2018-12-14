@@ -1,15 +1,15 @@
 <script type="text/x-red" data-template-name="EnOcean-com">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
-    <div class="form-row node-input-serial">
-        <label for="node-input-serial"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
-        <input type="text" id="node-input-serial">
+    <div class="form-row node-config-input-serial">
+        <label for="node-config-input-serial"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
+        <input type="text" id="node-config-input-serial">
     </div>
     <div class="form-row">
-        <label for="node-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
-        <input type="text" id="node-input-linkdataobj">
+        <label for="node-config-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
+        <input type="text" id="node-config-input-linkdataobj">
     </div>
 </script>
 
@@ -25,22 +25,15 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('EnOcean-com',{
-        category: 'iaCloud',
+        category: 'config',
         defaults: {
             name: {name:""},
             serial: {type:"serial-port",required:true},
             linkdataobj: {type:"link-data-object", required:true, value:""}
         },
-        color:"#3FADB5",
-        inputs:0,
-        outputs:1,
-        icon: "bridge.png",
         label: function() {
             var serialNode = RED.nodes.node(this.serial);
             return this.name||(serialNode?serialNode.label().split(":")[0]:this._("serial.label.serial"));
-        },
-        labelStyle: function() {
-            return this.name?"node_label_italic":"";
         }
     });
 </script>
@@ -62,13 +55,42 @@
         <label for="node-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
         <input type="text" id="node-input-sensor_id" data-i18n="serial.label.sensor_id">
     </div>
+
     <div class="form-row">
-        <label for="node-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
-        <input type="text" id="node-input-linkdataobj">
+      <input type="text" style="display: none;" id="node-input-confsel" value="propertySet">
+      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
+            name="configSel" id="node-input-configSel1"
+            value="propertySet" checked="checked">
+      <label style="width: 40%;" for="node-input-configSel1"> オブジェクト設定</label>
+      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
+            name="configSel" id="node-input-configSel2" value="fileSet">
+      <label style="width: 40%;" for="node-input-configSel2"> 設定ファイル</label>
     </div>
-    <div class="form-row">
-        <label for="node-input-collectdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.collectDataObjName"></span></label>
-        <input type="text" id="node-input-collectdataobj">
+<br>
+    <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
+        <label>i_設定ファイル名を入力してください<span style="color: #ff0000;">*</span></label>
+        <input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">
+    </div>
+
+    <!-- object propertyの設定 -->
+    <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
+        <div class="form-row">
+            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.object_key"></span></label>
+            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.object_key">
+        </div>
+        <div class="form-row">
+            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
+            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
+        </div>
+        <div class="form-row">
+            <label for="node-input-enoceandataitem"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
+            <input type="text" id="node-input-enoceandataitem">
+        </div>
+<hr>
+        <div class="form-row">
+            <label for="node-input-enoceancom"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanCom"></span></label>
+            <input type="text" id="node-input-enoceancom">
+        </div>
     </div>
 </script>
 
@@ -83,8 +105,12 @@
             name: {name:""},
             sensor_kind: {value:"ur-d", required:true},
             sensor_id: {value:"", required:true},
-            linkdataobj: {type:"link-data-object", required:true, value:""},
-            collectdataobj: {type:"collect-data-object", required:true, value:""}
+            confsel: {value:"propertySet"},
+            configfile: {value:"", required: false},
+            object_key: {value:""},
+            object_desc: {value:""},
+            enoceancom: {type:"EnOcean-com", required:true, value:""},
+            enoceandataitem: {type:"EnOcean-dItems", required:true, value:""}
         },
         color:"#C7E9C0",
         inputs:1,
@@ -95,68 +121,245 @@
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+          $('input[name="configSel"]:radio').change(function() {
+            if ($("#node-input-configSel1").is(":checked")) {
+                $("#node-row-propertySet").show();
+                $("#node-row-fileSet").hide();
+                $('#node-input-confsel').val("propertySet");
+            } else {
+                $("#node-row-fileSet").show();
+                $("#node-row-propertySet").hide();
+                $('#node-input-confsel').val("fileSet");
+            }
+          });
+          if($("#node-input-confsel").val() == "propertySet"){
+              $('#node-input-configSel1').prop('checked', true);
+          } else {
+              $('#node-input-configSel2').prop('checked', true);
+          }
+          $('input[name="configSel"]:radio').change();
+        },
+
+        oneditsave: function() {
+          var objectConfig = "ready";
+          if ($("#node-input-confsel").val() == "propertySet") {
+             if (!$("#node-input-objectKey").val()) objectConfig = "";
+          }
+          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) objectConfig = "";
+          $("#node-input-objectConfig").val(objectConfig);
         }
     });
 </script>
 
-<!-- collect-data-object Config Node の記述 -->
-<script type="text/x-red" data-template-name="collect-data-object">
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/x-red" data-template-name="EnOcean-dItems">
     <div class="form-row">
-        <label for="node-config-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="collect.label.object_key"></span></label>
-        <input type="text" id="node-config-input-object_key" data-i18n="collect.label.name">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
-    <div class="form-row">
-        <label for="node-config-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="collect.label.object_desc"></span></label>
-        <input type="text" id="node-config-input-object_desc" data-i18n="collect.label.object_desc">
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
     </div>
-    <div class="form-row">
-        <table width="100%">
-        <tr id="entry_1">
-            <td>
-                <label for="node-config-input-dataname_1"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
-                <input type="text" id="node-config-input-dataname_1">
-            </td>
-        </tr>
-        <tr id="entry_2">
-            <td>
-                <label for="node-config-input-dataname_2"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
-                <input type="text" id="node-config-input-dataname_2">
-            </td>
-        </tr>
-        <tr id="entry_3">
-            <td>
-                <label for="node-config-input-dataname_3"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
-                <input type="text" id="node-config-input-dataname_3">
-            </td>
-        </tr>
-        <tr id="entry_4">
-            <td>
-                <label for="node-config-input-dataname_4"><i class="fa fa-tag"></i> <span data-i18n="collect.label.dataname"></span></label>
-                <input type="text" id="node-config-input-dataname_4">
-            </td>
-        </tr>
-        </table>
+    <div id="blocks">
+        <div class="form-block" id="form_block[0]">
+            <div class="form-row">
+                <div class="form-inline" id="from_del[0]" >
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem[0]" style="width: 30px;" value="1" disabled="disabled">
+                    <input type="button" name="del_btn" value="削除"
+                        style="margin-left: 30px; width: 70px; display: none;">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="dataname[0]">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <select id="unitType[0]" style="width: 100px;">
+                      <option selected="selected" value="degree Celsius">℃</option>
+                      <option value="ampere">A</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+    <div class="form-block">
+      <input type="button" id="form_add" name="add_btn" value="追加">
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="collect-data-object" charset="utf-8">
+<script type="text/x-red" data-help-name="EnOcean-dItems" charset="utf-8">
     <p>ia-cloudオブジェクトの情報を設定するノードです。ここでクラウドに通知する必要な情報を設定します。</p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('collect-data-object',{
+    RED.nodes.registerType('EnOcean-dItems',{
         category: 'config',
         defaults: {
-            object_key: {value:""},
-            object_desc: {value:""},
-            dataname_1: {value:""},
-            dataname_2: {value:""},
-            dataname_3: {value:""},
-            dataname_4: {value:""}
+            name: {name:""},
+            configObject: {value:""}
         },
         label: function() {
-            return this.object_key||("CollectDataObject");
+            return this.name||("EnOcean Data Item");
+        },
+      oneditprepare: function() {
+        var frm_cnt = 0;
+        //あれば設定データを取り出して、formに展開する。
+        var conf = $("#node-config-input-configObject").val();
+        if (conf) {
+          var dItems = {};
+          try { dItems = JSON.parse(conf); }
+          catch(e) { conf = "";}
         }
+        if(conf != ""){
+          //設定データがあった
+          var dItems = JSON.parse(conf);
+          //フォームを一つ保存
+          var original = $('#form_block\\[0\\]');
+
+          //一旦フォームオブジェクトをすべて削除
+          $(".form-block[id^='form_block']")
+              .each(function(index, formObj) {$(formObj).remove();});
+
+          dItems.forEach(function(value, idx){
+            original
+            .clone()
+            .hide()
+            .appendTo("#blocks")
+            .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
+            .end() // 一度適用する
+            .find('div, input, textarea, select, label').each(function(index, obj) {
+              if ($(obj).attr('id') != null) {
+                if($(obj).attr("id").substr(0,5) == "dItem"){
+                    $(obj).val("" + (idx + 1));
+                }
+                $(obj).attr({
+                  id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+              if ($(obj).attr('name') != null) {
+                $(obj).attr({
+                    name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                 });
+              }
+              if ($(obj).attr('for') != null) {
+                $(obj).attr({
+                    for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+          });
+          $("#dataname\\[" + idx + "\\]").val(value.options.dataname);
+          $("#unitType\\[" + idx + "\\]").val(value.options.unitType);
+          
+          var block = $('#form_block\\[' + idx + '\\]');
+          if (idx != 0) block.find('input[name="del_btn"]').show();
+          block.slideDown('slow');
+          frm_cnt = idx;
+          });
+        }
+
+        //追加ボタンが押されたら
+        $("#form_add").off("click");
+        $("#form_add").on("click", function() {
+
+          var original = $('#form_block\\[' + frm_cnt + '\\]');
+          frm_cnt++;
+          original
+          .clone()
+          .hide()
+          .insertAfter(original)
+          .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
+          var clone = $('#form_block\\[' + frm_cnt + '\\]');
+          clone.find('div, input, textarea, select, label').each(function(idx, obj) {
+            if ($(obj).attr('id') != null) {
+              if($(obj).attr("id").substr(0,5) == "dItem"){
+                  $(obj).val("" + (frm_cnt + 1));
+              }
+              $(obj).attr({
+                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+            if ($(obj).attr('name') != null) {
+              $(obj).attr({
+                name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+               });
+            }
+            if ($(obj).attr('for') != null) {
+              $(obj).attr({
+                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+          });
+          clone.find('input[name="del_btn"]').show();
+          clone.slideDown('fast');
+        });
+
+        //削除ボタンが押されたら
+        $("#blocks").off('click', 'input[name="del_btn"]');
+        $("#blocks").on('click', 'input[name="del_btn"]', function() {
+          var removeObj = $(this).parents(".form-block");
+          removeObj.fadeOut('fast', function() {
+            removeObj.remove();
+            // 番号振り直し
+            frm_cnt = 0;
+            $(".form-block[id^='form_block']").each(function(index, formObj) {
+              if ($(formObj).attr('id') != 'form_block[0]') {
+                frm_cnt++;
+                $(formObj)
+                  .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
+                  .find('div, input, textarea, select, label').each(function(idx, obj) {
+                   if ($(obj).attr('id') != null) {
+                      if($(obj).attr("id").substr(0,5) == "dItem"){
+                            $(obj).val("" + (frm_cnt + 1));
+                      }
+                      $(obj).attr({
+                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('name') != null) {
+                      $(obj).attr({
+                        name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('for') != null) {
+                      $(obj).attr({
+                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                  });
+              }
+            });
+          });
+        });
+      },
+
+      oneditsave: function() {
+
+        var dItems = [];
+          $(".form-block[id^='form_block']").each(function(idx, obj){
+              var item ={dataValue: {}, options:{}};
+              
+              item.options.unitType = $("#unitType\\[" + idx + "\\]").val();
+              item.options.dataname = $("#dataname\\[" + idx + "\\]").val();
+              dItems[idx]=item;
+          });
+          //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+          try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+          catch(e) {$("#node-config-input-configObject").val("")}
+
+      }
     });
 </script>
 

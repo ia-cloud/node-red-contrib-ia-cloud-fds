@@ -435,7 +435,7 @@ module.exports = function(RED) {
     RED.nodes.registerType("EnOcean-obj",EnOceanObjNode);
 
     // collect-data-object config node function definition
-    function CollectDataObjectNode(n) {
+    function EnOceanDataItemNode(n) {
         RED.nodes.createNode(this,n);
         this.object_key = n.object_key;
         this.object_desc = n.object_desc;
@@ -444,7 +444,7 @@ module.exports = function(RED) {
         this.dataname_3 = n.dataname_3;
         this.dataname_4 = n.dataname_4;
     }
-    RED.nodes.registerType("collect-data-object",CollectDataObjectNode);
+    RED.nodes.registerType("EnOcean-dItems",EnOceanDataItemNode);
 
     var serialPool = (function() {
         var connections = {};
