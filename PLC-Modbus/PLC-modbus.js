@@ -135,12 +135,15 @@ console.log(dataObjects[0].ObjectContent.contentData);
               // オブジェクト生成、メッセージ出力を行う。
 
               dataObjects.forEach(function(objItem, idx) {
-                // 収集周期前であれば何もせず
-                objItem.options.timeCount = objItem.options.timeCount - minCycle;
-                if (objItem.options.timeCount > 0) return;
-                // 収集周期がきた。収集周期を再設定。
-                objItem.options.timeCount = objItem.options.storeInterval;
-                iaCloudObjectSend(objItem.objectKey);
+                if(objItem.options.storeInterval != "0") {
+                  // 収集周期前であれば何もせず
+                  objItem.options.timeCount = objItem.options.timeCount - minCycle;
+                  if (objItem.options.timeCount > 0) return;
+                  // 収集周期がきた。収集周期を再設定。
+console.log("定期収集:" + objItem.objectKey);
+                  objItem.options.timeCount = objItem.options.storeInterval;
+                  iaCloudObjectSend(objItem.objectKey);
+                }
               });
             }, (minCycle * 1000));
         }
@@ -158,17 +161,17 @@ console.log("modbus:changeLstenerが呼ばれた");
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
         var iaCloudObjectSend = function(objectKey) {
 
-          var msg = {request:{}, object:{ObjectContent:{}}};
+          var msg = {request:"store", dataObject:{ObjectContent:{}}};
           var contentData = [];
 
           var iaObject = dataObjects.find(function(objItem, idx) {
             return (objItem.objectKey == objectKey);
           });
-          msg.object.objectKey = objectKey;
-          msg.object.timestamp = moment().format();
-          msg.object.objectType = "iaCloudObject";
-          msg.object.objectDescription = iaObject.objectDescription;
-          msg.object.ObjectContent.contentType = iaObject.ObjectContent.contentType;
+          msg.dataObject.objectKey = objectKey;
+          msg.dataObject.timeStamp = moment().format();
+          msg.dataObject.objectType = "iaCloudObject";
+          msg.dataObject.objectDescription = iaObject.objectDescription;
+          msg.dataObject.ObjectContent.contentType = iaObject.ObjectContent.contentType;
           contentData = [];
 
           iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
@@ -257,12 +260,10 @@ console.log("modbus:changeLstenerが呼ばれた");
                 break;
               default:
               }
-console.log(dItem.dataValue);
               contentData.push(dItem);
           });
-          msg.object.ObjectContent.contentData = contentData;
-console.log(msg.object);
-          msg.request = "store";
+          msg.dataObject.ObjectContent.contentData = contentData;
+console.log(msg.dataObject);
           node.send(msg);
         }
         this.on("input",function(msg) {

@@ -1,3 +1,68 @@
+# Modbus機器データオブジェクトノード
+
+## PLC-Modbus
+Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。  
+設定Nodeとして、Modbus-com、Modbus-dataItemsを使用する。
+
+## 入力メッセージ
+なし  
+
+## 出力メッセージ
+オブジェクトのia-cloud CSへストアーするためのメッセージを出力する。ia-cloud-cnct Nodeへの接続を想定している。
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|request|string|"store"|
+|object|object|ストアするia-cloudオブジェクトの配列|  
+
+サンプル
+```
+msg = {
+  request: "store",
+  object: {
+    objectKey: "com.ia-cloud.........",
+    objectType: "iaCloudObject",
+    objectDescription: "説明",
+    ObjectContent: {
+      contentType: "iaCloudData",
+      contentData": [{
+        "dataName"
+                .
+                .
+                .
+      }]
+    }
+  }
+}
+```
+## プロパティー
+
+本nodeは以下のプロパティを持つ
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|Node name|string|PLC-Modbus Nodeの名称|
+|Modbus Node|設定Node|Modbus通信の設定Node|
+
+**設定ファイルの場合**  
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|設定ファイル|string|設定ファイルでの設定の場合、設定JSONファイルのフルパスファイル名称。|
+
+**データオブジェクト設定の場合**
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|収集周期|number| 定期収集周期。最小10秒。0秒で周期収集なし。　|
+|非同期収集|boolean| データ変化時の非同期収集をする場合、true。　|
+|オブジェクト名称|string| ia-cloudオブジェクトの任意の名称。　|
+|オブジェクトキー|string| ia-cloudオブジェクトのobjectKeyとして使われる。|
+|オブジェクトの説明|string| ia-cloudオブジェクトのobjectdescriptionとして使われる。|
+|データitem情報|設定Node| objectContentとして挿入されるオブジェクトを設定するための設定Node。|
+
+## 設定ファイルの構造
+```
 {
     "configName": "modbusConfig.json",
     "comment": "modbus ia-cloud object configration data for test.",
@@ -7,7 +72,7 @@
         "objectKey": "com.atbridge-cnsltg.node-RED.test1",
         "objectType": "iaCloudObject",
         "objectDescription": "modbusのビット系データ",
-        "options":{"storeInterval": 10, "storeAsync": true},
+        "options":{"storeInterval": 60, "storeAsync": true},
         "ObjectContent": {
             "contentType": "PLC-bit",
             "contentData": [{
@@ -18,25 +83,10 @@
                     "source":123,
                     "number": 1,
                     "logic": "pos"
-                  }
-                },{
-                  "dataName": "装置II稼働",
-                  "options": {
-                      "itemType": "bit",
-                      "deviceType": "Coil",
-                      "source":124,
-                      "number": 1,
-                      "logic": "neg"
-                  }
-                },{
-                  "dataName": "装置IV稼働",
-                  "options": {
-                      "itemType": "bit",
-                      "deviceType": "IS",
-                      "source":345,
-                      "number": 6,
-                      "logic": "pos"
-                  }
+                  },
+                      .
+                      .
+                      .
                 }]
         }
     },{
@@ -62,42 +112,10 @@
                     "offset": 0,
                     "gain": 1
                 }
-              },{
-                "dataName": "電気炉内部温度",
-                "unit": "°C",
-                "options": {
-                    "itemType": "number",
-                    "deviceType": "IR",
-                    "source":213,
-                    "type": "1w",
-                    "encode": "BCD",
-                    "offset": 30,
-                    "gain": 1.3
-                }
-              },{
-                "dataName": "ソレノイド動作回数",
-                "unit": "",
-                "options": {
-                    "itemType": "number",
-                    "deviceType": "HR",
-                    "source":488,
-                    "type": "2w-l",
-                    "encode": "BCD",
-                    "offset": 0,
-                    "gain": 1
-                }
-              },{
-                "dataName": "生産個数",
-                "unit": "",
-                "options": {
-                    "itemType": "number",
-                    "deviceType": "IR",
-                    "source":220,
-                    "type": "2w-b",
-                    "encode": "unsigned",
-                    "offset": 0,
-                    "gain": 1
-                }
+              },
+                      .
+                      .
+                      .
             }]
         }
     },{
@@ -178,3 +196,5 @@
         }
     }]
 }
+
+```

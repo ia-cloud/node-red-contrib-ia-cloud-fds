@@ -7,6 +7,7 @@
     		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
     		"objectType": "iaCloudObject",
     		"objectDescription": "modbusのアラームデータ",
+        "options":{"storeInterval": 30, "storeAsync": true},
     		"ObjectContent": {
       			"contentType": "Alarm&Event",
       			"contentData": [

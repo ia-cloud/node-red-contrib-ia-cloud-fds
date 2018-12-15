@@ -189,7 +189,7 @@ console.dir("エラーが起きた");
                 info.status = "requesting";
 
                 // getStatus リクエストのタイムスタンプ
-                var ts = moment().format();
+//                var ts = moment().format();
 
                 // getStatus リクエストのリクエストボディ
                 var reqbody = {
@@ -238,7 +238,7 @@ console.dir("エラーが起きた");
               info.status = "requesting";
 
               // connect リクエストのタイムスタンプ
-              var ts = moment().format();
+//              var ts = moment().format();
 
               // connect リクエストのリクエストボディ
               var reqbody = {

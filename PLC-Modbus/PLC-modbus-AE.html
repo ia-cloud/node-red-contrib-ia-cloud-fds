@@ -40,7 +40,7 @@
         <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-storeInterval">
                 i_収集周期</label>
-            <input type="number" min="10" style="display: inline-block; width: auto;" id="node-input-storeInterval">
+            <input type="number" min="0" step="10" style="display: inline-block; width: auto;" id="node-input-storeInterval">
             <label for="node-input-storeAsync" style="margin-left: 20px;">i_非同期収集</label>
             <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;" disabled='disabled'>
         </div>
@@ -112,7 +112,7 @@
         name: {value:"PLCModbusAE"},
         confsel: {value:"propertySet"},
         configfile: {value:"", required: false},
-        storeInterval: {value:"10"},
+        storeInterval: {value:"300"},
         storeAsync: {value: true},
         objectName: {value:""},
         objectKey: {value:""},
@@ -123,7 +123,7 @@
     },
     inputs:1,
     outputs:1,
-    icon: "bridge.png",  //アイコンはTBD
+    icon: "ia-cloud.png",  //アイコンはTBD
     label: function() {
         return this.name||this._("Plc-object");
     },

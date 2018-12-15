@@ -82,12 +82,13 @@ module.exports = function(RED) {
                 if (modbusNode) modbusNode.linkDatachangeListener(listeners[nodeId]);
               }
             });
-          }, refreshCycle * 100);
+            listeners = [];  // changeListenerリストをクリア
+          }, refreshCycle * 1000);
 
         }
         // modbus通信のコールバック関数
         // 通信のレスポンスフレームのデータでlinkObjのvalueを更新、
-        // さらに、変化イベントのリスナーが登録されていたら、各Nodeのリストイに追加
+        // さらに、変化イベントのリスナーが登録されていたら、各Nodeのリストに追加
         var storeToLinkObj = function(dev, start, num, list){
           for (var i = 0; i < num; i++) {
             var linkData = linkObj[dev].find(function(elm) {
@@ -97,7 +98,7 @@ module.exports = function(RED) {
               linkData.value = list[i];
               var nodeId = linkData.nodeId;
               // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
-              if(nodeId && linkData.preValue && linkData.value != linkData.preValue) {
+              if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) {
                 // 要求元のModbus Object Nodeとオブジェクトキーを登録
                 // 重複の無いように
                 if (!listeners[nodeId]) listeners[nodeId] = [linkData.objectKey,];

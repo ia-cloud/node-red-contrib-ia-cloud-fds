@@ -81,14 +81,16 @@ console.log(AnEObjects);
               // 生成しメッセージで送出
               // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
               // オブジェクト生成、メッセージ出力を行う。
-
               AnEObjects.forEach(function(objItem, idx) {
-                // 収集周期前であれば何もせず
-                objItem.options.timeCount = objItem.options.timeCount - minCycle;
-                if (objItem.options.timeCount > 0) return;
-                // 収集周期がきた。収集周期を再設定。
-                objItem.options.timeCount = objItem.options.storeInterval;
-                iaCloudObjectSend(objItem.objectKey);
+                if(objItem.options.storeInterval != "0") {
+                  // 収集周期前であれば何もせず
+                  objItem.options.timeCount = objItem.options.timeCount - minCycle;
+                  if (objItem.options.timeCount > 0) return;
+                  // 収集周期がきた。収集周期を再設定。
+console.log("定期収集:" + objItem.objectKey);
+                  objItem.options.timeCount = objItem.options.storeInterval;
+                  iaCloudObjectSend(objItem.objectKey);
+                }
               });
             }, (minCycle * 1000));
         }
@@ -105,19 +107,19 @@ console.log("modbusAE:changeLstenerが呼ばれた");
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
         var iaCloudObjectSend = function(objectKey) {
 
-          var msg = {request:{}, object:{ObjectContent:{}}};
+          var msg = {request: "store", dataObject:{ObjectContent:{}}};
           var contentData = [];
 
           var iaObject = AnEObjects.find(function(objItem, idx) {
             return (objItem.objectKey == objectKey);
           });
-          msg.object.objectKey = objectKey;
-          msg.object.timestamp = moment().format();
-          msg.object.objectType = "iaCloudObject";
-          msg.object.objectDescription = iaObject.objectDescription;
-          msg.object.ObjectContent.contentType = "Alarm&Event";
+          msg.dataObject.objectKey = objectKey;
+          msg.dataObject.timeStamp = moment().format();
+          msg.dataObject.objectType = "iaCloudObject";
+          msg.dataObject.objectDescription = iaObject.objectDescription;
+          msg.dataObject.ObjectContent.contentType = "Alarm&Event";
           contentData = [];
-//
+
           iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
               // 対象のデータアイテムのシャローコピーを作成
               var dItem = Object.assign( {}, dataItem);
@@ -133,21 +135,17 @@ console.log("modbusAE:changeLstenerが呼ばれた");
               }).preValue;
               value = (value == "1") ? true: false;
               preValue = (preValue == "1") ? true: false;
-console.log(preValue);
-console.log(value);
               if (options.logic == "neg") {
                 value = !value;
                 preValue = !preValue;
               }
               if (value) {dItem.dataValue.AnEStatus = (preValue)? "on": "set";}
               else {dItem.dataValue.AnEStatus = (!preValue)? "off": "reset";}
-console.log(dItem.dataValue);
             contentData.push(dItem);
           });
 
-          msg.object.ObjectContent.contentData = contentData;
-console.log(msg.object);
-          msg.request = "store";
+          msg.dataObject.ObjectContent.contentData = contentData;
+console.log(msg.dataObject);
           node.send(msg);
         }
 
@@ -155,7 +153,7 @@ console.log(msg.object);
           //何もしない
         });
         this.on("close",function() {
-          //何もしない
+          clearInterval(sendObjectId);
         });
     }
 

@@ -1,0 +1,91 @@
+ModbusCom
+dataLinkテーブルは、追加only、削除はできない。
+デプロイ時に、一旦全てクリア
+追加したら、再構築のcallback起動。
+
+2018.11.19
+numberの unitはdItem.options.unit から dItem.unitに変更- done
+
+2018.11.20
+dItemのoptionsの先頭アドレスの前にに、デバイス種別をselectで追加。
+configfileのia-cloud objectはarrayでもつこと
+
+xxxComには、xxxCom.prototype.addLinkData()methodを持つ
+PLCxxxには、PLCxxx.prototype.linkDataChangeListener()を持つ
+このlinkDataChangeListener()をlinkDataの構成要素として、addLinkData()で登録する。
+
+あるいは、addLinkData()のコールバックで、listenerを登録する。多分ダメだ。
+
+2018.11.22
+AandEの編集画面を、デバイス種別対応にする。
+A&Eのデータが一アラーム一ia-cloudオブジェクトになる現状のVer2の仕様で良いか？
+
+アラーム＆イベントは、別PLCobject Nodeとした方が良いかも。　＜ーーー　これで行くしかない。
+変化したｄItemだけを格納したオブジェクトをStoreできるように。
+
+アラームとデータのコンフファイルが別ファイルになってしまうが・・・
+
+2018.11.23
+linkObjはソートしなくて良い。重複してて良い。
+通信では、昇順のlinkTableを使う。
+
+2018.11.24
+A&EデータモデルのcontentData構造を、配列の配列に変更。 <---- やめる。valueをオブジェクトにする。
+contentData: [
+[{"commonName": "A&EStatus", "dataValue": xxx},
+ {"commonName": "A&ECode", "dataValue": xxx},
+ {"commonName": "A&EDescription", "dataValue": xxx}
+],[
+ {"commonName": "A&EStatus", "dataValue": xxx},
+ {"commonName": "A&ECode", "dataValue": xxx},
+ {"commonName": "A&EDescription", "dataValue": xxx}
+],[
+ {"commonName": "A&EStatus", "dataValue": xxx},
+ {"commonName": "A&ECode", "dataValue": xxx},
+ {"commonName": "A&EDescription", "dataValue": xxx}
+] ..... ]
+
+それがこれ。
+contentData: [
+  {
+  "commonName":"Alarm&Event",
+  "dataValue": {
+    "A&EStatus": "set",
+    "A&ECode": "",
+    "A&EDescription": ""
+    },
+  "options": {
+    "deviceType": "",
+    "source": "",
+    "logic": "positive"
+    }
+  },{
+  "commonName":"Alarm&Event",
+  "dataValue": {
+    "A&EStatus": "set",
+    "A&ECode": "",
+    "A&EDescription": ""
+    },
+  "options": {
+    "deviceType": "",
+    "source": "",
+    "logic": "positive"
+    }
+  }
+
+  //  ........
+  ]
+
+  2018.12.4
+  contentType に　__define__ を持つSelectを使用
+  valid関数でチェック
+  Tipで説明を付加
+
+  2018.12.7
+  PLCModbus でtimestampを打つこと
+
+  2018.12.11
+  デプロイ済みのPLC-Modbusのデータアイテム変更しても、変更マークのブルーのドットが付かない。
+  どうすれば・・・・・
+
+  2w-b、2w-lの場合、32ビット変換すると桁あふれしてしまう。

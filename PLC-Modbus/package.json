@@ -10,8 +10,8 @@
     "license": "ISC",
     "node-red": {
         "nodes": {
-            "PLC-Modbus": "PLC-Modbus.js",
-            "PLC-Modbus-AE": "PLC-Modbus-AE.js",
+            "PLC-Modbus": "PLC-modbus.js",
+            "PLC-Modbus-AE": "PLC-modbus-AE.js",
             "Modbus-dItems": "Modbus-dItems.js",
             "Modbus-AnE": "Modbus-AnE.js",
             "Modbus-com": "Modbus-com.js"

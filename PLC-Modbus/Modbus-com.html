@@ -23,7 +23,7 @@
     <div class="form-row">
         <label for="node-config-input-refreshCycle">i_通信周期
           <span style="color: #ff0000;">*</span></label>
-        <input type="number" min="1" style="width: 300px" id="node-config-input-refreshCycle">
+        <input type="number" min="0.1" step="0.1" style="width: 300px" id="node-config-input-refreshCycle">
     </div>
     <div class="form-row">
         <label for="node-config-input-maxDataNum">
@@ -50,6 +50,11 @@
             <label for="node-config-input-etherAdd">i_アドレス
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-etherAdd">
+        </div>
+        <div class="form-row">
+            <label for="node-config-input-unitID">i_ユニットID
+              <span style="color: #ff0000;">*</span></label>
+            <input type="text" style="width: 300px" id="node-config-input-unitID">
         </div>
     </div>
     <div class="form-group hide" id="serialConf">
@@ -115,6 +120,7 @@
           comType: {value:"TCP"},
           etherPort:{value:"" },
           etherAdd:{value:"" },
+          unitID:{value:"" },
           serialPort:{value:"" },
           serialAdd:{value:"1" },
           board:{value:"115200" },
@@ -147,6 +153,7 @@
           switch($(obj).attr("id")) {
             case "node-config-input-etherPort":
             case "node-config-input-etherAdd":
+            case "node-config-input-unitID":
               if (!$(obj).val() && (comType == "TCP")) requiredSet = "";
               break;
             case "node-config-input-serialPort":

@@ -1,161 +1,117 @@
-# Modbus機器オブジェクトノード
+# Modbus通信機器関連ノード
 
-## ia-cloud-ModbusObj
+## PLC-modbus、PLC-modbus-AE
+## Modbus-dataItems、Modbus-AnE、Modbus-com
 
 ## 機能概要
+これら一連のノードは、Modbus通信を備えた各種の計測制御機器と通信を行い、それらの機器が保持するデータを読み出して、ia-cloud Center Server（CCS）へ格納するオブジェクトを生成して出力メッセージとして送出する。
 
-このノードは、FlowコンテキストオブジェクトであるModbusリンクオブジェクトを参照し、一定周期あるいは非同期に、ia-cloudオブジェクトを生成し、ia-cloud CCSへストアーするため、ia-cloud接続nodeに対しModbusデータオブジェクトを出力メッセージとして送出する。 
-起動時（デプロイ時？）には、自身のプロパティにで指定された、Modbus通信を実行するNodeとのデータリンクを実現するためのFlowコンテキストオブジェクトであるデータリンクオブジェクトに対し、プロッパティで指定されたデータItem情報に従い、必要なエントリーを追加する。起動時（デプロイ時？）に、プロパティにで指定された、Flowコンテキストオブジェクトであるデータリンクオブジェクトが存在しない場合は、例外を発生する。
+![構成図](構成図.png)
 
-## 入力メッセージ
+#### PLC-Modbus：  
+Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
+#### PLC-Modbus-AE：  
+Modbus通信機器の持つビットデータを読み出し、アラーム＆イベント情報を持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
+#### Modbus-com：  
+登録されたlinkObj（デバイスアドレスとデータ値等を保持する）から、Modbus通信のデバイスアドレステーブルを作成し、定期的にModbus通信機器と通信を実行、データを取得してlinkObjを更新する設定Node。
+#### Modbus-dataItems：　　
+PLC-Modbus NodeのcontentDataを設定する設定Node。ビット列、数値、文字列、数値列の自由な組み合わせを設定可能。
+#### Modbus-AE：　　
+PLC-Modbus-AE NodeのcontentDataを設定する設定Node。contentType="Alarm&Event"のcontentDataを設定できる。
 
-* ``payload``: Modbusアドレス格納値に変化があったModbusアドレスの配列  
+### Node間のI/Fで使用されるオブジェクト　　
 
-このメッセージを受けて、データの変化のあったオブジェクトのストアーを行う。
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|"addresses"|[string]|["address 1", "address 2", "adrdess 3", .... "address n"]  
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|"address n"|string|"ユニットアドレス:データアドレス"|
-
-	サンプル
-```
- msg.payload = {[
-	 "2:4123",
-	 "1:4678",
-	 "1:1748"
-	 ]}
-```
-## プロパティー
-
-本nodeは以下のプロパティを持つ
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-| linkObjName|string|読み出すデータのModbusアドレスと、変化時通知のフラグを格納するFlowコンテキストオブジェクトの名称。デフォルトは、ModbusLinkObj。|
-|ストア周期|number|Flowコンテキストオブジェクトよりデータを取得し、ia-cloudオブジェクトを生成しia-cloud CCS ヘストアする周期, S（秒）で指定できる。|
-|収集データオブジェクト|object| nodeが生成する ia-cloudオブジェクトの情報|
-
-**収集データオブジェクト**
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|オブジェクトキー|string| ia-cloudオブジェクトのobjectKeyとして使われる。|
-|オブジェクトの説明|string| ia-cloudオブジェクトのobjectdescriptionとして使われる。|
-|データitem情報| object| objectContentとして挿入されるオブジェクトを生成するための情報。|
-
-**データitem情報**
-以下のオブジェクトの配列(**複数のデータい形式を組み合わせることができる**。)
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|データ名称|string|オブジェクトのデータitemの名称。 ia-cloudデータモデルのdataNameとして使用される。|
-|データアドレス| string |データを取得するlinkObjのModbusアドレス。"ユニットアドレス:データアドレス"で表される。|
-|データ種別| string |データドレスが示す内容のデータ形式。ビット[列]、数値[列]、文字列|
-
-***ビット[列]***
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|ビット数|number|連続するビットデータの数。 >= 1|
-|論理|string | 正論理(1:true,0:false) or 負論理(1:false,0:true)|
-
-***数値[列]***
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|データ数|number|連続する数値データの数。 >= 1|
-|単位|string|オブジェクトのデータitemの単位。 ia-cloudデータモデルのunitとして使用される。|
-|ワード長|number|データのワード長。 1 or 2。|
-|形式|string|数値データの形式。バイナリー、オフセットバイナリー、2の補数、BCD|
-|倍率| number|オブジェクトのデータをlinkObjのデータから計算する際の倍率。|
-|オフセット| number|オブジェクトのデータをlinkObjのデータから計算する際のオフセット。linkObjのデータ * 倍率 + オフセットとして使われる|
-
-***文字列***
-
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-|データ長|number|連続する文字データのデータ長(Byte数)。 >= 1。エンコードによって、文字数と一致しないので注意。|
-|エンコード|string|文字列データのエンコード。 ASCII, sJIS, EUC-JP, UTF-8, のいずれか。|
-
-
-## 出力メッセージ
-
-* ``msg.store``:ia-cloudに送出されるia-cloudリクエストとなるオブジェクト。ia-cloud-cnct nodeの入力メッセージとなり、 ia-cloudサーバへリクエストとして送出される。
-
-例
+#### 設定オブジェクト：  
+PLC-Modbus、PLC-Modbus-AEの設定情報を保持するオブジェクト。設定ファイルはこのオブジェクトのJSONファイルである。
 ```
 {
-	"objectType": "iaCloudObject",
-	"objectKey": "「オブジェクトキー」",
-	"objectdescription": "『オブジェクトの説明』"
-	"timeStamp": "2018-07-26T23:59:09+09:00",
-	"ObjectContent": {
-		"contentType": "iaCloudData",
-		"contentData": [{
-			"dataName": "「データ名称」",
-			"dataValue": 『true』,
-			},{
-			"dataName": "「データ名称」",
-			"dataValue": 『データアドレスの内容 * 倍率 + オフセット』,
-			"unit": "「単位」"
-			},{
-			"dataName": "「データ名称」",
-			"dataValue": [(データ * 倍率 + オフセット), (データ * 倍率 + オフセット)...  ]
-			"unit": "「単位」"
-			}{
-			"dataName": "「データ名称」",
-			"dataValue": 『デコードされた文字列』
-			},
-					:
-					:
-					:
-					:
-		]
-	}
+  configName: "modbusConfig.json",
+  comment: "modbus ia-cloud object configration data for test.",  // UIには無い
+  dataObjects:    // Node-RED UIで設定されるときは配列要素は1つだけ。
+    [{
+      objectName: "bit系データ",
+      objectKey: "com.atbridge-cnsltg.node-RED.test1",
+      objectType: "iaCloudObject",
+      objectDescription: "modbusのビット系データ",
+      options:{storeInterval: 60, storeAsync: true},   // オブジェクトのオプション
+      ObjectContent: {
+        contentType: "PLC-bit",
+        contentData: [{
+        dataName: "装置I稼働",
+        options: {                        //DataItemオプション
+          itemType: "bit",
+          deviceType: "Coil",
+          source:123,
+          number: 1,
+          logic: "pos"
+        }
+      },   ........  ]  // 一つ以上のデータアイテム
+    }
+  },  ........  ]       // UIの場合は一つのia-cloudオブジェクト、設定ファイルの場合は一つ以上のia-cloudオブジェクト
 }
-
 ```
-
-## リンクデータオブジェクト（Flowコンテキストオブジェクト）  
-本nodeは起動時（デプロイ時？）に、Modbus機器との通信で取得すべきデータのアドレスと変化通知対象フラグが格納された、Flowコンテキストのオブジェクト**.mobusLinkObj**を生成する。（Modbus通信nodeは、その設定に基づきデータを取得して、取得したデータをそのオブジェクトに格納する。）  
-本nodeは、必要なタイミングで、このオブジェクトからデータを読み出し、 ia-cloudオブジェクトのJSON文字列を生成し、 ia-cloudプロトコールで ia-cloudサーバへ送出する。
-
-本オブジェクトの基本仕様は、 ia-cloud-FDS-node.PLCLinkObj_doc.mdを参照のこと。
-
-Modbus依存の要素は以下の通り  
-
-| 要素 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
-| address | string | "ユニットアドレス:データアドレス"で表現された、Modbusアドレス。ユニットアドレス：データアドレスいずれも10進数文字列表現。|
-|notify| boolean |データの変化時に出力メッセージにアドレスを出力するかのフラグ|
-|value| number |ModbusDeviceとの通信により取得したデータ。32bitデバイスの場合 -32768〜32767、ビットデバイスの場合 0 or 1。|
-
-ユニットアドレス：  
-Modbus RTU、Modbus ASCII の場合はRS485子機アドレス（1〜255）、Modbus TCPの場合はユニット番号（1〜255）
-
-DataLinkObjの例
+ia-cloudオブジェクトの設定オプション
 ```
-flow.mobusLinkObj = {[
-	{
-		"address": "2:4123",
-		"notify": true,
-		"value": 567
-	},{
-		"address": "1:4678",
-		"notify": true,
-		"value": 2795
-	},{
-		"address": "1:1748",
-		"notify": false,
-		"value": 12
-	},
-					:
-					:
-					:
-					:
-]}
+dataObjects[i].options = {
+  storeInterval: 60,    // 定期収集周期（秒）最小値10秒
+  storeAsync: true      // データ変化時の非同期収集の有無
+  }
+```
+データアイテムの設定オプション(bit列)
+```
+dataObjects[i].ObjectContent.contentData[i].options = {
+    itemType: "bit",      // 取得するデータの種別、bit(ビット列)
+    deviceType: "Coil",   // 取得するビットデータ列のあるデバイス種別（Coil/IS）
+    source:123,           // 取得するビットデータ列の先頭デバイスアドレス
+    number: 1,            // 取得するビットデータ列のビット数
+    logic: "pos"          // 取得するビットデータの論理（pos:1がtrue/neg:0がtrue）
+  }
+```
+データアイテムの設定オプション(number)
+```
+dataObjects[i].ObjectContent.contentData[i].options = {
+    itemType: "number",   // 取得するデータの種別、number(数値)
+    deviceType: "IR",     // 取得するデータのあるデバイス種別（HR/IR）
+    source:213,           // 取得するデータのあるデバイスアドレス
+    type: "1w",           // 取得するデータの種別（1w:ワード、2w_b:ダブルワードビッグエンディアン、2w-l:ダブルワードリトルエンディアン）
+    encode: "unsigned",   // 取得するデータの形式(unsigned:符号なし、signed:符号付、BCD:2進化10進)
+    offset: 0,            // 取得するデータのゼロ点オフセット
+    gain: 1               // 取得するデータの倍率
+  }
+```
+データアイテムの設定オプション(string)
+```
+dataObjects[i].ObjectContent.contentData[i].options = {
+    itemType: "string",   // 取得するデータの種別、string(文字列)
+    deviceType: "IR",     // 取得する文字列のあるデバイス種別（HR/IR）
+    source:123,           // 取得する文字列の先頭デバイスアドレス
+    number: 1,            // 取得する文字列のワード数（文字数では無い、連続ワードデバイスの数）
+    encode: "utf-8"       // 取得する文字列のエンコード（utf-8/sJIS/EUC）
+  }
+```
+データアイテムの設定オプション(numList)
+```
+dataObjects[i].ObjectContent.contentData[i].options = {
+    itemType: "numList",  // 取得するデータの種別、numList(数値列)
+    deviceType: "HR",     // 取得するデータのあるデバイス種別（HR/IR）
+    source:213,           // 取得するデータのあるデバイスアドレス
+    number: 1,            // 取得するデータ列の数（ワード数では無い、連続データの数）
+    type: "1w",           // 取得するデータの種別（1w:ワード、2w_b:ダブルワードビッグエンディアン、2w-l:ダブルワードリトルエンディアン）
+    encode: "unsigned",   // 取得するデータの形式(unsigned:符号なし、signed:符号付、BCD:2進化10進)
+  }
+```
+#### リンクオブジェクト(linkObj)：
+```
+{Coil:[linkData,], IS:[linkData], IR:[linkData,], HR:[linkData,]}
+```
+リンクデータ(linkData)  
+複数のNodeやia-cloudオブジェクトから参照されるデバイスアドレスは、linkDataも複数存在する。
+```
+{
+    address: 0,       // Modbusデバイスアドレス
+    value: "",        // 通信で取得された値(bitデバイス："0"/"1"、ワードデバイス："0xoooo"16ビットのHex表現文字列)
+    preValue: "",     // 1回前の取得データ
+    nodeId: null,     // このリンクデータを利用するNodeのID
+    objectKey: ""     // このリンクデータを利用するia-cloudオブジェクトのobjectKey
+}
 ```
