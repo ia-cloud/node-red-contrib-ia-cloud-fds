@@ -1,9 +1,10 @@
 {
-    "collect": {
+    "enoceanDataItem": {
         "label": {
             "object_key": "オブジェクトキー",
             "object_desc": "オブジェクトの説明",
-            "dataname": "データ名称"
+            "dataname": "データ名称",
+            "unit": "単位"
          }
     },
     "serial": {
@@ -19,8 +20,9 @@
             "deliver": "分割後の配信データ",
             "output": "出力",
             "serial": "EnOcean-com",
-            "collectDataObjName": "収集データオブジェクト",
+            "enoceanDataItems": "EnOceanデータ項目",
             "linkObjName": "リンクデータオブジェクト",
+            "enoceanCom": "EnOcean通信オブジェクト",
             "sensor_id": "センサID",
             "sensor_kind": "センサ種別",
             "notify": "通知有無",

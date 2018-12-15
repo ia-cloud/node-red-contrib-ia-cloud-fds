@@ -1,9 +1,10 @@
 {
-    "collect": {
+    "enoceanDataItem": {
         "label": {
             "object_key": "Object Key",
             "object_desc": "Object Description",
-            "dataname": "Data Name"
+            "dataname": "Data Name",
+            "unit": "Unit"
          }
     },
     "serial": {
@@ -26,8 +27,9 @@
             "responsetimeout": "Default response timeout",
             "ms": "ms",
             "serial": "serial",
-            "collectDataObjName": "Collect Data Object Name",
+            "enoceanDataItems": "EnOcean Data Items",
             "linkObjName": "linkObjName",
+            "enoceanCom": "EnOcean Communication Object",
             "sensor_id": "sensor ID",
             "sensor_kind": "sensor kind",
             "notify": "notify flag",
