@@ -172,7 +172,6 @@ console.log("modbus:changeLstenerが呼ばれた");
           msg.dataObject.objectType = "iaCloudObject";
           msg.dataObject.objectDescription = iaObject.objectDescription;
           msg.dataObject.ObjectContent.contentType = iaObject.ObjectContent.contentType;
-          contentData = [];
 
           iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
             // 対象のデータアイテムのシャローコピーを作成
@@ -217,7 +216,7 @@ console.log("modbus:changeLstenerが呼ばれた");
                 break;
               case "string":
                 var value = "";
-                dItem.dataValue = [];
+                dItem.dataValue = "";
                 for (var i = 0, l = options.number; i < l; i++) {
                   value = value + linkObj[options.deviceType]
                       .find(function(lData){

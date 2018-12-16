@@ -118,7 +118,6 @@ console.log("modbusAE:changeLstenerが呼ばれた");
           msg.dataObject.objectType = "iaCloudObject";
           msg.dataObject.objectDescription = iaObject.objectDescription;
           msg.dataObject.ObjectContent.contentType = "Alarm&Event";
-          contentData = [];
 
           iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
               // 対象のデータアイテムのシャローコピーを作成

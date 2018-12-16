@@ -28,52 +28,67 @@ module.exports = function(RED) {
         var refreshCycle = config.refreshCycle;
         var maxDataNum = config.maxDataNum;
         var noBlanck = config.noBlanck;
-        var addTbl = {};
-        var listeners = [];
+        var addTbl = {};        // Modbus通信でアクセスするデバイスのアドレステーブル
+        var listeners = [];     // Modbus通信で取得したデータに変化があった時の、リスナー関数
+        var comList = [];       // Modbus通信フレーム情報
+        var flagRecon = false;  // Modbus通信フレーム情報の再構築フラグ
 
         if (refreshCycle > 0) {
           var cycleId = setInterval(function(){
-            //作成したリンクオブジェクトに基づき、Modbus通信を実施し、リンクオブジェクトの各Valueを更新する
-            //linkObjの各項目ををスキャンし、読み出すデバイスのリスト（配列）を作成。昇順に並べ重複を削除する。
-            Object.keys(linkObj).forEach(function(key) {
-              var addList = [];
-              linkObj[key].forEach(function(linkData, idx) {
-                addList.push(linkData.address);
+            // 通信フレーム情報の再構成フラグがonの時は、再構成する
+            if (flagRecon) {
+                //作成したリンクオブジェクトに基づき、Modbus通信を実施し、リンクオブジェクトの各Valueを更新する
+                //linkObjの各項目ををスキャンし、読み出すデバイスのリスト（配列）を作成。昇順に並べ重複を削除する。
+                // まず、現在の通信フレーム情報をクリア
+                comList.length = 0;
+                Object.keys(linkObj).forEach(function(key) {
+                  var addList = [];
+                  linkObj[key].forEach(function(linkData, idx) {
+                    addList.push(linkData.address);
+                  });
+                  addList.sort(function(add,next){ return add - next; });
+                  addTbl[key] = Array.from(new Set(addList));
+                });
+                //効率的な通信のため、連続読み出し領域を探し、modbus通信を行う。
+                Object.keys(addTbl).forEach(function(key) {
+                  var addList = addTbl[key];
+                  var saddr;
+                  var dataNum = 0;
+                  var maxAdd;
+                  for (var idx = 0, l = addList.length; idx < l; idx++) {
+                    var address = Number(addList[idx]);
+                    if (dataNum == 0) {
+                      dataNum = 1;
+                      saddr = address;
+                      maxAdd = address + Number(maxDataNum);
+                    }
+                    if (noBlanck && address == (saddr + dataNum)) {
+                        dataNum = address - saddr + 1;
+                    }
+                    else if (!noBlanck && address < maxAdd) {
+                        dataNum = address - saddr + 1;
+                    }else {
+                      //modbus通信フレーム情報を追加
+                      comList.push({dev:key, start:saddr, number:dataNum});
+                      dataNum = 1;
+                      saddr = address;
+                      maxAdd = address + Number(maxDataNum);
+                    }
+                    if (idx == (l - 1)) {
+                      //modbus通信フレーム情報を追加
+                      comList.push({dev:key, start:saddr, number:dataNum});
+                    }
+                  }
+                });
+                // 通信フレーム情報の再構成フラグをoff
+                flagRecon = false;
+            }
+            //modbus通信フレーム送受信
+            if (comList.length) {
+              comList.forEach(function(com){
+                modbusRead(com.dev, com.start, com.number, storeToLinkObj);
               });
-              addList.sort(function(add,next){ return add - next; });
-              addTbl[key] = Array.from(new Set(addList));
-            });
-            //効率的な通信のため、連続読み出し領域を探し、modbus通信を行う。
-            Object.keys(addTbl).forEach(function(key) {
-              var addList = addTbl[key];
-              var saddr;
-              var dataNum = 0;
-              var maxAdd;
-              for (var idx = 0, l = addList.length; idx < l; idx++) {
-                var address = Number(addList[idx]);
-                if (dataNum == 0) {
-                  dataNum = 1;
-                  saddr = address;
-                  maxAdd = address + Number(maxDataNum);
-                }
-                if (noBlanck && address == (saddr + dataNum)) {
-                    dataNum = address - saddr + 1;
-                }
-                else if (!noBlanck && address < maxAdd) {
-                    dataNum = address - saddr + 1;
-                }else {
-                  //modbus通信フレームを作成し送信
-                  modbusRead(key, saddr, dataNum, storeToLinkObj);
-                  dataNum = 1;
-                  saddr = address;
-                  maxAdd = address + Number(maxDataNum);
-                }
-                if (idx == (l - 1)) {
-                  //modbus通信フレームを作成し送信
-                  modbusRead(key, saddr, dataNum, storeToLinkObj);
-                }
-              }
-            });
+            }
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
             // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
             Object.keys(listeners).forEach(function(nodeId) {
@@ -82,7 +97,7 @@ module.exports = function(RED) {
                 if (modbusNode) modbusNode.linkDatachangeListener(listeners[nodeId]);
               }
             });
-            listeners = [];  // changeListenerリストをクリア
+            listeners.length = 0;  // changeListenerリストをクリア
           }, refreshCycle * 1000);
 
         }
@@ -123,6 +138,8 @@ console.log("addlinkDataが呼ばれた");
           Array.prototype.push.apply(linkObj.IS, lObj.IS);
           Array.prototype.push.apply(linkObj.IR, lObj.IR);
           Array.prototype.push.apply(linkObj.HR, lObj.HR);
+          // linkObjが変更されたので、通信フレーム情報の再構築フラグをon
+          flagRecon = true;
         }
 
 var gContext = this.context().global;
@@ -175,11 +192,11 @@ gContext.set("list4", list4);
 number = 10;
 var list = [];
 // bit のテストデータ
- for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
+// for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
 // number、nnumListのテストデータ
 // for (var i = 0; i < number; i++) {list.push("0x" + ("0000" + (list1[i] >>> 0).toString(16)).slice(-4));}
 // stringのテストデータ
-// list = list3;
+ list = list3;
 // BCDのテストデータ
 // list = list4;
 console.log(list);
