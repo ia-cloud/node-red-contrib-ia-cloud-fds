@@ -29,7 +29,10 @@ module.exports = function(RED) {
         var maxDataNum = config.maxDataNum;
         var noBlanck = config.noBlanck;
         var addTbl = {};        // Modbus通信でアクセスするデバイスのアドレステーブル
-        var listeners = [];     // Modbus通信で取得したデータに変化があった時の、リスナー関数
+        // Modbus通信で取得したデータに変化があった時にコールするリスナ関数のを持つNodeIDと、
+        // そのデータを使用しているオブジェクトキー
+        // // {nodeID:[objectKey, ]}　の構造を持つ
+        var listeners = {};
         var comList = [];       // Modbus通信フレーム情報
         var flagRecon = false;  // Modbus通信フレーム情報の再構築フラグ
 
@@ -116,7 +119,9 @@ module.exports = function(RED) {
               if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) {
                 // 要求元のModbus Object Nodeとオブジェクトキーを登録
                 // 重複の無いように
+                // objectKeyリストがからだったら、リストに追加
                 if (!listeners[nodeId]) listeners[nodeId] = [linkData.objectKey,];
+                // 登録済みのObjectKeyでなかったら、リストに追加
                 else if (listeners[nodeId].indexOf(linkData.objectKey) == -1) {
                     listeners[nodeId].push(linkData.objectKey);
                 }

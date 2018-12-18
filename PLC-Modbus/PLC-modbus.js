@@ -38,7 +38,7 @@ module.exports = function(RED) {
           } catch(e) {
             //エラーの場合は、nodeステータスを変更。
             node.status({fill:"red",shape:"ring",text:"bad file path !"});
-            node.error("Invalid config JSON file path ", configObj);
+            node.error("Invalid config JSON file path ", config.configfile);
             dataObjects = null;
           }
         } else if(config.confsel == "propertySet") {
@@ -53,10 +53,10 @@ module.exports = function(RED) {
           dataObjects[0].ObjectContent.contentType = dItemsNode.contentType;
           dataObjects[0].ObjectContent.contentData = dItemsNode.dItems;
         }
-console.log(dataObjects[0].ObjectContent.contentData);
 
         // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
         if (dataObjects) {
+console.log(dataObjects[0].ObjectContent.contentData);
             var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
             var address = "";
             dataObjects.forEach(function(objItem, idx) {
