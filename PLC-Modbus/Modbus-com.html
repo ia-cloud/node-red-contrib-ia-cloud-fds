@@ -14,62 +14,64 @@
 <script type="text/x-red" data-template-name="Modbus-com">
   <div class="form-group" id="modbus-com-block">
     <div class="form-row">
-      <label for="node-config-input-name"><i class="fa fa-tag"></i>i_Node name</label>
+      <label for="node-config-input-name"><i class="fa fa-tag"></i>
+        <span data-i18n="editor.name"></span></label>
       <input type="text" id="node-config-input-name">
     </div>
     <div class="form-row hidden">
         <input type="text" id="node-config-input-requiredSet">
     </div>
     <div class="form-row">
-        <label for="node-config-input-refreshCycle">i_通信周期
+        <label for="node-config-input-refreshCycle"><span data-i18n="editor.cycle"></span>
           <span style="color: #ff0000;">*</span></label>
         <input type="number" min="0.1" step="0.1" style="width: 300px" id="node-config-input-refreshCycle">
     </div>
     <div class="form-row">
-        <label for="node-config-input-maxDataNum">
-            i_連続読出数<span style="color: #ff0000;">*</span></label>
+        <label for="node-config-input-maxDataNum"><span data-i18n="editor.maxDataNum"></span>
+            <span style="color: #ff0000;">*</span></label>
         <input type="number" min="1" style="display: inline-block; width: 70px;" id="node-config-input-maxDataNum">
-        <label for="node-input-noBlanck" style="margin-left: 20px;">i_連続限定</label>
+        <label for="node-input-noBlanck" style="margin-left: 20px;">
+          <span data-i18n="editor.noBlanck"></span></label>
         <input type="checkbox" id="node-input-noBlanck" style="display: inline-block; width: auto;">
     </div>
     <div class="form-row">
-        <label for="node-config-input-comType">i_通信種別</label>
+        <label for="node-config-input-comType"><span data-i18n="editor.comType"></span></label>
         <select style="width: 150px;" id="node-config-input-comType">
-            <option selected="selected" value="TCP">i_Modbus/TCP</option>
-            <option value="RTU">i_Modbus/RTU</option>
-            <option value="ASCII">i_Modbus/ASCII</option>
+            <option selected="selected" value="TCP">Modbus/TCP</option>
+            <option value="RTU">Modbus/RTU</option>
+            <option value="ASCII">Modbus/ASCII</option>
         </select>
     </div>
     <div class="form-group" id="etherConf">
         <div class="form-row">
-            <label for="node-config-input-etherPort">i_etherPort
+            <label for="node-config-input-etherPort"><span data-i18n="editor.etherPort"></span>
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-etherPort">
         </div>
         <div class="form-row">
-            <label for="node-config-input-etherAdd">i_アドレス
+            <label for="node-config-input-etherAdd"><span data-i18n="editor.netAddress"></span>
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-etherAdd">
         </div>
         <div class="form-row">
-            <label for="node-config-input-unitID">i_ユニットID
+            <label for="node-config-input-unitID"><span data-i18n="editor.unitID"></span>
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-unitID">
         </div>
     </div>
     <div class="form-group hide" id="serialConf">
         <div class="form-row">
-            <label for="node-config-input-serialPort">i_シリアルPort
+            <label for="node-config-input-serialPort"><span data-i18n="editor.serialPort"></span>
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-serialPort">
         </div>
         <div class="form-row">
-            <label for="node-config-input-serialAdd">i_アドレス
+            <label for="node-config-input-serialAdd"><span data-i18n="editor.serialAddress"></span>
               <span style="color: #ff0000;">*</span></label>
             <input type="text" style="width: 300px" id="node-config-input-serialAdd">
         </div>
         <div class="form-row">
-            <label for="node-config-input-board">i_ボーレート</label>
+            <label for="node-config-input-board"><span data-i18n="editor.board"></span></label>
             <select style="width: 150px;" id="node-config-input-board">
                 <option selected="selected" value="115200">115200</option>
                 <option value="38400">38400</option>
@@ -78,7 +80,7 @@
             </select>
         </div>
         <div class="form-row">
-            <label for="node-config-input-parity">i_パリティ</label>
+            <label for="node-config-input-parity"><span data-i18n="editor.parity"></span></label>
             <select style="width: 150px;" id="node-config-input-parity">
                 <option selected="selected" value="even">Even</option>
                 <option value="odd">Odd</option>

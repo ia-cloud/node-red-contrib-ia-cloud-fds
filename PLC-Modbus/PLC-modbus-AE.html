@@ -14,7 +14,7 @@
 <script type="text/x-red" data-template-name="PLC-Modbus-AE">
 
     <div class="form-row">
-        <label for="node-input-name" ><i class="fa fa-tag"></i>i_Node name</label>
+        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
         <input type="text" class="form-control" id="node-input-name">
     </div>
 
@@ -24,48 +24,48 @@
       <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
             name="configSel" id="node-input-configSel1"
             value="propertySet" checked="checked">
-      <label style="width: 40%;" for="node-input-configSel1"> i_オブジェクト設定</label>
+      <label style="width: 40%;" for="node-input-configSel1"><span data-i18n="editor.UIconfig"></label>
       <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
             name="configSel" id="node-input-configSel2" value="fileSet">
-      <label style="width: 40%;" for="node-input-configSel2"> i_設定ファイル</label>
+      <label style="width: 40%;" for="node-input-configSel2"><span data-i18n="editor.fileconfig"></label>
     </div>
 <br>
     <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
-        <label>i_設定ファイル名を入力してください<span style="color: #ff0000;">*</span></label>
-        <input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">
+        <label><span data-i18n="editor.filename"></span><span style="color: #ff0000;">*</span></label>
+        <input id="node-input-configfile" type="text" style="width: 400px;" data-i18n="[placeholder]editor.confFileholder">
     </div>
 
     <!-- object propertyの設定 -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-storeInterval">
-                i_収集周期</label>
+                <span data-i18n="editor.period"></span></label>
             <input type="number" min="0" step="10" style="display: inline-block; width: auto;" id="node-input-storeInterval">
-            <label for="node-input-storeAsync" style="margin-left: 20px;">i_非同期収集</label>
+            <label for="node-input-storeAsync" style="margin-left: 20px;"><span data-i18n="editor.async"></span></label>
             <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;" disabled='disabled'>
         </div>
         <div class="form-row">
             <label style="margin-right: 10px;" for="node-input-objectName">
-                i_Objectname</label>
+                <span data-i18n="editor.objectname"></span></label>
             <input type="text" style="width: 300px" id="node-input-objectName">
         </div>
         <div class="form-row">
             <label style="margin-right: 10px;"
-                for="node-input-objectKey">i_objectKey
+                for="node-input-objectKey"><span data-i18n="editor.objectKey"></span>
                 <span style="color: #ff0000;">*</span></label>
             <input class="form-control" type="text" style="width: 300px"
-             id="node-input-objectKey" placeholder="必須: 固有のキー" >
+             id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholderholder">
         </div>
         <div class="form-row">
             <label style="margin-right: 10px;"
-                for="node-input-objectdescription">i_Objectdescription</label>
+                for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
             <input type="text" style="width: 300px" id="node-input-objectDescription">
         </div>
 
         <!-- contentData Item の設定ーA&E情報Nodeの選択 -->
         <div class="form-row" id="node-row-AnE">
             <label style="margin-right: 10px; vertical-align: middle;"
-                for="node-input-AnE">i_A&E情報
+                for="node-input-AnE"><span data-i18n="editor.AEItems"></span>
                 <span style="color: #ff0000;">*</span>
               </label>
             <input type="text" style="width: 300px" id="node-input-AnE">
@@ -75,7 +75,7 @@
     <!-- modbus node（設定Node）の選択-->
     <div class="form-row">
         <label for="node-input-ModbusCom" style= "vertical-align: middle;">
-            i_Modbus node<span style="color: #ff0000;">*</span></label>
+            <span data-i18n="editor.modbusNode"></span><span style="color: #ff0000;">*</span></label>
         <input type="text" style="width: 300px" id="node-input-ModbusCom">
     </div>
     <div class="form-row hide">

@@ -31,11 +31,11 @@ module.exports = function(RED) {
           try { this.AnE = JSON.parse(confObj); }
           catch(e) {
             // nodeのエラーを通知してして終了
-            node.error("JSON parse error on parsing dataItem object", e);
+            node.error("runtime:jsonerror", e);
           }
         } else {
             // nodeのエラーを通知してして終了
-            node.error("JSON parse error on parsing dataItem objec後t", confObj);
+            node.error("runtime:jsonerror", confObj);
         }
         this.on("input",function(msg) {});
         this.on("close",function() {});

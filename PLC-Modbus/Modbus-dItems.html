@@ -16,7 +16,7 @@
     <div class="form-row">
       <div class="form-row">
           <label for="node-config-input-name">
-              <i class="fa fa-tag"></i>i_Node name</label>
+              <span data-i18n="editor.name"></span></label>
           <input type="text" id="node-config-input-name">
       </div>
       <div class="form-row hidden">
@@ -24,8 +24,8 @@
           <input type="text" id="node-config-input-configReady">
       </div>
       <div class="form-row">
-        <label for="node-config-input-contentType"><i class="fa fa-tag"></i>
-            i_データ型<span style="color: #ff0000;">*</span></label>
+        <label for="node-config-input-contentType">
+            <span data-i18n="editor.contentType"></span><span style="color: #ff0000;">*</span></label>
         <input type="text" id="node-config-input-contentType" autocomplete="on" >
       </div>
     </div>
@@ -33,30 +33,30 @@
         <div class="form-block" id="form_block[0]">
             <div class="form-row">
               <div class="form-inline" id="from_del[0]" >
-                <span style="border-bottom:solid 2px;">i_データ項目 :</span>
+                <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
                 <input type="text" id="dItem[0]" style="width: 30px;" value="1"
                     disabled="disabled">
                 <select style="width: 150px; margin-left: 30px;" name="dataType[0]"
                     id="dataType[0]">
-                    <option selected="selected" value="bit">i_ビット型</option>
-                    <option value="number">i_数値型</option>
-                    <option value="string">i_文字列型</option>
-                    <option value="numList">i_数値列型</option>
+                    <option selected="selected" value="bit" data-i18n="editor.bit"></option>
+                    <option value="number" data-i18n="editor.number"></option>
+                    <option value="string" data-i18n="editor.string"></option>
+                    <option value="numList" data-i18n="editor.numList"></option>
                 </select>
-                <input type="button" name="del_btn" value="i_削除"
+                <input type="button" name="del_btn" data-i18n="[value]editor.del"
                     style="margin-left: 30px; width: 70px; display: none;">
                 </div>
             </div>
             <div class="form-row" id="block-bit[0]" name="bit" style="margin-left: 10px;">
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;" >
-                        <label>i_データ名称<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.numList"></span><span style="color: #ff0000;">*</span></label>
                         <input type="text" style="width: 150px;" id="bit-dName[0]">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
                         <select id="bit-deviceType[0]" style="width: 50px;">
                             <option selected="selected" value="Coil">Coil</option>
                             <option value="IS">IS</option>
@@ -67,12 +67,12 @@
                 </div>
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_ビット数<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.bitNum"></span><span style="color: #ff0000;">*</span></label>
                         <input type="number" min="1" style="margin-right: 10px; width: 50px"
                             id="bit-num[0]" value="1">
                         <select style="width: 70px" id="bit-logic[0]">
-                            <option selected="selected" value= "pos">正論理</option>
-                            <option value= "neg">負論理</option>
+                            <option selected="selected" value= "pos" data-i18n="editor.pos"></option>
+                            <option value= "neg" data-i18n="editor.neg"></option>
                         </select>
                     </div>
                 </div>
@@ -81,10 +81,10 @@
                     style="margin-left: 10px;">
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;" >
-                        <label>i_データ名称<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
                         <input type="text" style="width: 150px; margin-right: 20px;"
                             id="number-dName[0]">
-                        <label>i_単位</label>
+                        <label><span data-i18n="editor.unit"></span></label>
                         <input type="text" style="width: 50px; margin-right: 10px;"
                             id="number-unit[0]">
                     </div>
@@ -92,7 +92,7 @@
                 <div class="form-row">
                     <div class="form-row">
                         <div class="form-inline" style="vertical-align: middle;">
-                            <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                            <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
                             <select id="number-deviceType[0]" style="width: 50px;">
                                 <option selected="selected" value="IR">IR</option>
                                 <option value="HR">HR</option>
@@ -108,16 +108,16 @@
                     </div>
                     <div class="form-row">
                         <div class="form-inline" style="vertical-align: middle;">
-                            <label>i_データ型</label>
+                            <label><span data-i18n="editor.dType"></span></label>
                             <select id="number-encode[0]" style="width: 100px;">
-                                <option selected="selected" value="unsigned">符号なし</option>
-                                <option value="signed">符号付</option>
-                                <option value="BCD">BCD</option>
+                                <option selected="selected" value="unsigned" data-i18n="editor.unsigned"></option>
+                                <option value="signed" data-i18n="editor.signed"></option>
+                                <option value="BCD" data-i18n="editor.BCD"></option>
                             </select>
-                            <label style="width:50px; margin-left: 10px;">i_ゼロ</label>
+                            <label style="width:50px; margin-left: 10px;"><span data-i18n="editor.offset"></span></label>
                             <input type="number" style="width: 50px; margin-right: 10px;"
                                 id="number-offset[0]" value="0">
-                            <label style="width:50px;">i_倍率</label>
+                            <label style="width:50px;"><span data-i18n="editor.gain"></span></label>
                             <input type="number" style="width: 50px;"
                                 id="number-gain[0]" value="1">
                         </div>
@@ -128,25 +128,25 @@
                     style="margin-left: 10px;">
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;" >
-                        <label>i_データ名称<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
                         <input type="text" style="width: 150px" id="string-dName[0]">
                         <select id="string-encode[0]"
                             style="width: 100px; margin-right: 10px;">
-                            <option value="sJIS">シフトJIS</option>
-                            <option selected="selected" value="utf-8">UTF-8</option>
-                            <option value="EUC">EUC</option>
+                            <option value="sJIS" data-i18n="editor.sjis"></option>
+                            <option selected="selected" value="utf-8" data-i18n="editor.utf"></option>
+                            <option value="EUC" data-i18n="editor.euc"></option>
                         </select>
                     </div>
                 </div>
                 <div class="form-inline" style="vertical-align: middle;">
-                    <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                    <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
                     <select id="string-deviceType[0]" style="width: 50px;">
                         <option selected="selected" value="IR">IR</option>
                         <option value="HR">HR</option>
                     </select>
                     <input type="text" style="width: 80px; margin-right: 10px;"
                         id="string-src[0]">
-                    <label>i_ワード数<span style="color: #ff0000;">*</span></label>
+                    <label><span data-i18n="editor.wnumber"></span><span style="color: #ff0000;">*</span></label>
                     <input type="number" min="1" style="width: 50px; margin-right: 10px;"
                         id="string-num[0]">
                 </div>
@@ -155,13 +155,13 @@
                     style="margin-left: 10px;">
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;" >
-                        <label>i_データ名称<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
                         <input type="text" style="width: 150px" id="numList-dName[0]">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
                         <select id="numList-deviceType[0]" style="width: 50px;">
                             <option selected="selected" value="IR">IR</option>
                             <option value="HR">HR</option>
@@ -177,14 +177,14 @@
                 </div>
                 <div class="form-row">
                     <div class="form-inline" style="vertical-align: middle;">
-                        <label>i_ワード数<span style="color: #ff0000;">*</span></label>
+                        <label><span data-i18n="editor.wnumber"></span><span style="color: #ff0000;">*</span></label>
                         <input type="number" min="1"style="width: 50px; margin-right: 10px;"
                             id="numList-num[0]">
                         <select id="numList-encode[0]"
                             style="width: 100px; margin-right: 10px;">
-                            <option selected="selected" value="unsigned">符号なし</option>
-                            <option value="signed">符号付</option>
-                            <option value="BCD">BCD</option>
+                            <option selected="selected" value="unsigned" data-i18n="editor.unsigned"></option>
+                            <option value="signed" data-i18n="editor.signed"></option>
+                            <option value="BCD" data-i18n="editor.BCD"></option>
                         </select>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
     </div>
     <!-- Addボタン -->
     <div class="form-block">
-      <input type="button" id="form_add" name="add_btn" value="i_追加">
+      <input type="button" id="form_add" name="add_btn"  data-i18n="[value]editor.add">
     </div>
 
 

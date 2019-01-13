@@ -30,16 +30,16 @@ module.exports = function(RED) {
                 if(err){
 console.dir("エラーが起きた");
                     if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
-                        node.error(RED._("common.errors.no-response"));
+                        node.error(RED._("runtime.no-response"));
                     }else{
                         node.error(err);
                     }
-                    node.status({fill:"red", shape:"ring", text:"CCS did not respond"});
+                    node.status({fill:"red", shape:"ring", text:"runtime.no-response"});
                 }else{
                     // レスポンスは受けた
                     if (res.statusCode != 200){
                         // レスポンスコードが 200 OK ではない
-                        node.status({fill:"yellow", shape:"ring", text:"CCS Bad response"});
+                        node.status({fill:"yellow", shape:"ring", text:"runtime.bad-response"});
                         info.serviceID = "";
                         info.status = "disconnected";
                         node.error(err);
@@ -47,7 +47,7 @@ console.dir("エラーが起きた");
                     } else {
                         // Convert the JSON body to the object
                         try { var resbody = JSON.parse(body); }
-                        catch(e) { node.warn(RED._("common.errors.json-error")); }
+                        catch(e) { node.warn(RED._("runtime.json-error")); }
                     }
                 }
                 callback(resbody);
@@ -131,7 +131,7 @@ console.dir("エラーが起きた");
             if (info.serviceID == "") {
 
               // node status をconnecting に
-              node.status({fill:"blue",shape:"dot",text:"connecting to ia-cloud CCS"});
+              node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
               // connect リクエストのリクエストボディ
               var reqbody = {
                 request: "connect",
@@ -157,13 +157,13 @@ console.dir("エラーが起きた");
                     info.serviceID = body.serviceID;
                     info.status = "connected";
                     info.cnctTs = moment().format();
-                    node.status({fill:"green", shape:"dot", text:"CCS connected"});
+                    node.status({fill:"green", shape:"dot", text:"runtime.connected"});
                     msg.payload = body;
                   }
                   else{
                     info.serviceID = "";
                     info.status = "disconnected";
-                    node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+                    node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
                     msg.payload = "Invalid JSON Message";
                   }
                   gContext.set("cnctInfo", info);
@@ -185,11 +185,8 @@ console.dir("エラーが起きた");
                 if (info.serviceID == "") return;
 
                 // node status をconnecting に
-                node.status({fill:"blue",shape:"dot",text:"requesting....."});
+                node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
                 info.status = "requesting";
-
-                // getStatus リクエストのタイムスタンプ
-//                var ts = moment().format();
 
                 // getStatus リクエストのリクエストボディ
                 var reqbody = {
@@ -213,13 +210,13 @@ console.dir("エラーが起きた");
                       // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
                       info.serviceID = body.newServiceID;
                       info.status = "connected";
-                      node.status({fill:"green", shape:"dot", text:"request done"});
+                      node.status({fill:"green", shape:"dot", text:"runtime.connected"});
                       msg.payload = body;
                     }
                     else{
                       info.serviceID = "";
                       info.status = "disconnected";
-                      node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+                      node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
                       msg.payload = "Invalid JSON Message";
                     }
                       info.lastReqTs = moment().format();
@@ -234,13 +231,10 @@ console.dir("エラーが起きた");
               || msg.request == "retrieve" || msg.request == "convey"){
 
               // node status をReqesting に
-              node.status({fill:"blue", shape:"dot", text:"Requesting....."});
+              node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
               info.status = "requesting";
 
-              // connect リクエストのタイムスタンプ
-//              var ts = moment().format();
-
-              // connect リクエストのリクエストボディ
+              // リクエストのリクエストボディ
               var reqbody = {
                   request: msg.request,
                   serviceID: info.serviceID,
@@ -254,25 +248,23 @@ console.dir("エラーが起きた");
                      info.status = "connected";
                      return;
                   }
-
                   if (body.serviceID == reqbody.serviceID && body.status.toLowerCase() == "ok" ) {
 
                       // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
                       info.serviceID = body.newServiceID;
                       info.status = "connected";
-                      node.status({fill:"green", shape:"dot", text:"request done"});
+                      node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
                       msg.payload = body;
                   }
                   else{
                       info.serviceID = "";
                       info.status = "disconnected";
-                      node.status({fill:"yellow", shape:"ring", text:"Invalid JSON Masseage"});
+                      node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
                       msg.payload = "Invalid JSON Message";
                   }
                   info.lastReqTs = moment().format();
                   gContext.set("cnctInfo", info);
                   node.send(msg);
-
               });
           }
           else {
@@ -295,11 +287,11 @@ console.dir("エラーが起きた");
             iaCloudRequest(opts, function(body) {
                 // 下位層のエラー
                 if (body == null) {
-                  node.status({fill:"red", shape:"ring", text:"terminate request error"});
+                  node.status({fill:"red", shape:"ring", text:"runtime.error"});
                 }
                 else {
                   if (body.FDSKey == info.FDSKey && body.serviceID == reqbody.serviceID ) {
-                      node.status({fill:"green", shape:"dot", text:"terminated"});
+                      node.status({fill:"green", shape:"dot", text:"runtime.disconnected"});
                   }
                   else{
                       node.log("someting wrong with  terminating ia-cloud-cnct node");

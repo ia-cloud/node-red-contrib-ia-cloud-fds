@@ -29,16 +29,18 @@ module.exports = function(RED) {
         var storeObj;
         var mbCom = RED.nodes.getNode(config.ModbusCom);
         var minCycle = 10; // 最小収集周期を10秒に設定
+        // Nodeステータスを、preparingにする。
+        node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
 
         if (config.confsel == "fileSet"){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
           try{
-            dataObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
+                    dataObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
               .dataObjects;
           } catch(e) {
             //エラーの場合は、nodeステータスを変更。
-            node.status({fill:"red",shape:"ring",text:"bad file path !"});
-            node.error("Invalid config JSON file path ", config.configfile);
+            node.status({fill:"red", shape:"ring", text:"runtime.badFilePath"});
+            node.error(RED._("runtime.badFilePath"), config.configfile);
             dataObjects = null;
           }
         } else if(config.confsel == "propertySet") {
@@ -127,6 +129,8 @@ console.log(dataObjects[0].ObjectContent.contentData);
             });
             //modbusCom nodeのデータ追加メソッドを呼ぶ
             mbCom.addLinkData(linkObj);
+            // Nodeステータスを　Readyに
+            node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
             var sendObjectId = setInterval(function(){
               // 設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを
@@ -160,6 +164,8 @@ console.log("modbus:changeLstenerが呼ばれた");
 
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
         var iaCloudObjectSend = function(objectKey) {
+
+          node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
 
           var msg = {request:"store", dataObject:{ObjectContent:{}}};
           var contentData = [];
@@ -264,6 +270,7 @@ console.log("modbus:changeLstenerが呼ばれた");
           msg.dataObject.ObjectContent.contentData = contentData;
 console.log(msg.dataObject);
           node.send(msg);
+          node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }
         this.on("input",function(msg) {
           //何もしない

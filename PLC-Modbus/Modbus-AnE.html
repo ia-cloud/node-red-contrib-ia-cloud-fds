@@ -15,12 +15,12 @@
 
     <div class="form-row">
         <label for="node-config-input-name">
-            <i class="fa fa-tag"></i>i_Node name</label>
+            <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
         <input type="text" id="node-config-input-name">
     </div>
     <div class="form-row">
       <label for="node-config-input-contentType"><i class="fa fa-tag"></i>
-          i_データ種別</label>
+          <span data-i18n="editor.contentType"></span></label>
       <input type="text" id="node-config-input-contentType" disabled="disabled">
     </div>
     <div class="form-row hidden">
@@ -32,16 +32,16 @@
 
           <div class="form-row">
             <div class="form-inline" id="from_del[0]" >
-              <span style="border-bottom:solid 2px;">i_データ項目 :</span>
+              <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
               <input type="text" id="dItem[0]" style="width: 30px;" value="1"
                   disabled="disabled">
-              <input type="button" name="del_btn" value="i_削除"
+              <input type="button" name="del_btn" data-i18n="[value]editor.del"
                   style="margin-left: 30px; width: 70px; display: none;">
               </div>
           </div>
           <div class="form-row">
               <div class="form-inline" style="vertical-align: middle;">
-                  <label>i_先頭アドレス<span style="color: #ff0000;">*</span></label>
+                  <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
                   <select id="deviceType[0]" style="width: 50px;">
                       <option selected="selected" value="Coil">Coil</option>
                       <option value="IS">IS</option>
@@ -50,17 +50,17 @@
                   </select>
                   <input type="text" style="margin-right: 10px; width: 80px" id="source[0]">
                   <select style="width: 70px" id="logic[0]">
-                      <option selected="selected" value= "pos">正論理</option>
-                      <option value= "neg">負論理</option>
+                      <option selected="selected" value= "pos" data-i18n="editor.pos"></option>
+                      <option value= "neg" data-i18n="editor.neg"></option>
                   </select>
               </div>
           </div>
           <div class="form-row">
-              <label>i_A&Eコード</label>
+              <label><span data-i18n="editor.AECode"></span></label>
               <input type="text" style="width: 100px;" id="AnECode[0]">
           </div>
           <div class="form-row">
-              <label>i_A&Eの説明</label>
+              <label><span data-i18n="editor.AEDescription"></span></label>
               <textarea style="width: 300px" id="AnEdescription[0]" rows="2"></textarea>
           </div>
           <br>
@@ -68,7 +68,7 @@
   </div>
     <!-- Addボタン -->
     <div class="form-block">
-      <input type="button" id="form_add" name="add_btn" value="i_追加">
+      <input type="button" id="form_add" name="add_btn"  data-i18n="[value]editor.add">
     </div>
 
 </script>

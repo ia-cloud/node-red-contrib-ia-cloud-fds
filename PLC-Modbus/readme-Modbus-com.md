@@ -68,3 +68,16 @@ Modbus通信が Modbus RTU or Modbus ASCII の場合
     objectKey: "com.ia-cloud.hoge"  // このリンクデータを利用するia-cloudオブジェクトのobjectKey
 }
 ```
+### データ変化時のchangelistener呼び出し  
+Modebus通信で取得したデータに変化があった場合、そのデータを参照しているia-cloudオブジェクトを持つNodeのchangeListenerメソッドを、そのobjectKeyの配列を引数に呼び出す。
+そのため内部では、変化時の通知設定があり（NodeIDとobjectKeyが登録）Modbus通信で取得したデータに変化があった場合、コールバックすべきNodeIDと引数としてとるべきobjectKeyを格納した以下のlistenersオブジェクトを使っている。
+```
+{
+    "eff4e65d.c42b08": ["ojectKey", .... ], // 各node毎でデータを使用するobjectKey配列
+    "d2d4b097.7458a": ["ojectKey", .... ], // 各node毎でデータを使用するobjectKey配列
+              .
+              .
+              .
+              .
+}
+```

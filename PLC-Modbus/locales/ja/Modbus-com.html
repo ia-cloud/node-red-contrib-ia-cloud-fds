@@ -1,0 +1,35 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/x-red" data-help-name="Modbus-com">
+    <p>Modbus通信ノード</p>
+
+<h3>入力メーッセージ</h3>
+<dl class="message-properties">
+    <dd>なし</dd>
+</dl>
+
+<h3>出力メッセージ</h3>
+<dl class="message-properties">
+    <dd>なし</dd>
+</dl>
+
+<h3>詳細説明</h3>
+<p>PLC-Modbus NodeやPLC-Modbus-AE Nodeから登録される、Modbus機器との通信情報を保持する
+  リンクオブジェクト(linkObj)から、Modbus通信のデバイスアドレステーブルを作成し、
+  定期的にModbus通信機器と通信を実行、データを取得してlinkObjを更新する設定Node。
+linkObjには、通信で取得すべきModbus機器のデバイス種別、デバイスアドレス、取得したデータの値、
+前回のデータの値、このリンクデータを使用するNodeのID,このデータから生成されるia-cloudオブジェクト
+のobjectKeyが格納される。詳細は、後述のリンクオブジェクト構造を参照のこと。
+</p>
+
+</script>

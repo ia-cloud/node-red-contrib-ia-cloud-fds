@@ -27,16 +27,15 @@ module.exports = function(RED) {
         var confObj = config.configObject;
         this.contentType = config.contentType;
         this.dItems = {};
-console.log(confObj);
         if (confObj) {
           try { this.dItems = JSON.parse(confObj); }
           catch(e) {
             // nodeのエラーを通知してして終了
-            node.error("JSON parse error on parsing dataItem object", confObj);
+            node.error("runtime:jsonerror", confObj);
           }
         } else {
             // nodeのエラーを通知してして終了
-            node.error("JSON parse error on parsing dataItem object", confObj);
+            node.error("runtime:jsonerror", confObj);
         }
         this.on("input",function(msg) {});
         this.on("close",function() {});

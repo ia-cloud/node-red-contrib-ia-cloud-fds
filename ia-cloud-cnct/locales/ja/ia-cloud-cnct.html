@@ -25,8 +25,10 @@
 <dl class="message-properties">
     <dt>payload <span class="property-type">string | object</span></dt>
     <dd>CCSから受け取ったレスポンス。エラーが発生した場合は、エラーコメント。</dd>
-    <dt>statusCode <span class="property-type">number</span></dt>
-    <dd>Httpsレスポンスのステータスコード。通信の下位層でのエラーが発生しや場合は、そのエラーコード。</dd>
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud CCSへ送出したレクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>ia-cloud CCSへ送出したdataObject。入力メッセージとして受けたものと同じ。</dd>
 </dl>
 
 <h3>詳細説明</h3>
