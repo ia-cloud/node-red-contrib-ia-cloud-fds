@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "name": "node name",
+        "UIconfig": "conf. by UI",
+        "fileconfig": "conf. by file",
+        "filename": "configration file path",
+        "period": "period",
+        "async": "asyn. store",
+        "objectname": "object name",
+        "objectKey": "object key",
+        "objectKeyholder": "required: unique key",
+        "objectDescription": "object description",
+        "A&EItem": "A&E items",
+        "modbusNode": "modbus com. node"
+    },
+    "runtime": {
+        "badFilePath": "bad file path",
+        "ready": "Ready",
+        "preparing": "preparing",
+        "sent": "data sent"
+    }
+}
