@@ -1,9 +1,53 @@
 # RaspberryPi-sensor
 ラズベリーパイでのセンサからのデータ取得のNodeについて。
+仕様策定にあたり、処理方法を整理する。
 
-## 超音波距離測定センサ
+1. センサからのデータ取得方法
+   現在の想定では電流センサと超音波距離測定センサの2種類のセンサが存在する。データの取得方法について下記の通り選択肢がある。
+
+   1. 電流センサと超音波距離測定センサのデータを一つのNodeで取得する。
+
+      * メリット
+        入力Nodeから出力Nodeまでのフローが一つになるので、フローがシンプルになる。
+      * デメリット
+        センサーの変更・増設のたびに、取得Nodeを記述する必要がある。
+
+      ![getAllSensor](C:\Users\owner\git\node-red-contrib-ia-cloud-fds\RaspberryPi-sensor\getAllSensor.PNG)
+
+      
+
+   2. 電流センサ取得Nodeと超音波距離測定センサ取得Nodeを分ける。
+
+      * メリット
+        センサごとに取得Nodeを配置するため、センサの変更・増設の際に、Node配置とパラメータ設定で対応できる。
+      * デメリット
+        入力Nodeから複数の機能Nodeに分かれてデータ取得をするため、後続のNodeにバラバラのタイミングで取得データが出力される。出力Nodeに至る手前で同一取得グループとしてまとめる処理が必要となる。
+
+      ![getOneSensor](C:\Users\owner\git\node-red-contrib-ia-cloud-fds\RaspberryPi-sensor\getOneSensor.PNG)
+
+      
+
+2. データ取得後の"postProcess"の処理と、"ia-cloud-cnct"へ渡すデータの方式について。
+
+   1. 取得ごとに渡す。
+
+      * メリット
+        リアルタイム処理となるので、コードがシンプルになる。センサ取得Nodeがセンサごとにした場合(1-2)は、メッセージのAggregation処理が必要。
+      * デメリット
+        複数回取得データの集計処理ができない。センサ取得回数分、cloudへの接続回数となる。
+
+   2. 一旦データファイルに格納してから渡す。
+
+      * メリット
+        複数回取得データに集計処理をかけることが可能。データをまとめてから送信することで、cloudへの接続回数を減らすことが可能。
+      * デメリット
+        データ送信のための処理が別途必要となる。
+
+      ![makeDataFile](C:\Users\owner\git\node-red-contrib-ia-cloud-fds\RaspberryPi-sensor\makeDataFile.PNG)
+
+      
+
+   
 
 
-
-## 電流センサ
 
