@@ -12,7 +12,7 @@
       * デメリット
         センサーの変更・増設のたびに、取得Nodeを記述する必要がある。
 
-      ![getAllSensor](.\getAllSensor.PNG)
+      ![getAllSensor](getAllSensor.PNG)
 
       
 
@@ -23,7 +23,7 @@
       * デメリット
         入力Nodeから複数の機能Nodeに分かれてデータ取得をするため、後続のNodeにバラバラのタイミングで取得データが出力される。出力Nodeに至る手前で同一取得グループとしてまとめる処理が必要となる。
 
-      ![getOneSensor](.\getOneSensor.PNG)
+      ![getOneSensor](getOneSensor.PNG)
 
       
 
@@ -43,7 +43,7 @@
       * デメリット
         データ送信のための処理が別途必要となる。
 
-      ![makeDataFile](.\makeDataFile.PNG)
+      ![makeDataFile](makeDataFile.PNG)
 
       
 
