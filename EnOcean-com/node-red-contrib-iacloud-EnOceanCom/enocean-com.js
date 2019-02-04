@@ -6,6 +6,9 @@ module.exports = function(RED) {
     //var crc = require("crc");
     //const { crc81wire } = require('crc');
     const CRC = require('crc-full').CRC;
+    var moment = require("moment");
+    var fs = require("fs");
+    
     var bufMaxSize = 32768;  // Max serial buffer size, for inputs...
     var gEnOceanData = "";
     
@@ -26,45 +29,6 @@ module.exports = function(RED) {
         this.responsetimeout = n.responsetimeout || 10000;
     }
     RED.nodes.registerType("serial-port",SerialPortNode);
-
-    // Configuration Node (link-data-object)
-    function LinkDataObjectNode(n) {
-        RED.nodes.createNode(this,n);
-        var index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-        var prop_s = "";
-        var prop_n = "";
-        var gContext = this.context().global;
-        var common_info = [];
-        
-        for( var item of index ){
-            var element = {sensor:"", notify:"", endata:""};
-            prop_s = 'sensor_' + item;
-            prop_n = 'notify_' + item;
-            this[prop_s] = n[prop_s];
-            this[prop_n] = n[prop_n];
-            element.sensor = n[prop_s];
-            //this.log('element.sensor = ' + element.sensor);
-            if (n[prop_n] == undefined) {
-                element.notify = "false";
-            } else {
-                element.notify = n[prop_n];
-            }
-            element.endata = "";
-            common_info.push(element);
-        }
-        gContext.set("common_info", common_info);
-        this.entry_sensor = n.entry_sensor;
-        
-        // コンテキストデータの確認
-        var cur_com_info = gContext.get("common_info");
-        this.log('current common_info = ' + JSON.stringify(cur_com_info));
-
-        //this.on("close", function() {
-        //    var common_info = null;
-        //    fContext.set("common_info", common_info);
-        //});
-    }
-    RED.nodes.registerType("link-data-object",LinkDataObjectNode);
 
     function ParseHeader(header) {
         // ERP2 Header Check
@@ -191,10 +155,10 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,n);
         this.serial = n.serial;
         this.serialConfig = RED.nodes.getNode(this.serial);
-        this.linkdataobj = n.linkdataobj;
-        this.linkdataobjConfig = RED.nodes.getNode(this.linkdataobj);
         var gContext = this.context().global;
         var node = this;
+        var linkObj = [];
+        var listeners = {};
 
         if (this.serialConfig) {
             var node = this;
@@ -265,22 +229,18 @@ module.exports = function(RED) {
                 }
                 node.log('radio data = ' + data_info.radio_data);
                 
-                // Originator-ID and radio data is set into the global context.
-                var common_info = gContext.get("common_info");
-                var IsSetData = false;
-                for(let i = 0; i < common_info.length; i++) {
-                    if (common_info[i].sensor == data_info.originId) {
-                        common_info[i].endata = data_info.radio_data;
-                        IsSetData = true;
+                MakeListeners(data_info.originId, data_info.radio_data);
+                node.log('listeners = ' + JSON.stringify(listeners));
+                
+                // 通知先のノード（EnOcean-obj）があればそちらに通知する
+                Object.keys(listeners).forEach(function(nodeId) {
+                    if (nodeId) {
+                        var EnObjNode = RED.nodes.getNode(nodeId);
+                        node.log('nodeId = ' + nodeId + ', EnObjNode = ' + JSON.stringify(EnObjNode));
+                        if (EnObjNode) EnObjNode.linkDatachangeListener(listeners[nodeId]);
                     }
-                }
-                if (!IsSetData) {
-                    node.log('Can not find sensor id in context data!!');
-                }
-                
-                var new_msg = { payload: data_info.originId };
-                node.send(new_msg);
-                
+                });
+                listeners = {};     // 通知先をクリアする
             });
             this.port.on('ready', function() {
                 node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
@@ -291,6 +251,32 @@ module.exports = function(RED) {
         }
         else {
             this.error(RED._("serial.errors.missing-conf"));
+        }
+
+        var MakeListeners = function(sensor_id, data){
+            var linkData = linkObj.find(function(elm) {
+                        return (elm.sensor_id == sensor_id);});
+            if (linkData) {
+                /* linkData.preValue = linkData.value; */
+                linkData.value = data;
+                var nodeId = linkData.nodeId;
+                if (nodeId) {
+                    // リストに追加（または上書き）
+                    listeners[nodeId] = [linkData.objectKey,linkData.value];
+                    node.log('listeners[' + nodeId + '] = ' + listeners[nodeId]);
+                }
+                node.log('$$$$$ A specified sensor ID is found in linkObj [' + linkData.sensor_id + ']');
+                node.log('$$$$$ The received data is set into listeners array list.');
+            } else {
+                node.log('!!!!! A specified sensor ID is not found in linkObj [' + sensor_id + ']');
+            }
+        }
+
+        EnOceanComNode.prototype.addLinkData = function (lObj) {
+            // linkObjに新たなリンクデータを追加
+            Array.prototype.push.apply(linkObj, lObj);
+            node.log('lObj = ' + JSON.stringify(lObj));
+            node.log('linkObj = ' + JSON.stringify(linkObj));
         }
 
         this.on("close", function(done) {
@@ -370,57 +356,114 @@ module.exports = function(RED) {
     }
 
     // EnOcean-obj node function definition
-    function EnOceanObjNode(n) {
-        RED.nodes.createNode(this,n);
-        this.sensor_id = n.sensor_id;
-        this.sensor_kind = n.sensor_kind;
-        this.linkdataobj = n.linkdataobj;
-        this.collectdataobj = n.collectdataobj;
-        this.collectConfig = RED.nodes.getNode(this.collectdataobj);
-        var gContext = this.context().global;
-        var node = this;
+    function EnOceanObjNode(config) {
+        RED.nodes.createNode(this,config);
+        this.sensor_id = config.sensor_id;
+        this.sensor_kind = config.sensor_kind;
+        this.object_key = config.object_key;
+        this.object_desc = config.object_desc;
+        this.enoceancom = config.enoceancom;
+        this.enoceandataitem = config.enoceandataitem;
         
-        this.on("input", function(msg) {
-            var sensor_id = msg.payload;
-            var common_info = gContext.get("common_info");
-            var en_data = "";
-            var output = {
-                objectType: "iaCloudObject",
-                objectKey: node.collectConfig.object_key,
-                objectDiscription: node.collectConfig.object_desc,
-                timeStamp: "2018-11-20T14:00:00+09:00",
-                objectContent: {
-                    contentType: "iaCloudData",
-                    contentData: []
-                }
-            };
-            
-            if (node.sensor_id == sensor_id) {
-                node.log('Match the sensor-ID of this node [' + node.sensor_id + ' : ' + sensor_id + ']');
-            } else {
-                node.log('Does not match the sensor-ID of this node [' + node.sensor_id + ' : ' + sensor_id + ']');
-                return;
-            }
+        var enCom = RED.nodes.getNode(this.enoceancom);
+        var node = this;
+        var linkObj = [];
+        var linkData = {};
+        var EnObjects = [{}];
+        node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
 
-            for(let i = 0; i < common_info.length; i++) {
-                if (common_info[i].sensor == sensor_id) {
-                    en_data = common_info[i].endata;
-                    break;
+        if (config.confsel == "fileSet"){
+          // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
+          try{
+              EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
+                .EnObjects;
+          } catch(e) {
+              //エラーの場合は、nodeステータスを変更。
+              node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
+              node.error(RED._("runtime.badFilePath"), configObj);
+              configObj = null;
+          }
+        } else {
+            // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
+            var EnDataNode = (RED.nodes.getNode(config.enoceandataitem));
+            node.log('EnDataNode = ' + JSON.stringify(EnDataNode));
+            node.log('EnDataNode.dItems = ' + JSON.stringify(EnDataNode.dItems));
+            
+            EnObjects = [{options:{}, ObjectContent:{}}];
+            EnObjects[0].options.sensor_id = config.sensor_id;
+            EnObjects[0].options.sensor_kind = config.sensor_kind;
+            EnObjects[0].objectName = "ObjectName";           // 仮設定
+            EnObjects[0].objectKey = config.object_key;
+            EnObjects[0].objectDescription = config.object_desc;
+            EnObjects[0].ObjectContent.contentType = "iaCloudData";
+            EnObjects[0].ObjectContent.contentData = EnDataNode.dItems;
+        }
+        if (EnObjects) {
+            // 取り合えず EnObjects は要素数1としてコードを書く
+            linkData.sensor_id = config.sensor_id;
+            linkData.nodeId = node.id;
+            linkData.objectKey = config.object_key;
+            linkObj.push(linkData);
+        }
+        //EnOcean-com nodeのデータ追加メソッドを呼ぶ
+        enCom.addLinkData(linkObj);
+        node.status({fill:"green", shape:"dot", text:"送信準備中"});
+        
+        //EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
+        this.linkDatachangeListener = function (element) {
+            // 引数に [objectKey, radio_data] を受け取る
+            iaCloudObjectSend(element);
+        }
+
+        var iaCloudObjectSend = function(element) {
+            node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
+
+            var msg = {request: "store", dataObject:{ObjectContent:{}}};
+            var contentData = [];
+
+            var iaObject = EnObjects.find(function(objItem, idx) {
+                node.log('objItem.objectKey = ' + objItem.objectKey);
+                node.log('element[0] = ' + element[0]);
+                return (objItem.objectKey == element[0]);
+            });
+            
+            if (iaObject) {
+                msg.dataObject.objectKey = element[0];
+                msg.dataObject.timeStamp = moment().format();
+                msg.dataObject.objectType = "iaCloudObject";
+                msg.dataObject.objectDescription = iaObject.objectDescription;
+                msg.dataObject.ObjectContent.contentType = "iaCloudData";
+
+                var options = iaObject.options;
+                node.log('options = ' + JSON.stringify(options));
+                var sensor_val = [];
+                if (options.sensor_kind == "u-rd") {
+                    sensor_val = calc_ac(element[1]);
+                    node.log('calculate ac value = ' + sensor_val);
+                } else {
+                    sensor_val = calc_temperature(element[1]);
+                    node.log('calculate temperature value = ' + sensor_val);
                 }
-            }
-            node.log('get endata from global context "common_info" : ' + en_data);
-            if (node.sensor_kind == "u-rd") {
-               var value = calc_ac(en_data);
-               node.log('calculate ac value = ' + value);
-               output.objectContent.contentData = value;
+                var contentData = iaObject.ObjectContent.contentData;
+                contentData.some(function(dItem, idx) {
+                    if ((idx + 1) > sensor_val.length) {
+                        return true;
+                    }
+                    dItem.dataValue = sensor_val[idx];
+                });
+
+                msg.dataObject.ObjectContent.contentData = contentData;
+                console.log(JSON.stringify(msg.dataObject));
+                node.send(msg);
+                /* node.status({fill:"green", shape:"dot", text:"runtime.sent"}); */
+                node.status({fill:"green",shape:"dot",text:"データ送信済み"});
             } else {
-               var value = calc_temperature(en_data);
-               node.log('calculate temp value = ' + value);
-               output.objectContent.contentData = value;
+                node.log('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
             }
-            var new_msg = { payload: output };
-            node.send(new_msg);
-            node.status({fill:"green",shape:"dot",text:"データ送信済み"});
+        }
+
+        this.on("input", function(msg) {
+            // 処理なし
         });
 
         this.on("close", function(done) {
@@ -435,14 +478,24 @@ module.exports = function(RED) {
     RED.nodes.registerType("EnOcean-obj",EnOceanObjNode);
 
     // collect-data-object config node function definition
-    function EnOceanDataItemNode(n) {
-        RED.nodes.createNode(this,n);
-        this.object_key = n.object_key;
-        this.object_desc = n.object_desc;
-        this.dataname_1 = n.dataname_1;
-        this.dataname_2 = n.dataname_2;
-        this.dataname_3 = n.dataname_3;
-        this.dataname_4 = n.dataname_4;
+    function EnOceanDataItemNode(config) {
+        RED.nodes.createNode(this,config);
+
+        var node = this;
+        var confObj = config.configObject;
+        this.dItems = {};
+        if (confObj) {
+          try { this.dItems = JSON.parse(confObj); }
+          catch(e) {
+            // nodeのエラーを通知してして終了
+            node.error("runtime:jsonerror", confObj);
+          }
+        } else {
+            // nodeのエラーを通知してして終了
+            node.error("runtime:jsonerror", confObj);
+        }
+        this.on("input",function(msg) {});
+        this.on("close",function() {});
     }
     RED.nodes.registerType("EnOcean-dItems",EnOceanDataItemNode);
 

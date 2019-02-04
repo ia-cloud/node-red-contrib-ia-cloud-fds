@@ -7,10 +7,6 @@
         <label for="node-config-input-serial"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
         <input type="text" id="node-config-input-serial">
     </div>
-    <div class="form-row">
-        <label for="node-config-input-linkdataobj"><i class="fa fa-random"></i> <span data-i18n="serial.label.linkObjName"></span></label>
-        <input type="text" id="node-config-input-linkdataobj">
-    </div>
 </script>
 
 <script type="text/x-red" data-help-name="EnOcean-com" charset="utf-8">
@@ -28,8 +24,7 @@
         category: 'config',
         defaults: {
             name: {name:""},
-            serial: {type:"serial-port",required:true},
-            linkdataobj: {type:"link-data-object", required:true, value:""}
+            serial: {type:"serial-port",required:true}
         },
         label: function() {
             var serialNode = RED.nodes.node(this.serial);
@@ -86,12 +81,17 @@
             <label for="node-input-enoceandataitem"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
             <input type="text" id="node-input-enoceandataitem">
         </div>
-<hr>
-        <div class="form-row">
-            <label for="node-input-enoceancom"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanCom"></span></label>
-            <input type="text" id="node-input-enoceancom">
-        </div>
     </div>
+<hr>
+    <!-- EnOcean-com node の選択-->
+    <div class="form-row">
+        <label for="node-input-enoceancom"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanCom"></span></label>
+        <input type="text" id="node-input-enoceancom">
+    </div>
+    <div class="form-row hide">
+        <input type="text" style="width: 300px" id="node-input-objectConfig">
+    </div>
+
 </script>
 
 <script type="text/x-red" data-help-name="EnOcean-obj" charset="utf-8">
@@ -187,8 +187,8 @@
                 </td>
                 <td>
                   <select id="unitType[0]" style="width: 100px;">
-                      <option selected="selected" value="degree Celsius">℃</option>
-                      <option value="ampere">A</option>
+                      <option selected="selected" value="℃">℃</option>
+                      <option value="A">A</option>
                   </select>
                 </td>
               </tr>
@@ -260,8 +260,8 @@
                 });
               }
           });
-          $("#dataname\\[" + idx + "\\]").val(value.options.dataname);
-          $("#unitType\\[" + idx + "\\]").val(value.options.unitType);
+          $("#dataname\\[" + idx + "\\]").val(value.dataname);
+          $("#unitType\\[" + idx + "\\]").val(value.unitType);
           
           var block = $('#form_block\\[' + idx + '\\]');
           if (idx != 0) block.find('input[name="del_btn"]').show();
@@ -349,10 +349,10 @@
 
         var dItems = [];
           $(".form-block[id^='form_block']").each(function(idx, obj){
-              var item ={dataValue: {}, options:{}};
+              var item ={dataValue: "", unitType: "", dataname: ""};
               
-              item.options.unitType = $("#unitType\\[" + idx + "\\]").val();
-              item.options.dataname = $("#dataname\\[" + idx + "\\]").val();
+              item.unitType = $("#unitType\\[" + idx + "\\]").val();
+              item.dataname = $("#dataname\\[" + idx + "\\]").val();
               dItems[idx]=item;
           });
           //フォームの各要素をobjectに記述し、JSON文字列に変換する。
@@ -363,232 +363,7 @@
     });
 </script>
 
-<!-- link-data-object Config Node の記述 -->
-<script type="text/x-red" data-template-name="link-data-object">
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="serial.label.objectName"></label>
-        <input type="text" id="node-config-input-name">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-entry_sensor"><i class="fa fa-flag"></i> <span data-i18n="serial.label.entryID"></label>
-        <input type="text" id="node-config-input-entry_sensor" style="width:50%;">
-        <a id="node-config-input-entry_sensor" class="btn"><i id="node-config-input-addbtn">追加</i></a>
-    </div>
-    <div class="form-row">
-        <table width="100%"><tr>
-            <td width="150px"><span data-i18n="serial.label.sensor_id"></span></td>
-            <td width="100px" data-i18n="serial.label.notify"></td>
-            <td width="80px"></td>
-        </tr>
-        <tr id="entry_1">
-        <td><input type="text" id="node-config-input-sensor_1"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_1" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_1" data-n="1" value="削除"></td>
-        </tr>
-        <tr id="entry_2">
-        <td><input type="text" id="node-config-input-sensor_2"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_2" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_2" data-n="2" value="削除"></td>
-        </tr>
-        <tr id="entry_3">
-        <td><input type="text" id="node-config-input-sensor_3"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_3" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_3" data-n="3" value="削除"></td>
-        </tr>
-        <tr id="entry_4">
-        <td><input type="text" id="node-config-input-sensor_4"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_4" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_4" data-n="4" value="削除"></td>
-        </tr>
-        <tr id="entry_5">
-        <td><input type="text" id="node-config-input-sensor_5"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_5" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_5" data-n="5" value="削除"></td>
-        </tr>
-        <tr id="entry_6">
-        <td><input type="text" id="node-config-input-sensor_6"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_6" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_6" data-n="6" value="削除"></td>
-        </tr>
-        <tr id="entry_7">
-        <td><input type="text" id="node-config-input-sensor_7"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_7" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_7" data-n="7" value="削除"></td>
-        </tr>
-        <tr id="entry_8">
-        <td><input type="text" id="node-config-input-sensor_8"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_8" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_8" data-n="8" value="削除"></td>
-        </tr>
-        <tr id="entry_9">
-        <td><input type="text" id="node-config-input-sensor_9"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_9" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_9" data-n="9" value="削除"></td>
-        </tr>
-        <tr id="entry_10">
-        <td><input type="text" id="node-config-input-sensor_10"></td>
-        <td>
-        <select type="text" id="node-config-input-notify_10" style="width:90%;">
-            <option value="true">true</option>
-            <option value="false">false</option>
-        </select>
-        </td>
-        <td><input type="button" id="node-config-input-delete_10" data-n="10" value="削除"></td>
-        </tr>
-        </table>
-    </div>
-</script>
-
-<script type="text/x-red" data-help-name="link-data-object" charset="utf-8">
-    <p>EnOcean機器オブジェクトノードの設定ノードです。センサーID毎の通知有無を変更できます。</p>
-</script>
-
-<script type="text/javascript">
-    RED.nodes.registerType('link-data-object',{
-        category: 'config',
-        defaults: {
-            name: {value:""},
-            entry_sensor: {value:""},
-            sensor_1: {value:""},
-            notify_1: {value:"false"},
-            sensor_2: {value:""},
-            notify_2: {value:"false"},
-            sensor_3: {value:""},
-            notify_3: {value:"false"},
-            sensor_4: {value:""},
-            notify_4: {value:"false"},
-            sensor_5: {value:""},
-            notify_5: {value:"false"},
-            sensor_6: {value:""},
-            notify_6: {value:"false"},
-            sensor_7: {value:""},
-            notify_7: {value:"false"},
-            sensor_8: {value:""},
-            notify_8: {value:"false"},
-            sensor_9: {value:""},
-            notify_9: {value:"false"},
-            sensor_10: {value:""},
-            notify_10: {value:"false"}
-        },
-        label: function() {
-            return this.name||("enOceanLinkObj");
-        },
-        oneditprepare: function() {
-            var notify_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-            var tr_prefix = "#entry_";
-            var sensor_prefix = "#node-config-input-sensor_";
-            var notify_prefix = "#node-config-input-notify_";
-            $.each(notify_list, function(index, value) {
-                var tr_id = tr_prefix + value;
-                var sensor_id = sensor_prefix + value;
-                var notify_id = notify_prefix + value;
-                if ($(sensor_id).val() == "") {
-                    $(tr_id).hide();
-                } else {
-                    $(tr_id).show();
-                }
-            });
-            
-            //$("#node-config-input-entry_sensor").on('focus', function() {
-            //    $("#node-config-input-entry_sensor").val('04009EFC');
-            //});
-            addRow = function(sensor_id) {
-                var counter = 0;
-                $("[id^='node-config-input-sensor_']").each(function(){
-                   var index = $(this).attr("id").replace("node-config-input-sensor_", "");
-                   var tr_id = "#entry_" + index;
-                   counter++;
-                   if ($(this).val() == "") {
-                       $(tr_id).show();
-                       $(this).val(sensor_id);
-                       return false;
-                   }
-                });
-            }
-            $("#node-config-input-addbtn").click(function() {
-                //addRow();
-                $("#node-config-input-addbtn").addClass('disabled');
-                var sensor_id = $("#node-config-input-entry_sensor").val();
-                addRow(sensor_id);
-                
-                //$.getJSON('endata',function(data) {
-                //    $("#node-config-input-addbtn").removeClass('disabled');
-                //    var endata = "";
-                //    $.each(data, function(key, value) {
-                //        endata = value;
-                //    });
-                //    $("#node-config-input-value").val(endata);
-                //});
-            });
-            // $('#table1').on('click', 'tr', function(event){$(this).remove();});
-            $("[id^='node-config-input-delete_']").click(function() {
-                var index = $(this).data("n");
-                var delete_tr = tr_prefix + index;
-                var sensor_id = sensor_prefix + index;
-                var notify_id = notify_prefix + index;
-                $(delete_tr).hide();
-            });
-            
-            $("#node-config-input-name").val(this.name);
-            $("#node-config-input-value").on('focus', function() {
-                $("#node-config-input-value").val('focus');
-            });
-        },
-        oneditsave: function() {
-            if ($("#node-config-input-name").val() == "") {
-                this.name = "enOceanLinkObj";
-            } else {
-                this.name = $("#node-config-input-name").val();
-            }
-        }
-    });
-</script>
-
+<!-- serial-port Config Node の記述 -->
 <script type="text/x-red" data-template-name="serial-port">
     <div class="form-row">
         <label for="node-config-input-serialport"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
