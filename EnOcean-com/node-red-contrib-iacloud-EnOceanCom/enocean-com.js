@@ -230,15 +230,17 @@ module.exports = function(RED) {
                 node.log('radio data = ' + data_info.radio_data);
                 
                 MakeListeners(data_info.originId, data_info.radio_data);
+                node.log('listeners = ' + JSON.stringify(listeners));
                 
-                // それぞれのEnOcean-objノードにデータを通知
+                // 通知先のノード（EnOcean-obj）があればそちらに通知する
                 Object.keys(listeners).forEach(function(nodeId) {
                     if (nodeId) {
                         var EnObjNode = RED.nodes.getNode(nodeId);
+                        node.log('nodeId = ' + nodeId + ', EnObjNode = ' + JSON.stringify(EnObjNode));
                         if (EnObjNode) EnObjNode.linkDatachangeListener(listeners[nodeId]);
                     }
                 });
-                listeners.length = 0;  // changeListenerリストをクリア
+                listeners = {};     // 通知先をクリアする
             });
             this.port.on('ready', function() {
                 node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
@@ -258,16 +260,10 @@ module.exports = function(RED) {
                 /* linkData.preValue = linkData.value; */
                 linkData.value = data;
                 var nodeId = linkData.nodeId;
-                // TODO: 前回の値と比較して設定する云々の箇所は要検討
-                /* if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) { */
                 if (nodeId) {
-                    // objectKeyリストが空だったら、リストに追加
-                    if (!listeners[nodeId]) listeners[nodeId] = [[linkData.objectKey,linkData.value],];
-                    // 登録済みのObjectKeyでなかったら、リストに追加
-                    else if (listeners[nodeId].indexOf(linkData.objectKey) == -1) {
-                        listeners[nodeId].push(linkData.objectKey);
-                    }
-                    node.log('---> listeners[' + nodeId + '] = ' + listeners[nodeId]);
+                    // リストに追加（または上書き）
+                    listeners[nodeId] = [linkData.objectKey,linkData.value];
+                    node.log('listeners[' + nodeId + '] = ' + listeners[nodeId]);
                 }
                 node.log('$$$$$ A specified sensor ID is found in linkObj [' + linkData.sensor_id + ']');
                 node.log('$$$$$ The received data is set into listeners array list.');
@@ -413,11 +409,10 @@ module.exports = function(RED) {
         enCom.addLinkData(linkObj);
         node.status({fill:"green", shape:"dot", text:"送信準備中"});
         
-        EnOceanObjNode.prototype.linkDatachangeListener = function (KeyAndValueList) {
-            // 引数に [objectKey, radio_data] を要素とする配列を受け取る
-            KeyAndValueList.forEach(function(element, idx) {
-                iaCloudObjectSend(element);
-            });
+        //EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
+        this.linkDatachangeListener = function (element) {
+            // 引数に [objectKey, radio_data] を受け取る
+            iaCloudObjectSend(element);
         }
 
         var iaCloudObjectSend = function(element) {
