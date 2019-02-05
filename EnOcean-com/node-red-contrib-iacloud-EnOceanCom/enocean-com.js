@@ -358,8 +358,6 @@ module.exports = function(RED) {
     // EnOcean-obj node function definition
     function EnOceanObjNode(config) {
         RED.nodes.createNode(this,config);
-        this.sensor_id = config.sensor_id;
-        this.sensor_kind = config.sensor_kind;
         this.object_key = config.object_key;
         this.object_desc = config.object_desc;
         this.enoceancom = config.enoceancom;
@@ -390,8 +388,8 @@ module.exports = function(RED) {
             node.log('EnDataNode.dItems = ' + JSON.stringify(EnDataNode.dItems));
             
             EnObjects = [{options:{}, ObjectContent:{}}];
-            EnObjects[0].options.sensor_id = config.sensor_id;
-            EnObjects[0].options.sensor_kind = config.sensor_kind;
+            EnObjects[0].options.sensor_id = EnDataNode.sensor_id;
+            EnObjects[0].options.sensor_kind = EnDataNode.sensor_kind;
             EnObjects[0].objectName = "ObjectName";           // 仮設定
             EnObjects[0].objectKey = config.object_key;
             EnObjects[0].objectDescription = config.object_desc;
@@ -400,7 +398,7 @@ module.exports = function(RED) {
         }
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
-            linkData.sensor_id = config.sensor_id;
+            linkData.sensor_id = EnObjects[0].options.sensor_id;
             linkData.nodeId = node.id;
             linkData.objectKey = config.object_key;
             linkObj.push(linkData);
@@ -480,6 +478,8 @@ module.exports = function(RED) {
     // collect-data-object config node function definition
     function EnOceanDataItemNode(config) {
         RED.nodes.createNode(this,config);
+        this.sensor_id = config.sensor_id;
+        this.sensor_kind = config.sensor_kind;
 
         var node = this;
         var confObj = config.configObject;

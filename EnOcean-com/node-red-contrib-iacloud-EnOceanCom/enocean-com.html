@@ -39,17 +39,6 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
-    <div class="form-row">
-        <label for="node-input-sensor_kind"><i class="fa fa-thermometer-half"></i> <span data-i18n="serial.label.sensor_kind"></span></label>
-        <select type="text" id="node-input-sensor_kind">
-            <option value="u-rd">電流センサー(U-RD)</option>
-            <option value="watty">温度センサー(Watty)</option>
-        </select>
-    </div>
-    <div class="form-row">
-        <label for="node-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
-        <input type="text" id="node-input-sensor_id" data-i18n="serial.label.sensor_id">
-    </div>
 
     <div class="form-row">
       <input type="text" style="display: none;" id="node-input-confsel" value="propertySet">
@@ -103,8 +92,6 @@
         category: 'iaCloud',
         defaults: {
             name: {name:""},
-            sensor_kind: {value:"ur-d", required:true},
-            sensor_id: {value:"", required:true},
             confsel: {value:"propertySet"},
             configfile: {value:"", required: false},
             object_key: {value:""},
@@ -159,6 +146,17 @@
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_kind"><i class="fa fa-thermometer-half"></i> <span data-i18n="serial.label.sensor_kind"></span></label>
+        <select type="text" id="node-config-input-sensor_kind">
+            <option value="u-rd">電流センサー(U-RD)</option>
+            <option value="watty">温度センサー(Watty)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
     <div class="form-row hidden">
         <input type="text" id="node-config-input-configObject">
     </div>
@@ -209,6 +207,8 @@
         category: 'config',
         defaults: {
             name: {name:""},
+            sensor_kind: {value:"u-rd", required:true},
+            sensor_id: {value:"", required:true},
             configObject: {value:""}
         },
         label: function() {
@@ -269,7 +269,61 @@
           frm_cnt = idx;
           });
         }
-
+        
+        $("#node-config-input-sensor_kind").change(function (){
+          //フォームを一つ保存
+          var original = $('#form_block\\[0\\]');
+          
+          var num = 1;
+          var str = $("select option:selected").val();
+          if ( str == "u-rd" ) {
+              num = 1;
+          } else {
+              num = 4;
+          }
+          
+          //TODO: selectタグでセンサー種別を変更した場合に表示する内容を変更する
+          /*******************************************************
+          $(".form-block[id^='form_block']")
+               .each(function(index, formObj) {$(formObj).remove();});
+          for ( var idx = 0; idx < num; idx++ ) {
+            original
+              .clone()
+              .hide()
+              .appendTo("#blocks")
+              .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
+              .end() // 一度適用する
+              .find('div, input, textarea, select, label').each(function(index, obj) {
+                if ($(obj).attr('id') != null) {
+                  if($(obj).attr("id").substr(0,5) == "dItem"){
+                      $(obj).val("" + (idx + 1));
+                  }
+                  $(obj).attr({
+                    id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+                if ($(obj).attr('name') != null) {
+                  $(obj).attr({
+                      name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                   });
+                }
+                if ($(obj).attr('for') != null) {
+                  $(obj).attr({
+                      for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+              });
+            $("#dataname\\[" + idx + "\\]").val();
+            $("#unitType\\[" + idx + "\\]").val();
+          
+            var block = $('#form_block\\[' + idx + '\\]');
+            if (idx != 0) block.find('input[name="del_btn"]').show();
+            block.slideDown('slow');
+            frm_cnt = idx;
+          }
+          ****************************************************************/
+        });
+        
         //追加ボタンが押されたら
         $("#form_add").off("click");
         $("#form_add").on("click", function() {
@@ -305,7 +359,7 @@
           clone.find('input[name="del_btn"]').show();
           clone.slideDown('fast');
         });
-
+        
         //削除ボタンが押されたら
         $("#blocks").off('click', 'input[name="del_btn"]');
         $("#blocks").on('click', 'input[name="del_btn"]', function() {
