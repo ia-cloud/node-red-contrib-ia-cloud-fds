@@ -80,9 +80,9 @@
 | ----------------- | :----: | ---------------------------------------------- |
 | Node名称          | string | Nodeの名称                                     |
 | センサー種類      | string | 読み取るセンサーの種類<br />ex. "ct", "usonic" |
-| GPIOの端子1の指定 |  int   | RaspberryPIのGPIOの端子番号1                   |
+| GPIOの端子1の指定 | number | RaspberryPIのGPIOの端子番号1                   |
 | GPIOの端子1の種別 | string | 端子番号1につける種別                          |
-| GPIOの端子1の指定 |  int   | RaspberryPIのGPIOの端子番号2                   |
+| GPIOの端子1の指定 | number | RaspberryPIのGPIOの端子番号2                   |
 | GPIOの端子1の種別 | string | 端子番号2につける種別                          |
 
 
