@@ -97,7 +97,7 @@ msg.payload = {
 	"ID" : { string } ,
 	"timestamp" : { string } ,
 	"取得グループID" : { string },
-	"センサー種類" : { string }
+	"センサー種類" : { string },
 	"取得したセンサーの値" : { string }
 }
 ```
