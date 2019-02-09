@@ -97,7 +97,7 @@ module.exports = function(RED) {
             Object.keys(listeners).forEach(function(nodeId) {
               if (nodeId) {
                 var modbusNode = RED.nodes.getNode(nodeId);
-                if (modbusNode) modbusNode.linkDatachangeListener(listeners[nodeId]);
+                if (modbusNode) modbusNode.emit("changeListener",listeners[nodeId]);
               }
             });
             listeners.length = 0;  // changeListenerリストをクリア
@@ -136,16 +136,16 @@ module.exports = function(RED) {
           clearInterval(cycleId);
         });
 
-        modbusCom.prototype.addLinkData = function (lObj) {
-console.log("addlinkDataが呼ばれた");
-          // linkObjに新たなリンクデータを追加
-          Array.prototype.push.apply(linkObj.Coil, lObj.Coil);
-          Array.prototype.push.apply(linkObj.IS, lObj.IS);
-          Array.prototype.push.apply(linkObj.IR, lObj.IR);
-          Array.prototype.push.apply(linkObj.HR, lObj.HR);
-          // linkObjが変更されたので、通信フレーム情報の再構築フラグをon
-          flagRecon = true;
-        }
+        this.on("addLinkData",function(lObj) {
+console.log("this.onのaddlinkDataが呼ばれた");
+            // linkObjに新たなリンクデータを追加
+            Array.prototype.push.apply(linkObj.Coil, lObj.Coil);
+            Array.prototype.push.apply(linkObj.IS, lObj.IS);
+            Array.prototype.push.apply(linkObj.IR, lObj.IR);
+            Array.prototype.push.apply(linkObj.HR, lObj.HR);
+            // linkObjが変更されたので、通信フレーム情報の再構築フラグをon
+            flagRecon = true;
+        });
 
 var gContext = this.context().global;
 var list1 = [123,234,345,-456,567,-678,789,-3450,4561,5672];
