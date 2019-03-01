@@ -128,7 +128,8 @@ console.log(dataObjects[0].ObjectContent.contentData);
               });
             });
             //modbusCom nodeのデータ追加メソッドを呼ぶ
-            mbCom.addLinkData(linkObj);
+            mbCom.emit("addLinkData", linkObj);
+
             // Nodeステータスを　Readyに
             node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
@@ -152,15 +153,14 @@ console.log("定期収集:" + objItem.objectKey);
             }, (minCycle * 1000));
         }
 
-
-        PLCModbus.prototype.linkDatachangeListener = function (objectKeys) {
-console.log("modbus:changeLstenerが呼ばれた");
-          //登録したlinkObに変化があったら呼ばれる。
-          //そのlinkObjを参照するia-cloudオブエクトをstoreする。
-          objectKeys.forEach(function(key, idx) {
-            iaCloudObjectSend(key);
-          });
-        }
+        this.on("changeListener",function(objectKeys) {
+console.log("this.on:changeListenerが呼ばれた");
+            //登録したlinkObに変化があったら呼ばれる。
+            //そのlinkObjを参照するia-cloudオブエクトをstoreする。
+            objectKeys.forEach(function(key, idx) {
+                iaCloudObjectSend(key);
+            });
+        });
 
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
         var iaCloudObjectSend = function(objectKey) {
