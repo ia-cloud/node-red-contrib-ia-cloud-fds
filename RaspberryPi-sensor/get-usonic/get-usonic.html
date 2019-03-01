@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('get-usonic',{
+        category: 'ia-cloud',
+        color: '#c1d8ac',
+        defaults: {
+            name: {value:""},
+            user: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "rpi.png",
+        label: function() {
+            return this.name||"get-usonic";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="get-usonic">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> ノード名</label>
+        <input type="text" id="node-input-name" placeholder="ノード名">
+    </div>
+    <div class="form-row">
+        <label for="node-input-user"><i class="icon-tag"></i> ユーザ名</label>
+        <input type="text" id="node-input-user" placeholder="ユーザ名">
+    </div>
+    <div class="form-tips"><b>Tip:</b> ユーザ名は出力データに格納されます。</div>
+</script>
+
+<script type="text/x-red" data-help-name="get-usonic">
+    <p>このノードは超音波距離測定センサーを使用して、測定データを取得します。</p>
+</script>

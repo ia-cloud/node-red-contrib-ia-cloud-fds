@@ -1,0 +1,16 @@
+{
+    "name": "node-red-contrib-ia-cloud-pi-get-usonic",
+    "version": "0.0.1",
+    "description": "ia-cloud Node-RED nodes for RaspberyPi",
+    "main": "get-usonic.js",
+    "author": "Shinichi MITSUTAKE",
+    "license": "ISC",
+    "dependencies": {
+        "rpio": "^1.0.13"
+    },
+    "node-red": {
+        "nodes": {
+            "get-usonic": "get-usonic.js"
+        }
+    }
+}
