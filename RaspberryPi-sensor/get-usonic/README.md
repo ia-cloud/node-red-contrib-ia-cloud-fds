@@ -22,13 +22,8 @@
 
 | 名称              |  種別  | 説明                                           |
 | ----------------- | :----: | ---------------------------------------------- |
-| nodeName          | string | Nodeの名称                                     |
+| name              | string | Nodeの名称                                     |
 | user              | string | 利用者                                         |
-| センサー種類      | string | 読み取るセンサーの種類<br />ex. "ct", "usonic" |
-| GPIOの端子1の指定 | number | RaspberryPIのGPIOの端子番号1                   |
-| GPIOの端子1の種別 | string | 端子番号1につける種別                          |
-| GPIOの端子2の指定 | number | RaspberryPIのGPIOの端子番号2                   |
-| GPIOの端子2の種別 | string | 端子番号2につける種別                          |
 
 
 
@@ -39,15 +34,15 @@
 
 | 名称      | 種別   | 説明                                   |
 | --------- | ------ | -------------------------------------- |
-| user      | string | 利用者                                 |
 | timestamp | string | タイムスタンプ                         |
+| user      | string | 利用者                                 |
 | distance  | string | 距離測定センサーで計測した距離(cm単位) |
 
 
 ```
 msg.payload = {
-	"user" : { string } ,
 	"timestamp" : { string } ,
+    "user" : { string } ,
 	"distance" : { string }
 }
 ```
