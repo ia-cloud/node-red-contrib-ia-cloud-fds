@@ -42,7 +42,7 @@
 ```
 msg.payload = {
 	"timestamp" : { string } ,
-    "user" : { string } ,
+	"user" : { string } ,
 	"distance" : { string }
 }
 ```
