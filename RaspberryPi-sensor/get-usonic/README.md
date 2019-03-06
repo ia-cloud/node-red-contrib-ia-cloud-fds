@@ -29,21 +29,61 @@
 
 ## 出力メッセージ
 
-* ``payload``:  **object**
+* ``msg``:  **object**
   * 取得した値を配列に格納する。
 
 | 名称      | 種別   | 説明                                   |
 | --------- | ------ | -------------------------------------- |
-| timestamp | string | タイムスタンプ                         |
+| timestamp | string | タイムスタンプ(isodatetime)            |
 | user      | string | 利用者                                 |
 | distance  | string | 距離測定センサーで計測した距離(cm単位) |
 
 
 ```
-msg.payload = {
-	"timestamp" : { string } ,
-	"user" : { string } ,
-	"distance" : { string }
+msg = {
+    "request": "store",
+    "dataObject": {
+        "objectType" : "iaCloudObject",
+        "objectKey" : "rmc-iot-santama." + {user} + ".nrus-sensors" ,
+        "objectDescription" : "センサーの値",
+        "timeStamp" :  {timestamp},
+        "ObjectContent" : {
+            "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+            "contentData":[{
+                "commonName": "Column1",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column2",
+                "dataName": "超音波センサー",
+                "dataValue": {distance},
+                "unit": "cm"
+            },{
+                "commonName": "Column3",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column4",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column5",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column6",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            }]
+        }
+    }
 }
+
+
 ```
 

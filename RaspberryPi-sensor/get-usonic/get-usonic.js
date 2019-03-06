@@ -8,19 +8,62 @@ module.exports = function(RED) {
         node.on('input', function(msg) {
 
             var rpio = require('rpio');
-
             var repeat = 1;
-            var sleepMsec = 1000; 
+            var sleepMsec = 100; 
             var count = 0;
-            var timestamp = msg.payload;
+
+            var dateformat = require('dateformat');
+            var now = new Date();
+            //var timestamp = msg.payload;
+            var DTime = dateformat(now, 'isoDateTime');
+            var dist;
 
             for(count = 0; count < repeat; count++){
                 //msg.payload = msg.payload + ",'" + this.user + "'," + GetUsonicDist() + '[cm]';
-                msg.payload = {
-                    "timestamp": timestamp,
-                    "user": this.user,
-                    "distance": GetUsonicDist()
-                };
+                dist = GetUsonicDist();
+                msg = {
+                    "request": "store",
+                    "dataObject": {
+                        "objectType" : "iaCloudObject",
+                        "objectKey" : "rmc-iot-santama." + this.user + ".nr-sensors" ,
+                        "objectDescription" : "センサーの値",
+                        "timeStamp" :  DTime,
+                        "ObjectContent" : {
+                            "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+                            "contentData":[{
+                                "commonName": "Column1",
+                                "dataName": "ダミー",
+                                "dataValue": 0,
+                                "unit": "value"
+                            },{
+                                "commonName": "Column2",
+                                "dataName": "超音波センサー",
+                                "dataValue": dist,
+                                "unit": "cm"
+                            },{
+                                "commonName": "Column3",
+                                "dataName": "ダミー",
+                                "dataValue": 0,
+                                "unit": "value"
+                            },{
+                                "commonName": "Column4",
+                                "dataName": "ダミー",
+                                "dataValue": 0,
+                                "unit": "value"
+                            },{
+                                "commonName": "Column5",
+                                "dataName": "ダミー",
+                                "dataValue": 0,
+                                "unit": "value"
+                            },{
+                                "commonName": "Column6",
+                                "dataName": "ダミー",
+                                "dataValue": 0,
+                                "unit": "value"
+                            }]
+                        }
+                    }
+                }
                 node.send(msg);
                 rpio.msleep(sleepMsec);
             }

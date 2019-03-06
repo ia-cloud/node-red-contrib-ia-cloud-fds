@@ -29,21 +29,61 @@
 
 ## 出力メッセージ
 
-* ``payload``:  **object**
+* ``msg``:  **object**
   * 取得した値を配列に格納する。
 
 | 名称      | 種別   | 説明                          |
 | --------- | ------ | ----------------------------- |
-| timestamp | string | タイムスタンプ                |
+| timestamp | string | タイムスタンプ(isodatetime)   |
 | user      | string | 利用者                        |
 | volts     | string | 電流センサーで計測した電圧(V) |
 
 
 ```
-msg.payload = {
-	"timestamp" : { string } ,
-	"user" : { string } ,
-	"volts" : { string }
+msg = {
+    "request": "store",
+    "dataObject": {
+        "objectType" : "iaCloudObject",
+        "objectKey" : "rmc-iot-santama." + {user} + ".nrct-sensors" ,
+        "objectDescription" : "センサーの値",
+        "timeStamp" :  {timestamp},
+        "ObjectContent" : {
+            "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+            "contentData":[{
+                "commonName": "Column1",
+                "dataName": "CTセンサー",
+                "dataValue": {volts},
+                "unit": "V"
+            },{
+                "commonName": "Column2",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column3",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column4",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column5",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            },{
+                "commonName": "Column6",
+                "dataName": "ダミー",
+                "dataValue": 0,
+                "unit": "value"
+            }]
+        }
+    }
 }
+
+
 ```
 

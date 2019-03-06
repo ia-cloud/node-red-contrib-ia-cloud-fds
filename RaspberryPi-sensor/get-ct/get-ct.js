@@ -11,7 +11,10 @@ module.exports = function(RED) {
             const I2C = require('raspi-i2c').I2C;
             const ADS1x15 = require('raspi-kit-ads1x15');
 
-            var timestamp = msg.payload;
+            var dateformat = require('dateformat');
+            var now = new Date();
+            //var timestamp = msg.payload;
+            var DTime = dateformat(now, 'isoDateTime');
 
             // Init Raspi
             Raspi.init(() => {
@@ -33,18 +36,56 @@ module.exports = function(RED) {
                 // Get a single-ended reading from channel-0 and display the results
                 adc.readChannel(ADS1x15.channel.CHANNEL_0, (err, value, volts) => {
                     if (err) {
-                        //console.error('Failed to fetch value from ADC', err);
+                        console.error('Failed to fetch value from ADC', err);
                         //process.exit(1);
                     } else {
                         //console.log('Channel 0');
                         //console.log(' * Value:', value);    // will be a 11 or 15 bit integer depending on chip
                         //console.log(' * Volts:', volts);    // voltage reading factoring in the PGA
 
-                        msg.payload = {
-                            "timestamp": timestamp,
-                            "user": this.user,
-                            "volts": volts
-                        };
+                        msg = {
+                            "request": "store",
+                            "dataObject": {
+                                "objectType" : "iaCloudObject",
+                                "objectKey" : "rmc-iot-santama." + this.user + ".nr-sensors" ,
+                                "objectDescription" : "センサーの値",
+                                "timeStamp" :  DTime,
+                                "ObjectContent" : {
+                                    "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+                                    "contentData":[{
+                                        "commonName": "Column1",
+                                        "dataName": "CTセンサー",
+                                        "dataValue": volts,
+                                        "unit": "V"
+                                    },{
+                                        "commonName": "Column2",
+                                        "dataName": "ダミー",
+                                        "dataValue": 0,
+                                        "unit": "value"
+                                    },{
+                                        "commonName": "Column3",
+                                        "dataName": "ダミー",
+                                        "dataValue": 0,
+                                        "unit": "value"
+                                    },{
+                                        "commonName": "Column4",
+                                        "dataName": "ダミー",
+                                        "dataValue": 0,
+                                        "unit": "value"
+                                    },{
+                                        "commonName": "Column5",
+                                        "dataName": "ダミー",
+                                        "dataValue": 0,
+                                        "unit": "value"
+                                    },{
+                                        "commonName": "Column6",
+                                        "dataName": "ダミー",
+                                        "dataValue": 0,
+                                        "unit": "value"
+                                    }]
+                                }
+                            }
+                        }
                         node.send(msg);
                         //process.exit(0);
                     }
