@@ -12,9 +12,7 @@ module.exports = function(RED) {
             const ADS1x15 = require('raspi-kit-ads1x15');
 
             var dateformat = require('dateformat');
-            var now = new Date();
-            //var timestamp = msg.payload;
-            var DTime = dateformat(now, 'isoDateTime');
+            var timestamp = dateformat(msg.payload, 'isoDateTime');
 
             // Init Raspi
             Raspi.init(() => {
@@ -47,9 +45,9 @@ module.exports = function(RED) {
                             "request": "store",
                             "dataObject": {
                                 "objectType" : "iaCloudObject",
-                                "objectKey" : "rmc-iot-santama." + this.user + ".nr-sensors" ,
+                                "objectKey" : "rmc-iot-santama." + this.user + ".nrct-sensors" ,
                                 "objectDescription" : "センサーの値",
-                                "timeStamp" :  DTime,
+                                "timeStamp" :  timestamp,
                                 "ObjectContent" : {
                                     "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
                                     "contentData":[{
