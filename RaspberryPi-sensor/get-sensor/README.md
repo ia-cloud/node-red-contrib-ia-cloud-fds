@@ -76,7 +76,7 @@ msg = {
     "request": "store",
     "dataObject": {
         "objectType" : "iaCloudObject",
-        "objectKey" : "rmc-iot-santama." + {user} + ".nrct-sensors" ,
+        "objectKey" : "rmc-iot-santama." + {user} + ".sensors" ,
         "objectDescription" : "センサーの値",
         "timeStamp" :  {timestamp},
         "ObjectContent" : {
