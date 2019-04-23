@@ -1,0 +1,33 @@
+<script type="text/x-red" data-template-name="plc-mc-protocol">
+
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="editor.name"></span></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]editor.name">
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="plc-mc-protocol">
+
+
+
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('plc-mc-protocol', {
+    category: 'iaCloud',
+    color:'rgb(231, 180, 100)',
+    align: 'right',
+    defaults: {
+      name: { value: 'plc-mc-protocol' },
+    },
+    inputs:1,
+    outputs:1,
+    icon: 'ia-cloud.png',
+    label: function() {
+        return this.name || 'plc-mc-protocol';
+    },
+  });
+
+</script>
