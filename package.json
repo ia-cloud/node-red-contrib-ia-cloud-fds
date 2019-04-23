@@ -11,11 +11,15 @@
     "node-red": {
         "nodes": {
             "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+            "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
             "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
             "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
             "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
             "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
             "Modbus-com": "PLC-Modbus/Modbus-com.js"
         }
+    },
+    "dependencies": {
+        "mcprotocol": "^0.1.1"
     }
 }
