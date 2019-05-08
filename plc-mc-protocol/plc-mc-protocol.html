@@ -1,8 +1,19 @@
 <script type="text/x-red" data-template-name="plc-mc-protocol">
 
+  <!-- Name -->
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
     <input type="text" id="node-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-node-name">
+  </div>
+  <!-- Host -->
+  <div class="form-row">
+    <label for="node-input-host"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.host" /></label>
+    <input type="text" id="node-input-host" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.host">
+  </div>
+  <!-- Port -->
+  <div class="form-row">
+    <label for="node-input-port"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.port" /></label>
+    <input type="text" id="node-input-port" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.port">
   </div>
 
 </script>
@@ -21,6 +32,8 @@
     align: 'right',
     defaults: {
       name: { value: 'plc-mc-protocol' },
+      host: { value: '' },
+      port: { value: 5011 },
     },
     inputs: 1,
     outputs: 1,
