@@ -9,17 +9,17 @@ const readItemsFromPLC = (param) => new Promise((resolve, reject) => {
     port: param.port,
     ascii: false,
   }, function(err) {
-    if (typeof(err) !== "undefined") { // TODO 後で確認
+    if (typeof(err) !== 'undefined') { // TODO 後で確認
       // We have an error.  Maybe the PLC is not reachable.
       console.log(err); // TODO Node-RED流の何かしらのエラーアプローチ.
       return reject(err);
     }
     const variables = Object.entries(param.items).map(e => `${e[0]},${e[1]}`);
-    // conn.setTranslationCB(function(tag) {return variables[tag];}); 	// This sets the "translation" to allow us to work with object names defined in our app not in the module
+    // conn.setTranslationCB(function(tag) {return variables[tag];}); 	// This sets the 'translation' to allow us to work with object names defined in our app not in the module
     conn.addItems(variables);
     conn.readAllItems(function(anythingBad, values) {
       if (anythingBad) {
-        console.log("SOMETHING WENT WRONG READING VALUES!!!!"); // TODO Node-RED流の何かしらのエラーアプローチ.
+        console.log('SOMETHING WENT WRONG READING VALUES!!!!'); // TODO Node-RED流の何かしらのエラーアプローチ.
         conn.dropConnection();
         return reject('Something went wrong reading values.');
       }
