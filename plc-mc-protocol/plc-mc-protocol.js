@@ -49,8 +49,8 @@ function exportsFunction(RED) {
     // inputイベント(ノードがメッセージを受信)へのリスナー登録.
     this.on('input', async (msg) => {
       const values = await readItemsFromPLC({
-        host: '192.168.1.56',
-        port: 5011,
+        host: config.host,
+        port: config.port,
         items: {
           D0: 1,
           D1: 1,

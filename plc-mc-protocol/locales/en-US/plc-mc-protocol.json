@@ -2,7 +2,9 @@
   "ia-cloud-fds": {
     "plc-mc-protocol": {
       "node-name": "Node name",
-      "this-node-name": "This node name"
+      "this-node-name": "This node name",
+      "host": "Host",
+      "port": "Port"
     }
   }
 }
