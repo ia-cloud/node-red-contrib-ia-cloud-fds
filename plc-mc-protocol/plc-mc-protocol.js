@@ -31,13 +31,23 @@ const readItemsFromPLC = (param) => new Promise((resolve, reject) => {
 
 // ----------------------------------------
 
-module.exports = function(RED) {
+/**
+ * exportsするfunctionの定義.
+ * @see https://nodered.jp/docs/creating-nodes/node-js
+ * @param {object} RED - Node-REDで決められているお作法.
+ */
+function exportsFunction(RED) {
+  /**
+   * registerTypeで登録するfunctionの定義.
+   * @see https://nodered.jp/docs/creating-nodes/node-js#ノードコンストラクタ
+   * @param {object} config
+   */
+  function nodeFunction(config) {
+    const thisNode = this;
+    RED.nodes.createNode(thisNode, config);
 
-  function plcMcProtocol(config) {
-    RED.nodes.createNode(this, config);
-
+    // inputイベント(ノードがメッセージを受信)へのリスナー登録.
     this.on('input', async (msg) => {
-      // メイン処理.
       const values = await readItemsFromPLC({
         host: '192.168.1.56',
         port: 5011,
@@ -49,9 +59,13 @@ module.exports = function(RED) {
       });
       // 取得結果のセット.
       msg.payload = values;
-      this.send(msg);
+      thisNode.send(msg);
     });
   }
 
-  RED.nodes.registerType('plc-mc-protocol', plcMcProtocol);
-};
+  RED.nodes.registerType('plc-mc-protocol', nodeFunction, {
+    // credentials
+  });
+}
+
+module.exports = exportsFunction;
