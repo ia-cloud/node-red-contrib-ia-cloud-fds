@@ -36,34 +36,31 @@ module.exports = function(RED) {
         var comList = [];       // Modbus通信フレーム情報
         var flagRecon = false;  // Modbus通信フレーム情報の再構築フラグ
 
-        if (refreshCycle > 0) {
-          var cycleId = setInterval(function(){
-            // 通信フレーム情報の再構成フラグがonの時は、再構成する
-            if (flagRecon) {
-                //作成したリンクオブジェクトに基づき、Modbus通信を実施し、リンクオブジェクトの各Valueを更新する
-                //linkObjの各項目ををスキャンし、読み出すデバイスのリスト（配列）を作成。昇順に並べ重複を削除する。
-                // まず、現在の通信フレーム情報をクリア
-                comList.length = 0;
-                Object.keys(linkObj).forEach(function(key) {
-                  var addList = [];
-                  linkObj[key].forEach(function(linkData, idx) {
+        node.reconfigLinkObj = function() {
+            //作成したリンクオブジェクトに基づき、Modbus通信を実施し、リンクオブジェクトの各Valueを更新する
+            //linkObjの各項目ををスキャンし、読み出すデバイスのリスト（配列）を作成。昇順に並べ重複を削除する。
+            // まず、現在の通信フレーム情報をクリア
+            comList.length = 0;
+            Object.keys(linkObj).forEach(function (key) {
+                var addList = [];
+                linkObj[key].forEach(function (linkData, idx) {
                     addList.push(linkData.address);
-                  });
-                  addList.sort(function(add,next){ return add - next; });
-                  addTbl[key] = Array.from(new Set(addList));
                 });
-                //効率的な通信のため、連続読み出し領域を探し、modbus通信を行う。
-                Object.keys(addTbl).forEach(function(key) {
-                  var addList = addTbl[key];
-                  var saddr;
-                  var dataNum = 0;
-                  var maxAdd;
-                  for (var idx = 0, l = addList.length; idx < l; idx++) {
+                addList.sort(function (add, next) { return add - next; });
+                addTbl[key] = Array.from(new Set(addList));
+            });
+            //効率的な通信のため、連続読み出し領域を探し、modbus通信を行う。
+            Object.keys(addTbl).forEach(function (key) {
+                var addList = addTbl[key];
+                var saddr;
+                var dataNum = 0;
+                var maxAdd;
+                for (var idx = 0, l = addList.length; idx < l; idx++) {
                     var address = Number(addList[idx]);
                     if (dataNum == 0) {
-                      dataNum = 1;
-                      saddr = address;
-                      maxAdd = address + Number(maxDataNum);
+                        dataNum = 1;
+                        saddr = address;
+                        maxAdd = address + Number(maxDataNum);
                     }
                     if (noBlanck && address == (saddr + dataNum)) {
                         dataNum = address - saddr + 1;
@@ -71,73 +68,82 @@ module.exports = function(RED) {
                     else if (!noBlanck && address < maxAdd) {
                         dataNum = address - saddr + 1;
                     }else {
-                      //modbus通信フレーム情報を追加
-                      comList.push({dev:key, start:saddr, number:dataNum});
-                      dataNum = 1;
-                      saddr = address;
-                      maxAdd = address + Number(maxDataNum);
+                        //modbus通信フレーム情報を追加
+                        comList.push({ dev: key, start: saddr, number: dataNum });
+                        dataNum = 1;
+                        saddr = address;
+                        maxAdd = address + Number(maxDataNum);
                     }
                     if (idx == (l - 1)) {
-                      //modbus通信フレーム情報を追加
-                      comList.push({dev:key, start:saddr, number:dataNum});
+                        //modbus通信フレーム情報を追加
+                        comList.push({ dev: key, start: saddr, number: dataNum });
                     }
                   }
-                });
+            });
+        };
+
+        node.modbusRead = function () {
+            // 通信フレーム情報の再構成フラグがonの時は、再構成する
+            if (flagRecon) {
+                node.reconfigLinkObj();
                 // 通信フレーム情報の再構成フラグをoff
                 flagRecon = false;
             }
             //modbus通信フレーム送受信
             if (comList.length) {
-              comList.forEach(function(com){
-                modbusRead(com.dev, com.start, com.number, storeToLinkObj);
-              });
+                comList.forEach(function (com) {
+                    modbusRead(com.dev, com.start, com.number, storeToLinkObj);
+                });
             }
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
             // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
-            Object.keys(listeners).forEach(function(nodeId) {
-              if (nodeId) {
-                var modbusNode = RED.nodes.getNode(nodeId);
-                if (modbusNode) modbusNode.emit("changeListener",listeners[nodeId]);
-              }
+            Object.keys(listeners).forEach(function (nodeId) {
+                if (nodeId) {
+                    var modbusNode = RED.nodes.getNode(nodeId);
+                    if (modbusNode)
+                        modbusNode.emit("changeListener", listeners[nodeId]);
+                }
             });
-            listeners.length = 0;  // changeListenerリストをクリア
-          }, refreshCycle * 1000);
+            listeners.length = 0; // changeListenerリストをクリア
+        };
 
+        if (refreshCycle > 0) {
+            var cycleId = setInterval(node.modbusRead, refreshCycle * 1000);
         }
+
         // modbus通信のコールバック関数
         // 通信のレスポンスフレームのデータでlinkObjのvalueを更新、
         // さらに、変化イベントのリスナーが登録されていたら、各Nodeのリストに追加
         var storeToLinkObj = function(dev, start, num, list){
-          for (var i = 0; i < num; i++) {
-            var linkData = linkObj[dev].find(function(elm) {
-                            return (elm.address == Number(start) + i);});
-            if (linkData) {
-              linkData.preValue = linkData.value;
-              linkData.value = list[i];
-              var nodeId = linkData.nodeId;
-              // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
-              if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) {
-                // 要求元のModbus Object Nodeとオブジェクトキーを登録
-                // 重複の無いように
-                // objectKeyリストがからだったら、リストに追加
-                if (!listeners[nodeId]) listeners[nodeId] = [linkData.objectKey,];
-                // 登録済みのObjectKeyでなかったら、リストに追加
-                else if (listeners[nodeId].indexOf(linkData.objectKey) == -1) {
-                    listeners[nodeId].push(linkData.objectKey);
+            for (var i = 0; i < num; i++) {
+                var linkData = linkObj[dev].find(function(elm) {
+                    return (elm.address == Number(start) + i);
+                });
+                if (linkData) {
+                    linkData.preValue = linkData.value;
+                    linkData.value = list[i];
+                    var nodeId = linkData.nodeId;
+                    // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
+                    if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) {
+                        // 要求元のModbus Object Nodeとオブジェクトキーを登録
+                        // 重複の無いように
+                        // objectKeyリストがからだったら、リストに追加
+                        if (!listeners[nodeId]) listeners[nodeId] = [linkData.objectKey,];
+                        // 登録済みのObjectKeyでなかったら、リストに追加
+                        else if (listeners[nodeId].indexOf(linkData.objectKey) == -1) {
+                            listeners[nodeId].push(linkData.objectKey);
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
+        };
 
-        this.on("input",function(msg) {});
-
-        this.on("close",function() {
-          clearInterval(cycleId);
+        node.on("input",function(msg) {});
+        node.on("close",function() {
+            clearInterval(cycleId);
         });
-
-        this.on("addLinkData",function(lObj) {
-console.log("this.onのaddlinkDataが呼ばれた");
+        node.on("addLinkData",function(lObj) {
+            console.log("node.onのaddlinkDataが呼ばれた");
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj.Coil, lObj.Coil);
             Array.prototype.push.apply(linkObj.IS, lObj.IS);
@@ -147,7 +153,7 @@ console.log("this.onのaddlinkDataが呼ばれた");
             flagRecon = true;
         });
 
-var gContext = this.context().global;
+var gContext = node.context().global;
 var list1 = [123,234,345,-456,567,-678,789,-3450,4561,5672];
 var list2 = [1,1,0,0,1,1,1,0,0,0];
 // utf-8
