@@ -16,18 +16,21 @@
 
 module.exports = function(RED) {
     "use strict";
-    var request = require("request");
-    var moment = require("moment");
 
     function modbusCom(config) {
+        RED.nodes.createNode(this, config);
 
-        RED.nodes.createNode(this,config);
+        let ModbusRTU = require('modbus-serial')
+
+        this.host = config.etherAdd;
+        this.port = Number(config.etherPort);
+        this.unitid = Number(config.unitID);
+        this.refreshCycle = Number(config.refreshCycle);
+        this.maxDataNum = Number(config.maxDataNum);
+        this.noBlanck = config.noBlanck;
 
         var node = this;
         var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
-        var refreshCycle = config.refreshCycle;
-        var maxDataNum = config.maxDataNum;
-        var noBlanck = config.noBlanck;
         var addTbl = {};        // Modbus通信でアクセスするデバイスのアドレステーブル
         // Modbus通信で取得したデータに変化があった時にコールするリスナ関数のを持つNodeIDと、
         // そのデータを使用しているオブジェクトキー
@@ -35,6 +38,9 @@ module.exports = function(RED) {
         var listeners = {};
         var comList = [];       // Modbus通信フレーム情報
         var flagRecon = false;  // Modbus通信フレーム情報の再構築フラグ
+
+        node.client = null;
+        node.client = new ModbusRTU();
 
         node.reconfigLinkObj = function() {
             //作成したリンクオブジェクトに基づき、Modbus通信を実施し、リンクオブジェクトの各Valueを更新する
@@ -60,27 +66,87 @@ module.exports = function(RED) {
                     if (dataNum == 0) {
                         dataNum = 1;
                         saddr = address;
-                        maxAdd = address + Number(maxDataNum);
+                        maxAdd = address + node.maxDataNum;
                     }
-                    if (noBlanck && address == (saddr + dataNum)) {
+                    if (node.noBlanck && address == (saddr + dataNum)) {
                         dataNum = address - saddr + 1;
                     }
-                    else if (!noBlanck && address < maxAdd) {
+                    else if (!node.noBlanck && address < maxAdd) {
                         dataNum = address - saddr + 1;
                     }else {
                         //modbus通信フレーム情報を追加
-                        comList.push({ dev: key, start: saddr, number: dataNum });
+                        comList.push({ functionCode: key, address: saddr, quantity: dataNum });
                         dataNum = 1;
                         saddr = address;
-                        maxAdd = address + Number(maxDataNum);
+                        maxAdd = address + node.maxDataNum;
                     }
                     if (idx == (l - 1)) {
                         //modbus通信フレーム情報を追加
-                        comList.push({ dev: key, start: saddr, number: dataNum });
+                        comList.push({ functionCode: key, address: saddr, quantity: dataNum });
                     }
                   }
             });
         };
+
+        node.connectClient = function () {
+/*
+            if (node.client) {
+                try {
+                    node.client.close();
+                } catch (err) {
+                    console.log(err.message);
+                }
+            }
+            node.client = null;
+            node.client = new ModbusRTU();
+*/
+            node.client.connectTCP(node.host, {
+                port: node.port,
+                autoOpen: true
+            }).then(console.log)
+            .catch(console.log);
+            node.client.setID(node.unitid);
+        };
+        node.connectClient();
+
+        node.readItemsFromPLC = function (params) {
+            let values = [];
+            for (let param of params){
+                switch(param.fc){
+                    case "Coil": // FC:1
+                        node.client.readCoils(param.addr, param.qty).then(function (resp) {
+                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+                        break;
+                    case "IS": // FC:2
+                        node.client.readDiscreteInputs(param.addr, param.qty).then(function (resp) {
+                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+                        break;
+                    case "HR": // FC:3
+                        node.client.readHoldingRegisters(param.addr, param.qty).then(function (resp) {
+                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+                        break;
+                    case "IR": // FC:4
+                        node.client.readInputRegisters(param.addr, param.qty).then(function (resp) {
+                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return values;
+        }
 
         node.modbusRead = function () {
             // 通信フレーム情報の再構成フラグがonの時は、再構成する
@@ -91,9 +157,16 @@ module.exports = function(RED) {
             }
             //modbus通信フレーム送受信
             if (comList.length) {
+                let params = [];
                 comList.forEach(function (com) {
-                    modbusRead(com.dev, com.start, com.number, storeToLinkObj);
+                    params.push({
+                        fc    : com.functionCode,
+                        addr  : com.address,
+                        qty   : com.quantity,
+                    });
                 });
+                var values = node.readItemsFromPLC(params);
+                console.log(values);
             }
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
             // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
@@ -107,8 +180,8 @@ module.exports = function(RED) {
             listeners.length = 0; // changeListenerリストをクリア
         };
 
-        if (refreshCycle > 0) {
-            var cycleId = setInterval(node.modbusRead, refreshCycle * 1000);
+        if (node.refreshCycle > 0) {
+            var cycleId = setInterval(node.modbusRead, node.refreshCycle * 1000);
         }
 
         // modbus通信のコールバック関数
@@ -141,6 +214,7 @@ module.exports = function(RED) {
         node.on("input",function(msg) {});
         node.on("close",function() {
             clearInterval(cycleId);
+            node.client.close();
         });
         node.on("addLinkData",function(lObj) {
             console.log("node.onのaddlinkDataが呼ばれた");
