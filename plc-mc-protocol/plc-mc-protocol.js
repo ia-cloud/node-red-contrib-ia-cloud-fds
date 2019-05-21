@@ -48,9 +48,22 @@ function exportsFunction(RED) {
 
     // inputイベント(ノードがメッセージを受信)へのリスナー登録.
     this.on('input', async (msg) => {
+      // Retrieve the config node
+      const connectionConfig = RED.nodes.getNode(config.connectionConfig);
+
+      if (!connectionConfig) {
+        // No config node configured
+        msg.payload = undefined;
+        thisNode.send(msg);
+        return;
+      }
+
+      const host = connectionConfig.host;
+      const port = connectionConfig.port;
+
       const values = await readItemsFromPLC({
-        host: config.host,
-        port: config.port,
+        host,
+        port,
         items: {
           D0: 1,
           D1: 1,

@@ -1,0 +1,11 @@
+{
+  "ia-cloud-fds": {
+    "plc-mc-protocol": {
+      "config": {
+        "name": "Config name / PLC name",
+        "host": "Host",
+        "port": "Port" 
+      }
+    }
+  }
+}

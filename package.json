@@ -18,6 +18,7 @@
     "nodes": {
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
+      "plc-mc-protocol-config": "plc-mc-protocol/plc-mc-protocol-config.js",
       "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
       "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
       "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
