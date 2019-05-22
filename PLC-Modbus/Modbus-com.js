@@ -88,72 +88,40 @@ module.exports = function(RED) {
             });
         };
 
-        node.connectClient = function () {
-/*
-            if (node.client) {
-                try {
-                    node.client.close();
-                } catch (err) {
-                    console.log(err.message);
-                }
-            }
-            node.client = null;
-            node.client = new ModbusRTU();
-*/
-            node.client.connectTCP(node.host, {
-                port: node.port,
-                autoOpen: true
-            }).then(console.log)
-            .catch(console.log);
-            node.client.setID(node.unitid);
-        };
-        node.connectClient();
-
-        node.readItemsFromPLC = function (params) {
+        node.readItemsFromPLC = async (params) => {
+            await node.client.connectTCP(node.host, { port: node.port })
+            .then(node.client.setID(node.unitid));
             let values = [];
+            var resp;
             for (let param of params){
                 switch(param.fc){
                     case "Coil": // FC:1
-                        node.client.readCoils(param.addr, param.qty).then(function (resp) {
-                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        resp = await node.client.readCoils(param.addr, param.qty);
                         break;
                     case "IS": // FC:2
-                        node.client.readDiscreteInputs(param.addr, param.qty).then(function (resp) {
-                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        resp = await node.client.readDiscreteInputs(param.addr, param.qty);
                         break;
                     case "HR": // FC:3
-                        node.client.readHoldingRegisters(param.addr, param.qty).then(function (resp) {
-                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        resp = await node.client.readHoldingRegisters(param.addr, param.qty);
                         break;
                     case "IR": // FC:4
-                        node.client.readInputRegisters(param.addr, param.qty).then(function (resp) {
-                            values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        resp = await node.client.readInputRegisters(param.addr, param.qty);
                         break;
                     default:
                         break;
                 }
+                values.push({fc: param.fc, addr: param.addr, qty: param.qty, value: resp.data});
             }
+            await node.client.close();
             return values;
         }
 
         node.modbusRead = function () {
             // 通信フレーム情報の再構成フラグがonの時は、再構成する
             if (flagRecon) {
-                node.reconfigLinkObj();
                 // 通信フレーム情報の再構成フラグをoff
                 flagRecon = false;
+                node.reconfigLinkObj();
             }
             //modbus通信フレーム送受信
             if (comList.length) {
@@ -165,8 +133,12 @@ module.exports = function(RED) {
                         qty   : com.quantity,
                     });
                 });
-                var values = node.readItemsFromPLC(params);
-                console.log(values);
+                node.readItemsFromPLC(params).then((resp) => {
+                    console.log(resp);
+                }).catch((err) => {
+                    // TODO 適切なエラー処理を追加
+                    console.log(err);
+                });
             }
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
             // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
@@ -214,7 +186,6 @@ module.exports = function(RED) {
         node.on("input",function(msg) {});
         node.on("close",function() {
             clearInterval(cycleId);
-            node.client.close();
         });
         node.on("addLinkData",function(lObj) {
             console.log("node.onのaddlinkDataが呼ばれた");
