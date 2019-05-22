@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="plc-mc-protocol">
+<script type="text/x-red" data-template-name="PLC MC">
 
   <!-- Name -->
   <div class="form-row">
@@ -18,7 +18,7 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="plc-mc-protocol">
+<script type="text/x-red" data-help-name="PLC MC">
 
 
 
@@ -26,12 +26,12 @@
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('plc-mc-protocol', {
+  RED.nodes.registerType('PLC MC', {
     category: 'iaCloud',
     color: 'rgb(231, 180, 100)',
     align: 'right',
     defaults: {
-      name: { value: 'plc-mc-protocol' },
+      name: { value: 'PLC MC protocol' },
       host: { value: '' },
       port: { value: 5011 },
     },
@@ -39,7 +39,7 @@
     outputs: 1,
     icon: 'ia-cloud.png',
     label: function() {
-        return this.name || 'plc-mc-protocol';
+        return this.name || 'PLC MC protocol';
     },
   });
 

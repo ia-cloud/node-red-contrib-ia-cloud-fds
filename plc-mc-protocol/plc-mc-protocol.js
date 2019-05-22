@@ -63,7 +63,7 @@ function exportsFunction(RED) {
     });
   }
 
-  RED.nodes.registerType('plc-mc-protocol', nodeFunction, {
+  RED.nodes.registerType('PLC MC', nodeFunction, {
     // credentials
   });
 }
