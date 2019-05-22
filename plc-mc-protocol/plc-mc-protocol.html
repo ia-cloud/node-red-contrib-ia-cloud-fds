@@ -29,7 +29,7 @@
   RED.nodes.registerType('PLC MC', {
     category: 'iaCloud',
     color: 'rgb(231, 180, 100)',
-    align: 'right',
+    // align: 'right',
     defaults: {
       name: { value: 'PLC MC protocol' },
       host: { value: '' },
@@ -37,7 +37,7 @@
     },
     inputs: 1,
     outputs: 1,
-    icon: 'ia-cloud.png',
+    icon: 'bridge-dash.png',
     label: function() {
         return this.name || 'PLC MC protocol';
     },
