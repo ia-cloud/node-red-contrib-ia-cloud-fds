@@ -218,14 +218,11 @@
         var frm_cnt = 0;
         //あれば設定データを取り出して、formに展開する。
         var conf = $("#node-config-input-configObject").val();
-        if (conf) {
-          var dItems = {};
-          try { dItems = JSON.parse(conf); }
-          catch(e) { conf = "";}
-        }
+        var dItems = [];
+        
         if(conf != ""){
           //設定データがあった
-          var dItems = JSON.parse(conf);
+          dItems = JSON.parse(conf);
           //フォームを一つ保存
           var original = $('#form_block\\[0\\]');
 
@@ -234,9 +231,9 @@
               .each(function(index, formObj) {$(formObj).remove();});
 
           dItems.forEach(function(value, idx){
+            console.log('dItems[' + idx + '] = ' + JSON.stringify(value));
             original
             .clone()
-            .hide()
             .appendTo("#blocks")
             .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
             .end() // 一度適用する
@@ -259,14 +256,14 @@
                     for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
                 });
               }
-          });
-          $("#dataname\\[" + idx + "\\]").val(value.dataname);
-          $("#unitType\\[" + idx + "\\]").val(value.unitType);
+            });
+            $("#dataname\\[" + idx + "\\]").val(value.dataname);
+            $("#unitType\\[" + idx + "\\]").val(value.unitType);
           
-          var block = $('#form_block\\[' + idx + '\\]');
-          if (idx != 0) block.find('input[name="del_btn"]').show();
-          block.slideDown('slow');
-          frm_cnt = idx;
+            var block = $('#form_block\\[' + idx + '\\]');
+            if (idx != 0) block.find('input[name="del_btn"]').show();
+            block.slideDown('slow');
+            frm_cnt = idx;
           });
         }
         
@@ -276,6 +273,7 @@
           
           var num = 1;
           var str = $("select option:selected").val();
+          console.log("str = " + str);
           if ( str == "u-rd" ) {
               num = 1;
           } else {
@@ -283,7 +281,7 @@
           }
           
           //TODO: selectタグでセンサー種別を変更した場合に表示する内容を変更する
-          /*******************************************************
+          //*******************************************************
           $(".form-block[id^='form_block']")
                .each(function(index, formObj) {$(formObj).remove();});
           for ( var idx = 0; idx < num; idx++ ) {
@@ -313,15 +311,25 @@
                   });
                 }
               });
-            $("#dataname\\[" + idx + "\\]").val();
-            $("#unitType\\[" + idx + "\\]").val();
+              
+            if (dItems.length >= idx + 1) {
+              $("#dataname\\[" + idx + "\\]").val(dItems[idx].dataname);
+              $("#unitType\\[" + idx + "\\]").val(dItems[idx].unitType);
+            } else {
+              $("#dataname\\[" + idx + "\\]").val();
+              if ( str == "u-rd" ) {
+                $("#unitType\\[" + idx + "\\]").val('A');
+              } else {
+                $("#unitType\\[" + idx + "\\]").val('℃');
+              }
+            }
           
             var block = $('#form_block\\[' + idx + '\\]');
             if (idx != 0) block.find('input[name="del_btn"]').show();
             block.slideDown('slow');
             frm_cnt = idx;
           }
-          ****************************************************************/
+          //****************************************************************/
         });
         
         //追加ボタンが押されたら
@@ -412,7 +420,7 @@
           //フォームの各要素をobjectに記述し、JSON文字列に変換する。
           try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
           catch(e) {$("#node-config-input-configObject").val("")}
-
+          console.log('val = ' + JSON.stringify(dItems));
       }
     });
 </script>
