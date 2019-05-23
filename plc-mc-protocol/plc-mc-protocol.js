@@ -60,16 +60,14 @@ function exportsFunction(RED) {
 
       const host = connectionConfig.host;
       const port = connectionConfig.port;
+      const items = {
+        D0: 1,
+        D1: 1,
+        D2: 2,
+      };
 
-      const values = await readItemsFromPLC({
-        host,
-        port,
-        items: {
-          D0: 1,
-          D1: 1,
-          D2: 2
-        },
-      });
+      const values = await readItemsFromPLC({ host, port, items });
+
       // 取得結果のセット.
       msg.payload = values;
       thisNode.send(msg);
