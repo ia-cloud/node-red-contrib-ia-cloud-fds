@@ -134,9 +134,8 @@ module.exports = function(RED) {
                     });
                 });
                 node.readItemsFromPLC(params).then((resp) => {
-                    console.log(resp);
                     for(let obj of resp){
-                        storeToLinkObj(obj.fc, obj.addr, obj.qty, obj.value);
+                        node.storeToLinkObj(obj.fc, obj.addr, obj.qty, obj.value);
                     }
                 }).catch((err) => {
                     // TODO 適切なエラー処理を追加
@@ -162,7 +161,7 @@ module.exports = function(RED) {
         // modbus通信のコールバック関数
         // 通信のレスポンスフレームのデータでlinkObjのvalueを更新、
         // さらに、変化イベントのリスナーが登録されていたら、各Nodeのリストに追加
-        var storeToLinkObj = function(dev, start, num, list){
+        node.storeToLinkObj = function(dev, start, num, list){
             for (var i = 0; i < num; i++) {
                 var linkData = linkObj[dev].find(function(elm) {
                     return (elm.address == Number(start) + i);
@@ -176,7 +175,7 @@ module.exports = function(RED) {
                             value_str = "0";
                         }
                     }else if(dev == "HR" || dev == "IR"){
-                        value_str = toHex(list[i]);
+                        value_str = node.toHex(list[i]);
                     }
                     linkData.preValue = linkData.value;
                     linkData.value = value_str;
@@ -195,9 +194,9 @@ module.exports = function(RED) {
                 }
             }
         };
-        var toHex = function(v) {
+        node.toHex = function(v) {
             return '0x' + (('0000' + v.toString(16).toUpperCase()).substr(-4));
-        }
+        };
 
         node.on("input",function(msg) {});
         node.on("close",function() {
@@ -214,66 +213,6 @@ module.exports = function(RED) {
             flagRecon = true;
         });
 
-var gContext = node.context().global;
-var list1 = [123,234,345,-456,567,-678,789,-3450,4561,5672];
-var list2 = [1,1,0,0,1,1,1,0,0,0];
-// utf-8
- var list3 = ["0xE381","0x93E3","0x828C","0xE381","0xAFE3","0x8386","0xE382","0xB9E3","0x8388","0x0000"];
-// shiftjis
-// var list3 = ["0x82B1","0x82EA","0x82CD","0x8365","0x8358","0x8367","0x82C5","0x82B7","0x8142","0x0000"];
-// eucjP
-// var list3 = ["0xA4B3","0xA4EC","0xA4CF","0xA5C6","0xA5B9","0xA5C8","0xA4C7","0xA4B9","0xA1A3","0x0000"];
-var list4 = ["0x0291","0x0032","0x4546","0x9529","0x2893","0x8166","0x7545","0x9001","0x1337","0x5161"];
-gContext.set("list1", list1);
-gContext.set("list2", list2);
-gContext.set("list3", list4);
-gContext.set("list4", list4);
-        var modbusRead = function(dev, start, number, callback) {
-          var fcode;
-          switch(dev) {
-            case "Coil" : fcode = 1;   break;
-            case "IS" : fcode = 2;   break;
-            case "HR" : fcode = 3;   break;
-            case "IR" : fcode = 4;   break;
-          }
-          // プロパティを基に、modbus通信（TCP,RTU,ASCIIのいずれか）を実施
-          // modbus通信で取得したデータは、ビットデバイスは、"1" or "0"（文字列表現）、
-          // ワードデバイスは、2桁16進文字列表現で（例："2b" "fc" "e3"）、
-          // 以下のコールバック関数のlist引数で返される。
-          // 以下はダミーデータ
-
-list1 = gContext.get("list1");
-list2 = gContext.get("list2");
-
-var top1 = list1[0];
-var top2 = list2[0];
-var top3 = list3[0];
-var top4 = list4[0];
-list1.shift();
-list1.push(top1);
-list2.shift();
-list2.push(top2);
-list3.shift();
-list3.push(top3);
-list4.shift();
-list4.push(top4);
-gContext.set("list1", list1);
-gContext.set("list2", list2);
-gContext.set("list3", list3);
-gContext.set("list4", list4);
-number = 10;
-var list = [];
-// bit のテストデータ
-// for (var i = 0; i < number; i++) {list.push(((list2[i] == 0) ? "0" : "1"));}
-// number、nnumListのテストデータ
-// for (var i = 0; i < number; i++) {list.push("0x" + ("0000" + (list1[i] >>> 0).toString(16)).slice(-4));}
-// stringのテストデータ
- list = list3;
-// BCDのテストデータ
-// list = list4;
-console.log(list);
-callback(dev, start, number, list);
-        }
     }
 
     RED.nodes.registerType("Modbus-com",modbusCom);
