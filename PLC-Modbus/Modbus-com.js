@@ -135,6 +135,9 @@ module.exports = function(RED) {
                 });
                 node.readItemsFromPLC(params).then((resp) => {
                     console.log(resp);
+                    for(let obj of resp){
+                        storeToLinkObj(obj.fc, obj.addr, obj.qty, obj.value);
+                    }
                 }).catch((err) => {
                     // TODO 適切なエラー処理を追加
                     console.log(err);
@@ -165,8 +168,18 @@ module.exports = function(RED) {
                     return (elm.address == Number(start) + i);
                 });
                 if (linkData) {
+                    var value_str;
+                    if(dev == "Coil" || dev == "IS"){
+                        if(list[i]){
+                            value_str = "1";
+                        }else{
+                            value_str = "0";
+                        }
+                    }else if(dev == "HR" || dev == "IR"){
+                        value_str = toHex(list[i]);
+                    }
                     linkData.preValue = linkData.value;
-                    linkData.value = list[i];
+                    linkData.value = value_str;
                     var nodeId = linkData.nodeId;
                     // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
                     if(nodeId && linkData.preValue && (linkData.value != linkData.preValue)) {
@@ -182,6 +195,9 @@ module.exports = function(RED) {
                 }
             }
         };
+        var toHex = function(v) {
+            return '0x' + (('0000' + v.toString(16).toUpperCase()).substr(-4));
+        }
 
         node.on("input",function(msg) {});
         node.on("close",function() {
