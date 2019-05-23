@@ -480,6 +480,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
         this.sensor_kind = config.sensor_kind;
+        this.configObject = config.configObject;
 
         var node = this;
         var confObj = config.configObject;
