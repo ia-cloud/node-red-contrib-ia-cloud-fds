@@ -11,7 +11,6 @@ const readItemsFromPLC = (param) => new Promise((resolve, reject) => {
   }, function(err) {
     if (typeof(err) !== 'undefined') { // TODO 後で確認
       // We have an error.  Maybe the PLC is not reachable.
-      console.log(err); // TODO Node-RED流の何かしらのエラーアプローチ.
       return reject(err);
     }
     const variables = Object.entries(param.items).map(e => `${e[0]},${e[1]}`);
@@ -66,11 +65,22 @@ function exportsFunction(RED) {
         D2: 2,
       };
 
-      const values = await readItemsFromPLC({ host, port, items });
-
-      // 取得結果のセット.
-      msg.payload = values;
-      thisNode.send(msg);
+      readItemsFromPLC({ host, port, items })
+        .then((values) => {
+          // 取得結果のセット.
+          thisNode.status({ fill: 'green', shape: 'dot', text: 'connected' });
+          msg.payload = values;
+          thisNode.send(msg);
+        })
+        .catch((e) => {
+          // エラー処理.
+          thisNode.status({ fill: 'red', shape: 'ring', text: 'disconnected' });
+          if (e.code === 'ECONNREFUSED' || e.errno === 'ECONNREFUSED') {
+            return;
+          }
+          thisNode.error(JSON.stringify(e));
+          thisNode.debug(JSON.stringify(e));
+        });
     });
   }
 
