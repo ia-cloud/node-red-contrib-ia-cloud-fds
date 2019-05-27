@@ -1,26 +1,25 @@
-const mc = require('mcprotocol');
+const MC = require('mcprotocol');
 
-const readItemsFromPLC = (param) => new Promise((resolve, reject) => {
-  const conn = new mc;
-  const doneReading = false;
-  const doneWriting = false;
+const readItemsFromPLC = param => new Promise((resolve, reject) => {
+  const conn = new MC();
   conn.initiateConnection({
     host: param.host,
     port: param.port,
     ascii: false,
-  }, function(err) {
-    if (typeof(err) !== 'undefined') { // TODO 後で確認
+  }, (err) => {
+    if (typeof (err) !== 'undefined') { // TODO 後で確認
       // We have an error.  Maybe the PLC is not reachable.
-      return reject(err);
+      reject(err);
+      return;
     }
     const variables = Object.entries(param.items).map(e => `${e[0]},${e[1]}`);
-    // conn.setTranslationCB(function(tag) {return variables[tag];}); 	// This sets the 'translation' to allow us to work with object names defined in our app not in the module
+    // conn.setTranslationCB(function(tag) {return variables[tag];});
     conn.addItems(variables);
-    conn.readAllItems(function(anythingBad, values) {
+    conn.readAllItems((anythingBad, values) => {
       if (anythingBad) {
         console.log('SOMETHING WENT WRONG READING VALUES!!!!'); // TODO Node-RED流の何かしらのエラーアプローチ.
         conn.dropConnection();
-        return reject('Something went wrong reading values.');
+        return reject(new Error('Something went wrong reading values.'));
       }
       conn.dropConnection();
       return resolve(values);
@@ -57,8 +56,8 @@ function exportsFunction(RED) {
         return;
       }
 
-      const host = connectionConfig.host;
-      const port = connectionConfig.port;
+      const { host } = connectionConfig;
+      const { port } = connectionConfig;
       const items = {
         D0: 1,
         D1: 1,
