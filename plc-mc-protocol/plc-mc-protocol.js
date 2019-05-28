@@ -7,7 +7,7 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
     port: param.port,
     ascii: false,
   }, (err) => {
-    if (typeof (err) !== 'undefined') { // TODO 後で確認
+    if (typeof (err) !== 'undefined') {
       // We have an error.  Maybe the PLC is not reachable.
       reject(err);
       return;
