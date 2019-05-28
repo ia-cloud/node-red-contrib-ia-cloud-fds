@@ -17,7 +17,6 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
     conn.addItems(variables);
     conn.readAllItems((anythingBad, values) => {
       if (anythingBad) {
-        console.log('SOMETHING WENT WRONG READING VALUES!!!!'); // TODO Node-RED流の何かしらのエラーアプローチ.
         conn.dropConnection();
         return reject(new Error('Something went wrong reading values.'));
       }
