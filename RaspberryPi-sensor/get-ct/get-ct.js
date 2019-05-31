@@ -1,18 +1,79 @@
 module.exports = function(RED) {
+    "use strict";
+
     function GetCt(config) {
         RED.nodes.createNode(this,config);
         this.name = config.neme;
         this.user = config.user;
+        var user = this.user;
         var node = this;
+        var RepeatFlag = config.repeat;
+        var dmsg = { _msgid: '', topic: '', payload: '' };  //dummy msg
 
+        // 稼働状況を保持するオブジェクト
+        var RepInfo = {
+            status: '',
+            RoopInterval: config.interval,      //roop interval
+            init: false                         //繰り返し初回は全体準備のため取得をパスする
+        };
+
+        var i = 0;
+
+        //interval validation check
+        if(RepInfo.RoopInterval.search(/^[0-9]+$/) != 0){
+            RepInfo.RoopInterval = 60000;
+        }
+
+        if(RepeatFlag == true){
+            RepInfo.status = 'on';
+            node.status({fill:"green",shape:"ring",text:"繰返し取得開始処理中"});
+        } else {
+            RepInfo.status = 'off';
+            node.status({fill:"red",shape:"dot",text:"繰返し取得:Off"});
+        }
+
+        //繰り返し取得実行ファンクション
+        (function roopGetCt() {
+            if(RepInfo.init == false){      //全体の初期化待ち
+                RepInfo.init = true;
+                setTimeout(roopGetCt, 5000);
+            } else if(RepInfo.status == 'on'){
+                //console.log(RepInfo.RoopInterval);
+                node.status({fill:"blue",shape:"dot",text:"取得中"});
+                GetCtData(dmsg);
+                node.status({fill:"green",shape:"dot",text:"繰返し取得:On"});
+                setTimeout(roopGetCt, RepInfo.RoopInterval);
+            }
+        }());
+
+        //イベント：msg入力が取得トリガー
         node.on('input', function(msg) {
+            node.status({fill:"blue",shape:"dot",text:"取得中"});
+            GetCtData(msg);
+            if(RepInfo.status == 'on'){
+                node.status({fill:"green",shape:"dot",text:"繰返し取得:On"});
+            } else {
+                node.status({fill:"red",shape:"dot",text:"繰返し取得:Off"});
+
+            }
+        });
+
+        //終了処理
+        node.on("close",function() {
+            RepInfo.status = "off";
+            node.status({fill:"red",shape:"dot",text:"繰返し取得:Off"});
+        });
+
+        //センサーデータ取得ファンクション
+        function GetCtData(msg){
 
             const Raspi = require('raspi');
             const I2C = require('raspi-i2c').I2C;
             const ADS1x15 = require('raspi-kit-ads1x15');
 
             var dateformat = require('dateformat');
-            var timestamp = dateformat(msg.payload, 'isoDateTime');
+            var date = new Date();
+            var timestamp = dateformat(date, 'isoDateTime');
 
             // Init Raspi
             Raspi.init(() => {
@@ -41,11 +102,12 @@ module.exports = function(RED) {
                         //console.log(' * Value:', value);    // will be a 11 or 15 bit integer depending on chip
                         //console.log(' * Volts:', volts);    // voltage reading factoring in the PGA
 
+            
                         msg = {
                             "request": "store",
                             "dataObject": {
                                 "objectType" : "iaCloudObject",
-                                "objectKey" : "rmc-iot-santama." + this.user + ".nrct-sensors" ,
+                                "objectKey" : "rmc-iot-santama." + user + ".sensors" ,
                                 "objectDescription" : "センサーの値",
                                 "timeStamp" :  timestamp,
                                 "ObjectContent" : {
@@ -57,9 +119,9 @@ module.exports = function(RED) {
                                         "unit": "V"
                                     },{
                                         "commonName": "Column2",
-                                        "dataName": "ダミー",
+                                        "dataName": "超音波センサーダミー",
                                         "dataValue": 0,
-                                        "unit": "value"
+                                        "unit": "cm"
                                     },{
                                         "commonName": "Column3",
                                         "dataName": "ダミー",
@@ -83,15 +145,18 @@ module.exports = function(RED) {
                                     }]
                                 }
                             }
+                            
                         }
                         node.send(msg);
-                        //process.exit(0);
                     }
                 });
                 
             });
 
-        });
+            //超音波距離測定センサーデータ取得ファンクション
+        
+
+        }
     }
     RED.nodes.registerType('get-ct',GetCt);
 }

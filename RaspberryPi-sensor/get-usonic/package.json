@@ -3,6 +3,9 @@
     "version": "0.0.1",
     "description": "ia-cloud Node-RED nodes for RaspberyPi",
     "main": "get-usonic.js",
+    "scripts": {
+        "test": "RaspberryPi-get-usonic"
+    },
     "author": "Shinichi MITSUTAKE",
     "license": "ISC",
     "dependencies": {
