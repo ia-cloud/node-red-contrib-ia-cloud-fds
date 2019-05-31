@@ -3,6 +3,9 @@
   "description": "ia-cloud Node-RED nodes",
   "version": "0.0.1",
   "author": "ia-cloud project menbers",
+  "dependencies": {
+    "request": "^2.88.0"
+  },
   "license": "ISC",
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
   "node-red": {
