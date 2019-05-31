@@ -1,21 +1,21 @@
 {
-    "name": "node-red-contrib-ia-cloud-fds",
-    "version": "0.0.1",
-    "description": "ia-cloud Node-RED nodes",
-    "main": "ia-cloud-cnct/ia-cloud-cnct.js",
-    "scripts": {
-        "test": "iacloudtest"
-    },
-    "author": "ia-cloud project menbers",
-    "license": "ISC",
-    "node-red": {
-        "nodes": {
-            "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
-            "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
-            "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
-            "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
-            "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
-            "Modbus-com": "PLC-Modbus/Modbus-com.js"
-        }
+  "name": "node-red-contrib-ia-cloud-fds",
+  "description": "ia-cloud Node-RED nodes",
+  "version": "0.0.1",
+  "author": "ia-cloud project menbers",
+  "license": "ISC",
+  "main": "ia-cloud-cnct/ia-cloud-cnct.js",
+  "node-red": {
+    "nodes": {
+      "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+      "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
+      "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
+      "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
+      "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
+      "Modbus-com": "PLC-Modbus/Modbus-com.js"
     }
+  },
+  "scripts": {
+    "test": "iacloudtest"
+  }
 }
