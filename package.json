@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "author": "ia-cloud project menbers",
   "dependencies": {
+    "iconv-lite": "^0.4.24",
     "moment": "^2.24.0",
     "request": "^2.88.0"
   },
