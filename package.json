@@ -3,6 +3,9 @@
   "description": "ia-cloud Node-RED nodes",
   "version": "0.0.1",
   "author": "ia-cloud project menbers",
+  "bugs": {
+    "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
+  },
   "dependencies": {
     "iconv-lite": "^0.4.24",
     "moment": "^2.24.0",
@@ -19,6 +22,10 @@
       "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
       "Modbus-com": "PLC-Modbus/Modbus-com.js"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ia-cloud/node-red-contrib-ia-cloud-fds.git"
   },
   "scripts": {
     "test": "iacloudtest"
