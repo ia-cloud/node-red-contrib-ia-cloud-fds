@@ -52,8 +52,17 @@
     </div>
 <br>
     <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
-        <label>i_設定ファイル名を入力してください<span style="color: #ff0000;">*</span></label>
-        <input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">
+      <div>
+        <label>設定ファイル名を選択してください<span style="color: #ff0000;">*</span></label>
+        <!--<input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">-->
+        <input type="file" id="select_config_file">
+      </div>
+      <div>
+        <input type="text" id="node-input-configfile" style="width: 400px;" placeholder="設定ファイル名">
+      </div>
+      <div>
+        <textarea id="node-input-configdata" cols="80" rows="20" style="width: 400px;" placeholder="現在の設定ファイルの中身がここに表示されます"></textarea>
+      </div>
     </div>
 
     <!-- object propertyの設定 -->
@@ -93,11 +102,15 @@
         defaults: {
             name: {name:""},
             confsel: {value:"propertySet"},
-            configfile: {value:"", required: false},
+            configfile: {value:""},
+            configdata: {value:""},
             object_key: {value:""},
             object_desc: {value:""},
             enoceancom: {type:"EnOcean-com", required:true, value:""},
-            enoceandataitem: {type:"EnOcean-dItems", required:true, value:""}
+            enoceandataitem: {type:"EnOcean-dItems", required:false, value:""},
+            objectConfig: {value:""},
+            configSel1: {value:""},
+            configSel2: {value:""}
         },
         color:"#C7E9C0",
         inputs:1,
@@ -110,6 +123,8 @@
             return this.name?"node_label_italic":"";
         },
         oneditprepare: function() {
+          debugger;
+          console.log("### confsel = " + $('#node-input-confsel').val());
           $('input[name="configSel"]:radio').change(function() {
             if ($("#node-input-configSel1").is(":checked")) {
                 $("#node-row-propertySet").show();
@@ -127,6 +142,19 @@
               $('#node-input-configSel2').prop('checked', true);
           }
           $('input[name="configSel"]:radio').change();
+          
+          $('#select_config_file').on("change", function() {
+            var file = this.files[0];
+            if(file != null) {
+              $('#node-input-configfile').val(file.name);
+              var reader = new FileReader();
+              reader.readAsText(file, 'UTF-8');
+              reader.onload = function() {
+                $('#node-input-configdata').val(reader.result);
+              }
+            }
+          });
+          
         },
 
         oneditsave: function() {
@@ -134,7 +162,7 @@
           if ($("#node-input-confsel").val() == "propertySet") {
              if (!$("#node-input-objectKey").val()) objectConfig = "";
           }
-          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) objectConfig = "";
+          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configdata").val()) objectConfig = "";
           $("#node-input-objectConfig").val(objectConfig);
         }
     });
