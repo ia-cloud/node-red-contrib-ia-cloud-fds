@@ -1,0 +1,40 @@
+<script type="text/x-red" data-template-name="PLC MC">
+
+  <!-- Connection config -->
+  <div class="form-row">
+    <label for="node-input-connectionConfig"><i class="fa fa-link"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.connection-config" /></label>
+    <input type="text" id="node-input-connectionConfig" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.connection-config">
+  </div>
+  <!-- Name -->
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-node-name">
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="PLC MC">
+
+
+
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('PLC MC', {
+    category: 'iaCloud',
+    color: 'rgb(231, 180, 100)',
+    // align: 'right',
+    defaults: {
+      connectionConfig: { value: '', type: 'PLC MC config', required: true },
+      name: { value: 'PLC MC protocol' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'bridge-dash.png',
+    label: function() {
+        return this.name || 'PLC MC protocol';
+    },
+  });
+
+</script>

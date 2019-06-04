@@ -1,0 +1,42 @@
+<script type="text/x-red" data-template-name="PLC MC config">
+
+  <!-- Name -->
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.config.name" /></label>
+    <input type="text" id="node-config-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.config.name">
+  </div>
+  <!-- Host -->
+  <div class="form-row">
+    <label for="node-config-input-host"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.config.host" /></label>
+    <input type="text" id="node-config-input-host" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.config.host">
+  </div>
+  <!-- Port -->
+  <div class="form-row">
+    <label for="node-config-input-port"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.config.port" /></label>
+    <input type="text" id="node-config-input-port" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.config.port">
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="PLC MC config">
+
+
+
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('PLC MC config', {
+    category: 'config',
+    color: 'rgb(231, 180, 100)',
+    defaults: {
+      name: { value: '' },
+      host: { value: '' },
+      port: { value: 5011 },
+    },
+    label: function() {
+        return this.name;
+    },
+  });
+
+</script>

@@ -1,0 +1,11 @@
+{
+  "ia-cloud-fds": {
+    "plc-mc-protocol": {
+      "config": {
+        "name": "設定名/PLC名",
+        "host": "接続先ホスト",
+        "port": "接続先ポート"
+      }
+    }
+  }
+}
