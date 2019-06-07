@@ -44,7 +44,7 @@
     defaults: {
       connectionConfig: { value: '', type: 'PLC MC config', required: true },
       name: { value: 'PLC MC protocol' },
-      addresses: { value: '' }, // JSON as a string.
+      addresses: { value: '' },
     },
     inputs: 1,
     outputs: 1,
@@ -55,20 +55,27 @@
     oneditprepare() {
       console.log(this.addresses);
       // Stack rows.
+      const addresses = this.addresses || [];
+      addresses.push({});
       const $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-row');
-      const rows = (this.addresses || [{}])
-        .map((address, index) => getNewRow(index + 1, address, $rowTemplate));
+      const rows = addresses.map((address, index) => getNewRow(index + 1, address, $rowTemplate));
       $('.ia-cloud-fds-plc-mc-addresses').append(rows);
       setEventHandler();
     },
     oneditsave() {
-      this.addresses = Array.from($('.ia-cloud-fds-plc-mc-addresses .form-row')).map((row) => {
+      // Build array address mapping rows.
+      const rows = Array.from($('.ia-cloud-fds-plc-mc-addresses .form-row')).map((row) => {
         const $row = $(row);
         return {
           addr: $row.find('.address-no').val(),
           len: $row.find('.address-length').val(),
         };
       });
+      // Remove last empty rows.
+      while (rows.length != 0 && !(rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
+        rows.pop();
+      }
+      this.addresses = rows;
     },
   });
 
