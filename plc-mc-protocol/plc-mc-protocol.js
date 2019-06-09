@@ -54,14 +54,22 @@ function exportsFunction(RED) {
         thisNode.send(msg);
         return;
       }
+      if (!config.addresses || config.addresses.length === 0) {
+        // No addresses configured.
+        msg.payload = undefined;
+        thisNode.send(msg);
+        return;
+      }
 
       const { host } = connectionConfig;
       const { port } = connectionConfig;
-      const items = {
-        D0: 1,
-        D1: 1,
-        D2: 2,
-      };
+      const { addresses } = config;
+      const items = addresses
+        .filter(a => a.addr || a.len)
+        .reduce((itemsMap, a) => {
+          itemsMap[a.addr] = a.len;
+          return itemsMap;
+        }, {});
 
       readItemsFromPLC({ host, port, items })
         .then((values) => {
