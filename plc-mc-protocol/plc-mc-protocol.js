@@ -81,7 +81,9 @@ function exportsFunction(RED) {
         .catch((e) => {
           // エラー処理.
           thisNode.status({ fill: 'red', shape: 'ring', text: 'disconnected' });
-          if (e.code === 'ECONNREFUSED' || e.errno === 'ECONNREFUSED') {
+          if (e.code === 'ECONNREFUSED' || e.errno === 'ECONNREFUSED' || e.errno === 'EHOSTUNREACH' || e.errno === 'ETIMEDOUT') {
+            msg.payload = undefined;
+            thisNode.send(msg);
             return;
           }
           thisNode.error(JSON.stringify(e));
