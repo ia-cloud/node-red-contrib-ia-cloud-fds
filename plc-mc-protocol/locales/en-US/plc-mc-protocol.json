@@ -3,7 +3,10 @@
     "plc-mc-protocol": {
       "connection-config": "Connection config",
       "node-name": "Node name",
-      "this-node-name": "This node name"
+      "this-node-name": "This node name",
+      "addresses": "Address mapping",
+      "address-no": "Address no",
+      "address-length": "Length"
     }
   }
 }

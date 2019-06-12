@@ -10,6 +10,22 @@
     <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
     <input type="text" id="node-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-node-name">
   </div>
+  <!-- Addresses : header -->
+  <div class="form-row">
+    <label style="width:100%"><i class="fa fa-th-list"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.addresses" /></label>
+  </div>
+  <!-- Addresses : rows -->
+  <div class="ia-cloud-fds-plc-mc-addresses">
+  </div>
+  <!-- Addresses : row-template -->
+  <div style="display:none;" class="ia-cloud-plc-mc-addresses-row-template">
+    <div class="form-row">
+      <label style="width:50px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
+      <input type="text"   style="width:35%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
+      <input type="number" style="width:35%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length">
+      <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
+    </div>
+  </div>
 
 </script>
 
@@ -28,13 +44,92 @@
     defaults: {
       connectionConfig: { value: '', type: 'PLC MC config', required: true },
       name: { value: 'PLC MC protocol' },
+      addresses: { value: '' },
     },
     inputs: 1,
     outputs: 1,
     icon: 'bridge-dash.png',
-    label: function() {
-        return this.name || 'PLC MC protocol';
+    label() {
+      return this.name || 'PLC MC protocol';
+    },
+    oneditprepare() {
+      console.log(this.addresses);
+      // Stack rows.
+      const addresses = this.addresses || [];
+      addresses.push({});
+      const $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-row');
+      const rows = addresses.map((address, index) => getNewRow(index + 1, address, $rowTemplate));
+      $('.ia-cloud-fds-plc-mc-addresses').append(rows);
+      setEventHandler();
+    },
+    oneditsave() {
+      // Build array address mapping rows.
+      const rows = Array.from($('.ia-cloud-fds-plc-mc-addresses .form-row')).map((row) => {
+        const $row = $(row);
+        return {
+          addr: $row.find('.address-no').val(),
+          len: $row.find('.address-length').val(),
+        };
+      });
+      // Remove last empty rows.
+      while (rows.length != 0 && !(rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
+        rows.pop();
+      }
+      this.addresses = rows;
     },
   });
+
+  /** Put sequence numbers (1-based). */
+  const refreshSequence = () => {
+    $('.ia-cloud-fds-plc-mc-address-seq').each((index, element) => $(element).text(index + 1));
+  };
+
+  /** Returns a new row instance. */
+  const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
+    if (!$rowTemplate) {
+      $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-row');
+    }
+    if (!rowValues) {
+      rowValues = {};
+    }
+
+    const $newRow = $rowTemplate.clone();
+    $newRow.find('.ia-cloud-fds-plc-mc-address-seq').text(rowNumber);
+    $newRow.find('.address-no').val(rowValues.addr);
+    $newRow.find('.address-length').val(rowValues.len);
+    return $newRow;
+  };
+
+  const setEventHandler = () => {
+    // ----------------------------------------
+    // Duplicate rows when some edits happen in the last row.
+    $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function() {
+      const $thisRow = $(this).parent('.form-row');
+      const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-row:last');
+      // Is it the last row?
+      if ($thisRow.is($lastRow)) {
+        const rowNumber = Number($lastRow.find('.ia-cloud-fds-plc-mc-address-seq').text());
+        getNewRow(rowNumber + 1).hide().insertAfter($lastRow).fadeIn(300);
+      }
+    });
+    // ----------------------------------------
+    // Remove clicked row.
+    $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function() {
+      const $thisRow = $(this).parent('.form-row');
+      if ($thisRow.siblings().length === 0) {
+        // Do not remove, clear last first row.
+        $thisRow.find('.address-no').val('');
+        $thisRow.find('.address-length').val('');
+      } else {
+        // @see https://stackoverflow.com/questions/734554/jquery-fadeout-then-slideup
+        $thisRow.fadeTo(150, 0.00, () => {
+          $thisRow.slideUp(150, () => {
+            $thisRow.remove();
+            refreshSequence();
+          });
+        });
+      }
+    });
+  }
 
 </script>
