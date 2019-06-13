@@ -373,12 +373,15 @@ module.exports = function(RED) {
         if (config.confsel == "fileSet"){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
           try{
-              EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
-                .EnObjects;
+              //EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8')).EnObjects;
+              EnObjects = JSON.parse(config.configdata);
+              console.log('EnObjects = ' + EnObjects);
+              console.log('The number of EnObjects = ' + EnObjects.length);
           } catch(e) {
               //エラーの場合は、nodeステータスを変更。
-              node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
-              node.error(RED._("runtime.badFilePath"), configObj);
+              //node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
+              //node.error(RED._("runtime.badFilePath"), configObj);
+              node.status({fill:"red",shape:"ring",text:"JSON読み込みエラー"});
               configObj = null;
           }
         } else {
@@ -398,10 +401,14 @@ module.exports = function(RED) {
         }
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
-            linkData.sensor_id = EnObjects[0].options.sensor_id;
-            linkData.nodeId = node.id;
-            linkData.objectKey = config.object_key;
-            linkObj.push(linkData);
+            var len = EnObjects.length;
+            for (var i = 0; i < len; i++) {
+              linkData = {};
+              linkData.sensor_id = EnObjects[i].options.sensor_id;
+              linkData.nodeId = node.id;
+              linkData.objectKey = EnObjects[i].objectKey;
+              linkObj.push(linkData);
+            }
         }
         //EnOcean-com nodeのデータ追加メソッドを呼ぶ
         enCom.addLinkData(linkObj);
@@ -480,6 +487,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
         this.sensor_kind = config.sensor_kind;
+        this.configObject = config.configObject;
 
         var node = this;
         var confObj = config.configObject;

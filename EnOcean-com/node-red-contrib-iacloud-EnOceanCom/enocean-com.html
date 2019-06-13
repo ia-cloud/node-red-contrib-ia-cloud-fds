@@ -52,8 +52,17 @@
     </div>
 <br>
     <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
-        <label>i_設定ファイル名を入力してください<span style="color: #ff0000;">*</span></label>
-        <input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">
+      <div>
+        <label>設定ファイル名を選択してください<span style="color: #ff0000;">*</span></label>
+        <!--<input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">-->
+        <input type="file" id="select_config_file">
+      </div>
+      <div>
+        <input type="text" id="node-input-configfile" style="width: 400px;" placeholder="設定ファイル名">
+      </div>
+      <div>
+        <textarea id="node-input-configdata" cols="80" rows="20" style="width: 400px;" placeholder="現在の設定ファイルの中身がここに表示されます"></textarea>
+      </div>
     </div>
 
     <!-- object propertyの設定 -->
@@ -93,11 +102,15 @@
         defaults: {
             name: {name:""},
             confsel: {value:"propertySet"},
-            configfile: {value:"", required: false},
+            configfile: {value:""},
+            configdata: {value:""},
             object_key: {value:""},
             object_desc: {value:""},
             enoceancom: {type:"EnOcean-com", required:true, value:""},
-            enoceandataitem: {type:"EnOcean-dItems", required:true, value:""}
+            enoceandataitem: {type:"EnOcean-dItems", required:false, value:""},
+            objectConfig: {value:""},
+            configSel1: {value:""},
+            configSel2: {value:""}
         },
         color:"#C7E9C0",
         inputs:1,
@@ -110,6 +123,8 @@
             return this.name?"node_label_italic":"";
         },
         oneditprepare: function() {
+          debugger;
+          console.log("### confsel = " + $('#node-input-confsel').val());
           $('input[name="configSel"]:radio').change(function() {
             if ($("#node-input-configSel1").is(":checked")) {
                 $("#node-row-propertySet").show();
@@ -127,6 +142,19 @@
               $('#node-input-configSel2').prop('checked', true);
           }
           $('input[name="configSel"]:radio').change();
+          
+          $('#select_config_file').on("change", function() {
+            var file = this.files[0];
+            if(file != null) {
+              $('#node-input-configfile').val(file.name);
+              var reader = new FileReader();
+              reader.readAsText(file, 'UTF-8');
+              reader.onload = function() {
+                $('#node-input-configdata').val(reader.result);
+              }
+            }
+          });
+          
         },
 
         oneditsave: function() {
@@ -134,7 +162,7 @@
           if ($("#node-input-confsel").val() == "propertySet") {
              if (!$("#node-input-objectKey").val()) objectConfig = "";
           }
-          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) objectConfig = "";
+          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configdata").val()) objectConfig = "";
           $("#node-input-objectConfig").val(objectConfig);
         }
     });
@@ -218,14 +246,11 @@
         var frm_cnt = 0;
         //あれば設定データを取り出して、formに展開する。
         var conf = $("#node-config-input-configObject").val();
-        if (conf) {
-          var dItems = {};
-          try { dItems = JSON.parse(conf); }
-          catch(e) { conf = "";}
-        }
+        var dItems = [];
+        
         if(conf != ""){
           //設定データがあった
-          var dItems = JSON.parse(conf);
+          dItems = JSON.parse(conf);
           //フォームを一つ保存
           var original = $('#form_block\\[0\\]');
 
@@ -234,9 +259,9 @@
               .each(function(index, formObj) {$(formObj).remove();});
 
           dItems.forEach(function(value, idx){
+            console.log('dItems[' + idx + '] = ' + JSON.stringify(value));
             original
             .clone()
-            .hide()
             .appendTo("#blocks")
             .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
             .end() // 一度適用する
@@ -259,14 +284,14 @@
                     for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
                 });
               }
-          });
-          $("#dataname\\[" + idx + "\\]").val(value.dataname);
-          $("#unitType\\[" + idx + "\\]").val(value.unitType);
+            });
+            $("#dataname\\[" + idx + "\\]").val(value.dataname);
+            $("#unitType\\[" + idx + "\\]").val(value.unitType);
           
-          var block = $('#form_block\\[' + idx + '\\]');
-          if (idx != 0) block.find('input[name="del_btn"]').show();
-          block.slideDown('slow');
-          frm_cnt = idx;
+            var block = $('#form_block\\[' + idx + '\\]');
+            if (idx != 0) block.find('input[name="del_btn"]').show();
+            block.slideDown('slow');
+            frm_cnt = idx;
           });
         }
         
@@ -276,6 +301,7 @@
           
           var num = 1;
           var str = $("select option:selected").val();
+          console.log("str = " + str);
           if ( str == "u-rd" ) {
               num = 1;
           } else {
@@ -283,7 +309,7 @@
           }
           
           //TODO: selectタグでセンサー種別を変更した場合に表示する内容を変更する
-          /*******************************************************
+          //*******************************************************
           $(".form-block[id^='form_block']")
                .each(function(index, formObj) {$(formObj).remove();});
           for ( var idx = 0; idx < num; idx++ ) {
@@ -313,15 +339,25 @@
                   });
                 }
               });
-            $("#dataname\\[" + idx + "\\]").val();
-            $("#unitType\\[" + idx + "\\]").val();
+              
+            if (dItems.length >= idx + 1) {
+              $("#dataname\\[" + idx + "\\]").val(dItems[idx].dataname);
+              $("#unitType\\[" + idx + "\\]").val(dItems[idx].unitType);
+            } else {
+              $("#dataname\\[" + idx + "\\]").val();
+              if ( str == "u-rd" ) {
+                $("#unitType\\[" + idx + "\\]").val('A');
+              } else {
+                $("#unitType\\[" + idx + "\\]").val('℃');
+              }
+            }
           
             var block = $('#form_block\\[' + idx + '\\]');
             if (idx != 0) block.find('input[name="del_btn"]').show();
             block.slideDown('slow');
             frm_cnt = idx;
           }
-          ****************************************************************/
+          //****************************************************************/
         });
         
         //追加ボタンが押されたら
@@ -412,7 +448,7 @@
           //フォームの各要素をobjectに記述し、JSON文字列に変換する。
           try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
           catch(e) {$("#node-config-input-configObject").val("")}
-
+          console.log('val = ' + JSON.stringify(dItems));
       }
     });
 </script>

@@ -1,0 +1,12 @@
+{
+  "ia-cloud-fds": {
+    "plc-mc-protocol": {
+      "connection-config": "接続設定",
+      "node-name": "ノード名",
+      "this-node-name": "このノードの名前",
+      "addresses": "アドレスマッピング",
+      "address-no": "アドレス",
+      "address-length": "長さ"
+    }
+  }
+}

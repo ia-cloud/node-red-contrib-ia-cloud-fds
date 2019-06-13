@@ -1,0 +1,27 @@
+{
+    "editor": {
+        "name": "名前",
+        "url": "ia-cloud URL",
+        "username": "ユーザID",
+        "password": "パスワード",
+        "details": "詳細設定有効",
+        "FDSKey": "データソースのユニークキー",
+        "comment": "データソースの説明",
+        "cnctRetryInterval": "CCS接続リトライ間隔",
+        "tappingInterval": "接続確認間隔",
+        "tip-cnctRetryInterval": "CCSへの接続が切断された時のリトライ間隔。分単位で設定。0はリトライを行わない",
+        "tip-tappingInterval": "CCSへの接続の確認のため、リクエストがなくとも、getStausリクエストを送出する間隔を、時間単位で設定。0は接続確認を行わない"
+
+    },
+    "runtime": {
+        "connected": "接続済",
+        "disconnected": "切断",
+        "connecting": "接続中...",
+        "requesting": "要求中...",
+        "request-done": "要求完了",
+        "error": "エラー",
+        "no-response": "CCSが応答しません",
+        "bad-response": "CCSがエラーを返しました",
+        "json-error": "CCSが不正なJSONメッセージを返しました"
+    }
+}
