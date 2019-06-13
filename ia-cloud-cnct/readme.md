@@ -15,7 +15,7 @@ ia-cloudサーバとの通信でエラーが発生した場合の動作につい
 ## 入力メッセージ
 
 - ``msg.request``: ia-cloud CCSへのリクエスト。"store" "retrieve" "convey" のいずれか。
-- ``msg.object``: ia-cloud CCSへのリクエストで送出するオブジェクト。
+- ``msg.dataObject``: ia-cloud CCSへのリクエストで送出するオブジェクト。
   - "store":の場合、ストアすべきia-cloudオブジェクトあるいはia-cloudオブジェクトアレー
   - "retrieve"の場合、取り出すia-cloudオブジェクトの、objectKey,timestamp,instanceKeyをメンバとするオブジェクト
   - "convey"の場合、搬送すべき通信伝聞搬送モデルのia-cloudオブジェクト
@@ -24,7 +24,7 @@ ia-cloudサーバとの通信でエラーが発生した場合の動作につい
  ```
 {
   "request": "store",
-  "object": {
+  "dataObject": {
       "objectType" : "iaCloudObject",
       "objectKey" : { string } ,
       "objectDescription" : { string },
