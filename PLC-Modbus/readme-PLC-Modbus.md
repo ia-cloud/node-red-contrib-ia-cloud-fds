@@ -13,15 +13,16 @@ Modbus通信機器の持つビットデータ・ワードデータを読み出�
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 |request|string|"store"|
-|object|object|ストアするia-cloudオブジェクトの配列|  
+|dataObject|object|ストアするia-cloudオブジェクト|  
 
 サンプル
 ```
 msg = {
   request: "store",
-  object: {
+  dataObject: {
     objectKey: "com.ia-cloud.........",
     objectType: "iaCloudObject",
+    timestamp: "",
     objectDescription: "説明",
     ObjectContent: {
       contentType: "iaCloudData",

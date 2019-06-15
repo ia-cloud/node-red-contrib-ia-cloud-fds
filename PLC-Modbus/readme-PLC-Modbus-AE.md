@@ -13,13 +13,13 @@ Modbus通信機器の持つビットデータを読み出し、Alarm&Eventのcon
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 |request|string|"store"|
-|object|object|ストアするia-cloudオブジェクト|  
+|dataObject|object|ストアするia-cloudオブジェクト|  
 
 サンプル
 ```
 msg = {
   request: "store",
-  object: {
+  dataObject: {
     objectKey: "com.ia-cloud.........",
     objectType: "iaCloudObject",
     objectDescription: "説明",

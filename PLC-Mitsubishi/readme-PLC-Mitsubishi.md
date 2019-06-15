@@ -13,13 +13,13 @@ Mitsubishi通信機器の持つビットデータ・ワードデータを読み�
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 |request|string|"store"|
-|object|object|ストアするia-cloudオブジェクトの配列|  
+|dataObject|object|ストアするia-cloudオブジェクトの配列|  
 
 サンプル
 ```
 msg = {
   request: "store",
-  object: {
+  dataObject: {
     objectKey: "com.ia-cloud.........",
     objectType: "iaCloudObject",
     objectDescription: "説明",
