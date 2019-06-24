@@ -27,7 +27,7 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
   });
 });
 
-const createDataObjects = (values, name) => {
+const createDataObject = (values, name) => {
   const contentData = [];
   Object.keys(values).forEach(key => contentData.push({
     dataName: key,
@@ -96,7 +96,7 @@ function exportsFunction(RED) {
         .then((values) => {
           // 取得結果のセット.
           thisNode.status({ fill: 'green', shape: 'dot', text: 'connected' });
-          msg.payload = createDataObjects(values, name);
+          msg.payload = createDataObject(values, name);
           thisNode.send(msg);
         })
         .catch((e) => {
