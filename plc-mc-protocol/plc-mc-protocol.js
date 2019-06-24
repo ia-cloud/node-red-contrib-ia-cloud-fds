@@ -1,4 +1,5 @@
 const MC = require('mcprotocol');
+const moment = require('moment');
 
 const readItemsFromPLC = param => new Promise((resolve, reject) => {
   const conn = new MC();
@@ -25,6 +26,25 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
     });
   });
 });
+
+const createDataObjects = (values, name) => {
+  const contentData = [];
+  Object.keys(values).forEach(key => contentData.push({
+    dataName: key,
+    dataValue: values[key],
+  }));
+  const dataObject = {
+    objectKey: name,
+    timeStamp: moment().format(),
+    objectType: 'iaCloudObject',
+    // objectDescription: オブジェクトの説明
+    ObjectContent: {
+      contentType: 'iaCloudData', // 基本データモデル
+      contentData,
+    },
+  };
+  return { request: 'store', dataObject };
+};
 
 // ----------------------------------------
 
@@ -64,6 +84,7 @@ function exportsFunction(RED) {
       const { host } = connectionConfig;
       const { port } = connectionConfig;
       const { addresses } = config;
+      const { name } = config;
       const items = addresses
         .filter(a => a.addr || a.len)
         .reduce((itemsMap, a) => {
@@ -75,7 +96,7 @@ function exportsFunction(RED) {
         .then((values) => {
           // 取得結果のセット.
           thisNode.status({ fill: 'green', shape: 'dot', text: 'connected' });
-          msg.payload = values;
+          msg.payload = createDataObjects(values, name);
           thisNode.send(msg);
         })
         .catch((e) => {
