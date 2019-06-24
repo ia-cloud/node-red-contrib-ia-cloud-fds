@@ -23,7 +23,11 @@
       "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
       "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
       "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
-      "Modbus-com": "PLC-Modbus/Modbus-com.js"
+      "Modbus-com": "PLC-Modbus/Modbus-com.js",
+      "EnOcean-com": "EnOcean/Enocean-com.js",
+      "EnOcean-obj": "EnOcean/Enocean-obj.js",
+      "EnOcean-dItems": "EnOcean/Enocean-dItems.js",
+      "serial-port": "EnOcean/serial-port.js"
     }
   },
   "repository": {
