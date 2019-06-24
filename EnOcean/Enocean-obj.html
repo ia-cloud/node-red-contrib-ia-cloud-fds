@@ -1,0 +1,134 @@
+<!-- EnOcean-object Node の記述 -->
+<script type="text/x-red" data-template-name="EnOcean-obj">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+
+    <div class="form-row">
+      <input type="text" style="display: none;" id="node-input-confsel" value="propertySet">
+      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
+            name="configSel" id="node-input-configSel1"
+            value="propertySet" checked="checked">
+      <label style="width: 40%;" for="node-input-configSel1"> オブジェクト設定</label>
+      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
+            name="configSel" id="node-input-configSel2" value="fileSet">
+      <label style="width: 40%;" for="node-input-configSel2"> 設定ファイル</label>
+    </div>
+<br>
+    <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
+      <div>
+        <label>設定ファイル名を選択してください<span style="color: #ff0000;">*</span></label>
+        <!--<input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">-->
+        <input type="file" id="select_config_file">
+      </div>
+      <div>
+        <input type="text" id="node-input-configfile" style="width: 400px;" placeholder="設定ファイル名">
+      </div>
+      <div>
+        <textarea id="node-input-configdata" cols="80" rows="20" style="width: 400px;" placeholder="現在の設定ファイルの中身がここに表示されます"></textarea>
+      </div>
+    </div>
+
+    <!-- object propertyの設定 -->
+    <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
+        <div class="form-row">
+            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.object_key"></span></label>
+            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.object_key">
+        </div>
+        <div class="form-row">
+            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
+            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
+        </div>
+        <div class="form-row">
+            <label for="node-input-enoceandataitem"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
+            <input type="text" id="node-input-enoceandataitem">
+        </div>
+    </div>
+<hr>
+    <!-- EnOcean-com node の選択-->
+    <div class="form-row">
+        <label for="node-input-enoceancom"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanCom"></span></label>
+        <input type="text" id="node-input-enoceancom">
+    </div>
+    <div class="form-row hide">
+        <input type="text" style="width: 300px" id="node-input-objectConfig">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="EnOcean-obj" charset="utf-8">
+    <p>一定周期あるいは非同期にia-cloudオブジェクトを生成して出力します</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('EnOcean-obj',{
+        category: 'iaCloud',
+        defaults: {
+            name: {name:""},
+            confsel: {value:"propertySet"},
+            configfile: {value:""},
+            configdata: {value:""},
+            object_key: {value:""},
+            object_desc: {value:""},
+            enoceancom: {type:"EnOcean-com", required:true, value:""},
+            enoceandataitem: {type:"EnOcean-dItems", required:false, value:""},
+            objectConfig: {value:""},
+            configSel1: {value:""},
+            configSel2: {value:""}
+        },
+        color:"#C7E9C0",
+        inputs:1,
+        outputs:1,
+        icon: "swap.png",
+        label: function() {
+            return this.name || "EnOcean Object";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+          debugger;
+          console.log("### confsel = " + $('#node-input-confsel').val());
+          $('input[name="configSel"]:radio').change(function() {
+            if ($("#node-input-configSel1").is(":checked")) {
+                $("#node-row-propertySet").show();
+                $("#node-row-fileSet").hide();
+                $('#node-input-confsel').val("propertySet");
+            } else {
+                $("#node-row-fileSet").show();
+                $("#node-row-propertySet").hide();
+                $('#node-input-confsel').val("fileSet");
+            }
+          });
+          if($("#node-input-confsel").val() == "propertySet"){
+              $('#node-input-configSel1').prop('checked', true);
+          } else {
+              $('#node-input-configSel2').prop('checked', true);
+          }
+          $('input[name="configSel"]:radio').change();
+          
+          $('#select_config_file').on("change", function() {
+            var file = this.files[0];
+            if(file != null) {
+              $('#node-input-configfile').val(file.name);
+              var reader = new FileReader();
+              reader.readAsText(file, 'UTF-8');
+              reader.onload = function() {
+                $('#node-input-configdata').val(reader.result);
+              }
+            }
+          });
+          
+        },
+
+        oneditsave: function() {
+          var objectConfig = "ready";
+          if ($("#node-input-confsel").val() == "propertySet") {
+             if (!$("#node-input-objectKey").val()) objectConfig = "";
+          }
+          if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configdata").val()) objectConfig = "";
+          $("#node-input-objectConfig").val(objectConfig);
+        }
+    });
+</script>

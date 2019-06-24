@@ -1,0 +1,285 @@
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/x-red" data-template-name="EnOcean-dItems">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_kind"><i class="fa fa-thermometer-half"></i> <span data-i18n="serial.label.sensor_kind"></span></label>
+        <select type="text" id="node-config-input-sensor_kind">
+            <option value="u-rd">電流センサー(U-RD)</option>
+            <option value="watty">温度センサー(Watty)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
+    </div>
+    <div id="blocks">
+        <div class="form-block" id="form_block[0]">
+            <div class="form-row">
+                <div class="form-inline" id="from_del[0]" >
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem[0]" style="width: 30px;" value="1" disabled="disabled">
+                    <input type="button" name="del_btn" value="削除"
+                        style="margin-left: 30px; width: 70px; display: none;">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="dataname[0]">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <select id="unitType[0]" style="width: 100px;">
+                      <option selected="selected" value="℃">℃</option>
+                      <option value="A">A</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+    <div class="form-block">
+      <input type="button" id="form_add" name="add_btn" value="追加">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="EnOcean-dItems" charset="utf-8">
+    <p>ia-cloudオブジェクトの情報を設定するノードです。ここでクラウドに通知する必要な情報を設定します。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('EnOcean-dItems',{
+        category: 'config',
+        defaults: {
+            name: {name:""},
+            sensor_kind: {value:"u-rd", required:true},
+            sensor_id: {value:"", required:true},
+            configObject: {value:""}
+        },
+        label: function() {
+            return this.name||("EnOcean Data Item");
+        },
+      oneditprepare: function() {
+        var frm_cnt = 0;
+        //あれば設定データを取り出して、formに展開する。
+        var conf = $("#node-config-input-configObject").val();
+        var dItems = [];
+        
+        if(conf != ""){
+          //設定データがあった
+          dItems = JSON.parse(conf);
+          //フォームを一つ保存
+          var original = $('#form_block\\[0\\]');
+
+          //一旦フォームオブジェクトをすべて削除
+          $(".form-block[id^='form_block']")
+              .each(function(index, formObj) {$(formObj).remove();});
+
+          dItems.forEach(function(value, idx){
+            console.log('dItems[' + idx + '] = ' + JSON.stringify(value));
+            original
+            .clone()
+            .appendTo("#blocks")
+            .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
+            .end() // 一度適用する
+            .find('div, input, textarea, select, label').each(function(index, obj) {
+              if ($(obj).attr('id') != null) {
+                if($(obj).attr("id").substr(0,5) == "dItem"){
+                    $(obj).val("" + (idx + 1));
+                }
+                $(obj).attr({
+                  id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+              if ($(obj).attr('name') != null) {
+                $(obj).attr({
+                    name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                 });
+              }
+              if ($(obj).attr('for') != null) {
+                $(obj).attr({
+                    for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+            });
+            $("#dataname\\[" + idx + "\\]").val(value.dataname);
+            $("#unitType\\[" + idx + "\\]").val(value.unitType);
+          
+            var block = $('#form_block\\[' + idx + '\\]');
+            if (idx != 0) block.find('input[name="del_btn"]').show();
+            block.slideDown('slow');
+            frm_cnt = idx;
+          });
+        }
+        
+        $("#node-config-input-sensor_kind").change(function (){
+          //フォームを一つ保存
+          var original = $('#form_block\\[0\\]');
+          
+          var num = 1;
+          var str = $("select option:selected").val();
+          console.log("str = " + str);
+          if ( str == "u-rd" ) {
+              num = 1;
+          } else {
+              num = 4;
+          }
+          
+          //TODO: selectタグでセンサー種別を変更した場合に表示する内容を変更する
+          //*******************************************************
+          $(".form-block[id^='form_block']")
+               .each(function(index, formObj) {$(formObj).remove();});
+          for ( var idx = 0; idx < num; idx++ ) {
+            original
+              .clone()
+              .hide()
+              .appendTo("#blocks")
+              .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
+              .end() // 一度適用する
+              .find('div, input, textarea, select, label').each(function(index, obj) {
+                if ($(obj).attr('id') != null) {
+                  if($(obj).attr("id").substr(0,5) == "dItem"){
+                      $(obj).val("" + (idx + 1));
+                  }
+                  $(obj).attr({
+                    id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+                if ($(obj).attr('name') != null) {
+                  $(obj).attr({
+                      name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                   });
+                }
+                if ($(obj).attr('for') != null) {
+                  $(obj).attr({
+                      for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+              });
+              
+            if (dItems.length >= idx + 1) {
+              $("#dataname\\[" + idx + "\\]").val(dItems[idx].dataname);
+              $("#unitType\\[" + idx + "\\]").val(dItems[idx].unitType);
+            } else {
+              $("#dataname\\[" + idx + "\\]").val();
+              if ( str == "u-rd" ) {
+                $("#unitType\\[" + idx + "\\]").val('A');
+              } else {
+                $("#unitType\\[" + idx + "\\]").val('℃');
+              }
+            }
+          
+            var block = $('#form_block\\[' + idx + '\\]');
+            if (idx != 0) block.find('input[name="del_btn"]').show();
+            block.slideDown('slow');
+            frm_cnt = idx;
+          }
+          //****************************************************************/
+        });
+        
+        //追加ボタンが押されたら
+        $("#form_add").off("click");
+        $("#form_add").on("click", function() {
+
+          var original = $('#form_block\\[' + frm_cnt + '\\]');
+          frm_cnt++;
+          original
+          .clone()
+          .hide()
+          .insertAfter(original)
+          .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
+          var clone = $('#form_block\\[' + frm_cnt + '\\]');
+          clone.find('div, input, textarea, select, label').each(function(idx, obj) {
+            if ($(obj).attr('id') != null) {
+              if($(obj).attr("id").substr(0,5) == "dItem"){
+                  $(obj).val("" + (frm_cnt + 1));
+              }
+              $(obj).attr({
+                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+            if ($(obj).attr('name') != null) {
+              $(obj).attr({
+                name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+               });
+            }
+            if ($(obj).attr('for') != null) {
+              $(obj).attr({
+                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+          });
+          clone.find('input[name="del_btn"]').show();
+          clone.slideDown('fast');
+        });
+        
+        //削除ボタンが押されたら
+        $("#blocks").off('click', 'input[name="del_btn"]');
+        $("#blocks").on('click', 'input[name="del_btn"]', function() {
+          var removeObj = $(this).parents(".form-block");
+          removeObj.fadeOut('fast', function() {
+            removeObj.remove();
+            // 番号振り直し
+            frm_cnt = 0;
+            $(".form-block[id^='form_block']").each(function(index, formObj) {
+              if ($(formObj).attr('id') != 'form_block[0]') {
+                frm_cnt++;
+                $(formObj)
+                  .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
+                  .find('div, input, textarea, select, label').each(function(idx, obj) {
+                   if ($(obj).attr('id') != null) {
+                      if($(obj).attr("id").substr(0,5) == "dItem"){
+                            $(obj).val("" + (frm_cnt + 1));
+                      }
+                      $(obj).attr({
+                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('name') != null) {
+                      $(obj).attr({
+                        name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('for') != null) {
+                      $(obj).attr({
+                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                  });
+              }
+            });
+          });
+        });
+      },
+
+      oneditsave: function() {
+
+        var dItems = [];
+          $(".form-block[id^='form_block']").each(function(idx, obj){
+              var item ={dataValue: "", unitType: "", dataname: ""};
+              
+              item.unitType = $("#unitType\\[" + idx + "\\]").val();
+              item.dataname = $("#dataname\\[" + idx + "\\]").val();
+              dItems[idx]=item;
+          });
+          //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+          try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+          catch(e) {$("#node-config-input-configObject").val("")}
+          console.log('val = ' + JSON.stringify(dItems));
+      }
+    });
+</script>
+

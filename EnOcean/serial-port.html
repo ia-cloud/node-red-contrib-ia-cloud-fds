@@ -1,0 +1,220 @@
+<!-- serial-port Config Node の記述 -->
+<script type="text/x-red" data-template-name="serial-port">
+    <div class="form-row">
+        <label for="node-config-input-serialport"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
+        <input type="text" id="node-config-input-serialport" style="width:66%;" data-i18n="[placeholder]serial.placeholder.serialport">
+        <a id="node-config-lookup-serial" class="btn"><i id="node-config-lookup-serial-icon" class="fa fa-search"></i></a>
+    </div>
+    <div class="form-row">
+        <table width="100%"><tr>
+            <td width="100px"><i class="fa fa-wrench"></i> <span data-i18n="serial.label.settings"></span></td>
+            <td width="110px" data-i18n="serial.label.baudrate"></td>
+            <td width="70px" data-i18n="serial.label.databits"></td>
+            <td width="80px" data-i18n="serial.label.parity"></td>
+            <td width="70px" data-i18n="serial.label.stopbits"></td>
+        </tr><tr><td>&nbsp;</td>
+        <td>
+            <input type="text" id="node-config-input-serialbaud" style="width:92%">
+        </td><td>
+        <select type="text" id="node-config-input-databits" style="width:90%;">
+            <option value="8">8</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+        </select>
+        </td><td>
+        <select type="text" id="node-config-input-parity" style="width:90%;">
+            <option value="none" data-i18n="serial.parity.none"></option>
+            <option value="even" data-i18n="serial.parity.even"></option>
+            <option value="mark" data-i18n="serial.parity.mark"></option>
+            <option value="odd" data-i18n="serial.parity.odd"></option>
+            <option value="space" data-i18n="serial.parity.space"></option>
+        </select>
+        </td><td>
+        <select type="text" id="node-config-input-stopbits" style="width:90%;">
+            <option value="2">2</option>
+            <option value="1">1</option>
+        </select>
+        </td></tr></table>
+    </div>
+    <br/>
+    <div class="form-row">
+        <label><i class="fa fa-sign-in"></i> <span data-i18n="serial.label.input"></span></label>
+    </div>
+    <div class="form-row" style="padding-left:10px;">
+        <span data-i18n="serial.label.split"></span>
+        <select type="text" id="node-config-input-out" style="margin-left:5px; width:200px;">
+            <option value="char" data-i18n="serial.split.character"></option>
+            <option value="time" data-i18n="serial.split.timeout"></option>
+            <!--<option value="interbyte" data-i18n="serial.split.silent"></option>-->
+            <option value="count" data-i18n="serial.split.lengths"></option>
+        </select>
+        <input type="text" id="node-config-input-newline" style="width:50px;">
+        <span id="node-units"></span>
+    </div>
+    <div class="form-row" style="padding-left:10px;">
+        <span data-i18n="serial.label.deliver"></span>
+        <select type="text" id="node-config-input-bin" style="margin-left:5px; width:150px;">
+            <option value="false" data-i18n="serial.output.ascii"></option>
+            <option value="bin" data-i18n="serial.output.binary"></option>
+        </select>
+    </div>
+    <br/>
+<!--
+    <div id="node-config-addchar">
+        <div class="form-row">
+            <label><i class="fa fa-sign-out"></i> <span data-i18n="serial.label.output"></span></label>
+        </div>
+        <div class="form-row">
+            <input style="width:30px; margin-left:10px; vertical-align:top;" type="checkbox" id="node-config-input-addchar"><label style="width:auto;" for="node-config-input-addchar"><span data-i18n="serial.addsplit"></span></label>
+        </div>
+    </div>
+    <br/>
+    <div id="node-config-addchar">
+        <div class="form-row">
+            <label><i class="fa fa-exchange"></i> <span data-i18n="serial.label.request"></span></label>
+        </div>
+        <div class="form-row" style="padding-left:10px;">
+            <span data-i18n="serial.label.responsetimeout"></span>
+            <input type="text" id="node-config-input-responsetimeout" style="width:60px;">
+            <span data-i18n="serial.label.ms"></span>
+        </div>
+    </div>
+    <div class="form-tips" id="tip-responsetimeout" hidden><span data-i18n="serial.tip.responsetimeout"></span></div>
+-->
+    <div class="form-tips" id="tip-split"><span data-i18n="serial.tip.split"></span></div>
+    <div class="form-tips" id="tip-timeout" hidden><span data-i18n="serial.tip.timeout"></span></div>
+    <div class="form-tips" id="tip-silent" hidden><span data-i18n="serial.tip.silent"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="serial-port" charset="utf-8">
+    <p>本画面ではシリアルポートに対する設定オプションを提供します</p>
+    <p>検索ボタンを押すことによって選択可能な有効なシリアルポートの一覧を表示します。もしくはポート名が既知ならばそのパスを指定することができます。</p>
+    <p>入力データは固定文字列、もしくはタイムアウト秒数、固定文字数で区切って受信する設定ができます。</p>
+    <p>文字を指定するときは文字そのもの、エスケープ文字列（\nなど)、16進コード(0x0dなど)を指定することができます。</p>
+    <p>【注記】本ノードはシリアルポートノードの設定ノードを流用しています。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('serial-port',{
+        category: 'config',
+        defaults: {
+            //name: {value:""},
+            serialport: {value:"",required:true},
+            serialbaud: {value:"57600",required:true,validate:RED.validators.number()},
+            databits: {value:8,required:true},
+            parity: {value:"none",required:true},
+            stopbits: {value:1,required:true},
+            newline: {value:"\\n"},
+            bin: {value:"false"},
+            out: {value:"char"},
+            addchar: {value:false},
+            responsetimeout: {value: 10000}
+        },
+        label: function() {
+            this.serialbaud = this.serialbaud || 57600;
+            this.databits = this.databits || 8;
+            this.parity = this.parity || this._("serial.label.none");
+            this.stopbits = this.stopbits || 1;
+            return this.serialport+":"+this.serialbaud+"-"+this.databits+this.parity.charAt(0).toUpperCase()+this.stopbits;
+        },
+        oneditprepare: function() {
+            var previous = null;
+            var blist = [
+                {value:"115200",label:"115200",hasValue:false},
+                {value:"57600",label:"57600",hasValue:false},
+                {value:"38400",label:"38400",hasValue:false},
+                {value:"19200",label:"19200",hasValue:false},
+                {value:"9600",label:"9600",hasValue:false},
+                {value:"4800",label:"4800",hasValue:false},
+                {value:"2400",label:"2400",hasValue:false},
+                {value:"1200",label:"1200",hasValue:false},
+                {value:"600",label:"600",hasValue:false},
+                {value:"300",label:"300",hasValue:false},
+                {label:"other",value:"other",icon:"red/images/typedInput/09.png",validate:/^[0-9]*$/}
+            ];
+
+            var serialbaudType = "custom";
+            for (var i in blist) {
+                if (this.serialbaud == blist[i].value) {
+                    serialbaudType = this.serialbaud;
+                }
+            }
+
+            $("#node-config-input-serialbaud").typedInput({
+                default: this.serialbaud,
+                types:blist
+            });
+
+            $("#node-config-input-out").on('focus', function () { previous = this.value; }).change(function() {
+                if (previous == null) { previous = $("#node-config-input-out").val(); }
+                if ($("#node-config-input-out").val() == "char") {
+                    if (previous != "char") { $("#node-config-input-newline").val("\\n"); }
+                    $("#node-units").text("");
+                    //$("#node-config-addchar").show();
+                    $("#tip-split").show();
+                    $("#tip-timeout").hide();
+                    $("#tip-silent").hide();
+                }
+                else if ($("#node-config-input-out").val() == "time") {
+                    if (previous != "time") { $("#node-config-input-newline").val("0"); }
+                    $("#node-units").text("ms");
+                    $("#node-config-addchar").hide();
+                    //$("#node-config-input-addchar").val("false");
+                    $("#tip-split").hide();
+                    $("#tip-timeout").show();
+                    $("#tip-silent").hide();
+                }
+                else if ($("#node-config-input-out").val() == "interbyte") {
+                    if (previous != "interbyte") { $("#node-config-input-newline").val("0"); }
+                    $("#node-units").text("ms");
+                    $("#node-config-addchar").hide();
+                    //$("#node-config-input-addchar").val("false");
+                    $("#tip-split").hide();
+                    $("#tip-timeout").hide();
+                    $("#tip-silent").show();
+                }
+                else {
+                    if (previous != "count") { $("#node-config-input-newline").val(""); }
+                    $("#node-units").text("chars");
+                    $("#node-config-addchar").hide();
+                    //$("#node-config-input-addchar").val("false");
+                    $("#tip-split").hide();
+                    $("#tip-timeout").hide();
+                    $("#tip-silent").hide();
+                }
+            });
+
+            //$("#node-config-input-responsetimeout").on('focus', function () { $("#tip-responsetimeout").show(); });
+
+            try {
+                $("#node-config-input-serialport").autocomplete( "destroy" );
+            } catch(err) {
+            }
+            $("#node-config-lookup-serial").click(function() {
+                $("#node-config-lookup-serial").addClass('disabled');
+                $.getJSON('serialports',function(data) {
+                    $("#node-config-lookup-serial").removeClass('disabled');
+                    var ports = [];
+                    $.each(data, function(i, port) {
+                        ports.push(port.comName);
+                    });
+                    $("#node-config-input-serialport").autocomplete({
+                        source:ports,
+                        minLength:0,
+                        close: function( event, ui ) {
+                            $("#node-config-input-serialport").autocomplete( "destroy" );
+                        }
+                    }).autocomplete("search","");
+                });
+            });
+        },
+        oneditsave: function() {
+            var mytype = $("#node-config-input-serialbaud").typedInput('type');
+            if (mytype !== "other") {
+                $("#node-config-input-serialbaud").typedInput('value',mytype);
+            }
+            this.serialbaud = $("#node-config-input-serialbaud").typedInput('value');
+        }
+    });
+</script>
