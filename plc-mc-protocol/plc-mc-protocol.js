@@ -27,23 +27,29 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
   });
 });
 
-const createDataObject = (values, name) => {
+const createDataObject = (values, config) => {
   const contentData = [];
   Object.keys(values).forEach(key => contentData.push({
     dataName: key,
+    commonName: config.commonName || undefined,
+    unit: config.unit || undefined,
     dataValue: values[key],
   }));
-  const dataObject = {
-    objectKey: name,
-    timeStamp: moment().format(),
-    objectType: 'iaCloudObject',
-    // objectDescription: オブジェクトの説明
-    ObjectContent: {
-      contentType: 'iaCloudData', // 基本データモデル
-      contentData,
+console.log(contentData);
+  return {
+    request: 'store',
+    dataObject: {
+      objectKey: config.name,
+      timestamp: moment().format(),
+      objectType: 'iaCloudObject',
+      objectDescription: config.objectDescription || undefined, // オブジェクトの説明
+      instanceKey: config.instanceKey || undefined,
+      ObjectContent: {
+        contentType: 'iaCloudData', // 基本データモデル
+        contentData,
+      },
     },
   };
-  return { request: 'store', dataObject };
 };
 
 // ----------------------------------------
@@ -84,19 +90,19 @@ function exportsFunction(RED) {
       const { host } = connectionConfig;
       const { port } = connectionConfig;
       const { addresses } = config;
-      const { name } = config;
       const items = addresses
-        .filter(a => a.addr || a.len)
+        .filter(a => a.dev || a.addr || a.len)
         .reduce((itemsMap, a) => {
-          itemsMap[a.addr] = a.len;
+          itemsMap[`${a.dev}${a.addr}`] = a.len;
           return itemsMap;
         }, {});
+      console.log(items);
 
       readItemsFromPLC({ host, port, items })
         .then((values) => {
           // 取得結果のセット.
           thisNode.status({ fill: 'green', shape: 'dot', text: 'connected' });
-          msg.payload = createDataObject(values, name);
+          msg = createDataObject(values, config);
           thisNode.send(msg);
         })
         .catch((e) => {

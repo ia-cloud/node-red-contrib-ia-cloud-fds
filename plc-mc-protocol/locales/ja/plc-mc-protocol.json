@@ -6,7 +6,10 @@
       "this-node-name": "このノードの名前",
       "addresses": "アドレスマッピング",
       "address-no": "アドレス",
-      "address-length": "長さ"
+      "address-length": "長さ",
+      "bit": "bit型",
+      "number": "数値型",
+      "string": "文字列型"
     }
   }
 }

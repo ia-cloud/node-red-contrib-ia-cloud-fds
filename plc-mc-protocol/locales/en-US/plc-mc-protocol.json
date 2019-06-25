@@ -6,7 +6,10 @@
       "this-node-name": "This node name",
       "addresses": "Address mapping",
       "address-no": "Address no",
-      "address-length": "Length"
+      "address-length": "Length",
+      "bit": "bit",
+      "number": "number",
+      "string": "string"
     }
   }
 }
