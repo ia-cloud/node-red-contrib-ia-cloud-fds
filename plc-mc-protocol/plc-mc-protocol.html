@@ -19,30 +19,29 @@
   </div>
   <!-- Addresses : row-template -->
   <div style="display:none;" class="ia-cloud-plc-mc-addresses-row-template">
-    <div class="form-block" id="form_block">
-      <div class="form-row">
-        <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
-        <select style="width:30; margin-left: 30px;" name="dataType" class="device-no">
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.bit">
-            <option selected="selected" value="M">M</option>
-            <option value="X">X</option>
-            <option value="Y">Y</option>
-            <option value="CS">CS</option>
-            <option value="TS">TS</option>
-          </optgroup>
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.number">
-            <option value="CN">CN</option>
-            <option value="TN">TN</option>
-            <option value="DFLOAT">D(number)</option>
-          </optgroup>
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.string">
-            <option selected="selected" value="DSTR">D(string)</option>
-          </optgroup>
-        </select>
-        <input type="text"   style="width:20%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
-        <input type="number" style="width:20%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
-        <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
-      </div>
+    <div class="form-row">
+      <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
+      <select style="width:30; margin-left: 30px;" name="dataType" class="device-no">
+        <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.bit">
+          <option selected="selected" value="M">M</option>
+          <option value="X">X</option>
+          <option value="Y">Y</option>
+          <option value="CS">CS</option>
+          <option value="TS">TS</option>
+        </optgroup>
+        <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.number">
+          <option value="CN">CN</option>
+          <option value="TN">TN</option>
+          <option value="D">D(number)</option>
+          <option value="DFLOAT">D(float)</option>
+        </optgroup>
+        <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.string">
+          <option selected="selected" value="DSTR">D(string)</option>
+        </optgroup>
+      </select>
+      <input type="text"   style="width:20%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
+      <input type="number" style="width:20%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
+      <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
     </div>
   </div>
 
@@ -76,7 +75,7 @@
       // Stack rows.
       const addresses = this.addresses || [];
       addresses.push({});
-      const $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-block');
+      const $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-row');
       const rows = addresses.map((address, index) => getNewRow(index + 1, address, $rowTemplate));
       $('.ia-cloud-fds-plc-mc-addresses').append(rows);
       setEventHandler();
@@ -107,7 +106,7 @@
   /** Returns a new row instance. */
   const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
     if (!$rowTemplate) {
-      $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-block');
+      $rowTemplate = $('.ia-cloud-plc-mc-addresses-row-template .form-row');
     }
     if (!rowValues) {
       rowValues = {};
@@ -125,8 +124,8 @@
     // ----------------------------------------
     // Duplicate rows when some edits happen in the last row.
     $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function() {
-      const $thisRow = $(this).parent('.form-row').parent('.form-block');
-      const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-block:last');
+      const $thisRow = $(this).parent('.form-row');
+      const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-row:last');
       // Is it the last row?
       if ($thisRow.is($lastRow)) {
         const rowNumber = Number($lastRow.find('.ia-cloud-fds-plc-mc-address-seq').text());
@@ -137,7 +136,7 @@
     // Remove clicked row.
     $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function() {
       console.log('Remove row')
-      const $thisRow = $(this).parent('.form-row').parent('.form-block');
+      const $thisRow = $(this).parent('.form-row');
       if ($thisRow.siblings().length === 0) {
         // Do not remove, clear last first row.
         $thisRow.find('.device-no').val('');
@@ -152,21 +151,6 @@
           });
         });
       }
-    });
-    // View row when the data type changed
-//    $(".ia-cloud-fds-plc-mc-addresses").off('change', 'select[name^="dataType"]');
-$(".ia-cloud-fds-plc-mc-addresses").on('change', 'select[id="dataType"]', function() {
-// $(".ia-cloud-fds-plc-mc-addresses").on('change', 'select[id^="dataType"]', function() {
-      console.log('Change Datatype')
-      const val = $(this).val();
-      console.log(`val:${val}`)
-//      const val = $(this).children('select[id ^= "datatype-"]').val();
-      $(this).parents(".form-block").find('select[id ^= "dataType-"]')
-        .each(function(idx,obj){
-          console.log(`objName:${$(obj).attr("name")}`)
-          if ($(obj).attr("name") == val) $(obj).show();
-          else $(obj).hide();
-        });
     });
   }
 
