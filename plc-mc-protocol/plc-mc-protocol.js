@@ -46,7 +46,7 @@ const createDataObject = (values, config) => {
       objectType: 'iaCloudObject',
       objectDescription: config.objectDescription || undefined, // オブジェクトの説明
       instanceKey: config.instanceKey || undefined,
-      ObjectContent: {
+      objectContent: {
         contentType: 'iaCloudData', // 基本データモデル
         contentData,
       },
