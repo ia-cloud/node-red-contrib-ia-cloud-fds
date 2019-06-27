@@ -29,17 +29,19 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
 
 const createDataObject = (values, config) => {
   const contentData = [];
-  Object.keys(values).forEach(key => contentData.push({
-    dataName: key,
-    commonName: config.commonName || undefined,
-    unit: config.unit || undefined,
-    dataValue: values[key],
-  }));
-console.log(contentData);
+  Object.keys(values).forEach((key) => {
+    const element = config.addresses.find(e => `${e.dev}${e.addr},${e.len}` === key);
+    contentData.push({
+      dataName: element.name,
+      commonName: element.common || undefined,
+      unit: element.unit || undefined,
+      dataValue: values[key],
+    });
+  });
   return {
     request: 'store',
     dataObject: {
-      objectKey: config.name,
+      objectKey: config.objectKey,
       timestamp: moment().format(),
       objectType: 'iaCloudObject',
       objectDescription: config.objectDescription || undefined, // オブジェクトの説明
@@ -96,7 +98,6 @@ function exportsFunction(RED) {
           itemsMap[`${a.dev}${a.addr}`] = a.len;
           return itemsMap;
         }, {});
-      console.log(items);
 
       readItemsFromPLC({ host, port, items })
         .then((values) => {

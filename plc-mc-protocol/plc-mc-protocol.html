@@ -2,17 +2,25 @@
 
   <!-- Connection config -->
   <div class="form-row">
-    <label for="node-input-connectionConfig" style="width:130px"><i class="fa fa-link"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.dstring" /> <span data-i18n="ia-cloud-fds.plc-mc-protocol.connection-config" /></label>
+    <label for="node-input-connectionConfig" style="width:150px"><i class="fa fa-link"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.dstring" /> <span data-i18n="ia-cloud-fds.plc-mc-protocol.connection-config" /></label>
     <input type="text" id="node-input-connectionConfig" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.connection-config">
   </div>
   <!-- Name -->
   <div class="form-row">
-    <label for="node-input-name" style="width:130px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
+    <label for="node-input-name" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
     <input type="text" id="node-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-node-name">
   </div>
   <div class="form-row">
-    <label for="node-input-objectName" style="width:130px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-name" /></label>
-    <input type="text" id="node-input-objectName" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-name">
+    <label for="node-input-objectKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-name" /></label>
+    <input type="text" id="node-input-objectKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-objectDescription" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-description" /></label>
+    <input type="text" id="node-input-objectDescription" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-description">
+  </div>
+  <div class="form-row">
+    <label for="node-input-instanceKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.instance-name" /></label>
+    <input type="text" id="node-input-instanceKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-instance-name">
   </div>
   <!-- Addresses : header -->
   <div class="form-row">
@@ -26,12 +34,12 @@
     <div class="form-block">
       <div class="form-row">
         <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
-        <input type="text"   style="width:50%;" class="data-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.data-name">
-        <input type="text"   style="width:25%;" class="unit" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.unit">
+        <input type="text"   style="width:30%;" class="data-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.data-name">
+        <input type="text"   style="width:30%;" class="common-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.common-name">
+        <input type="text"   style="width:20%;" class="unit" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.unit">
       </div>
       <div class="form-row">
-        <!-- <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label> -->
-        <select style="width:30; margin-left: 30px;" name="dataType" class="device-no">
+        <select style="width:30%; margin-left: 40px;" name="dataType" class="device-no">
           <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.bit">
             <option value="M">M</option>
             <option value="X">X</option>
@@ -49,8 +57,8 @@
             <option selected="selected" value="DSTR">D(string)</option>
           </optgroup>
         </select>
-        <input type="text"   style="width:20%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
-        <input type="number" style="width:20%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
+        <input type="text"   style="width:30%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
+        <input type="number" style="width:15%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
         <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
       </div>
     </div>
@@ -73,7 +81,9 @@
     defaults: {
       connectionConfig: { value: '', type: 'PLC MC config', required: true },
       name: { value: 'PLC MC protocol' },
-      objectName: { value: '' },
+      objectKey: { value: '' },
+      objectDescription: { value: '' },
+      instanceKey: { value: '' },
       addresses: { value: '' },
     },
     inputs: 1,
@@ -84,9 +94,8 @@
     },
     oneditprepare() {
       // Stack object name.
-      const objectName = this.objectName || '';
-      console.log(`objectName:${objectName}`);
-      $('.node-input-objectName').val(objectName);
+      const objectKey = this.objectKey || '';
+      $('.node-input-objectKey').val(objectKey);
       // Stack rows.
       const addresses = this.addresses || [];
       addresses.push({});
@@ -101,6 +110,7 @@
         const $row = $(row);
         return {
           name: $row.find('.data-name').val(),
+          common: $row.find('.common-name').val(),
           unit: $row.find('.unit').val(),
           dev: $row.find('.device-no').val(),
           addr: $row.find('.address-no').val(),
@@ -132,6 +142,7 @@
     const $newRow = $rowTemplate.clone();
     $newRow.find('.ia-cloud-fds-plc-mc-address-seq').text(rowNumber);
     $newRow.find('.data-name').val(rowValues.name);
+    $newRow.find('.common-name').val(rowValues.common);
     $newRow.find('.unit').val(rowValues.unit);
     $newRow.find('.device-no').val(rowValues.dev);
     $newRow.find('.address-no').val(rowValues.addr);
@@ -154,11 +165,11 @@
     // ----------------------------------------
     // Remove clicked row.
     $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function() {
-      console.log('Remove row')
       const $thisRow = $(this).parent('.form-row').parent('.form-block');
       if ($thisRow.siblings().length === 0) {
         // Do not remove, clear last first row.
         $thisRow.find('.data-name').val('');
+        $thisRow.find('.common-name').val('');
         $thisRow.find('.unit').val('');
         $thisRow.find('.device-no').val('');
         $thisRow.find('.address-no').val('');
