@@ -26,7 +26,8 @@
       "Modbus-com": "PLC-Modbus/Modbus-com.js",
       "EnOcean-com": "EnOcean/Enocean-com.js",
       "EnOcean-obj": "EnOcean/Enocean-obj.js",
-      "EnOcean-dItems": "EnOcean/Enocean-dItems.js",
+      "UR_D_AC_Sensor": "EnOcean/UR_D_AC_Sensor.js",
+      "Watty_Temp_Sensor": "EnOcean/Watty_Temp_Sensor.js",
       "serial-port": "EnOcean/serial-port.js"
     }
   },
