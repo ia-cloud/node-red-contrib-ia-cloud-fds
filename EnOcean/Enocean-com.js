@@ -235,16 +235,20 @@ module.exports = function(RED) {
         }
 
         var MakeListeners = function(sensor_id, data){
-            var linkData = linkObj.find(function(elm) {
-                        return (elm.sensor_id == sensor_id);});
-            if (linkData) {
-                /* linkData.preValue = linkData.value; */
-                linkData.value = data;
-                var nodeId = linkData.nodeId;
-                if (nodeId) {
-                    // リストに追加（または上書き）
-                    listeners[nodeId] = [linkData.objectKey,linkData.value];
-                    node.log('listeners[' + nodeId + '] = ' + listeners[nodeId]);
+            var linkData = linkObj.filter(function(elm) {
+                var lower_id = elm.sensor_id.toLowerCase();  // Sensor IDを一旦小文字に合わせる
+                return (lower_id == sensor_id);
+            });
+            if (linkData.length > 0) {
+                // 一つ以上の要素が見つかったら
+                for (var i = 0; i < linkData.length; i++) {
+                    linkData[i].value = data;
+                    var nodeId = linkData[i].nodeId;
+                    if (nodeId) {
+                        // リストに追加（または上書き）
+                        listeners[nodeId] = [linkData[i].objectKey,linkData[i].value];
+                        node.log('listeners[' + nodeId + '] = ' + listeners[nodeId]);
+                    }
                 }
                 node.log('$$$$$ A specified sensor ID is found in linkObj [' + linkData.sensor_id + ']');
                 node.log('$$$$$ The received data is set into listeners array list.');

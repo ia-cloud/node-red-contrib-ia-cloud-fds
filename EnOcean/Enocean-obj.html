@@ -40,9 +40,24 @@
             <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
             <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
         </div>
-        <div class="form-row">
+        <!--<div class="form-row">
             <label for="node-input-enoceandataitem"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
             <input type="text" id="node-input-enoceandataitem">
+        </div>-->
+        <div class="form-row">
+            <label for="node-input-sensor_kind"><i class="fa fa-thermometer-half"></i> <span data-i18n="serial.label.sensor_kind"></span></label>
+            <select type="text" id="node-input-sensor_kind">
+                <option value="u-rd">電流センサー(U-RD)</option>
+                <option value="watty">温度センサー(Watty)</option>
+            </select>
+        </div>
+        <div class="form-row" id="u-rd">
+            <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
+            <input type="text" id="node-input-urd_ac_sensor">
+        </div>
+        <div class="form-row" id="watty">
+            <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="serial.label.enoceanDataItems"></span></label>
+            <input type="text" id="node-input-watty_temp_sensor">
         </div>
     </div>
 <hr>
@@ -53,6 +68,9 @@
     </div>
     <div class="form-row hide">
         <input type="text" style="width: 300px" id="node-input-objectConfig">
+    </div>
+    <div class="form-row hide">
+        <input type="text" style="width: 300px" id="node-input-selectSensor">
     </div>
 
 </script>
@@ -72,10 +90,14 @@
             object_key: {value:""},
             object_desc: {value:""},
             enoceancom: {type:"EnOcean-com", required:true, value:""},
-            enoceandataitem: {type:"EnOcean-dItems", required:false, value:""},
+            sensor_kind: {value:"u-rd"},
+            // enoceandataitem: {type:"EnOcean-dItems", required:false, value:""},
+            urd_ac_sensor: {type:"UR_D_AC_Sensor", required:false, value:""},
+            watty_temp_sensor: {type:"Watty_Temp_Sensor", required:false, value:""},
             objectConfig: {value:""},
             configSel1: {value:""},
-            configSel2: {value:""}
+            configSel2: {value:""},
+            selectSensor: {value:"", required:true}
         },
         color:"rgb(231, 180, 100)",
         inputs:1,
@@ -120,6 +142,19 @@
             }
           });
           
+          // センサー種別が変更されたときの処理
+          $("#node-input-sensor_kind").change(function (){
+            var str = $("select option:selected").val();
+            console.log("str = " + str);
+            // TODO: センサー追加により条件分岐を増やすことのないように工夫する
+            if ( str == "u-rd" ) {
+                $("#u-rd").show();
+                $("#watty").hide();
+            } else {
+                $("#u-rd").hide();
+                $("#watty").show();
+            }
+          });
         },
 
         oneditsave: function() {
@@ -129,6 +164,16 @@
           }
           if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configdata").val()) objectConfig = "";
           $("#node-input-objectConfig").val(objectConfig);
+          
+          var str = $("select option:selected").val();
+          var selectSensor = "";
+          // TODO: センサー追加により条件分岐を増やすことのないように工夫する
+          if ( str == "u-rd" ) {
+              selectSensor = $("#node-input-urd_ac_sensor").val();
+          } else {
+              selectSensor = $("#node-input-watty_temp_sensor").val();
+          }
+          $("#node-input-selectSensor").val(selectSensor);
         }
     });
 </script>

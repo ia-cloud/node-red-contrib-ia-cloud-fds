@@ -16,7 +16,11 @@ module.exports = function(RED) {
         this.object_key = config.object_key;
         this.object_desc = config.object_desc;
         this.enoceancom = config.enoceancom;
-        this.enoceandataitem = config.enoceandataitem;
+        this.sensor_kind = config.sensor_kind;
+        //this.enoceandataitem = config.enoceandataitem;
+        this.urd_ac_sensor = config.urd_ac_sensor;
+        this.watty_temp_sensor = config.watty_temp_sensor;
+        this.selectSensor = config.selectSensor;
         
         var serialPool = config.enoceancom.serialPool;
         
@@ -43,18 +47,28 @@ module.exports = function(RED) {
           }
         } else {
             // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
-            var EnDataNode = (RED.nodes.getNode(config.enoceandataitem));
-            node.log('EnDataNode = ' + JSON.stringify(EnDataNode));
-            node.log('EnDataNode.dItems = ' + JSON.stringify(EnDataNode.dItems));
+            //var EnDataNode = (RED.nodes.getNode(config.enoceandataitem));
+            
+            // TODO: センサー種別からオブジェクトをどう取り出すかを検討する
+            var sensor_obj = config.selectSensor;
+            //var sensor_obj = "";
+            //if ( config.sensor_kind == "u-rd" ) {
+            //    sensor_obj = config.urd_ac_sensor;
+            //} else {
+            //    sensor_obj = config.watty_temp_sensor;
+            //}
+            var SensorNode = (RED.nodes.getNode(sensor_obj));
+            node.log('SensorNode = ' + JSON.stringify(SensorNode));
+            node.log('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
             
             EnObjects = [{options:{}, ObjectContent:{}}];
-            EnObjects[0].options.sensor_id = EnDataNode.sensor_id;
-            EnObjects[0].options.sensor_kind = EnDataNode.sensor_kind;
+            EnObjects[0].options.sensor_id = SensorNode.sensor_id;
+            EnObjects[0].options.sensor_kind = config.sensor_kind;
             EnObjects[0].objectName = "ObjectName";           // 仮設定
             EnObjects[0].objectKey = config.object_key;
             EnObjects[0].objectDescription = config.object_desc;
             EnObjects[0].ObjectContent.contentType = "iaCloudData";
-            EnObjects[0].ObjectContent.contentData = EnDataNode.dItems;
+            EnObjects[0].ObjectContent.contentData = SensorNode.dItems;
         }
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
@@ -99,14 +113,12 @@ module.exports = function(RED) {
                 var options = iaObject.options;
                 node.log('options = ' + JSON.stringify(options));
                 var sensor_val = [];
-                // TODO: センサー毎にコードを追加しなければならないので構成を検討する必要有り
-                if (options.sensor_kind == "u-rd") {
-                    sensor_val = sensor.calc_ac(element[1]);
-                    node.log('calculate ac value = ' + sensor_val);
-                } else {
-                    sensor_val = sensor.calc_temperature(element[1]);
-                    node.log('calculate temperature value = ' + sensor_val);
-                }
+                // 関数名を取り出す
+                var calc_func = sensor.module_list[options.sensor_kind];
+                node.log('function name : ' + calc_func);
+                sensor_val = eval("sensor." + calc_func + "(element[1])");
+                node.log(calc_func + ' value = ' + sensor_val);
+                
                 var contentData = iaObject.ObjectContent.contentData;
                 contentData.some(function(dItem, idx) {
                     if ((idx + 1) > sensor_val.length) {

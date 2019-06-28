@@ -1,0 +1,78 @@
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/x-red" data-template-name="UR_D_AC_Sensor">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
+    </div>
+    <div id="blocks">
+        <div class="form-block" id="form_block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType" style="width: 30px;" value="A" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="UR_D_AC_Sensor" charset="utf-8">
+    <p>UR_D社の電流センサーに関する設定をここで行います。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('UR_D_AC_Sensor',{
+        category: 'config',
+        defaults: {
+            name: {value:"UR_D AC_Sensor"},
+            // sensor_kind: {value:"u-rd", required:true},
+            sensor_id: {value:"", required:true},
+            dataname: {value:"電流1"},
+            unitType: {value:"A"},
+            configObject: {value:""}
+        },
+        label: function() {
+            return this.name||("UR_D AC Sensor");
+        },
+        oneditprepare: function() {
+        },
+        oneditsave: function() {
+            var dItems = [];
+            var item ={dataValue: "", unitType: "", dataname: ""};
+            item.unitType = $("#node-config-input-unitType").val();
+            item.dataname = $("#node-config-input-dataname").val();
+            dItems[0]=item;
+            
+            //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+            catch(e) {$("#node-config-input-configObject").val("")}
+            console.log('val = ' + JSON.stringify(dItems));
+        }
+    });
+</script>
+

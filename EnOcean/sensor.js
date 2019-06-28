@@ -1,5 +1,8 @@
 // 各センサー毎の測定値計算モジュールをここに定義する
 
+// 登録されているセンサーの計算モジュールリスト
+module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature"};
+
 // 温度計算（Watty）
 module.exports.calc_temperature = function (data){
     var ret = [];
@@ -13,6 +16,7 @@ module.exports.calc_temperature = function (data){
     var bin = dec.toString(2);
     var dec1 = parseInt(bin.substr(0,10),2);
     var dec2 = parseInt(bin.substr(10,10),2);
+    
     var dec3 = parseInt(bin.substr(20,10),2);
     var dec4 = parseInt(bin.substr(30,10),2);
     var decList = [];
