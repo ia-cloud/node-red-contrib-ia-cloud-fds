@@ -1,0 +1,107 @@
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/x-red" data-template-name="Core_Staff_Sensor">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
+    </div>
+    <div id="blocks">
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType0" style="width: 30px;" value="℃" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="2" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType1" style="width: 30px;" value="℃" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Core_Staff_Sensor" charset="utf-8">
+    <p>Core Staff社の温湿度センサーに関する設定をここで行います。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('Core_Staff_Sensor',{
+        category: 'config',
+        defaults: {
+            name: {value:"Core_Staff Temp Sensor"},
+            // sensor_kind: {value:"u-rd", required:true},
+            sensor_id: {value:"", required:true},
+            dataname0: {value:"湿度"},
+            unitType0: {value:"％"},
+            dataname1: {value:"温度"},
+            unitType1: {value:"℃"},
+            configObject: {value:""}
+        },
+        label: function() {
+            return this.name||("Core_Staff Temp_Sensor");
+        },
+        oneditprepare: function() {
+        },
+        oneditsave: function() {
+            var dItems = [];
+            for (var i = 0; i < 2; i++) {
+                var item ={dataValue: "", unitType: "", dataname: ""};
+                item.unitType = $("#node-config-input-unitType" + String(i)).val();
+                item.dataname = $("#node-config-input-dataname" + String(i)).val();
+                dItems[i]=item;
+            }
+            //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+            catch(e) {$("#node-config-input-configObject").val("")}
+            console.log('val = ' + JSON.stringify(dItems));
+        }
+    });
+</script>
+
