@@ -30,6 +30,7 @@
       "UR_D_AC_Sensor": "EnOcean/UR_D_AC_Sensor.js",
       "Watty_Temp_Sensor": "EnOcean/Watty_Temp_Sensor.js",
       "Itec_CT_Sensor": "EnOcean/Itec_CT_Sensor.js",
+      "Optex_Rocker_SW": "EnOcean/Optex_Rocker_SW.js",
       "serial-port": "EnOcean/serial-port.js"
     }
   },

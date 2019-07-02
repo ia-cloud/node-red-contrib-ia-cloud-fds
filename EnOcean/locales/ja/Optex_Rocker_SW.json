@@ -4,14 +4,7 @@
             "object_key": "オブジェクトキー",
             "object_desc": "オブジェクトの説明",
             "dataname": "データ名称",
-            "unit": "単位",
-            "sensor_kind": "センサ種別",
-            "enoceanCom": "EnOcean通信オブジェクト",
-            "u_rd_ac": "U_RD電流センサー",
-            "watty_temp": "Watty温度センサー",
-            "core_temp": "CoreStaff温湿度センサー",
-            "itec_ac": "ITEC電流センサー",
-            "optex_rocker": "OPTEXスイッチ"
+            "unit": "単位"
          }
     },
     "serial": {

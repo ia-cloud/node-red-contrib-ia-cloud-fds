@@ -1,7 +1,7 @@
 // 各センサー毎の測定値計算モジュールをここに定義する
 
 // 登録されているセンサーの計算モジュールリスト()
-module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature", "core_staff":"calc_temp_humidity", "itec":"calc_itec_ct"};
+module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature", "core_staff":"calc_temp_humidity", "itec":"calc_itec_ct", "optex_rocker":"get_rocker_sw"};
 
 // 温度計算（Watty）
 module.exports.calc_temperature = function (data){
@@ -131,6 +131,49 @@ module.exports.calc_itec_ct = function (data){
         result.push(ch1);
         result.push(ch2);
         result.push(ch3);
+    }
+
+    return result;
+};
+
+// ロッカースイッチの状況取得（OPTEX）
+module.exports.get_rocker_sw = function (data){
+    var result = [];
+    if (data.length < 2) {
+        // 1Byte以上でなければ空リスト返却
+        return result;
+    }
+    var dec = parseInt(data, 16);
+    var bin = dec.toString(2);
+    var bin = ('0000' + bin).slice(-4);     // 0パディング（4桁）
+    // State I of rocker B
+    var rbi = parseInt(bin.substr(4,1),2);
+    // State O of rocker B
+    var rbo = parseInt(bin.substr(5,1),2);
+    // State I of rocker A
+    var rai = parseInt(bin.substr(6,1),2);
+    // State O of rocker A
+    var rao = parseInt(bin.substr(7,1),2);
+
+    if ( rbi == 1 ) {
+        result.push("押された");
+    } else {
+        result.push("押されていない");
+    }
+    if ( rbo == 1 ) {
+        result.push("押された");
+    } else {
+        result.push("押されていない");
+    }
+    if ( rai == 1 ) {
+        result.push("押された");
+    } else {
+        result.push("押されていない");
+    }
+    if ( rao == 1 ) {
+        result.push("押された");
+    } else {
+        result.push("押されていない");
     }
 
     return result;
