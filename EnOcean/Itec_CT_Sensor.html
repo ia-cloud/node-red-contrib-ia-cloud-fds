@@ -1,0 +1,135 @@
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/x-red" data-template-name="Itec_CT_Sensor">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
+    </div>
+    <div id="blocks">
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname0">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType0" style="width: 30px;" value="A" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="2" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType1" style="width: 30px;" value="A" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;">データ項目 :</span>
+                    <input type="text" id="dItem" style="width: 30px;" value="3" disabled="disabled">
+                </div>
+            </div>
+            <table>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-dataname2">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
+                </td>
+                <td>
+                  <input type="text" id="node-config-input-unitType2" style="width: 30px;" value="A" disabled="disabled">
+                </td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="Itec_CT_Sensor" charset="utf-8">
+    <p>アイテック社のCTセンサー（電流センサー））に関する設定をここで行います。</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('Itec_CT_Sensor',{
+        category: 'config',
+        defaults: {
+            name: {value:"Itec CT Sensor"},
+            // sensor_kind: {value:"u-rd", required:true},
+            sensor_id: {value:"", required:true},
+            dataname0: {value:"電流1"},
+            unitType0: {value:"A"},
+            dataname1: {value:"電流2"},
+            unitType1: {value:"A"},
+            dataname2: {value:"電流3"},
+            unitType2: {value:"A"},
+            configObject: {value:""}
+        },
+        label: function() {
+            return this.name||("Itec CT Sensor");
+        },
+        oneditprepare: function() {
+        },
+        oneditsave: function() {
+            var dItems = [];
+            for (var i = 0; i < 3; i++) {
+                var item ={dataValue: "", unitType: "", dataname: ""};
+                item.unitType = $("#node-config-input-unitType" + String(i)).val();
+                item.dataname = $("#node-config-input-dataname" + String(i)).val();
+                dItems[i]=item;
+            }
+            //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+            catch(e) {$("#node-config-input-configObject").val("")}
+            console.log('val = ' + JSON.stringify(dItems));
+        }
+    });
+</script>
+

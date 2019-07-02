@@ -46,6 +46,7 @@
                 <option value="u-rd">電流センサー(U-RD)</option>
                 <option value="watty">温度センサー(Watty)</option>
                 <option value="core_staff">温湿度センサー(Core Staff)</option>
+                <option value="itec">電流センサー(ITEC)</option>
             </select>
         </div>
         <div class="form-row" id="u-rd">
@@ -59,6 +60,10 @@
         <div class="form-row" id="core_staff">
             <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.core_temp"></span></label>
             <input type="text" id="node-input-core_temp_sensor">
+        </div>
+        <div class="form-row" id="itec">
+            <label for="node-input-itec_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.itec_ac"></span></label>
+            <input type="text" id="node-input-itec_ac_sensor">
         </div>
     </div>
 <hr>
@@ -96,6 +101,7 @@
             urd_ac_sensor: {type:"UR_D_AC_Sensor", required:false, value:""},
             watty_temp_sensor: {type:"Watty_Temp_Sensor", required:false, value:""},
             core_temp_sensor: {type:"Core_Staff_Sensor", required:false, value:""},
+            itec_ac_sensor: {type:"Itec_CT_Sensor", required:false, value:""},
             objectConfig: {value:""},
             configSel1: {value:""},
             configSel2: {value:""},
@@ -153,14 +159,22 @@
                 $("#u-rd").show();
                 $("#watty").hide();
                 $("#core_staff").hide();
+                $("#itec").hide();
             } else if ( str == "watty" ) {
                 $("#u-rd").hide();
                 $("#watty").show();
                 $("#core_staff").hide();
-            } else {
+                $("#itec").hide();
+            } else if ( str == "core_staff" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
                 $("#core_staff").show();
+                $("#itec").hide();
+            } else {
+                $("#u-rd").hide();
+                $("#watty").hide();
+                $("#core_staff").hide();
+                $("#itec").show();
             }
           });
         },
@@ -180,8 +194,10 @@
               selectSensor = $("#node-input-urd_ac_sensor").val();
           } else if ( str == "watty" ) {
               selectSensor = $("#node-input-watty_temp_sensor").val();
-          } else {
+          } else if ( str == "core_staff" ) {
               selectSensor = $("#node-input-core_temp_sensor").val();
+          } else {
+              selectSensor = $("#node-input-itec_ac_sensor").val();
           }
           $("#node-input-selectSensor").val(selectSensor);
         }

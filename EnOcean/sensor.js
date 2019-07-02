@@ -1,7 +1,7 @@
 // 各センサー毎の測定値計算モジュールをここに定義する
 
-// 登録されているセンサーの計算モジュールリスト
-module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature", "core_staff":"calc_temp_humidity"};
+// 登録されているセンサーの計算モジュールリスト()
+module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature", "core_staff":"calc_temp_humidity", "itec":"calc_itec_ct"};
 
 // 温度計算（Watty）
 module.exports.calc_temperature = function (data){
@@ -74,16 +74,13 @@ module.exports.calc_temp_humidity = function (data){
     var result = [];
     if (data.length < 4*2) {
         // 4Byte以上でなければ空リスト返却
-        return ret;
+        return result;
     }
     // 4Byteのデータ長のうち先頭2Byte目が湿度、3Byte目が温度
     var dec = parseInt(data, 16);
-    //var bin = dec.toString(2);
     // 湿度の抽出(2Byte目)
-    //var dec1 = parseInt(bin.substr(8,8),2);
     var dec1 = (dec >> 16) & 0xFF;
     // 温度の抽出(3Byte目)
-    //var dec2 = parseInt(bin.substr(16,8),2);
     var dec2 = (dec >> 8) & 0xFF;
     
     // 湿度、温度の計算（0～250の数値を0～100%、-20～60℃に変換する)
@@ -98,5 +95,43 @@ module.exports.calc_temp_humidity = function (data){
     result.push(hid);
     result.push(temp);
     
+    return result;
+};
+
+// 電流計算（ITEC）
+module.exports.calc_itec_ct = function (data){
+    var result = [];
+    if (data.length < 6*2) {
+        // 6Byte以上でなければ空リスト返却
+        return result;
+    }
+    var dec = parseInt(data, 16);
+    var bin = dec.toString(2);
+    var bin = ('000000000000000000000000000000000000000000000000' + bin).slice(-48);  // 0パディング（48桁）
+    // Divisor（先頭から2bit目)の値を取得する
+    var div = parseInt(bin.substr(1,1),2);
+    
+    // 3CH分の値とDivisor（及びPower Fail）を取得
+    var div_ch = dec >> 4;
+
+    // CH1の値 (=>【備忘録】すべてのオペランドは32bit以内でないと桁あふれを起こす）
+    var ch1 = (div_ch >> 24) & 0xFFF;
+    // CH2の値
+    var ch2 = (div_ch >> 12) & 0xFFF;
+    // CH3の値
+    var ch3 = div_ch & 0xFFF;
+
+    if (div == 1) {
+        // Scaleが10分の1
+        result.push(ch1/10);
+        result.push(ch2/10);
+        result.push(ch3/10);
+    } else {
+        // Scaleがそのまま
+        result.push(ch1);
+        result.push(ch2);
+        result.push(ch3);
+    }
+
     return result;
 };

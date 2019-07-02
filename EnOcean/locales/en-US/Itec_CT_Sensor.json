@@ -4,13 +4,7 @@
             "object_key": "Object Key",
             "object_desc": "Object Description",
             "dataname": "Data Name",
-            "unit": "Unit",
-            "sensor_kind": "sensor kind",
-            "enoceanCom": "EnOcean Communication Object",
-            "u_rd_ac": "U_RD AC Sensor",
-            "watty_temp": "Watty Temp Sensor",
-            "core_temp": "Core-Staff Temp Sensor",
-            "itec_ac": "ITEC AC Sensor"
+            "unit": "Unit"
          }
     },
     "serial": {

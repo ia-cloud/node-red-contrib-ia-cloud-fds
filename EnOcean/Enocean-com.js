@@ -114,7 +114,10 @@ module.exports = function(RED) {
             result['radio_data'] = data.slice(index, index+8);
             index += 8;
         } else if (header_info['telegram_type'] == 'VLD') {
-            result['radio_data'] = null;      // Does not use VLD type
+            // 取り急ぎ VLD Telegram のデータ長さは6Byte長とする
+            // TODO: 正式なパースの仕方をどうするか要検討
+            result['radio_data'] = data.slice(index, index+12);
+            index += 12;
         } else if (header_info['telegram_type'] == 'EXT') {     // Extended Telegram-Type is available
             if (result['ext_tlg'] != null && parseInt(result['ext_tlg'],16) == 7) {    // GPの場合
                 result['radio_data'] = data.slice(index, index+10);
