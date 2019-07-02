@@ -177,6 +177,8 @@ module.exports = function(RED) {
                 //var calc_crc = crc8(header).toString(16);
                 var crc = new CRC("CRC8", 8, 0x07, 0x00, 0x00, false, false);
                 var calc_crc = crc.compute(Buffer.from(header, 'hex')).toString(16);
+                // 計算したCRCの0パディング (2桁)
+                calc_crc = ('00' + calc_crc).slice(-2);
                 var head_crc = en_data.substr(10,2);
                 if (calc_crc != head_crc) {
                     node.log('Check Header CRC....NG!! This data is discarded.');
@@ -190,6 +192,8 @@ module.exports = function(RED) {
                 var check_str = en_data.substr(12,(data_len+opt_len)*2);
                 var data_crc = en_data.substr(pos_crc,2);
                 calc_crc = crc.compute(Buffer.from(check_str, 'hex')).toString(16);
+                // 計算したCRCの0パディング (2桁)
+                calc_crc = ('00' + calc_crc).slice(-2);
                 if (calc_crc != data_crc) {
                     node.log('Check Data CRC....NG!! This data is discarded.');
                     node.log('data_crc = ' + data_crc + '  calc_crc = ' + calc_crc);
