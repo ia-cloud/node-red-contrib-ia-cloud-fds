@@ -7,10 +7,12 @@
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
   },
   "dependencies": {
+    "crc-full": "^1.1.0",
     "iconv-lite": "^0.4.24",
     "mcprotocol": "^0.1.1",
     "moment": "^2.24.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "serialport": "^7.1.5"
   },
   "license": "ISC",
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
