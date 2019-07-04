@@ -14,7 +14,6 @@ module.exports = function(RED) {
 
         var node = this;
         var confObj = config.configObject;
-        node.log("-----> confObj = " + confObj);
         this.dItems = {};
         if (confObj) {
           try { this.dItems = JSON.parse(confObj); }
