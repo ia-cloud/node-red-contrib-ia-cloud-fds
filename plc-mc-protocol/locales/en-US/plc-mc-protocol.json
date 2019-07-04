@@ -4,6 +4,10 @@
       "connection-config": "Connection config",
       "node-name": "Node name",
       "this-node-name": "This node name",
+      "tab": {
+        "object-settings": "Object Settings",
+        "data-settings": "Data Settings"
+      },
       "object-name": "Object name",
       "this-object-name": "This object name",
       "object-description": "Object description",
@@ -13,7 +17,6 @@
       "data-name": "Data name",
       "common-name": "Common name",
       "unit": "Unit",
-      "addresses": "Address mapping",
       "address-no": "Address no",
       "address-length": "Length",
       "bit": "bit",

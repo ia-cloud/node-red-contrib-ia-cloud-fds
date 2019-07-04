@@ -4,6 +4,10 @@
       "connection-config": "接続設定",
       "node-name": "ノード名",
       "this-node-name": "このノードの名前",
+      "tab": {
+        "object-settings": "オブジェクトの設定",
+        "data-settings": "データの設定"
+      },
       "object-name": "オブジェクト名",
       "this-object-name": "このオブジェクトの名前",
       "object-description": "オブジェクトの説明",
@@ -13,7 +17,6 @@
       "data-name": "データ名",
       "common-name": "共通名",
       "unit": "単位",
-      "addresses": "アドレスマッピング",
       "address-no": "アドレス",
       "address-length": "長さ",
       "bit": "bit型",

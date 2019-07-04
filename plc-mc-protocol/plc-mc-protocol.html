@@ -10,58 +10,77 @@
     <label for="node-input-name" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.node-name" /></label>
     <input type="text" id="node-input-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-node-name">
   </div>
-  <div class="form-row">
-    <label for="node-input-objectKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-name" /></label>
-    <input type="text" id="node-input-objectKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-name">
+
+  <!-- Tab, ownself -->
+  <div class="red-ui-tabs">
+    <ul>
+      <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1" class="nav-link red-ui-tab-label" data-toggle="tab"><span data-i18n="ia-cloud-fds.plc-mc-protocol.tab.object-settings" /></a></li>
+      <li class="red-ui-tab       " style="width: 50%;"><a href="#tab2" class="nav-link red-ui-tab-label" data-toggle="tab"><span data-i18n="ia-cloud-fds.plc-mc-protocol.tab.data-settings" /></a></li>
+    </ul>
   </div>
-  <div class="form-row">
-    <label for="node-input-objectDescription" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-description" /></label>
-    <input type="text" id="node-input-objectDescription" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-description">
-  </div>
-  <div class="form-row">
-    <label for="node-input-instanceKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.instance-name" /></label>
-    <input type="text" id="node-input-instanceKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-instance-name">
-  </div>
-  <!-- Addresses : header -->
-  <div class="form-row">
-    <label style="width:100%"><i class="fa fa-th-list"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.addresses" /></label>
-  </div>
-  <!-- Addresses : rows -->
-  <div class="ia-cloud-fds-plc-mc-addresses">
-  </div>
-  <!-- Addresses : row-template -->
-  <div style="display:none;" class="ia-cloud-plc-mc-addresses-row-template">
-    <div class="form-block">
+
+  <!-- Tab contents -->
+  <div class="tab-content">
+
+    <!-- Object Settings (starts) -->
+    <div id="tab1" class="tab-pane active">
       <div class="form-row">
-        <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
-        <input type="text"   style="width:30%;" class="data-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.data-name">
-        <input type="text"   style="width:30%;" class="common-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.common-name">
-        <input type="text"   style="width:20%;" class="unit" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.unit">
+        <label for="node-input-objectKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-name" /></label>
+        <input type="text" id="node-input-objectKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-name">
       </div>
       <div class="form-row">
-        <select style="width:30%; margin-left: 40px;" name="dataType" class="device-no">
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.bit">
-            <option value="M">M</option>
-            <option value="X">X</option>
-            <option value="Y">Y</option>
-            <option value="CS">CS</option>
-            <option value="TS">TS</option>
-          </optgroup>
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.number">
-            <option value="CN">CN</option>
-            <option value="TN">TN</option>
-            <option value="D">D(number)</option>
-            <option value="DFLOAT">D(float)</option>
-          </optgroup>
-          <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.string">
-            <option selected="selected" value="DSTR">D(string)</option>
-          </optgroup>
-        </select>
-        <input type="text"   style="width:30%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
-        <input type="number" style="width:15%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
-        <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
+        <label for="node-input-objectDescription" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-description" /></label>
+        <input type="text" id="node-input-objectDescription" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-description">
+      </div>
+      <div class="form-row">
+        <label for="node-input-instanceKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.instance-name" /></label>
+        <input type="text" id="node-input-instanceKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-instance-name">
       </div>
     </div>
+    <!-- Object Settings (ends) -->
+
+    <!-- Data settings (starts) -->
+    <div id="tab2" class="tab-pane">
+      <!-- Addresses : rows -->
+      <div class="ia-cloud-fds-plc-mc-addresses">
+      </div>
+      <!-- Addresses : row-template -->
+      <div style="display:none;" class="ia-cloud-plc-mc-addresses-row-template">
+        <div class="form-block">
+          <div class="form-row">
+            <label style="width:40px"><i class="fa fa-hashtag"></i> <span class="ia-cloud-fds-plc-mc-address-seq">000</span></label>
+            <input type="text"   style="width:30%;" class="data-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.data-name">
+            <input type="text"   style="width:30%;" class="common-name" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.common-name">
+            <input type="text"   style="width:20%;" class="unit" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.unit">
+          </div>
+          <div class="form-row">
+            <select style="width:30%; margin-left: 40px;" name="dataType" class="device-no">
+              <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.bit">
+                <option value="M">M</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="CS">CS</option>
+                <option value="TS">TS</option>
+              </optgroup>
+              <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.number">
+                <option value="CN">CN</option>
+                <option value="TN">TN</option>
+                <option value="D">D(number)</option>
+                <option value="DFLOAT">D(float)</option>
+              </optgroup>
+              <optgroup data-i18n="[label]ia-cloud-fds.plc-mc-protocol.string">
+                <option selected="selected" value="DSTR">D(string)</option>
+              </optgroup>
+            </select>
+            <input type="text"   style="width:30%;" class="address-no"     data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-no">
+            <input type="number" style="width:15%;" class="address-length" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.address-length" min="1" value="1">
+            <a class="editor-button ia-cloud-fds-plc-mc-addresses-remove"><i class="fa fa-remove"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Data settings (ends) -->
+
   </div>
 
 </script>
