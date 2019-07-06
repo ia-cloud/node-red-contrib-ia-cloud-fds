@@ -58,7 +58,6 @@ module.exports = function(RED) {
 
         // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
         if (dataObjects) {
-console.log(dataObjects[0].ObjectContent.contentData);
             var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
             var address = "";
             dataObjects.forEach(function(objItem, idx) {
@@ -145,7 +144,6 @@ console.log(dataObjects[0].ObjectContent.contentData);
                   objItem.options.timeCount = objItem.options.timeCount - minCycle;
                   if (objItem.options.timeCount > 0) return;
                   // 収集周期がきた。収集周期を再設定。
-console.log("定期収集:" + objItem.objectKey);
                   objItem.options.timeCount = objItem.options.storeInterval;
                   iaCloudObjectSend(objItem.objectKey);
                 }
@@ -154,7 +152,6 @@ console.log("定期収集:" + objItem.objectKey);
         }
 
         this.on("changeListener",function(objectKeys) {
-console.log("this.on:changeListenerが呼ばれた");
             //登録したlinkObに変化があったら呼ばれる。
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             objectKeys.forEach(function(key, idx) {
@@ -268,7 +265,6 @@ console.log("this.on:changeListenerが呼ばれた");
               contentData.push(dItem);
           });
           msg.dataObject.ObjectContent.contentData = contentData;
-console.log(msg.dataObject);
           node.send(msg);
           node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }

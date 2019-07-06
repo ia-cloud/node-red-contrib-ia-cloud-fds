@@ -203,7 +203,6 @@ module.exports = function(RED) {
             clearInterval(cycleId);
         });
         node.on("addLinkData",function(lObj) {
-            console.log("node.onのaddlinkDataが呼ばれた");
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj.Coil, lObj.Coil);
             Array.prototype.push.apply(linkObj.IS, lObj.IS);
