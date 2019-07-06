@@ -24,8 +24,7 @@
         "sjis": "シフトJIS",
         "utf": "UTF-8",
         "euc": "EUC-JP",
-        "wnumber": "ワード数",
-        "BCD": "BCD"
+        "wnumber": "ワード数"
     },
     "runtime": {
         "jsonerror": "設定JSONデータが不正です。"
