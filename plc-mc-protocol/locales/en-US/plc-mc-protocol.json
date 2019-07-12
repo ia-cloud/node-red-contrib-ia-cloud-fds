@@ -19,6 +19,7 @@
       "unit": "Unit",
       "address-no": "Address no",
       "address-length": "Length",
+      "select-device": "Select Device",
       "bit": "bit",
       "number": "number",
       "string": "string"
