@@ -27,6 +27,7 @@
       "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
       "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
       "Modbus-com": "PLC-Modbus/Modbus-com.js",
+      "ia-cloud-nfcpy-id": "ia-cloud-nfcpy-id/ia-cloud-nfcpy-id.js",
       "EnOcean-com": "EnOcean/Enocean-com.js",
       "EnOcean-obj": "EnOcean/Enocean-obj.js",
       "Core_Staff_Sensor": "EnOcean/Core_Staff_Sensor.js",
