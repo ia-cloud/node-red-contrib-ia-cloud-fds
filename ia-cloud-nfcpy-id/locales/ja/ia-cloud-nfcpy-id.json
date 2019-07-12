@@ -1,0 +1,15 @@
+{
+  "ia-cloud-nfcpy"  : {
+    "label" : {
+      "waitTime"      : "カード検出間隔",
+      "waitTimeUnit"  : "秒",
+      "nodeName"      : "名称",
+      "sendTime"      : "データ送信間隔",
+      "sendTimeUnit"  : "秒"
+    },
+    "runtime" : {
+      "touched"       : "カード検出中",
+      "waiting"       : "待機中"
+    }
+  }
+}

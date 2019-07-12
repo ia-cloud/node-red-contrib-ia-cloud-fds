@@ -1,0 +1,16 @@
+{
+  "ia-cloud-nfcpy"  : {
+    "label" : {
+      "waitTime"      : "Wait Time",
+      "waitTimeUnit"  : "Sec",
+      "nodeName"      : "Name",
+      "sendTime"      : "Send Interval",
+      "sendTimeUnit"  : "Sec"
+    },
+    "runtime" : {
+      "touched"       : "touched",
+      "waiting"       : "waiting"
+    }
+
+  }
+}

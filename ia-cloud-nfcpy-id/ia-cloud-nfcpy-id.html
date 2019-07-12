@@ -1,0 +1,93 @@
+<script type="text/javascript">
+    RED.nodes.registerType('RFID',{
+        category: 'iaCloud',
+        color:"rgb(231, 180, 100)",
+        defaults: {
+            waitTime: {value:"1", validate:RED.validators.number()},
+            name: {value:""},
+            sendTime: {value:"10", validate:RED.validators.number()}
+        },
+        inputs:0,
+        outputs:1,
+        align: 'left',
+        icon: "ia-cloud.png",
+        // icon: "ia-cloud2.png",
+        label: function() {
+            return this.name||"RFID";
+        },
+        oneditprepare: function(){
+          $( "#node-input-waitTime" ).spinner({min:1});
+          $( "#node-period-to-send" ).spinner({min:0});
+          $( "#l01" ).css("width","120px");
+        //   $( "#l02" ).css("width","120px");
+        //   $( "#l03" ).css("width","120px");
+          $( ".form-row label" ).css("width","120px");
+        },
+        oneditsave: function(){
+
+        }
+});
+</script>
+
+<script type="text/x-red" data-template-name="RFID">
+    <div class="form-row">
+        <label for="node-input-waitTime" id="l01"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.waitTime"></span></label>
+        <input id="node-input-waitTime"  value="1" style="width:50px !important"></input>
+        <label for="node-input-waitTime"> <span data-i18n="ia-cloud-nfcpy.label.waitTimeUnit"></label>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name" id="l02"><i class="icon-tag"></i> <span data-i18n="ia-cloud-nfcpy.label.nodeName"></label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-period-to-send" id="l03"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.sendTime"></label>
+        <input id="node-period-to-send" value="10" style="width:50px !important"></input>
+        <label for="node-period-to-send"> <span data-i18n="ia-cloud-nfcpy.label.sendTimeUnit"></label>
+    </div>
+  </script>
+<script type="text/x-red" data-help-name="RFID">
+
+<h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">カード検出間隔<span class="property-type">Number</span> </dt>
+        <dd>カードリーダーからカードを検出する間隔(Sec)</dd>
+        <dt class="optional">名称 <span class="property-type">string</span> </dt>
+        <dd>Nodeのインスタンスに付ける名称</dd>
+        <dt class="optional">データ送信間隔<span class="property-type">Number</span> </dt>
+        <dd>カードID検出後、ia-cloudにデータを送信する間隔(Sec)</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties"> <dt>payload <span class="property-type">ia-cloudオブジェクト</span> </dt> </dl>
+            </li>
+        </ol>
+
+    <h3>Details</h3>
+    <p>nfcpy-id (Python module) を利用し、card ID (Mifare:UID,FeliCa:IDm) を取得します。</p>
+    <p>使用する際には、事前に<code>nfcpy-id</code> (Python module) をインストールしてください。</p>
+
+<!--  <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt class="optional">wait Time <span class="property-type">Number</span> </dt>
+        <dd>a period of detect time(Sec)</dd>
+        <dt class="optional">Name <span class="property-type">string</span> </dt>
+        <dd>Node Name</dd>
+        <dt class="optional">Send Interval <span class="property-type">Number</span> </dt>
+        <dd>a period of send interval time(Sec)</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                <dl class="message-properties"> <dt>payload <span class="property-type">ia-cloud object</span> </dt> </dl>
+            </li>
+        </ol>
+
+    <h3>Details</h3>
+    <p>Read the <code>card ID</code> (Mifare: UID, FeliCa: IDm) with nfcpy-id (a Python module).</p>
+    <p>Before using, install <code>nfcpy-id</code>(a Python module).</p>
+    -->
+</script>
