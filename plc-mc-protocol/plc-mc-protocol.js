@@ -118,6 +118,10 @@ function exportsFunction(RED) {
           thisNode.debug(JSON.stringify(e));
         });
     });
+    this.on("close",function(done) {
+      setTimeout(done, 5000);
+      done();
+    });
   }
 
   RED.nodes.registerType('PLC MC', nodeFunction, {
