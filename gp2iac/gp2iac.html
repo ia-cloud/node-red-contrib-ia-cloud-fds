@@ -1,0 +1,44 @@
+<script type="text/javascript">
+    RED.nodes.registerType('gp2iac',{
+        category: 'iaCloud',
+        color:"rgb(231, 180, 100)",
+        defaults: {
+            name: {value:"gp2iac"},
+            user: {value:""},
+            sensortype: {value:""},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||"gp2iac";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="gp2iac">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> ノード名</label>
+        <input type="text" id="node-input-name" placeholder="ノード名">
+    </div>
+    <div class="form-row">
+        <label for="node-input-user"><i class="fa fa-user"></i> ユーザ名</label>
+        <input type="text" id="node-input-user" placeholder="ユーザ名">
+    </div>
+    <br>
+    <div class="form-row" id="grovepi-digital-type-row">
+        <label for="node-input-sensortype"><i class="fa fa-tags"></i> Sensor Type</label>
+        <select id="node-input-sensortype">
+            <option value="button">Button</option>
+            <option value="ultrasonic">Ultrasonic Range</option>
+            <option value="dht11">Temperature / Humidity DHT11</option>
+        </select>
+    </div>
+    <div class="form-tips"><b>Tip:</b> <br>
+        ユーザ名は出力データに格納されます。
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="gp2iac">
+    <p>このノードはGrove Piセンサー取得ノードから出力された値を、ia-cloud-cnctで処理できる形に変換するノードです。</p>
+</script>
