@@ -22,7 +22,10 @@
       "select-device": "Select Device",
       "bit": "bit",
       "number": "number",
-      "string": "string"
+      "string": "string",
+      "signed": "signed",
+      "unsigned": "unsigned"
+
     }
   }
 }

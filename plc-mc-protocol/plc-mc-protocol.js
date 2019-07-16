@@ -31,6 +31,19 @@ const createDataObject = (values, config) => {
   const contentData = [];
   Object.keys(values).forEach((key) => {
     const element = config.addresses.find(e => `${e.dev}${e.addr},${e.len}` === key);
+    if (element.sign === 'unsigned') {
+    // 正符号への変換が必要な場合
+      if (Array.isArray(values[key])) {
+        // 取得値が配列の場合
+        values[key] = values[key].map((val) => {
+          val = parseInt((val >>> 0).toString(16).slice(-4), 16);
+          return val;
+        })
+      } else {
+        // 取得値が単独数値の場合
+        values[key] = parseInt((values[key] >>> 0).toString(16).slice(-4), 16);
+      }
+    }
     contentData.push({
       dataName: element.name,
       commonName: element.common || undefined,

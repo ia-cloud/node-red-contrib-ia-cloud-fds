@@ -22,7 +22,9 @@
       "select-device": "デバイスを選択してください",
       "bit": "bit型",
       "number": "数値型",
-      "string": "文字列型"
+      "string": "文字列型",
+      "signed": "符号あり",
+      "unsigned": "符号なし"
     }
   }
 }
