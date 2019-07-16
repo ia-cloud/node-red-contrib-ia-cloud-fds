@@ -19,6 +19,7 @@
       "unit": "単位",
       "address-no": "アドレス",
       "address-length": "長さ",
+      "select-device": "デバイスを選択してください",
       "bit": "bit型",
       "number": "数値型",
       "string": "文字列型"
