@@ -38,58 +38,6 @@
               </tr>
             </table>
         </div>
-        <div class="form-block">
-            <div class="form-row">
-                <div class="form-inline">
-                    <span style="border-bottom:solid 2px;">データ項目 :</span>
-                    <input type="text" id="dItem" style="width: 30px;" value="2" disabled="disabled">
-                </div>
-            </div>
-            <table>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-dataname1">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-unitType1" style="width: 30px;" value="A" disabled="disabled">
-                </td>
-              </tr>
-            </table>
-        </div>
-        <div class="form-block">
-            <div class="form-row">
-                <div class="form-inline">
-                    <span style="border-bottom:solid 2px;">データ項目 :</span>
-                    <input type="text" id="dItem" style="width: 30px;" value="3" disabled="disabled">
-                </div>
-            </div>
-            <table>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-dataname2">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-unitType2" style="width: 30px;" value="A" disabled="disabled">
-                </td>
-              </tr>
-            </table>
-        </div>
     </div>
 </script>
 
@@ -106,10 +54,6 @@
             sensor_id: {value:"", required:true},
             dataname0: {value:"電流1"},
             unitType0: {value:"A"},
-            dataname1: {value:"電流2"},
-            unitType1: {value:"A"},
-            dataname2: {value:"電流3"},
-            unitType2: {value:"A"},
             configObject: {value:""}
         },
         label: function() {
@@ -119,7 +63,7 @@
         },
         oneditsave: function() {
             var dItems = [];
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < 1; i++) {
                 var item ={dataValue: "", unitType: "", dataname: ""};
                 item.unitType = $("#node-config-input-unitType" + String(i)).val();
                 item.dataname = $("#node-config-input-dataname" + String(i)).val();

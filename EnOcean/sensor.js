@@ -1,17 +1,17 @@
-// ŠeƒZƒ“ƒT[–ˆ‚Ì‘ª’è’lŒvZƒ‚ƒWƒ…[ƒ‹‚ğ‚±‚±‚É’è‹`‚·‚é
+// å„ã‚»ãƒ³ã‚µãƒ¼æ¯ã®æ¸¬å®šå€¤è¨ˆç®—ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ã“ã“ã«å®šç¾©ã™ã‚‹
 
-// “o˜^‚³‚ê‚Ä‚¢‚éƒZƒ“ƒT[‚ÌŒvZƒ‚ƒWƒ…[ƒ‹ƒŠƒXƒg()
+// ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚»ãƒ³ã‚µãƒ¼ã®è¨ˆç®—ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒªã‚¹ãƒˆ()
 module.exports.module_list = {"u-rd":"calc_ac", "watty":"calc_temperature", "core_staff":"calc_temp_humidity", "itec":"calc_itec_ct", "optex_rocker":"get_rocker_sw"};
 
-// ‰·“xŒvZiWattyj
+// æ¸©åº¦è¨ˆç®—ï¼ˆWattyï¼‰
 module.exports.calc_temperature = function (data){
     var ret = [];
     if (data.length < 5*2) {
-        // 5ByteˆÈã‚Å‚È‚¯‚ê‚Î‹óƒŠƒXƒg•Ô‹p
+        // 5Byteä»¥ä¸Šã§ãªã‘ã‚Œã°ç©ºãƒªã‚¹ãƒˆè¿”å´
         return ret;
     }
-    // javascript‚Å‚Í32bitˆÈã‚Ì”’l‚ğƒrƒbƒgƒVƒtƒg‚Å‚«‚È‚¢‚½‚ß
-    // ”’l‚ğ10bit–ˆ‚É•ªŠ„‚µ‚Ä‚©‚çŒvZ‚·‚é
+    // javascriptã§ã¯32bitä»¥ä¸Šã®æ•°å€¤ã‚’ãƒ“ãƒƒãƒˆã‚·ãƒ•ãƒˆã§ããªã„ãŸã‚
+    // æ•°å€¤ã‚’10bitæ¯ã«åˆ†å‰²ã—ã¦ã‹ã‚‰è¨ˆç®—ã™ã‚‹
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
     var dec1 = parseInt(bin.substr(0,10),2);
@@ -33,11 +33,11 @@ module.exports.calc_temperature = function (data){
     return tempList;
 };
 
-// “d—¬ŒvZiUR-Dj
+// é›»æµè¨ˆç®—ï¼ˆUR-Dï¼‰
 module.exports.calc_ac = function (data){
     var ret = [];
     if (data.length < 4*2) {
-        // 4ByteˆÈã‚Å‚È‚¯‚ê‚Î‹óƒŠƒXƒg•Ô‹p
+        // 4Byteä»¥ä¸Šã§ãªã‘ã‚Œã°ç©ºãƒªã‚¹ãƒˆè¿”å´
         return ret;
     }
     var dec = parseInt(data, 16);
@@ -58,7 +58,7 @@ module.exports.calc_ac = function (data){
     }
 
     var E = 1.76;
-    // CTŒa‚ª10mm ‚È‚Ì‚Åc, d ‚ÍˆÈ‰º‚Ì”’l
+    // CTå¾„ãŒ10mm ãªã®ã§c, d ã¯ä»¥ä¸‹ã®æ•°å€¤
     var c = 56;
     var d = 3000;
 
@@ -69,24 +69,24 @@ module.exports.calc_ac = function (data){
     return acList;
 };
 
-// ‰·¼“xŒvZiCore Staffj
+// æ¸©æ¹¿åº¦è¨ˆç®—ï¼ˆCore Staffï¼‰
 module.exports.calc_temp_humidity = function (data){
     var result = [];
     if (data.length < 4*2) {
-        // 4ByteˆÈã‚Å‚È‚¯‚ê‚Î‹óƒŠƒXƒg•Ô‹p
+        // 4Byteä»¥ä¸Šã§ãªã‘ã‚Œã°ç©ºãƒªã‚¹ãƒˆè¿”å´
         return result;
     }
-    // 4Byte‚Ìƒf[ƒ^’·‚Ì‚¤‚¿æ“ª2Byte–Ú‚ª¼“xA3Byte–Ú‚ª‰·“x
+    // 4Byteã®ãƒ‡ãƒ¼ã‚¿é•·ã®ã†ã¡å…ˆé ­2Byteç›®ãŒæ¹¿åº¦ã€3Byteç›®ãŒæ¸©åº¦
     var dec = parseInt(data, 16);
-    // ¼“x‚Ì’Šo(2Byte–Ú)
+    // æ¹¿åº¦ã®æŠ½å‡º(2Byteç›®)
     var dec1 = (dec >> 16) & 0xFF;
-    // ‰·“x‚Ì’Šo(3Byte–Ú)
+    // æ¸©åº¦ã®æŠ½å‡º(3Byteç›®)
     var dec2 = (dec >> 8) & 0xFF;
     
-    // ¼“xA‰·“x‚ÌŒvZi0`250‚Ì”’l‚ğ0`100%A-20`60‚É•ÏŠ·‚·‚é)
+    // æ¹¿åº¦ã€æ¸©åº¦ã®è¨ˆç®—ï¼ˆ0ï½250ã®æ•°å€¤ã‚’0ï½100%ã€-20ï½60â„ƒã«å¤‰æ›ã™ã‚‹)
     var hid = dec1 * (100 / 250);
     var temp = dec2 * (80 / 250) - 20;
-    // Œë·‚ğŠÛ‚ß‚é
+    // èª¤å·®ã‚’ä¸¸ã‚ã‚‹
     hid = Math.round(hid * 10);
     hid = hid / 10;
     temp = Math.round(temp * 100);
@@ -98,54 +98,48 @@ module.exports.calc_temp_humidity = function (data){
     return result;
 };
 
-// “d—¬ŒvZiITECj
+// é›»æµè¨ˆç®—ï¼ˆITECï¼‰
 module.exports.calc_itec_ct = function (data){
     var result = [];
-    if (data.length < 6*2) {
-        // 6ByteˆÈã‚Å‚È‚¯‚ê‚Î‹óƒŠƒXƒg•Ô‹p
+    if (data.length < 3*2) {
+        // 3Byteä»¥ä¸Šã§ãªã‘ã‚Œã°ç©ºãƒªã‚¹ãƒˆè¿”å´
         return result;
     }
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
-    var bin = ('000000000000000000000000000000000000000000000000' + bin).slice(-48);  // 0ƒpƒfƒBƒ“ƒOi48Œ…j
-    // Divisoriæ“ª‚©‚ç2bit–Ú)‚Ì’l‚ğæ“¾‚·‚é
+    var bin = ('000000000000000000000000' + bin).slice(-24);  // 0ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°ï¼ˆ24æ¡ï¼‰
+    // Divisorï¼ˆå…ˆé ­ã‹ã‚‰2bitç›®)ã®å€¤ã‚’å–å¾—ã™ã‚‹
     var div = parseInt(bin.substr(1,1),2);
     
-    // 3CH•ª‚Ì’l‚ÆDivisori‹y‚ÑPower Failj‚ğæ“¾
+    // 1CHåˆ†ã®å€¤ã¨Divisorï¼ˆåŠã³Power Failï¼‰ã‚’å–å¾—
     var div_ch = dec >> 4;
 
-    // CH1‚Ì’l (=>y”õ–Y˜^z‚·‚×‚Ä‚ÌƒIƒyƒ‰ƒ“ƒh‚Í32bitˆÈ“à‚Å‚È‚¢‚ÆŒ…‚ ‚Ó‚ê‚ğ‹N‚±‚·j
-    var ch1 = (div_ch >> 24) & 0xFFF;
-    // CH2‚Ì’l
-    var ch2 = (div_ch >> 12) & 0xFFF;
-    // CH3‚Ì’l
-    var ch3 = div_ch & 0xFFF;
+    // CH1ã®å€¤
+    var ch1 = div_ch & 0xFFF;
 
     if (div == 1) {
-        // Scale‚ª10•ª‚Ì1
+        // ScaleãŒ10åˆ†ã®1
         result.push(ch1/10);
-        result.push(ch2/10);
-        result.push(ch3/10);
     } else {
-        // Scale‚ª‚»‚Ì‚Ü‚Ü
+        // ScaleãŒãã®ã¾ã¾
         result.push(ch1);
-        result.push(ch2);
-        result.push(ch3);
     }
 
     return result;
 };
 
-// ƒƒbƒJ[ƒXƒCƒbƒ`‚Ìó‹µæ“¾iOPTEXj
+// ãƒ­ãƒƒã‚«ãƒ¼ã‚¹ã‚¤ãƒƒãƒã®çŠ¶æ³å–å¾—ï¼ˆOPTEXï¼‰
 module.exports.get_rocker_sw = function (data){
     var result = [];
     if (data.length < 2) {
-        // 1ByteˆÈã‚Å‚È‚¯‚ê‚Î‹óƒŠƒXƒg•Ô‹p
+        // 1Byteä»¥ä¸Šã§ãªã‘ã‚Œã°ç©ºãƒªã‚¹ãƒˆè¿”å´
         return result;
     }
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
-    var bin = ('0000' + bin).slice(-4);     // 0ƒpƒfƒBƒ“ƒOi4Œ…j
+    var bin = ('00000000' + bin).slice(-8);     // 0ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°ï¼ˆ8æ¡ï¼‰
+    // State of the energy bow
+    var ebo = parseInt(bin.substr(0,1),2);
     // State I of rocker B
     var rbi = parseInt(bin.substr(4,1),2);
     // State O of rocker B
@@ -155,25 +149,30 @@ module.exports.get_rocker_sw = function (data){
     // State O of rocker A
     var rao = parseInt(bin.substr(7,1),2);
 
-    if ( rbi == 1 ) {
-        result.push("‰Ÿ‚³‚ê‚½");
+    if ( ebo == 1 ) {
+        result.push("pressed");
     } else {
-        result.push("‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢");
+        result.push("released");
+    }
+    if ( rbi == 1 ) {
+        result.push("pressed");
+    } else {
+        result.push("released");
     }
     if ( rbo == 1 ) {
-        result.push("‰Ÿ‚³‚ê‚½");
+        result.push("pressed");
     } else {
-        result.push("‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢");
+        result.push("released");
     }
     if ( rai == 1 ) {
-        result.push("‰Ÿ‚³‚ê‚½");
+        result.push("pressed");
     } else {
-        result.push("‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢");
+        result.push("released");
     }
     if ( rao == 1 ) {
-        result.push("‰Ÿ‚³‚ê‚½");
+        result.push("pressed");
     } else {
-        result.push("‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢");
+        result.push("released");
     }
 
     return result;
