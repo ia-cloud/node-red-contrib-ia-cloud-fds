@@ -41,7 +41,7 @@
             <div class="form-row">
                 <div class="form-inline">
                     <span style="border-bottom:solid 2px;">データ項目 :</span>
-                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
+                    <input type="text" id="dItem" style="width: 30px;" value="2" disabled="disabled">
                 </div>
             </div>
             <table>
@@ -58,7 +58,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType1" style="width: 30px;" value="---">
+                  <input type="text" id="node-config-input-unitType1" style="width: 30px;" value="null">
                 </td>
               </tr>
             </table>
@@ -79,7 +79,7 @@
             dataname0: {value:"供給電圧"},
             unitType0: {value:"V"},
             dataname1: {value:"在室状態"},
-            unitType1: {value:"---"},
+            unitType1: {value:"null"},
             configObject: {value:""}
         },
         label: function() {
@@ -89,9 +89,14 @@
         },
         oneditsave: function() {
             var dItems = [];
+            var unit = "";
             for (var i = 0; i < 2; i++) {
                 var item ={dataValue: "", unitType: "", dataname: ""};
-                item.unitType = $("#node-config-input-unitType" + String(i)).val();
+                unit = $("#node-config-input-unitType" + String(i)).val();
+                if ( unit.toLowerCase() === "null" ) {
+                    unit = null;
+                }
+                item.unitType = unit;
                 item.dataname = $("#node-config-input-dataname" + String(i)).val();
                 dItems[i]=item;
             }
