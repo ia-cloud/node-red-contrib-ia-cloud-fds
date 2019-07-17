@@ -33,14 +33,6 @@
     <!-- object propertyの設定 -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
-            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.object_key"></span></label>
-            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.object_key">
-        </div>
-        <div class="form-row">
-            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
-            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
-        </div>
-        <div class="form-row">
             <label for="node-input-sensor_kind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensor_kind"></span></label>
             <select type="text" id="node-input-sensor_kind">
                 <option value="u-rd">電流センサー(U-RD)</option>
@@ -50,6 +42,14 @@
                 <option value="optex_rocker">ロッカースイッチ(OPTEX)</option>
                 <option value="optex_occupancy">在室センサー(OPTEX)</option>
             </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.object_key"></span></label>
+            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.object_key">
+        </div>
+        <div class="form-row">
+            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
+            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
         </div>
         <div class="form-row" id="u-rd">
             <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.u_rd_ac"></span></label>
@@ -174,6 +174,9 @@
                 $("#itec").hide();
                 $("#optex_rocker").hide();
                 $("#optex_occupancy").hide();
+                $("#node-input-name").val("U_RD CT Sensor");
+                $("#node-input-object_key").val("u_rd.sensor");
+                $("#node-input-object_desc").val("U_RD電流センサー");
             } else if ( str == "watty" ) {
                 $("#u-rd").hide();
                 $("#watty").show();
@@ -181,6 +184,9 @@
                 $("#itec").hide();
                 $("#optex_rocker").hide();
                 $("#optex_occupancy").hide();
+                $("#node-input-name").val("Watty Temperature Sensor");
+                $("#node-input-object_key").val("watty.sensor");
+                $("#node-input-object_desc").val("Watty温度センサー");
             } else if ( str == "core_staff" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
@@ -188,6 +194,9 @@
                 $("#itec").hide();
                 $("#optex_rocker").hide();
                 $("#optex_occupancy").hide();
+                $("#node-input-name").val("Core-Staff Temperature Sensor");
+                $("#node-input-object_key").val("core_staff.sensor");
+                $("#node-input-object_desc").val("Core-Staff温湿度センサー");
             } else if ( str == "itec" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
@@ -195,6 +204,9 @@
                 $("#itec").show();
                 $("#optex_rocker").hide();
                 $("#optex_occupancy").hide();
+                $("#node-input-name").val("ITEC CT Sensor");
+                $("#node-input-object_key").val("itec.sensor");
+                $("#node-input-object_desc").val("ITEC電流センサー");
             } else if ( str == "optex_rocker" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
@@ -202,6 +214,9 @@
                 $("#itec").hide();
                 $("#optex_rocker").show();
                 $("#optex_occupancy").hide();
+                $("#node-input-name").val("OPTEX Rocker Sensor");
+                $("#node-input-object_key").val("optex.rocker.sensor");
+                $("#node-input-object_desc").val("OPTEXロッカーセンサー");
             } else {
                 $("#u-rd").hide();
                 $("#watty").hide();
@@ -209,6 +224,9 @@
                 $("#itec").hide();
                 $("#optex_rocker").hide();
                 $("#optex_occupancy").show();
+                $("#node-input-name").val("OPTEX Occupancy Sensor");
+                $("#node-input-object_key").val("optex.occupancy.sensor");
+                $("#node-input-object_desc").val("OPTEX在室センサー");
             }
           });
         },
