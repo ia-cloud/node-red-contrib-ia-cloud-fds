@@ -48,6 +48,7 @@
                 <option value="core_staff">温湿度センサー(Core Staff)</option>
                 <option value="itec">電流センサー(ITEC)</option>
                 <option value="optex_rocker">ロッカースイッチ(OPTEX)</option>
+                <option value="optex_occupancy">在室センサー(OPTEX)</option>
             </select>
         </div>
         <div class="form-row" id="u-rd">
@@ -69,6 +70,10 @@
         <div class="form-row" id="optex_rocker">
             <label for="node-input-optex_rocker_sw"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_rocker"></span></label>
             <input type="text" id="node-input-optex_rocker_sw">
+        </div>
+        <div class="form-row" id="optex_occupancy">
+            <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_occupancy"></span></label>
+            <input type="text" id="node-input-optex_occupancy_sensor">
         </div>
     </div>
 <hr>
@@ -108,6 +113,7 @@
             core_temp_sensor: {type:"Core_Staff_Sensor", required:false, value:""},
             itec_ac_sensor: {type:"Itec_CT_Sensor", required:false, value:""},
             optex_rocker_sw: {type:"Optex_Rocker_SW", required:false, value:""},
+            optex_occupancy_sensor: {type:"Optex_Occupancy_Sensor", required:false, value:""},
             objectConfig: {value:""},
             configSel1: {value:""},
             configSel2: {value:""},
@@ -167,30 +173,42 @@
                 $("#core_staff").hide();
                 $("#itec").hide();
                 $("#optex_rocker").hide();
+                $("#optex_occupancy").hide();
             } else if ( str == "watty" ) {
                 $("#u-rd").hide();
                 $("#watty").show();
                 $("#core_staff").hide();
                 $("#itec").hide();
                 $("#optex_rocker").hide();
+                $("#optex_occupancy").hide();
             } else if ( str == "core_staff" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
                 $("#core_staff").show();
                 $("#itec").hide();
                 $("#optex_rocker").hide();
+                $("#optex_occupancy").hide();
             } else if ( str == "itec" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
                 $("#core_staff").hide();
                 $("#itec").show();
                 $("#optex_rocker").hide();
-            } else {
+                $("#optex_occupancy").hide();
+            } else if ( str == "optex_rocker" ) {
                 $("#u-rd").hide();
                 $("#watty").hide();
                 $("#core_staff").hide();
                 $("#itec").hide();
                 $("#optex_rocker").show();
+                $("#optex_occupancy").hide();
+            } else {
+                $("#u-rd").hide();
+                $("#watty").hide();
+                $("#core_staff").hide();
+                $("#itec").hide();
+                $("#optex_rocker").hide();
+                $("#optex_occupancy").show();
             }
           });
         },
@@ -214,8 +232,10 @@
               selectSensor = $("#node-input-core_temp_sensor").val();
           } else if ( str == "itec" ) {
               selectSensor = $("#node-input-itec_ac_sensor").val();
-          } else {
+          } else if ( str == "optex_rocker" ){
               selectSensor = $("#node-input-optex_rocker_sw").val();
+          } else {
+              selectSensor = $("#node-input-optex_occupancy_sensor").val();
           }
           $("#node-input-selectSensor").val(selectSensor);
         }
