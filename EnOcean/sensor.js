@@ -48,8 +48,8 @@ module.exports.calc_ac = function (data){
     }
     var dec = parseInt(data, 16);
     var acList = [];
-    var ch_val = (dec >> 8) & 0b1111111111;
-    var ad_val = parseInt(ch_val,2);
+    var ad_val = (dec >> 8) & 0b1111111111;
+
     var K = 0;
     if (ad_val < 9) {
         K = (-0.0448 * ad_val) + 1.77;
