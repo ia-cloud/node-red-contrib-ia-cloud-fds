@@ -1,0 +1,16 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "dname": "データ名称",
+        "varName": "変数名",
+        "AECode": "A&Eコード",
+        "AEDescription": "A&Eの説明"
+    },
+    "runtime": {
+        "jsonerror": "設定JSONデータが不正です。"
+    }
+}

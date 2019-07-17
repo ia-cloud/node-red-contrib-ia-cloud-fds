@@ -1,0 +1,252 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="HMI-Schneider-AnE">
+
+    <div class="form-row">
+        <label for="node-config-input-name">
+            <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-contentType"><i class="fa fa-tag"></i>
+          <span data-i18n="editor.contentType"></span></label>
+      <input type="text" id="node-config-input-contentType" disabled="disabled">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-configObject">
+        <input type="text" id="node-config-input-configReady">
+    </div>
+  <div id="blocks">
+      <div class="form-block" id="form_block[0]">
+
+          <div class="form-row">
+            <div class="form-inline" id="from_del[0]" >
+              <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
+              <input type="text" id="dItem[0]" style="width: 30px;" value="1"
+                  disabled="disabled">
+              <input type="button" name="del_btn" data-i18n="[value]editor.del"
+                  style="margin-left: 30px; width: 70px; display: none;">
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-inline" style="vertical-align: middle;">
+                  <label><span data-i18n="editor.varName"></span><span style="color: #ff0000;">*</span></label>
+                  <input type="text" style="width: 150px; margin-right: 20px;" id="VarName[0]">
+              </div>
+          </div>
+          <div class="form-row">
+              <label><span data-i18n="editor.AECode"></span></label>
+              <input type="text" style="width: 100px;" id="AnECode[0]">
+          </div>
+          <div class="form-row">
+              <label><span data-i18n="editor.AEDescription"></span></label>
+              <textarea style="width: 300px" id="AnEDescription[0]" rows="2"></textarea>
+          </div>
+          <br>
+      </div>
+  </div>
+    <!-- Addボタン -->
+    <div class="form-block">
+      <input type="button" id="form_add" name="add_btn"  data-i18n="[value]editor.add">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="HMI-Schneider-AnE">
+    <p>preparing ia-cloud objects for store to CCS</p>
+
+<h3>Inputs</h3>
+<dl class="message-properties">
+  TBD
+</dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+
+<h3>Details</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('HMI-Schneider-AnE',{
+      category: 'config',
+      defaults: {
+          name: {value:"hmiSchneiderAnE"},
+          contentType: {value:"Alarm&Event", required: true},
+          configObject:{value:"", required: true },
+          configReady:{value:"", required: true }
+      },
+      label: function() {
+          return this.name||this._("HMI-Schneider-AnE");
+      },
+      oneditprepare: function() {
+        var frm_cnt = 0;
+        //あれば設定データを取り出して、formに展開する。
+        var conf = $("#node-config-input-configObject").val();
+        if (conf) {
+          var dItems = {};
+          try { dItems = JSON.parse(conf); }
+          catch(e) { conf = "";}
+        }
+        if(conf != ""){
+          //設定データがあった
+          var dItems = JSON.parse(conf);
+          //フォームを一つ保存
+          var original = $('#form_block\\[0\\]');
+
+          //一旦フォームオブジェクトをすべて削除
+          $(".form-block[id^='form_block']")
+              .each(function(index, formObj) {$(formObj).remove();});
+
+          dItems.forEach(function(value, idx){
+            original
+            .clone()
+            .hide()
+            .appendTo("#blocks")
+            .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
+            .end() // 一度適用する
+            .find('div, input, textarea, select, label').each(function(index, obj) {
+              if ($(obj).attr('id') != null) {
+                if($(obj).attr("id").substr(0,5) == "dItem"){
+                    $(obj).val("" + (idx + 1));
+                }
+                $(obj).attr({
+                  id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+              if ($(obj).attr('name') != null) {
+                $(obj).attr({
+                    name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                 });
+              }
+              if ($(obj).attr('for') != null) {
+                $(obj).attr({
+                    for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                });
+              }
+          });
+          $("#VarName\\[" + idx + "\\]").val(value.dataValue.VarName);
+          $("#AnECode\\[" + idx + "\\]").val(value.dataValue.AnECode);
+          $("#AnEDescription\\[" + idx + "\\]").val(value.dataValue.AnEDescription);
+
+          var block = $('#form_block\\[' + idx + '\\]');
+          if (idx != 0) block.find('input[name="del_btn"]').show();
+          block.slideDown('slow');
+          frm_cnt = idx;
+          });
+        }
+
+        //追加ボタンが押されたら
+        $("#form_add").off("click");
+        $("#form_add").on("click", function() {
+
+          var original = $('#form_block\\[' + frm_cnt + '\\]');
+          frm_cnt++;
+          original
+          .clone()
+          .hide()
+          .insertAfter(original)
+          .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
+          var clone = $('#form_block\\[' + frm_cnt + '\\]');
+          clone.find('div, input, textarea, select, label').each(function(idx, obj) {
+            if ($(obj).attr('id') != null) {
+              if($(obj).attr("id").substr(0,5) == "dItem"){
+                  $(obj).val("" + (frm_cnt + 1));
+              }
+              $(obj).attr({
+                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+            if ($(obj).attr('name') != null) {
+              $(obj).attr({
+                name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+               });
+            }
+            if ($(obj).attr('for') != null) {
+              $(obj).attr({
+                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
+              });
+            }
+          });
+          clone.find('input[name="del_btn"]').show();
+          clone.slideDown('fast');
+        });
+
+        //削除ボタンが押されたら
+        $("#blocks").off('click', 'input[name="del_btn"]');
+        $("#blocks").on('click', 'input[name="del_btn"]', function() {
+          var removeObj = $(this).parents(".form-block");
+          removeObj.fadeOut('fast', function() {
+            removeObj.remove();
+            // 番号振り直し
+            frm_cnt = 0;
+            $(".form-block[id^='form_block']").each(function(index, formObj) {
+              if ($(formObj).attr('id') != 'form_block[0]') {
+                frm_cnt++;
+                $(formObj)
+                  .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
+                  .find('div, input, textarea, select, label').each(function(idx, obj) {
+                   if ($(obj).attr('id') != null) {
+                      if($(obj).attr("id").substr(0,5) == "dItem"){
+                            $(obj).val("" + (frm_cnt + 1));
+                      }
+                      $(obj).attr({
+                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('name') != null) {
+                      $(obj).attr({
+                        name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                    if ($(obj).attr('for') != null) {
+                      $(obj).attr({
+                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
+                      });
+                    }
+                  });
+              }
+            });
+          });
+        });
+      },
+
+      oneditsave: function() {
+
+        var dItems = [];
+        var configReady = "ready";
+          $(".form-block[id^='form_block']").each(function(idx, obj){
+              var item ={commonName: "Alarm&Event", dataValue: {}, options:{}};
+
+              item.dataValue.VarName = $("#VarName\\[" + idx + "\\]").val();
+              if (!item.dataValue.VarName) configReady = "";
+              item.dataValue.AnECode = $("#AnECode\\[" + idx + "\\]").val();
+              item.dataValue.AnEDescription = $("#AnEDescription\\[" + idx + "\\]").val();
+
+              dItems[idx]=item;
+          });
+          $("#node-config-input-configReady").val(configReady);
+          //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+          try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
+          catch(e) {$("#node-config-input-configObject").val("")}
+
+      }
+    });
+
+</script>

@@ -1,0 +1,15 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "dataName": "データ名",
+        "unit": "単位",
+        "varName": "変数名"
+    },
+    "runtime": {
+        "jsonerror": "設定JSONデータが不正です。"
+    }
+}

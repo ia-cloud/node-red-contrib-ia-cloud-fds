@@ -1,0 +1,23 @@
+{
+    "editor": {
+        "name": "名前",
+        "UIconfig": "ここで設定",
+        "fileconfig": "設定ファイル",
+        "filename": "設定ファイル名を入力してください",
+        "period": "通知周期",
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "AEItems": "A&E項目",
+        "hmiSchneiderNode": "Schneider HMI 通信ノード"
+    },
+    "runtime": {
+        "badFilePath": "ファイルが見つかりません。",
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "sent": "データ送出",
+        "connected": "HMI接続中",
+        "disconnected": "HMI切断中"
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "etherPort": "Etherポート",
+        "netAddress": "Netアドレス"
+    },
+    "runtime": {
+
+    }
+}
