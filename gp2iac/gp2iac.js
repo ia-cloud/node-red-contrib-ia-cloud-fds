@@ -64,37 +64,19 @@ module.exports = function(RED) {
                     "objectDescription" : "センサーの値",
                     "timeStamp" :  timestamp,
                     "ObjectContent" : {
-                        "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+                        "contentType": "iaCloudData",
                         "contentData":[{
-                            "commonName": "Column1",
                             "dataName": dataname[0],
                             "dataValue": datavalue[0],
                             "unit": unit[0]
                         },{
-                            "commonName": "Column2",
                             "dataName": dataname[1],
                             "dataValue": datavalue[1],
                             "unit": unit[1]
                         },{
-                            "commonName": "Column3",
                             "dataName": dataname[2],
                             "dataValue": datavalue[2],
                             "unit": unit[2]
-                        },{
-                            "commonName": "Column4",
-                            "dataName": "ダミー",
-                            "dataValue": 0,
-                            "unit": "value"
-                        },{
-                            "commonName": "Column5",
-                            "dataName": "ダミー",
-                            "dataValue": 0,
-                            "unit": "value"
-                        },{
-                            "commonName": "Column6",
-                            "dataName": "ダミー",
-                            "dataValue": 0,
-                            "unit": "value"
                         }]
                     }
                 }

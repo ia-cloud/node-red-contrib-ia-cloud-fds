@@ -41,9 +41,9 @@
 | timestamp  | string | タイムスタンプ(isodatetime)<br />※入力メッセージのtimestampではなく、本ノード内で新たに取得したtimestamp。 |
 | user       | string | 利用者                                                       |
 | sensortype | string | 選択されたセンサーのタイプ<br />    DHT11(温湿度センサー)：dht11<br />    Ultrasonic Range(超音波測距センサー)：ultrasonic<br />    Button(Buttonセンサー)：button |
-| dataname   | string | センサータイプに応じた取得データ名称                         |
+| dataname   | string | センサータイプに応じた取得データ名称<br />    DHT11(温湿度センサー)：<br />        dataname[0] = "temperature";<br/>        dataname[1] = "humidity";<br/>        dataname[2] = "heatIndex";<br />    Ultrasonic Range(超音波測距センサー)：<br />        dataname[0] = "ultrasonic";<br />        dataname[1] = "dummy";<br/>        dataname[2] = "dummy";<br />    Button(Buttonセンサー)：button<br />        dataname[0] = "ultrasonic";<br />        dataname[1] = "dummy";<br/>        dataname[2] = "dummy"; |
 | datavalue  | string | センサーが取得した値                                         |
-| unit       | string | センサーが取得した値に応じた単位                             |
+| unit       | string | センサーが取得した値に応じた単位<br />    DHT11(温湿度センサー)：<br />        unit[0] = "℃";<br/>        unit[1] = "%";<br/>        unit[2] = "HI";<br />    Ultrasonic Range(超音波測距センサー)：<br />        unit[0] = "cm";<br />        unit[1] = "dummy";<br/>        unit[2] = "dummy";<br />    Button(Buttonセンサー)：button<br />        unit[0] = "is_pressed";<br />        unit[1] = "dummy";<br/>        unit[2] = "dummy"; |
 
 
 ```
@@ -55,22 +55,19 @@ msg = {
         "objectDescription" : "センサーの値",
         "timeStamp" :  {timestamp},
         "ObjectContent" : {
-            "contentType": "com.ia-cloud.contenttype.hackathon2017.temp01",
+            "contentType": "iaCloudData",
             "contentData":[{
-                "commonName": "Column1",
-                "dataName": "{dataname}",
-                "dataValue": {datavalue},
-                "unit": "{unit}"
+                "dataName": "{dataname[0]}",
+                "dataValue": {datavalue[0]},
+                "unit": "{unit[0]}"
             },{
-                "commonName": "Column2",
-                "dataName": "{dataname}",
-                "dataValue": {datavalue},
-                "unit": "{unit}"
+                "dataName": "{dataname[1]}",
+                "dataValue": {datavalue[1]},
+                "unit": "{unit[1]}"
             },{
-	          	・
-	       	    ・
-	            ・
-	            ・
+                "dataName": "{dataname[2]}",
+                "dataValue": {datavalue[2]},
+                "unit": "{unit[2]}"
             }]
         }
     }
