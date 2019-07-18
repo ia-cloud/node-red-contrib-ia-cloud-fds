@@ -23,9 +23,14 @@ module.exports = function(RED) {
         this.selectSensor = config.selectSensor;
         
         var serialPool = config.enoceancom.serialPool;
-        
+
+        var node = this;        
         var enCom = RED.nodes.getNode(this.enoceancom);
-        var node = this;
+        if ( enCom == null ) {
+            node.log('[ERROR] EnOcean-com node is not specified. [object = ' + enCom + ']');
+            node.status({fill:"red", shape:"ring", text:"EnOcean通信ノードが設定されていません"});
+            return false;
+        }
         var linkObj = [];
         var linkData = {};
         var EnObjects = [{}];
@@ -58,6 +63,11 @@ module.exports = function(RED) {
             //    sensor_obj = config.watty_temp_sensor;
             //}
             var SensorNode = (RED.nodes.getNode(sensor_obj));
+            if ( SensorNode == null ) {
+                node.log('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
+                node.status({fill:"red", shape:"ring", text:"センサー情報が設定されていません"});
+                return false;
+            }
             node.log('SensorNode = ' + JSON.stringify(SensorNode));
             node.log('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
             

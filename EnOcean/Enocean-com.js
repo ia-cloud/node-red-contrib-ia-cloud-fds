@@ -260,7 +260,7 @@ module.exports = function(RED) {
                 //node.log('$$$$$ A specified sensor ID is found in linkObj [' + linkData.sensor_id + ']');
                 //node.log('$$$$$ The received data is set into listeners array list.');
             } else {
-                node.log('!!!!! A specified sensor ID is not found in linkObj [' + sensor_id + ']');
+                node.log('[ERROR] Sensor-ID [' + sensor_id + '] is not found in linkObj');
             }
         }
 

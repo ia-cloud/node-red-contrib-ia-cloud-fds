@@ -105,9 +105,11 @@
             databits: {value:8,required:true},
             parity: {value:"none",required:true},
             stopbits: {value:1,required:true},
-            newline: {value:"\\n"},
-            bin: {value:"false"},
-            out: {value:"char"},
+            newline: {value:"60"},
+            //bin: {value:"false"},
+            //out: {value:"char"},
+            bin: {value:"bin"},
+            out: {value:"time"},
             addchar: {value:false},
             responsetimeout: {value: 10000}
         },
@@ -157,7 +159,7 @@
                     $("#tip-silent").hide();
                 }
                 else if ($("#node-config-input-out").val() == "time") {
-                    if (previous != "time") { $("#node-config-input-newline").val("0"); }
+                    if (previous != "time") { $("#node-config-input-newline").val("60"); }
                     $("#node-units").text("ms");
                     $("#node-config-addchar").hide();
                     //$("#node-config-input-addchar").val("false");
@@ -183,6 +185,7 @@
                     $("#tip-timeout").hide();
                     $("#tip-silent").hide();
                 }
+                previous = $("#node-config-input-out").val();
             });
 
             //$("#node-config-input-responsetimeout").on('focus', function () { $("#tip-responsetimeout").show(); });

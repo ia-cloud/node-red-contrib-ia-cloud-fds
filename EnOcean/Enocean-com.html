@@ -23,12 +23,20 @@
     RED.nodes.registerType('EnOcean-com',{
         category: 'config',
         defaults: {
-            name: {name:""},
+            name: {name:"EnOcean-com"},
             serial: {type:"serial-port",required:true}
         },
         label: function() {
             var serialNode = RED.nodes.node(this.serial);
             return this.name||(serialNode?serialNode.label().split(":")[0]:this._("serial.label.serial"));
+        },
+        oneditprepare: function() {
+            var node_name = $("#node-config-input-name").val();
+            if ( node_name == "" ) {
+                $("#node-config-input-name").val("EnOcean-com");
+            }
+        },
+        oneditsave: function() {
         }
     });
 </script>
