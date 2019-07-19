@@ -4,47 +4,41 @@ module.exports = function(RED) {
     function Gp2iac(config) {
         RED.nodes.createNode(this,config);
         this.name = config.neme;
-        this.user = config.user;
+        this.objectkey = config.objectkey;
         this.sensortype = config.sensortype;
-        var user = this.user;
+        this.dataname1 = config.dataname1;
+        this.dataname2 = config.dataname2;
+        this.dataname3 = config.dataname3;
+        this.unit1 = config.unit1;
+        this.unit2 = config.unit2;
+        this.unit3 = config.unit3;
+        var objectkey = this.objectkey;
         var sensortype = this.sensortype;
+        var dataname1 = this.dataname1;
+        var dataname2 = this.dataname2;
+        var dataname3 = this.dataname3;
+        var unit1 = this.unit1;
+        var unit2 = this.unit2;
+        var unit3 = this.unit3;
         var node = this;
-        var dataname = new Array(3);
+        var dataname = [dataname1,dataname2,dataname3];
         var datavalue = new Array(3);
-        var unit = new Array(3);
+        var unit = [unit1,unit2,unit3];
 
         //イベント：msg入力が取得トリガー
         node.on('input', function(msg) {
             if(sensortype == "dht11"){
-                dataname[0] = "temperature";
-                dataname[1] = "humidity";
-                dataname[2] = "heatIndex";
                 datavalue[0] = msg.payload.temperature;
                 datavalue[1] = msg.payload.humidity;
                 datavalue[2] = msg.payload.heatIndex;
-                unit[0] = "℃";
-                unit[1] = "%";
-                unit[2] = "HI";
             }else if(sensortype == "button"){
-                dataname[0] = "button";
                 datavalue[0] = msg.payload;
-                unit[0] = "is_pressed";
-                dataname[1] = "dummy";
                 datavalue[1] = 0;
-                unit[1] = "value";
-                dataname[2] = "dummy";
                 datavalue[2] = 0;
-                unit[2] = "value";
             }else{
-                dataname[0] = "ultrasonic";
                 datavalue[0] = msg.payload;
-                unit[0] = "cm";
-                dataname[1] = "dummy";
                 datavalue[1] = 0;
-                unit[1] = "value";
-                dataname[2] = "dummy";
                 datavalue[2] = 0;
-                unit[2] = "value";
             }
             Gp2iacMsg(msg);
         });
@@ -60,7 +54,7 @@ module.exports = function(RED) {
                 "request": "store",
                 "dataObject": {
                     "objectType" : "iaCloudObject",
-                    "objectKey" : "ia-cloud-Node-Red-HandsOn." + user + "." + sensortype ,
+                    "objectKey" : objectkey ,
                     "objectDescription" : "センサーの値",
                     "timeStamp" :  timestamp,
                     "ObjectContent" : {
