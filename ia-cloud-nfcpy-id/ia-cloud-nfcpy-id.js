@@ -27,7 +27,7 @@ module.exports = function(RED) {
                 let msg = {
                     "payload"   : card.id,
                     "type"      : card.type,
-                    "timestamp" : moment().format()
+                    "timeStamp" : moment().format()
                 };
                 cardArray.push(msg);
             }catch(err){
@@ -49,32 +49,38 @@ module.exports = function(RED) {
         function timer_of_send(){   // 10秒タイマー + メッセージ送信
 
             let newMsg = {                  // 新規に送信するメッセージ
-                "request"       : "store",
-                "dataObject"    : {
-                    "objectType"        : "iaCloudObjectArray",
-                    "objectKey"         : "RFID",
-                    "objectDescription" : "RFID",
-                    "timeStamp"         : moment().format(),
-                    "length"            : 0,
-                    "objectArray"       : []
-                }
+              "request"       : "store",
+              "dataObject"    : {
+                  "objectType"        : "iaCloudObjectArray",
+                  "objectKey"         : "RFID",
+                  "objectDescription" : "RFIDカードID",
+                  "timeStamp"         : moment().format(),
+                  "length"            : 0,
+                  "ObjectArray"       : []
+              }
             };
             try{
                 setTimeout(() => {
                     for(let k in cardArray){
                         if(k == 0 || (k > 0 && cardArray[k].payload != cardArray[k-1].payload)){
-                            // newMsg.payload.dataObject.objectArray.push({
-                            newMsg.dataObject.objectArray.push({
+                            newMsg.dataObject.ObjectArray.push({
                                 "objectType"    : "iaCloudObject",
                                 "objectKey"     : "cardID",
-                                "instanceKey"   : "cardID" + cardArray[k].timestamp,
-                                "objectContent" : cardArray[k].payload
-                            //    ,"timeStamp"     : cardArray[k].timestamp
-                             }); 
+                                "instanceKey"   : "cardID" + cardArray[k].timeStamp,
+                                "ObjectContent" : {
+                                  "contentType"   : "iaCloudData",
+                                  "contentData"   : [
+                                    {
+                                      "dataName"    : "RFID",
+                                      "dataValue"   : cardArray[k].payload,
+                                      "unit": null
+                                    }
+                                  ]
+                                }
+                            });
                         }
                     }
-                    // newMsg.payload.dataObject.length = newMsg.payload.dataObject.objectArray.length;
-                    newMsg.dataObject.length = newMsg.dataObject.objectArray.length;
+                    newMsg.dataObject.length = newMsg.dataObject.ObjectArray.length;
                     startTime   = false;
                     cardArray   = [];
                     node.send(newMsg);
