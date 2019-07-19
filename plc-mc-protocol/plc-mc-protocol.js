@@ -27,22 +27,52 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
   });
 });
 
+const convertNum = (value, element) => {
+  // 2倍長データの結合
+  if (element.double) {
+    const buf = new ArrayBuffer(8);
+    const dv = new DataView(buf);
+    const tempVal = [];
+    if (element.dev.match('.*FLOAT$')) {
+      // 浮動小数の場合
+      for (let i = 0; i < element.len; i += 1) {
+        dv.setFloat32(4, value[2 * i]);
+        dv.setFloat32(0, value[2 * i + 1]);
+        tempVal.push(dv.getFloat64(0));
+      }
+    } else {
+      // 整数の場合
+      for (let i = 0; i < element.len; i += 1) {
+        dv.setInt16(2, value[2 * i], false);
+        dv.setInt16(0, value[2 * i + 1], false);
+        tempVal.push(dv.getInt32(0));
+      }
+    }
+    // 一点のみの場合に配列を解除する
+    if (tempVal.length === 1) [value] = tempVal;
+    else value = tempVal;
+  }
+  // 正符号への変換処理
+  if (!element.dev.match('.*FLOAT$') && element.sign === 'unsigned') {
+    const digit = element.double ? 8 : 4;
+    if (Array.isArray(value)) {
+      // 取得値が配列の場合
+      value = value.map(val => parseInt((val >>> 0).toString(16).slice(-digit), 16));
+    } else {
+      // 取得値が単独数値の場合
+      value = parseInt((value >>> 0).toString(16).slice(-digit), 16);
+    }
+  }
+  return value;
+};
+
 const createDataObject = (values, config) => {
   const contentData = [];
   Object.keys(values).forEach((key) => {
-    const element = config.addresses.find(e => `${e.dev}${e.addr},${e.len}` === key);
-    if (element.sign === 'unsigned') {
-    // 正符号への変換が必要な場合
-      if (Array.isArray(values[key])) {
-        // 取得値が配列の場合
-        values[key] = values[key].map((val) => {
-          val = parseInt((val >>> 0).toString(16).slice(-4), 16);
-          return val;
-        })
-      } else {
-        // 取得値が単独数値の場合
-        values[key] = parseInt((values[key] >>> 0).toString(16).slice(-4), 16);
-      }
+    const element = config.addresses.find(e => (`${e.dev}${e.addr},${e.len}` === key && !e.double)
+      || (`${e.dev}${e.addr},${e.len * 2}` === key && e.double === true));
+    if (element && (element.double || element.sign === 'unsigned')) {
+      values[key] = convertNum(values[key], element);
     }
     contentData.push({
       dataName: element.name,
@@ -108,7 +138,8 @@ function exportsFunction(RED) {
       const items = addresses
         .filter(a => a.dev || a.addr || a.len)
         .reduce((itemsMap, a) => {
-          itemsMap[`${a.dev}${a.addr}`] = a.len;
+          // ２倍長の場合は取得データ点数を2倍にする
+          itemsMap[`${a.dev}${a.addr}`] = a.double ? a.len * 2 : a.len;
           return itemsMap;
         }, {});
 
@@ -131,7 +162,7 @@ function exportsFunction(RED) {
           thisNode.debug(JSON.stringify(e));
         });
     });
-    this.on("close",function(done) {
+    this.on('close', (done) => {
       setTimeout(done, 5000);
       done();
     });

@@ -24,7 +24,8 @@
       "number": "数値型",
       "string": "文字列型",
       "signed": "符号あり",
-      "unsigned": "符号なし"
+      "unsigned": "符号なし",
+      "double": "2倍長"
     }
   }
 }

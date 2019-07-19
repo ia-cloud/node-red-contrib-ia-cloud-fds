@@ -24,8 +24,8 @@
       "number": "number",
       "string": "string",
       "signed": "signed",
-      "unsigned": "unsigned"
-
+      "unsigned": "unsigned",
+      "double": "double bytes"
     }
   }
 }
