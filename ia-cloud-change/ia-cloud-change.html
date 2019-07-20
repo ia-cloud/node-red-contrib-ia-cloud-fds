@@ -1,0 +1,164 @@
+<script type="text/x-red" data-template-name="ia-cloud-change">
+
+  <style type="text/css">
+    .ia-cloud-fds-change-rules .form-row:nth-child(even) {
+      background: #fff;
+    }
+    .ia-cloud-fds-change-label {
+      width: 130px !important;
+    }
+  </style>
+
+  <!-- Name -->
+  <div class="form-row">
+    <label for="node-input-name" class="ia-cloud-fds-change-label"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name" /></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+  </div>
+  
+  <!-- object-key -->
+  <div class="form-row">
+    <label for="node-input-objectKey" class="ia-cloud-fds-change-label"><i class="fa fa-link"></i> <span data-i18n="ia-cloud-fds.change.object-key" /></label>
+    <input type="text" id="node-input-objectKey" data-i18n="[placeholder]ia-cloud-fds.change.object-key">
+  </div>
+  <!-- object-description -->
+  <div class="form-row">
+    <label for="node-input-objectDescription" class="ia-cloud-fds-change-label"><i class="fa fa-pencil-square-o"></i> <span data-i18n="ia-cloud-fds.change.object-description" /></label>
+    <input type="text" id="node-input-objectDescription" data-i18n="[placeholder]ia-cloud-fds.change.object-description">
+  </div>
+  <!-- instance-key -->
+  <div class="form-row">
+    <label for="node-input-instanceKey" class="ia-cloud-fds-change-label"><i class="fa fa-file-text-o"></i> <span data-i18n="ia-cloud-fds.change.instance-key" /></label>
+    <input type="text" id="node-input-instanceKey" data-i18n="[placeholder]ia-cloud-fds.change.instance-key">
+  </div>
+
+  <!-- rule-title -->
+  <div class="form-row" style="margin-bottom:0;">
+    <label><i class="fa fa-list"></i> <span data-i18n="node-red:change.label.rules" /></label>
+  </div>
+  <!-- rule_table -->
+  <div>
+    <ol id="rule_table">
+    </ol>
+  </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="ia-cloud-change">
+
+
+
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('ia-cloud-change', {
+    category: 'iaCloud',
+    color: 'rgb(231, 180, 100)',
+    // align: 'right',
+    defaults: {
+      name: { value: 'ia-cloud-change' },
+      objectKey: { value: '' },
+      objectDescription: { value: '' },
+      instanceKey: { value: '' },
+      rules: { value: '' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'swap.png',
+    label() {
+      return this.name || 'ia-cloud-change';
+    },
+    oneditprepare() {
+      // console.log(this.rules);
+
+      // Labels
+      const labelMsgSource = this._('ia-cloud-fds.change.msg-source');
+      const labelMsgDestination = this._('ia-cloud-fds.change.msg-destination');
+      const labelDataName = this._('ia-cloud-fds.change.data-name');
+      const labelCommonName = this._('ia-cloud-fds.change.common-name');
+      const labelUnit = this._('ia-cloud-fds.change.unit');
+
+      // Define editableList.
+      $('#rule_table').css('min-height', '300px').css('min-width', '400px').editableList({
+        removable: true,
+        sortable: true,
+        // Process when click add button.
+        addItem($row, index, data) {
+          // console.log(data);
+          const dataName = data.dataName || '';
+          const commonName = data.commonName || '';
+          const unit = data.unit || '';
+
+          const template = `
+            <div class="row-source form-row">
+              <label style="width:22%"><i class="fa fa-random"></i> <span>${labelMsgSource}</span></label>
+              <input type="text" class="rule-from" placeholder="payload" />
+            </div>
+            <div class="row-destination form-row">
+              <label style="width:22%"><i class="fa fa-arrow-right"></i> <span>${labelMsgDestination}</span></label>
+              <input type="text" style="width:30%;" class="rule-to-data-name" value="${dataName}" placeholder="${labelDataName}" />
+              <input type="text" style="width:30%;" class="rule-to-common-name" value="${commonName}" placeholder="${labelCommonName}" />
+              <input type="text" style="width:15%;" class="rule-to-unit" value="${unit}" placeholder="${labelUnit}" />
+            </div>
+          `;
+
+          $(template).appendTo($row)
+            .find('.rule-from')
+              .typedInput({
+                types: [ 'msg' ],
+                width: '200px',
+                // typeField: '.my-type-field',
+              })
+              .typedInput('type', data.type)
+              .typedInput('value', data.value);
+        },
+      });
+
+      // Stack rows.
+      const rules = this.rules || [];
+      // rules.push({});
+
+      const $editableList = $('#rule_table');
+      rules.forEach(rule => $editableList.editableList('addItem', rule));
+    },
+    oneditsave() {
+      const items = $('#rule_table').editableList('items');
+
+      const rowValues = Array.from(items).map((item) => {
+        const $item = $(item);
+        $ruleFrom = $item.find('.rule-from');
+        return {
+          type: $ruleFrom.typedInput('type'),
+          value: $ruleFrom.typedInput('value'),
+          dataName: $item.find('.rule-to-data-name').val(),
+          commonName: $item.find('.rule-to-common-name').val(),
+          unit: $item.find('.rule-to-unit').val(),
+        };
+      });
+
+      this.rules = rowValues;
+    },
+  });
+
+  /** Put sequence numbers (1-based). */
+    const refreshSequence = () => {
+    $('.ia-cloud-fds-change-rules-seq').each((index, element) => $(element).text(index + 1));
+  };
+
+  /** Returns a new row instance. */
+  const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
+    if (!$rowTemplate) {
+      $rowTemplate = $('.ia-cloud-change-rules-row-template .form-row');
+    }
+    if (!rowValues) {
+      rowValues = {};
+    }
+
+    const $newRow = $rowTemplate.clone();
+    $newRow.find('.ia-cloud-fds-change-rules-seq').text(rowNumber);
+    $newRow.find('.rule-origin').val(rowValues.origin);
+    $newRow.find('.rule-dest').val(rowValues.dest);
+    return $newRow;
+  };
+
+</script>

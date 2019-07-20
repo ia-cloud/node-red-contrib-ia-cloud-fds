@@ -1,0 +1,16 @@
+{
+  "ia-cloud-fds": {
+    "change": {
+      "instance-key": "instanceKey",
+      "node-name": "名前",
+      "object-description": "objectDescription",
+      "object-key": "objectKey",
+      "rules": "ルール",
+      "msg-source": "変換元",
+      "msg-destination": "変換先",
+      "data-name": "dataName",
+      "common-name": "commonName",
+      "unit": "unit"
+    }
+  }
+}
