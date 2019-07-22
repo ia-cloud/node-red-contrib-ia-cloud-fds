@@ -1,0 +1,89 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="HMI-Schneider-com">
+  <div class="form-group" id="hmi-schneider-com-block">
+    <div class="form-row">
+      <label for="node-config-input-name"><i class="fa fa-tag"></i>
+        <span data-i18n="editor.name"></span></label>
+      <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row hidden">
+        <input type="text" id="node-config-input-requiredSet">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-etherAdd"><span data-i18n="editor.netAddress"></span>
+          <span style="color: #ff0000;">*</span></label>
+        <input type="text" style="width: 300px" id="node-config-input-etherAdd">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-etherPort"><span data-i18n="editor.etherPort"></span>
+          <span style="color: #ff0000;">*</span></label>
+        <input type="text" style="width: 300px" id="node-config-input-etherPort">
+    </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="HMI-Schneider-com">
+    <p>preparing ia-cloud objects for store to CCS</p>
+
+<h3>Inputs</h3>
+<dl class="message-properties">
+  TBD
+</dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+
+<h3>Details</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+</script>
+
+<script type="text/javascript">
+
+  RED.nodes.registerType('HMI-Schneider-com',{
+      category: 'config',
+      defaults: {
+          name: {value:"SchneiderHMI"},
+          etherAdd:{value:"127.0.0.1" },
+          etherPort:{value:"8082" },
+          requiredSet: {value: "", required:true},
+      },
+      label: function() {
+          return this.name||this._("HMI-Schneider-com");
+      },
+
+      oneditprepare: function() {
+      },
+
+      oneditsave: function() {
+        var requiredSet = "ready";
+        $("#hmi-schneider-com-block").find("input[type='text']").each(function(idx, obj){
+          switch($(obj).attr("id")) {
+            case "node-config-input-etherPort":
+            case "node-config-input-etherAdd":
+              if (!$(obj).val()) requiredSet = "";
+              break;
+            default:
+              break;
+          }
+        });
+      $("#node-config-input-requiredSet").val(requiredSet);
+      }
+  });
+
+</script>

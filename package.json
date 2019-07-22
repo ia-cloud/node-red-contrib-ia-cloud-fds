@@ -14,6 +14,7 @@
     "node-nfcpy-id": "^0.1.1",
     "request": "^2.88.0",
     "serialport": "^7.1.5",
+    "websocket": "^1.0.29",
     "ws": "^7.1.1"
   },
   "license": "ISC",
@@ -39,7 +40,12 @@
       "Itec_CT_Sensor": "EnOcean/Itec_CT_Sensor.js",
       "Optex_Rocker_SW": "EnOcean/Optex_Rocker_SW.js",
       "Optex_Occupancy_Sensor": "EnOcean/Optex_Occupancy_Sensor.js",
-      "serial-port": "EnOcean/serial-port.js"
+      "serial-port": "EnOcean/serial-port.js",
+	  "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
+	  "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
+	  "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
+	  "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
+	  "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js"
     }
   },
   "repository": {

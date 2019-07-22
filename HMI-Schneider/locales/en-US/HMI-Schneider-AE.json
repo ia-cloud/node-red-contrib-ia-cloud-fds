@@ -1,0 +1,23 @@
+{
+    "editor": {
+        "name": "node name",
+        "UIconfig": "conf. by UI",
+        "fileconfig": "conf. by file",
+        "filename": "configration file path",
+        "period": "notification period",
+        "objectname": "object name",
+        "objectKey": "object key",
+        "objectKeyholder": "required: unique key",
+        "objectDescription": "object description",
+        "A&EItem": "A&E items",
+        "hmiSchneiderNode": "Schneider HMI com. node"
+    },
+    "runtime": {
+        "badFilePath": "bad file path",
+        "ready": "Ready",
+        "preparing": "preparing",
+        "sent": "data sent",
+        "connected": "HMI is connected",
+        "disconnected": "HMI is disconnected"
+    }
+}
