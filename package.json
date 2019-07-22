@@ -10,6 +10,7 @@
     "crc-full": "^1.1.0",
     "iconv-lite": "^0.4.24",
     "mcprotocol": "^0.1.1",
+    "modbus-serial": "^7.6.0",
     "moment": "^2.24.0",
     "node-nfcpy-id": "^0.1.1",
     "request": "^2.88.0",
