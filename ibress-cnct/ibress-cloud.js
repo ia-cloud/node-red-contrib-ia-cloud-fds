@@ -12,16 +12,7 @@ module.exports = function(RED) {
         this.password = this.credentials.password;
         // Verify if node is available
         var self = this;
-        var refcount = 0;
-        var dormants = [];
-        RED.nodes.eachNode( node => {
-            // "tab" always appears forward
-            if (node.type === "tab" && node.disabled) dormants.push(node.id);
-            if (dormants.find(id => id === node.z) || node.type.indexOf("ibress-cloud-") === -1) return;
-            if (node.server === self.id) refcount++;
-        });
-        // DHWeb Connection Start (ONLY Available config node)
-        refcount && this.connect();
+        this.connect();
     }
     RED.nodes.registerType('iBRESS Cloud', iBressCloudNode, {
         credentials: {
