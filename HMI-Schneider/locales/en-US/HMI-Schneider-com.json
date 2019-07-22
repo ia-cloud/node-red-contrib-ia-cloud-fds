@@ -1,0 +1,10 @@
+{
+    "editor": {
+        "name": "node name",
+        "etherPort": "Ether port",
+        "netAddress": "Network add."
+    },
+    "runtime": {
+
+    }
+}
