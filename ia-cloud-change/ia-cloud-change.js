@@ -58,15 +58,14 @@ function exportsFunction(RED) {
         objectType: 'iaCloudObject',
         objectKey: config.objectKey,
         timestamp: moment().format(),
-        instanceKey,
         objectContent: {
           contentType: 'iaCloudData',
           contentData,
         },
       };
       // Optional keys.
-      if (!config.objectDescription) { dataObject.objectDescription = config.objectDescription; }
-      if (!config.instanceKey) { dataObject.instanceKey = config.instanceKey; }
+      if (config.objectDescription) { dataObject.objectDescription = config.objectDescription; }
+      if (config.instanceKey) { dataObject.instanceKey = config.instanceKey; }
 
       msg = {
         request: 'store',
