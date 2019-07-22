@@ -52,27 +52,26 @@ function exportsFunction(RED) {
           return contentDatum;
         });
 
-      // Variables.
-      // const serviceID = 'serviceID';
-      const objectKey = config.objectKey;
-      const objectDescription = config.objectDescription;
-      const timestamp = moment().format();
-      const instanceKey = config.instanceKey;
+      // Variables
+
+      const dataObject = {
+        objectType: 'iaCloudObject',
+        objectKey: config.objectKey,
+        timestamp: moment().format(),
+        instanceKey,
+        objectContent: {
+          contentType: 'iaCloudData',
+          contentData,
+        },
+      };
+      // Optional keys.
+      if (!config.objectDescription) { dataObject.objectDescription = config.objectDescription; }
+      if (!config.instanceKey) { dataObject.instanceKey = config.instanceKey; }
 
       msg = {
         request: 'store',
         // serviceID,
-        dataObject: {
-          objectType: 'iaCloudObject',
-          objectKey,
-          objectDescription,
-          timestamp,
-          instanceKey,
-          objectContent: {
-            contentType: 'iaCloudData',
-            contentData,
-          },
-        }
+        dataObject,
       };
 
       thisNode.send(msg);
