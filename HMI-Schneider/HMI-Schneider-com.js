@@ -20,7 +20,7 @@ module.exports = function(RED) {
     function hmiSchneiderCom(config) {
         RED.nodes.createNode(this, config);
 
-        const HmiSchneiderWebSocket = require('./HMI-Schneider-WebSocket.js');
+        const HmiSchneiderWebSocket = require('./HMI-Schneider-Websocket.js');
 
         this.host = config.etherAdd;
         this.port = config.etherPort;
