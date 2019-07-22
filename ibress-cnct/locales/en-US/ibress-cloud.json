@@ -1,0 +1,41 @@
+{
+    "ibress": {
+        "label": {
+            "host": "Host",
+            "port": "Port",
+            "use-ssl": "Use SSL",
+            "domain": "Domain",
+            "user": "Account",
+            "password": "Password",
+            "domain_auth": "Auth",
+            "prefix": "Prefix",
+            "offset": "Offset",
+            "format": "Format"
+        },
+        "placeholder": {
+            "user": "Organization/ID"
+        },
+        "host": {
+            "tip": "Note: "
+        },
+        "read": {
+            "tip": "Note: "
+        },
+        "write": {
+            "tip": "Note: "
+        },
+        "convert": {
+            "tip": "Note: "
+        },
+        "status": {
+            "connected": "Connection to __host__:__port__ succeeded",
+            "disconnected": "Connection to __host__:__port__ disconnected",
+            "report-domain": "Register domain '__domain__'",
+            "auth-domain": "Authoritative domain '__domain__'"
+        },
+        "errors": {
+            "connect": "Connection to __host__:__port__, __message__",
+            "no-domain": "Domain not found '__domain__'"
+        }
+    }
+}

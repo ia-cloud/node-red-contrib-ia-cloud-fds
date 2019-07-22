@@ -21,6 +21,7 @@
     "nodes": {
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+      "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
       "plc-mc-protocol-config": "plc-mc-protocol/plc-mc-protocol-config.js",
       "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
