@@ -1,0 +1,92 @@
+<script type="text/javascript">
+(function() {
+    RED.nodes.registerType('iBRESS Cloud',{
+        category: 'config',
+        defaults: {
+            name: {value:""},
+            host: {value:"localhost", required:true},
+            port: {value:443, required:true, validate:RED.validators.number()},
+            usessl:  {value:true}
+        },
+        credentials: {
+            user: {type:"text"},
+            password: {type:"password"}
+        },
+        label: function() {
+            return this.name||this.host+":"+this.port;
+        }
+    });
+})();
+</script>
+
+<script type="text/x-red" data-template-name="iBRESS Cloud">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="icon-bookmark"></i> <span data-i18n="ibress.label.host"></span></label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="icon-bookmark"></i> <span data-i18n="ibress.label.port"></span></label>
+        <input type="text" id="node-config-input-port" style="max-width:120px">
+        <input type="checkbox" id="node-config-input-usessl" style="margin-left:30px;width:auto">
+        <label for="node-config-input-usessl"> <span data-i18n="ibress.label.use-ssl"></span></label>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-user"><i class="icon-bookmark"></i> <span data-i18n="ibress.label.user"></span></label>
+        <input type="text" id="node-config-input-user" data-i18n="[placeholder]ibress.placeholder.user">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="icon-bookmark"></i> <span data-i18n="ibress.label.password"></span></label>
+        <input type="password" id="node-config-input-password">
+    </div>
+    <div class="form-tips"><span data-i18n="[html]ibress.host.tip"></span></div>
+</script>
+
+<script type="text/x-red" data-help-name="iBRESS Cloud">
+    <p>SERVER</p>
+</script>
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('ibress-cnct',{
+        category: "iaCloud",
+        color: "rgb(140, 198, 63)",
+        defaults: {
+            name: {value:""},
+            server: {type:"iBRESS Cloud", required:true},
+            domain: {value:"", required:true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "bridge.png",
+        align: "right",
+        label: function() {
+            return this.name||RED.nodes.node(this.server).label()+':'+this.domain;
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="ibress-cnct">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-server"><i class="icon-tag"></i> <span data-i18n="ibress.label.host"></span></label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-domain"><i class="icon-bookmark"></i> <span data-i18n="ibress.label.domain"></span></label>
+        <input type="text" id="node-input-domain">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ibress-cnct">
+    <p>WRITE</p>
+</script>

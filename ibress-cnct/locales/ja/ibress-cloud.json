@@ -1,0 +1,41 @@
+{
+    "ibress": {
+        "label": {
+            "host": "ホスト",
+            "port": "ポート",
+            "use-ssl": "SSL接続を使用",
+            "domain": "ドメイン名",
+            "user": "アカウント",
+            "password": "パスワード",
+            "domain_auth": "信頼済",
+            "prefix": "接頭語",
+            "offset": "開始値",
+            "format": "書式"
+        },
+        "placeholder": {
+            "user": "組織名/ユーザIDで入力"
+        },
+        "host": {
+            "tip": "注釈: アカウントは「組織名/ユーザ名」を入力してください。"
+        },
+        "read": {
+            "tip": "注釈: アカウントは「組織名/ユーザ名」を入力してください。"
+        },
+        "write": {
+            "tip": "注釈: アカウントは「組織名/ユーザ名」を入力してください。"
+        },
+        "convert": {
+            "tip": "注釈: アカウントは「組織名/ユーザ名」を入力してください。"
+        },
+        "status": {
+            "connected": "__host__:__port__ へ接続しました",
+            "disconnected": "__host__:__port__ から切断されました",
+            "report-domain": "ドメイン名(__domain__)を登録します",
+            "auth-domain": "ドメイン名(__domain__)を承認します"
+        },
+        "errors": {
+            "connect": "接続エラー __host__:__port__, __message__",
+            "no-domain": "ドメイン名が見つかりません (__domain__)"
+        }
+    }
+}

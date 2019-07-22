@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-ia-cloud-fds",
+  "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
   "version": "0.0.1",
   "author": "ia-cloud project menbers",
@@ -14,14 +14,18 @@
     "node-nfcpy-id": "^0.1.1",
     "request": "^2.88.0",
     "serialport": "^7.1.5",
-    "websocket": "^1.0.29"
+    "websocket": "^1.0.29",
+    "ws": "^7.1.1"
   },
+  "keywords": [
+    "node-red"
+  ],
   "license": "ISC",
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
   "node-red": {
     "nodes": {
-      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+      "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
       "plc-mc-protocol-config": "plc-mc-protocol/plc-mc-protocol-config.js",
       "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
@@ -39,11 +43,12 @@
       "Optex_Rocker_SW": "EnOcean/Optex_Rocker_SW.js",
       "Optex_Occupancy_Sensor": "EnOcean/Optex_Occupancy_Sensor.js",
       "serial-port": "EnOcean/serial-port.js",
-	  "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
-	  "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
-	  "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
-	  "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
-	  "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js"
+      "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
+      "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
+      "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
+      "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
+      "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
+      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js"
     }
   },
   "repository": {

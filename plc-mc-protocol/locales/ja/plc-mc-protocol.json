@@ -4,9 +4,28 @@
       "connection-config": "接続設定",
       "node-name": "ノード名",
       "this-node-name": "このノードの名前",
-      "addresses": "アドレスマッピング",
+      "tab": {
+        "object-settings": "オブジェクトの設定",
+        "data-settings": "データの設定"
+      },
+      "object-name": "オブジェクト名",
+      "this-object-name": "このオブジェクトの名前",
+      "object-description": "オブジェクトの説明",
+      "this-object-description": "このオブジェクトの説明",
+      "instance-name": "インスタンス名",
+      "this-instance-name": "このオブジェクトのインスタンス名",
+      "data-name": "データ名",
+      "common-name": "共通名",
+      "unit": "単位",
       "address-no": "アドレス",
-      "address-length": "長さ"
+      "address-length": "長さ",
+      "select-device": "デバイスを選択してください",
+      "bit": "bit型",
+      "number": "数値型",
+      "string": "文字列型",
+      "signed": "符号あり",
+      "unsigned": "符号なし",
+      "double": "2倍長"
     }
   }
 }
