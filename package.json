@@ -21,7 +21,6 @@
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
   "node-red": {
     "nodes": {
-      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
       "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
@@ -45,7 +44,8 @@
       "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
       "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
       "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
-      "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js"
+      "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
+      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js"
     }
   },
   "repository": {
