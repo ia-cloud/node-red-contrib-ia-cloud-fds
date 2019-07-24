@@ -50,31 +50,52 @@ module.exports = function(RED) {
             var date = new Date();
             var timestamp = dateformat(date, 'isoDateTime');
 
-            msg = {
-                "request": "store",
-                "dataObject": {
-                    "objectType" : "iaCloudObject",
-                    "objectKey" : objectkey ,
-                    "objectDescription" : "センサーの値",
-                    "timeStamp" :  timestamp,
-                    "ObjectContent" : {
-                        "contentType": "iaCloudData",
-                        "contentData":[{
-                            "dataName": dataname[0],
-                            "dataValue": datavalue[0],
-                            "unit": unit[0]
-                        },{
-                            "dataName": dataname[1],
-                            "dataValue": datavalue[1],
-                            "unit": unit[1]
-                        },{
-                            "dataName": dataname[2],
-                            "dataValue": datavalue[2],
-                            "unit": unit[2]
-                        }]
+            if(sensortype == "dht11"){
+                msg = {
+                    "request": "store",
+                    "dataObject": {
+                        "objectType" : "iaCloudObject",
+                        "objectKey" : objectkey ,
+                        "objectDescription" : "センサーの値",
+                        "timeStamp" :  timestamp,
+                        "ObjectContent" : {
+                            "contentType": "iaCloudData",
+                            "contentData":[{
+                                "dataName": dataname[0],
+                                "dataValue": datavalue[0],
+                                "unit": unit[0]
+                            },{
+                                "dataName": dataname[1],
+                                "dataValue": datavalue[1],
+                                "unit": unit[1]
+                            },{
+                                "dataName": dataname[2],
+                                "dataValue": datavalue[2],
+                                "unit": unit[2]
+                            }]
+                        }
                     }
+                    
                 }
-                
+            }else{
+                msg = {
+                    "request": "store",
+                    "dataObject": {
+                        "objectType" : "iaCloudObject",
+                        "objectKey" : objectkey ,
+                        "objectDescription" : "センサーの値",
+                        "timeStamp" :  timestamp,
+                        "ObjectContent" : {
+                            "contentType": "iaCloudData",
+                            "contentData":[{
+                                "dataName": dataname[0],
+                                "dataValue": datavalue[0],
+                                "unit": unit[0]
+                            }]
+                        }
+                    }
+                    
+                }
             }
             node.send(msg);
         }
