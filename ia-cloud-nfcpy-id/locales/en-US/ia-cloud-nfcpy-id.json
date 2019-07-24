@@ -3,9 +3,11 @@
     "label" : {
       "waitTime"      : "Wait Time",
       "waitTimeUnit"  : "Sec",
-      "nodeName"      : "Name",
+      "nodeName"      : "Node Name",
       "sendTime"      : "Send Interval",
-      "sendTimeUnit"  : "Sec"
+      "sendTimeUnit"  : "Sec",
+      "dataName"      : "Data Name",
+      "objectKey"     : "ObjectKey"
     },
     "runtime" : {
       "touched"       : "touched",
