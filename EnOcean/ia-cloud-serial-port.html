@@ -1,17 +1,17 @@
 <!-- serial-port Config Node の記述 -->
-<script type="text/x-red" data-template-name="serial-port">
+<script type="text/x-red" data-template-name="ia-cloud-serial-port">
     <div class="form-row">
-        <label for="node-config-input-serialport"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
-        <input type="text" id="node-config-input-serialport" style="width:66%;" data-i18n="[placeholder]serial.placeholder.serialport">
+        <label for="node-config-input-serialport"><i class="fa fa-random"></i> <span data-i18n="ia-cloud-serial.label.serialport"></span></label>
+        <input type="text" id="node-config-input-serialport" style="width:66%;" data-i18n="[placeholder]ia-cloud-serial.placeholder.serialport">
         <a id="node-config-lookup-serial" class="btn"><i id="node-config-lookup-serial-icon" class="fa fa-search"></i></a>
     </div>
     <div class="form-row">
         <table width="100%"><tr>
-            <td width="100px"><i class="fa fa-wrench"></i> <span data-i18n="serial.label.settings"></span></td>
-            <td width="110px" data-i18n="serial.label.baudrate"></td>
-            <td width="70px" data-i18n="serial.label.databits"></td>
-            <td width="80px" data-i18n="serial.label.parity"></td>
-            <td width="70px" data-i18n="serial.label.stopbits"></td>
+            <td width="100px"><i class="fa fa-wrench"></i> <span data-i18n="ia-cloud-serial.label.settings"></span></td>
+            <td width="110px" data-i18n="ia-cloud-serial.label.baudrate"></td>
+            <td width="70px" data-i18n="ia-cloud-serial.label.databits"></td>
+            <td width="80px" data-i18n="ia-cloud-serial.label.parity"></td>
+            <td width="70px" data-i18n="ia-cloud-serial.label.stopbits"></td>
         </tr><tr><td>&nbsp;</td>
         <td>
             <input type="text" id="node-config-input-serialbaud" style="width:92%">
@@ -24,11 +24,11 @@
         </select>
         </td><td>
         <select type="text" id="node-config-input-parity" style="width:90%;">
-            <option value="none" data-i18n="serial.parity.none"></option>
-            <option value="even" data-i18n="serial.parity.even"></option>
-            <option value="mark" data-i18n="serial.parity.mark"></option>
-            <option value="odd" data-i18n="serial.parity.odd"></option>
-            <option value="space" data-i18n="serial.parity.space"></option>
+            <option value="none" data-i18n="ia-cloud-serial.parity.none"></option>
+            <option value="even" data-i18n="ia-cloud-serial.parity.even"></option>
+            <option value="mark" data-i18n="ia-cloud-serial.parity.mark"></option>
+            <option value="odd" data-i18n="ia-cloud-serial.parity.odd"></option>
+            <option value="space" data-i18n="ia-cloud-serial.parity.space"></option>
         </select>
         </td><td>
         <select type="text" id="node-config-input-stopbits" style="width:90%;">
@@ -39,55 +39,33 @@
     </div>
     <br/>
     <div class="form-row">
-        <label><i class="fa fa-sign-in"></i> <span data-i18n="serial.label.input"></span></label>
+        <label><i class="fa fa-sign-in"></i> <span data-i18n="ia-cloud-serial.label.input"></span></label>
     </div>
     <div class="form-row" style="padding-left:10px;">
-        <span data-i18n="serial.label.split"></span>
+        <span data-i18n="ia-cloud-serial.label.split"></span>
         <select type="text" id="node-config-input-out" style="margin-left:5px; width:200px;">
-            <option value="char" data-i18n="serial.split.character"></option>
-            <option value="time" data-i18n="serial.split.timeout"></option>
-            <!--<option value="interbyte" data-i18n="serial.split.silent"></option>-->
-            <option value="count" data-i18n="serial.split.lengths"></option>
+            <option value="char" data-i18n="ia-cloud-serial.split.character"></option>
+            <option value="time" data-i18n="ia-cloud-serial.split.timeout"></option>
+            <!--<option value="interbyte" data-i18n="ia-cloud-serial.split.silent"></option>-->
+            <option value="count" data-i18n="ia-cloud-serial.split.lengths"></option>
         </select>
         <input type="text" id="node-config-input-newline" style="width:50px;">
         <span id="node-units"></span>
     </div>
     <div class="form-row" style="padding-left:10px;">
-        <span data-i18n="serial.label.deliver"></span>
+        <span data-i18n="ia-cloud-serial.label.deliver"></span>
         <select type="text" id="node-config-input-bin" style="margin-left:5px; width:150px;">
-            <option value="false" data-i18n="serial.output.ascii"></option>
-            <option value="bin" data-i18n="serial.output.binary"></option>
+            <option value="false" data-i18n="ia-cloud-serial.output.ascii"></option>
+            <option value="bin" data-i18n="ia-cloud-serial.output.binary"></option>
         </select>
     </div>
     <br/>
-<!--
-    <div id="node-config-addchar">
-        <div class="form-row">
-            <label><i class="fa fa-sign-out"></i> <span data-i18n="serial.label.output"></span></label>
-        </div>
-        <div class="form-row">
-            <input style="width:30px; margin-left:10px; vertical-align:top;" type="checkbox" id="node-config-input-addchar"><label style="width:auto;" for="node-config-input-addchar"><span data-i18n="serial.addsplit"></span></label>
-        </div>
-    </div>
-    <br/>
-    <div id="node-config-addchar">
-        <div class="form-row">
-            <label><i class="fa fa-exchange"></i> <span data-i18n="serial.label.request"></span></label>
-        </div>
-        <div class="form-row" style="padding-left:10px;">
-            <span data-i18n="serial.label.responsetimeout"></span>
-            <input type="text" id="node-config-input-responsetimeout" style="width:60px;">
-            <span data-i18n="serial.label.ms"></span>
-        </div>
-    </div>
-    <div class="form-tips" id="tip-responsetimeout" hidden><span data-i18n="serial.tip.responsetimeout"></span></div>
--->
-    <div class="form-tips" id="tip-split"><span data-i18n="serial.tip.split"></span></div>
-    <div class="form-tips" id="tip-timeout" hidden><span data-i18n="serial.tip.timeout"></span></div>
-    <div class="form-tips" id="tip-silent" hidden><span data-i18n="serial.tip.silent"></span></div>
+    <div class="form-tips" id="tip-split"><span data-i18n="ia-cloud-serial.tip.split"></span></div>
+    <div class="form-tips" id="tip-timeout" hidden><span data-i18n="ia-cloud-serial.tip.timeout"></span></div>
+    <div class="form-tips" id="tip-silent" hidden><span data-i18n="ia-cloud-serial.tip.silent"></span></div>
 </script>
 
-<script type="text/x-red" data-help-name="serial-port" charset="utf-8">
+<script type="text/x-red" data-help-name="ia-cloud-serial-port" charset="utf-8">
     <p>本画面ではシリアルポートに対する設定オプションを提供します</p>
     <p>検索ボタンを押すことによって選択可能な有効なシリアルポートの一覧を表示します。もしくはポート名が既知ならばそのパスを指定することができます。</p>
     <p>入力データは固定文字列、もしくはタイムアウト秒数、固定文字数で区切って受信する設定ができます。</p>
@@ -96,7 +74,7 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('serial-port',{
+    RED.nodes.registerType('ia-cloud-serial-port',{
         category: 'config',
         defaults: {
             //name: {value:""},
@@ -116,7 +94,7 @@
         label: function() {
             this.serialbaud = this.serialbaud || 57600;
             this.databits = this.databits || 8;
-            this.parity = this.parity || this._("serial.label.none");
+            this.parity = this.parity || this._("ia-cloud-serial.label.none");
             this.stopbits = this.stopbits || 1;
             return this.serialport+":"+this.serialbaud+"-"+this.databits+this.parity.charAt(0).toUpperCase()+this.stopbits;
         },

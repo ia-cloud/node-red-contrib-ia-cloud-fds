@@ -7,7 +7,7 @@
             "unit": "単位"
          }
     },
-    "serial": {
+    "ia-cloud-serial": {
         "label": {
             "serialport": "シリアルポート",
             "settings": "設定",

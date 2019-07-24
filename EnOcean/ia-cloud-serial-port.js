@@ -27,7 +27,7 @@ module.exports = function(RED) {
         
         this.serialpool = serialPool;     // ここでserialPoolをこのNodeのプロパティにする
     }
-    RED.nodes.registerType("serial-port",SerialPortNode);
+    RED.nodes.registerType("ia-cloud-serial-port",SerialPortNode);
 
         var serialPool = (function() {
             var connections = {};

@@ -7,7 +7,7 @@
             "unit": "Unit"
          }
     },
-    "serial": {
+    "ia-cloud-serial": {
         "status": {
             "waiting": "waiting",
             "timeout": "timeout"
