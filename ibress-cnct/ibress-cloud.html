@@ -1,6 +1,6 @@
 <script type="text/javascript">
 (function() {
-    RED.nodes.registerType('iBRESS Cloud',{
+    RED.nodes.registerType('iBRESS Connect',{
         category: 'config',
         defaults: {
             name: {value:""},
@@ -19,7 +19,7 @@
 })();
 </script>
 
-<script type="text/x-red" data-template-name="iBRESS Cloud">
+<script type="text/x-red" data-template-name="iBRESS Connect">
     <div class="form-row">
         <label for="node-config-input-name"><i class="icon-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
@@ -45,7 +45,7 @@
     <div class="form-tips"><span data-i18n="[html]ibress.host.tip"></span></div>
 </script>
 
-<script type="text/x-red" data-help-name="iBRESS Cloud">
+<script type="text/x-red" data-help-name="iBRESS Connect">
     <p>SERVER</p>
 </script>
 
@@ -56,7 +56,7 @@
         color: "rgb(140, 198, 63)",
         defaults: {
             name: {value:""},
-            server: {type:"iBRESS Cloud", required:true},
+            server: {type:"iBRESS Connect", required:true},
             domain: {value:"", required:true}
         },
         inputs:1,

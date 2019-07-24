@@ -1,6 +1,6 @@
 <!-- Source revision: https://github.com/node-red/node-red-nodes/commit/425f5c151fa35b8f4a4df3956fbc3ac07e74f195 -->
 
-<script type="text/x-red" data-help-name="iBRESS Cloud">
+<script type="text/x-red" data-help-name="iBRESS Connect">
     <p>iBRESS Cloud 接続ノード</p>
     <p>iBRESS Cloud との接続情報を登録します。</p>
     <h3>設定</h3>
@@ -18,70 +18,8 @@
     </dl>
 </script>
 
-<script type="text/x-red" data-help-name="ibress-cloud-read">
-    <p>iBRESS Cloud 読み出しノード</p>
-    <p>指定されたドメインのデータポイントを読み出します。</p>
-    <h3>設定</h3>
-    <dl class="message-properties">
-        <dt>Host <span class="property-type">文字列</span></dt>
-        <dd>iBRESS Cloud ホスト</dd>
-        <dt>Domain <span class="property-type">文字列</span></dt>
-        <dd>ドメイン名</dd>
-    </dl>
-    <h3>出力</h3>
-    <dl class="message-properties">
-        <dt>payload <span class="property-type">JSONオブジェクト</span></dt>
-        <dd>「名前:値」のJSONオブジェクト</dd>
-        <dt>domain <span class="property-type">文字列</span></dt>
-        <dd>ドメイン名</dd>
-        <dt>name <span class="property-type">文字列</span></dt>
-        <dd>データポイント名</dd>
-        <dt>type <span class="property-type">数値</span></dt>
-        <dd>ポイントのデータ型、整数、浮動小数点、または文字列のいずれか</dd>
-        <dt>value <span class="property-type">データ</span></dt>
-        <dd>データポイントの値</dd>
-        <dt>conf <span class="property-type">数値</span></dt>
-        <dd>ポイントの信頼度（0~100%）</dd>
-        <dt>security <span class="property-type">数値</span></dt>
-        <dd>ポイントのセキュリティレベル（0〜32768）。数字が大きいほどセキュリティが高いことを表します</dd>
-        <dt>locked <span class="property-type">数値</span></dt>
-        <dd>ロックフラグ。0はロック済み、1は未ロック</dd>
-        <dt>seconds <span class="property-type">数値</span></dt>
-        <dd>ポイントが読み取られたときのオペレーティングシステムの時間（秒）</dd>
-        <dt>nanoseconds <span class="property-type">数値</span></dt>
-        <dd>ポイントが読み取られたときの秒以下のナノ秒数</dd>
-        <dt>flags <span class="property-type">数値</span></dt>
-        <dd>ユーザ定義フラグ</dd>
-        <dt>quality <span class="property-type">数値</span></dt>
-        <dd>コネクションの品質を表す定数</dd>
-    </dl>
-    <h3>詳細</h3>
-    <p>iBRESS Cloud の指定されたドメインに登録されているデータポイントを取得します。</p>
-    <p>複数のデータポイントが登録されていても値が更新されたデータポイントだけが出力されます。</p>
-    <p><b>注:</b> 複数のデータポイントが更新された場合は1つずつ順番に出力します。</p>
-</script>
 
-<script type="text/x-red" data-help-name="ibress-cloud-write">
-    <p>iBRESS Cloud 更新ノード</p>
-    <p>指定されたドメインのデータポイントを更新します。</p>
-    <h3>設定</h3>
-    <dl class="message-properties">
-        <dt>Host <span class="property-type">文字列</span></dt>
-        <dd>iBRESS Cloud ホスト</dd>
-        <dt>Domain <span class="property-type">文字列</span></dt>
-        <dd>ドメイン名</dd>
-    </dl>
-    <h3>入力</h3>
-    <dl class="message-properties">
-        <dt>payload <span class="property-type">JSONオブジェクト</span></dt>
-        <dd>「名前:値」を列挙したJSONオブジェクト</dd>
-    </dl>
-    <h3>詳細</h3>
-    <p>iBRESS Cloud の指定されたドメインのデータポイントを更新します。</p>
-    <p><b>注:</b> iBRESS Cloudのデータポイントと同じ値の場合は実際に更新処理はおこないません。</p>
-</script>
-
-<script type="text/x-red" data-help-name="ibress-cloud-write-for-ia-dataobject">
+<script type="text/x-red" data-help-name="ibress-cnct">
     <p>iBRESS Cloud 更新ノード (Ia-Cloudデータオブジェクト)</p>
     <p>指定されたドメインのデータポイントを更新します。</p>
     <h3>設定</h3>
@@ -99,25 +37,4 @@
     <h3>詳細</h3>
     <p>iBRESS Cloud の指定されたドメインのデータポイントを更新します。</p>
     <p><b>注:</b> iBRESS Cloudのデータポイントと同じ値の場合は実際に更新処理はおこないません。</p>
-</script>
-
-<script type="text/x-red" data-help-name="ibress-cloud-autoname">
-    <p>iBRESS Cloud データ変換ノード</p>
-    <p><code>iBRESS Cloud 更新ノード</code>の入力に適合するようにデータ構造を変換します。</p>
-    <h3>入力</h3>
-    <dl class="message-properties">
-        <dt>Prefix <span class="property-type">文字列</span></dt>
-        <dd>データポイント名の接頭文字</dd>
-        <dt>Offset <span class="property-type">文字列</span></dt>
-        <dd>データポイント名の開始番号</dd>
-        <dt>Format <span class="property-type">文字列</span></dt>
-        <dd>連番フォーマット</dd>
-    </dl>
-    <h3>詳細</h3>
-    <p><code>iBRESS Cloud 更新ノード</code>の入力データに変換します。</p>
-    <p>前ノードの出力データの属性により、以下の処理をおこなう:
-    <ul><li>配列構造の場合、各要素に連番のデータポイント名を割り当てます</li>
-        <li>リテラルの場合、要素にオフセットのデータポイント名を割り当てます</li>
-    </ul></p>
-    <p>データポイント名は<code>設定</code>の<code>接頭語</code>＋<code>フォーマット</code>を組み合わせて生成します。</p>
 </script>

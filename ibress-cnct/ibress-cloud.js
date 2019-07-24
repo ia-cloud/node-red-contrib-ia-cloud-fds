@@ -1,9 +1,9 @@
-"use strict";
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 module.exports = function(RED) {
+    "use strict";
     const DHWebSocket = require('./DHWebSocket.js');
 
-    function iBressCloudNode(n) {
+    function iBressConnectNode(n) {
         RED.nodes.createNode(this, n);
         this.host = n.host;
         this.port = n.port;
@@ -14,14 +14,14 @@ module.exports = function(RED) {
         var self = this;
         this.connect();
     }
-    RED.nodes.registerType('iBRESS Cloud', iBressCloudNode, {
+    RED.nodes.registerType('iBRESS Connect', iBressConnectNode, {
         credentials: {
             user: {type: "text"},
             password: {type:"password"}
         }
     });
 
-    iBressCloudNode.prototype.connect = function() {
+    iBressConnectNode.prototype.connect = function() {
         this.emit('connecting');
         var Connection = new DHWebSocket();
         this.conn = Connection;
@@ -103,11 +103,11 @@ module.exports = function(RED) {
         Connection.setAuth(this.user, this.password);
     }
 
-    iBressCloudNode.prototype.disconnect = function(node) {
+    iBressConnectNode.prototype.disconnect = function(node) {
         this.conn.disconnect();
     }
 
-    iBressCloudNode.prototype.write = function(domain, points) {
+    iBressConnectNode.prototype.write = function(domain, points) {
         Object.keys(points).forEach( name => this.conn.forceWrite(domain + ':' + name, points[name]) );
     }
 
@@ -132,12 +132,15 @@ module.exports = function(RED) {
         this.server.registerDomain('write', n.domain, true);
         state.setup(this.server, node);
         node.on('input', function(msg) {
-            var kv = {};
-            msg.dataObject.ObjectContent.contentData.forEach(o => {
-                kv[o.commonName] = o.dataValue;
-            })
-            this.server.write(n.domain, kv);
-            node.send(msg);
+            try {
+                var kv = {};
+                msg.dataObject.ObjectContent.contentData.forEach(o => {
+                    kv[o.dataName] = o.dataValue;
+                })
+                this.server.write(n.domain, kv);
+                node.send(msg);
+            }
+            catch(err) { node.error(err); }
         });
     }
     RED.nodes.registerType("ibress-cnct", iBressWriteNodeForIaDataObject);
