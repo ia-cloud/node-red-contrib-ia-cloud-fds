@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "crc-full": "^1.1.0",
+    "dateformat": "^3.0.3",
     "iconv-lite": "^0.4.24",
     "mcprotocol": "^0.1.1",
     "modbus-serial": "^7.6.0",
@@ -49,6 +50,7 @@
       "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
       "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
       "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
+      "gp2iac": "gp2iac/gp2iac.js",
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js"
     }
   },
