@@ -5,6 +5,8 @@
         defaults: {
             waitTime: {value:"1", validate:RED.validators.number()},
             name: {value:""},
+            objectKey: {value:"objectKey"},
+            dataName: {value:"dataName"},
             sendTime: {value:"10", validate:RED.validators.number()}
         },
         inputs:0,
@@ -31,19 +33,27 @@
 
 <script type="text/x-red" data-template-name="RFID">
     <div class="form-row">
-        <label for="node-input-waitTime" id="l01"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.waitTime"></span></label>
-        <input id="node-input-waitTime"  value="1" style="width:50px !important"></input>
-        <label for="node-input-waitTime"> <span data-i18n="ia-cloud-nfcpy.label.waitTimeUnit"></label>
+      <label for="node-input-waitTime" id="l01"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.waitTime"></span></label>
+      <input id="node-input-waitTime"  value="1" style="width:50px !important"></input>
+      <label for="node-input-waitTime"> <span data-i18n="ia-cloud-nfcpy.label.waitTimeUnit"></span></label>
     </div>
     <div class="form-row">
-        <label for="node-input-name" id="l02"><i class="icon-tag"></i> <span data-i18n="ia-cloud-nfcpy.label.nodeName"></label>
-        <input type="text" id="node-input-name" placeholder="Name">
+      <label for="node-input-name" id="l02"><i class="icon-tag"></i> <span data-i18n="ia-cloud-nfcpy.label.nodeName"></span></label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-objectKey" id="l05"><i class="icon-tag"></i> <span data-i18n="ia-cloud-nfcpy.label.objectKey"></span></label>
+      <input type="text" id="node-input-objectKey" placeholder="objectKey">
+    </div>
+    <div class="form-row">
+      <label for="node-input-dataName" id="l04"><i class="icon-tag"></i> <span data-i18n="ia-cloud-nfcpy.label.dataName"></span></label>
+      <input type="text" id="node-input-dataName" placeholder="dataName">
     </div>
     <hr>
     <div class="form-row">
-        <label for="node-period-to-send" id="l03"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.sendTime"></label>
-        <input id="node-period-to-send" value="10" style="width:50px !important"></input>
-        <label for="node-period-to-send"> <span data-i18n="ia-cloud-nfcpy.label.sendTimeUnit"></label>
+      <label for="node-period-to-send" id="l03"><i class="fa fa-clock-o"></i> <span data-i18n="ia-cloud-nfcpy.label.sendTime"></span></label>
+      <input id="node-period-to-send" value="10" style="width:50px !important"></input>
+      <label for="node-period-to-send"> <span data-i18n="ia-cloud-nfcpy.label.sendTimeUnit"></span></label>
     </div>
   </script>
 <script type="text/x-red" data-help-name="RFID">

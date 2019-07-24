@@ -6,7 +6,9 @@ module.exports = function(RED) {
     function nfcpyidNode(config) {
         RED.nodes.createNode(this,config);
         this.waitTime   = config.waitTime * 1000;
-        this.sendTime   = config.sendTime * 1000;  // 一回の送信をまとめる時間
+        this.sendTime   = config.sendTime * 1000; // 一回の送信をまとめる時間
+        this.objectKey  = config.objectKey;       // 送信するJSONのobjectKey
+        this.dataName   = config.dataName;        // 送信するJSONのdataname
         let node        = this;
         let nfc         = new nfcpyid({mode:'non-touchend'}).start();
         let startTime   = false;              // 10秒ポーリング開始時間
@@ -48,12 +50,12 @@ module.exports = function(RED) {
 
         function timer_of_send(){   // 10秒タイマー + メッセージ送信
 
-            let newMsg = {                  // 新規に送信するメッセージ
+            let newMsg = {          // 新規に送信するメッセージ
               "request"       : "store",
               "dataObject"    : {
                   "objectType"        : "iaCloudObjectArray",
-                  "objectKey"         : "RFID",
-                  "objectDescription" : "RFIDカードID",
+                  "objectKey"         : node.objectKey,
+                  "objectDescription" : "RFID_cardID",
                   "timeStamp"         : moment().format(),
                   "length"            : 0,
                   "ObjectArray"       : []
@@ -65,13 +67,13 @@ module.exports = function(RED) {
                         if(k == 0 || (k > 0 && cardArray[k].payload != cardArray[k-1].payload)){
                             newMsg.dataObject.ObjectArray.push({
                                 "objectType"    : "iaCloudObject",
-                                "objectKey"     : "cardID",
+                                "objectKey"     : node.objectKey,
                                 "instanceKey"   : "cardID" + cardArray[k].timeStamp,
                                 "ObjectContent" : {
                                   "contentType"   : "iaCloudData",
                                   "contentData"   : [
                                     {
-                                      "dataName"    : "RFID",
+                                      "dataName"    : node.dataName,
                                       "dataValue"   : cardArray[k].payload,
                                       "unit": null
                                     }

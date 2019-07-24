@@ -3,9 +3,11 @@
     "label" : {
       "waitTime"      : "カード検出間隔",
       "waitTimeUnit"  : "秒",
-      "nodeName"      : "名称",
+      "nodeName"      : "ノード名称",
       "sendTime"      : "データ送信間隔",
-      "sendTimeUnit"  : "秒"
+      "sendTimeUnit"  : "秒",
+      "dataName"      : "データ名称",
+      "objectKey"     : "オブジェクトキー"
     },
     "runtime" : {
       "touched"       : "カード検出中",
