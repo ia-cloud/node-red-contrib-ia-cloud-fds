@@ -227,6 +227,9 @@ console.dir("エラーが起きた");
         }
         this.on("input",function(msg) {
 
+          //非接続状態の時は、何もしない。
+          if (info.serviceID == "") return;
+            
           if (msg.request == "store"
               || msg.request == "retrieve" || msg.request == "convey"){
 
