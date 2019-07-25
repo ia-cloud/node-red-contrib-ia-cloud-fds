@@ -133,9 +133,15 @@ module.exports = function(RED) {
         state.setup(this.server, node);
         node.on('input', function(msg) {
             try {
+                var content = msg.dataObject.objectContent? msg.dataObject.objectContent: msg.dataObject.ObjectContent;
                 var kv = {};
-                msg.dataObject.ObjectContent.contentData.forEach(o => {
-                    kv[o.dataName] = o.dataValue;
+                content.contentData.forEach(o => {
+                    if (typeof(o.dataValue) === "object") {
+                        Object.keys(o.dataValue).forEach(n => {
+                            kv[o.commonName+'.'+n] = o.dataValue[n];
+                        })
+                    }
+                    else kv[o.commonName] = o.dataValue;
                 })
                 this.server.write(n.domain, kv);
                 node.send(msg);
