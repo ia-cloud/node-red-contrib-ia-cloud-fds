@@ -19,6 +19,11 @@
     "websocket": "^1.0.30",
     "ws": "^7.1.2"
   },
+  "devDependencies": {
+    "eslint": "^6.5.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
   "keywords": [
     "node-red"
   ],
