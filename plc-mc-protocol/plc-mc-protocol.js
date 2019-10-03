@@ -49,8 +49,11 @@ const convertNum = (value, element) => {
       }
     }
     // 一点のみの場合に配列を解除する
-    if (tempVal.length === 1) [value] = tempVal;
-    else value = tempVal;
+    if (tempVal.length === 1) {
+      [value] = tempVal;
+    } else {
+      value = tempVal;
+    }
   }
   // 正符号への変換処理
   if (!element.dev.match('.*FLOAT$') && element.sign === 'unsigned') {
