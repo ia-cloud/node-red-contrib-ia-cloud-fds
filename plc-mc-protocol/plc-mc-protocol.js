@@ -1,7 +1,7 @@
 const MC = require('mcprotocol');
 const moment = require('moment');
 
-const readItemsFromPLC = param => new Promise((resolve, reject) => {
+const readItemsFromPLC = (param) => new Promise((resolve, reject) => {
   const conn = new MC();
   conn.initiateConnection({
     host: param.host,
@@ -13,7 +13,7 @@ const readItemsFromPLC = param => new Promise((resolve, reject) => {
       reject(err);
       return;
     }
-    const variables = Object.entries(param.items).map(e => `${e[0]},${e[1]}`);
+    const variables = Object.entries(param.items).map((e) => `${e[0]},${e[1]}`);
     // conn.setTranslationCB(function(tag) {return variables[tag];});
     conn.addItems(variables);
     conn.readAllItems((anythingBad, values) => {
@@ -57,7 +57,7 @@ const convertNum = (value, element) => {
     const digit = element.double ? 8 : 4;
     if (Array.isArray(value)) {
       // 取得値が配列の場合
-      value = value.map(val => parseInt((val >>> 0).toString(16).slice(-digit), 16));
+      value = value.map((val) => parseInt((val >>> 0).toString(16).slice(-digit), 16));
     } else {
       // 取得値が単独数値の場合
       value = parseInt((value >>> 0).toString(16).slice(-digit), 16);
