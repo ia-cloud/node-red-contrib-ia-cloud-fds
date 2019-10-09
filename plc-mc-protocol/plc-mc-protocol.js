@@ -49,8 +49,11 @@ const convertNum = (value, element) => {
       }
     }
     // 一点のみの場合に配列を解除する
-    if (tempVal.length === 1) [value] = tempVal;
-    else value = tempVal;
+    if (tempVal.length === 1) {
+      [value] = tempVal;
+    } else {
+      value = tempVal;
+    }
   }
   // 正符号への変換処理
   if (!element.dev.match('.*FLOAT$') && element.sign === 'unsigned') {
@@ -69,7 +72,7 @@ const convertNum = (value, element) => {
 const createDataObject = (values, config) => {
   const contentData = [];
   Object.keys(values).forEach((key) => {
-    const element = config.addresses.find(e => (`${e.dev}${e.addr},${e.len}` === key && !e.double)
+    const element = config.addresses.find((e) => (`${e.dev}${e.addr},${e.len}` === key && !e.double)
       || (`${e.dev}${e.addr},${e.len * 2}` === key && e.double === true));
     if (element && (element.double || element.sign === 'unsigned')) {
       values[key] = convertNum(values[key], element);
@@ -136,7 +139,7 @@ function exportsFunction(RED) {
       const { port } = connectionConfig;
       const { addresses } = config;
       const items = addresses
-        .filter(a => a.dev || a.addr || a.len)
+        .filter((a) => a.dev || a.addr || a.len)
         .reduce((itemsMap, a) => {
           // ２倍長の場合は取得データ点数を2倍にする
           itemsMap[`${a.dev}${a.addr}`] = a.double ? a.len * 2 : a.len;
