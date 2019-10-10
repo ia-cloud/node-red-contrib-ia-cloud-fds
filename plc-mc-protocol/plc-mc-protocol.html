@@ -206,11 +206,11 @@
   const setEventHandler = () => {
     // ----------------------------------------
     // display number edit row when device is number.
-    $('.ia-cloud-fds-plc-mc-addresses').on('change', '.device-no', function() {
+    $('.ia-cloud-fds-plc-mc-addresses').on('change', '.device-no', function () {
       const $thisBlock = $(this).parents(".form-block")
       const dev = $thisBlock.find('.device-no').val();
       $thisBlock.children('.form-number-edit-row')
-      .each(function(idx, obj){
+      .each(function (idx, obj) {
         switch (dev) {
           case 'CN':
           case 'TN':
@@ -230,7 +230,7 @@
     });
     // ----------------------------------------
     // Duplicate rows when some edits happen in the last row.
-    $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function() {
+    $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function () {
       const $thisRow = $(this).parent('.form-row').parent('.form-block');;
       const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-block:last');
       // Is it the last row?
@@ -241,7 +241,7 @@
     });
     // ----------------------------------------
     // Remove clicked row.
-    $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function() {
+    $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function () {
       const $thisRow = $(this).parent('.form-row').parent('.form-block');
       if ($thisRow.siblings().length === 0) {
         // Do not remove, clear last first row.
