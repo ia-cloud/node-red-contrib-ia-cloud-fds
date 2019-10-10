@@ -160,7 +160,7 @@
         };
       });
       // Remove last empty rows.
-      while (rows.length != 0 && !(rows.slice(-1)[0].name || rows.slice(-1)[0].unit || rows.slice(-1)[0].dev || rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
+      while (rows.length !== 0 && !(rows.slice(-1)[0].name || rows.slice(-1)[0].unit || rows.slice(-1)[0].dev || rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
         rows.pop();
       }
       this.addresses = rows;
