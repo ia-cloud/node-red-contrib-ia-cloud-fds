@@ -210,23 +210,23 @@
       const $thisBlock = $(this).parents('.form-block');
       const dev = $thisBlock.find('.device-no').val();
       $thisBlock.children('.form-number-edit-row')
-      .each(function (idx, obj) {
-        switch (dev) {
-          case 'CN':
-          case 'TN':
-          case 'D':
-            $(obj).find('.sign').show();
-            $(obj).show();
-            break;
-          case 'DFLOAT':
-            $(obj).find('.sign').hide();
-            $(obj).show();
-            break;
-          default:
-            $(obj).find('.sign').hide();
-            $(obj).hide();
-        }
-      });
+        .each(function (idx, obj) {
+          switch (dev) {
+            case 'CN':
+            case 'TN':
+            case 'D':
+              $(obj).find('.sign').show();
+              $(obj).show();
+              break;
+            case 'DFLOAT':
+              $(obj).find('.sign').hide();
+              $(obj).show();
+              break;
+            default:
+              $(obj).find('.sign').hide();
+              $(obj).hide();
+          }
+        });
     });
     // ----------------------------------------
     // Duplicate rows when some edits happen in the last row.
