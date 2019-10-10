@@ -182,7 +182,7 @@
     }
 
     const $newRow = $rowTemplate.clone();
-    const dev = rowValues.dev;
+    const { dev } = rowValues;
     $newRow.find('.ia-cloud-fds-plc-mc-address-seq').text(rowNumber);
     $newRow.find('.data-name').val(rowValues.name);
     $newRow.find('.common-name').val(rowValues.common);
