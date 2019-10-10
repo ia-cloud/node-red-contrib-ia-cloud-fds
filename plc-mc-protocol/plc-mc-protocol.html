@@ -147,7 +147,7 @@
             double = $row.find('.double').prop('checked');
             break;
           default: sign = 'signed';
-        };
+        }
         return {
           name: $row.find('.data-name').val(),
           common: $row.find('.common-name').val(),
@@ -160,7 +160,7 @@
         };
       });
       // Remove last empty rows.
-      while (rows.length != 0 && !(rows.slice(-1)[0].name || rows.slice(-1)[0].unit || rows.slice(-1)[0].dev || rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
+      while (rows.length !== 0 && !(rows.slice(-1)[0].name || rows.slice(-1)[0].unit || rows.slice(-1)[0].dev || rows.slice(-1)[0].addr || rows.slice(-1)[0].len)) {
         rows.pop();
       }
       this.addresses = rows;
@@ -182,7 +182,7 @@
     }
 
     const $newRow = $rowTemplate.clone();
-    const dev = rowValues.dev;
+    const { dev } = rowValues;
     $newRow.find('.ia-cloud-fds-plc-mc-address-seq').text(rowNumber);
     $newRow.find('.data-name').val(rowValues.name);
     $newRow.find('.common-name').val(rowValues.common);
@@ -206,32 +206,32 @@
   const setEventHandler = () => {
     // ----------------------------------------
     // display number edit row when device is number.
-    $(".ia-cloud-fds-plc-mc-addresses").on('change', '.device-no', function() {
-      const $thisBlock = $(this).parents(".form-block")
+    $('.ia-cloud-fds-plc-mc-addresses').on('change', '.device-no', function () {
+      const $thisBlock = $(this).parents('.form-block');
       const dev = $thisBlock.find('.device-no').val();
       $thisBlock.children('.form-number-edit-row')
-      .each(function(idx, obj){
-        switch (dev) {
-          case 'CN':
-          case 'TN':
-          case 'D':
-            $(obj).find('.sign').show();
-            $(obj).show();
-            break;
-          case 'DFLOAT':
-            $(obj).find('.sign').hide();
-            $(obj).show();
-            break;
-          default:
-            $(obj).find('.sign').hide();
-            $(obj).hide();
-        }
-      });
+        .each(function (idx, obj) {
+          switch (dev) {
+            case 'CN':
+            case 'TN':
+            case 'D':
+              $(obj).find('.sign').show();
+              $(obj).show();
+              break;
+            case 'DFLOAT':
+              $(obj).find('.sign').hide();
+              $(obj).show();
+              break;
+            default:
+              $(obj).find('.sign').hide();
+              $(obj).hide();
+          }
+        });
     });
     // ----------------------------------------
     // Duplicate rows when some edits happen in the last row.
-    $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function() {
-      const $thisRow = $(this).parent('.form-row').parent('.form-block');;
+    $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function () {
+      const $thisRow = $(this).parent('.form-row').parent('.form-block');
       const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-block:last');
       // Is it the last row?
       if ($thisRow.is($lastRow)) {
@@ -241,7 +241,7 @@
     });
     // ----------------------------------------
     // Remove clicked row.
-    $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function() {
+    $('.ia-cloud-fds-plc-mc-addresses').on('click', '.ia-cloud-fds-plc-mc-addresses-remove', function () {
       const $thisRow = $(this).parent('.form-row').parent('.form-block');
       if ($thisRow.siblings().length === 0) {
         // Do not remove, clear last first row.
@@ -263,6 +263,6 @@
         });
       }
     });
-  }
+  };
 
 </script>
