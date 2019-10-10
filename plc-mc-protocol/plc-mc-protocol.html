@@ -231,7 +231,7 @@
     // ----------------------------------------
     // Duplicate rows when some edits happen in the last row.
     $('.ia-cloud-fds-plc-mc-addresses').on('change', 'input', function () {
-      const $thisRow = $(this).parent('.form-row').parent('.form-block');;
+      const $thisRow = $(this).parent('.form-row').parent('.form-block');
       const $lastRow = $('.ia-cloud-fds-plc-mc-addresses .form-block:last');
       // Is it the last row?
       if ($thisRow.is($lastRow)) {
