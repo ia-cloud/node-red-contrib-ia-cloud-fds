@@ -25,7 +25,7 @@ module.exports = function(RED) {
         this.out = n.out || "char";
         this.responsetimeout = n.responsetimeout || 10000;
         
-        this.serialpool = serialPool;     // ここでserialPoolをこのNodeのプロパティにする
+        this.serialpool = serialPool;     // 縺薙％縺ｧserialPool繧偵％縺ｮNode縺ｮ繝励Ο繝代ユ繧｣縺ｫ縺吶ｋ
     }
     RED.nodes.registerType("ia-cloud-serial-port",SerialPortNode);
 

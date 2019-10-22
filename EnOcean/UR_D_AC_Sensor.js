@@ -18,11 +18,11 @@ module.exports = function(RED) {
         if (confObj) {
           try { this.dItems = JSON.parse(confObj); }
           catch(e) {
-            // nodeのエラーを通知してして終了
+            // node縺ｮ繧ｨ繝ｩ繝ｼ繧帝夂衍縺励※縺励※邨ゆｺ�
             node.error("runtime:jsonerror", confObj);
           }
         } else {
-            // nodeのエラーを通知してして終了
+            // node縺ｮ繧ｨ繝ｩ繝ｼ繧帝夂衍縺励※縺励※邨ゆｺ�
             node.error("runtime:jsonerror", confObj);
         }
         this.on("input",function(msg) {});
