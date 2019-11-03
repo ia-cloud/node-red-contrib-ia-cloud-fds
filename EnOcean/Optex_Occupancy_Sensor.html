@@ -21,10 +21,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname0">
+                  <input type="text" id="node-config-input-dataName0">
                 </td>
               </tr>
               <tr>
@@ -47,10 +47,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname1">
+                  <input type="text" id="node-config-input-dataName1">
                 </td>
               </tr>
               <tr>
@@ -76,9 +76,9 @@
         defaults: {
             name: {value:"Optex Occupancy Sensor"},
             sensor_id: {value:"", required:true},
-            dataname0: {value:"供給電圧"},
+            dataName0: {value:"供給電圧"},
             unitType0: {value:"V"},
-            dataname1: {value:"在室状態"},
+            dataName1: {value:"在室状態"},
             unitType1: {value:"null"},
             configObject: {value:""}
         },
@@ -91,13 +91,13 @@
             var dItems = [];
             var unit = "";
             for (var i = 0; i < 2; i++) {
-                var item ={dataValue: "", unitType: "", dataname: ""};
+                var item ={dataValue: "", unitType: "", dataName: ""};
                 unit = $("#node-config-input-unitType" + String(i)).val();
                 if ( unit.toLowerCase() === "null" ) {
                     unit = null;
                 }
                 item.unitType = unit;
-                item.dataname = $("#node-config-input-dataname" + String(i)).val();
+                item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }
             //フォームの各要素をobjectに記述し、JSON文字列に変換する。

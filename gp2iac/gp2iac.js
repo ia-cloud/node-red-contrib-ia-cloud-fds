@@ -6,22 +6,22 @@ module.exports = function(RED) {
         this.name = config.neme;
         this.objectkey = config.objectkey;
         this.sensortype = config.sensortype;
-        this.dataname1 = config.dataname1;
-        this.dataname2 = config.dataname2;
-        this.dataname3 = config.dataname3;
+        this.dataName1 = config.dataName1;
+        this.dataName2 = config.dataName2;
+        this.dataName3 = config.dataName3;
         this.unit1 = config.unit1;
         this.unit2 = config.unit2;
         this.unit3 = config.unit3;
         var objectkey = this.objectkey;
         var sensortype = this.sensortype;
-        var dataname1 = this.dataname1;
-        var dataname2 = this.dataname2;
-        var dataname3 = this.dataname3;
+        var dataName1 = this.dataName1;
+        var dataName2 = this.dataName2;
+        var dataName3 = this.dataName3;
         var unit1 = this.unit1;
         var unit2 = this.unit2;
         var unit3 = this.unit3;
         var node = this;
-        var dataname = [dataname1,dataname2,dataname3];
+        var dataName = [dataName1,dataName2,dataName3];
         var datavalue = new Array(3);
         var unit = [unit1,unit2,unit3];
 
@@ -61,15 +61,15 @@ module.exports = function(RED) {
                         "ObjectContent" : {
                             "contentType": "iaCloudData",
                             "contentData":[{
-                                "dataName": dataname[0],
+                                "dataName": dataName[0],
                                 "dataValue": datavalue[0],
                                 "unit": unit[0]
                             },{
-                                "dataName": dataname[1],
+                                "dataName": dataName[1],
                                 "dataValue": datavalue[1],
                                 "unit": unit[1]
                             },{
-                                "dataName": dataname[2],
+                                "dataName": dataName[2],
                                 "dataValue": datavalue[2],
                                 "unit": unit[2]
                             }]
@@ -88,7 +88,7 @@ module.exports = function(RED) {
                         "ObjectContent" : {
                             "contentType": "iaCloudData",
                             "contentData":[{
-                                "dataName": dataname[0],
+                                "dataName": dataName[0],
                                 "dataValue": datavalue[0],
                                 "unit": unit[0]
                             }]

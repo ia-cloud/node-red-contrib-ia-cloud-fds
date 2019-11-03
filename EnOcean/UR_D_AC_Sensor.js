@@ -9,7 +9,7 @@ module.exports = function(RED) {
     function UR_D_AC_Sensor(config) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
-        this.dataname = config.dataname;
+        this.dataName = config.dataName;
         this.unitType = config.unitType;
 
         var node = this;

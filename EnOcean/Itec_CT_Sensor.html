@@ -22,10 +22,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname0">
+                  <input type="text" id="node-config-input-dataName0">
                 </td>
               </tr>
               <tr>
@@ -52,7 +52,7 @@
             name: {value:"Itec CT Sensor"},
             // sensor_kind: {value:"u-rd", required:true},
             sensor_id: {value:"", required:true},
-            dataname0: {value:"電流1"},
+            dataName0: {value:"電流1"},
             unitType0: {value:"A"},
             configObject: {value:""}
         },
@@ -64,9 +64,9 @@
         oneditsave: function() {
             var dItems = [];
             for (var i = 0; i < 1; i++) {
-                var item ={dataValue: "", unitType: "", dataname: ""};
+                var item ={dataValue: "", unitType: "", dataName: ""};
                 item.unitType = $("#node-config-input-unitType" + String(i)).val();
-                item.dataname = $("#node-config-input-dataname" + String(i)).val();
+                item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }
             //フォームの各要素をobjectに記述し、JSON文字列に変換する。

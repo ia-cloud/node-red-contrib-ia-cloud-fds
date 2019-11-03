@@ -6,7 +6,7 @@ module.exports = function(RED) {
     function Itec_CT_Sensor(config) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
-        //this.dataname0 = config.dataname0;
+        //this.dataName0 = config.dataName0;
         //this.unitType0 = config.unitType0;
 
         var node = this;

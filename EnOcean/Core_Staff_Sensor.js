@@ -6,9 +6,9 @@ module.exports = function(RED) {
     function Core_Staff_Sensor(config) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
-        //this.dataname0 = config.dataname0;
+        //this.dataName0 = config.dataName0;
         //this.unitType0 = config.unitType0;
-        //this.dataname1 = config.dataname1;
+        //this.dataName1 = config.dataName1;
         //this.unitType1 = config.unitType1;
 
         var node = this;

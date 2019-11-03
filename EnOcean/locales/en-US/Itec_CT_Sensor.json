@@ -3,7 +3,7 @@
         "label": {
             "object_key": "Object Key",
             "object_desc": "Object Description",
-            "dataname": "Data Name",
+            "dataName": "Data Name",
             "unit": "Unit"
          }
     },

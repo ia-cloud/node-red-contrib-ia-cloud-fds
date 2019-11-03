@@ -6,7 +6,7 @@ module.exports = function(RED) {
     function Optex_Rocker_SW(config) {
         RED.nodes.createNode(this,config);
         this.sensor_id = config.sensor_id;
-        //this.dataname0 = config.dataname0;
+        //this.dataName0 = config.dataName0;
         //this.unitType0 = config.unitType0;
 
         var node = this;

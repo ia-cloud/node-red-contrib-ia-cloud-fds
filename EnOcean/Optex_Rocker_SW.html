@@ -21,10 +21,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname0">
+                  <input type="text" id="node-config-input-dataName0">
                 </td>
               </tr>
             </table>
@@ -39,10 +39,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname1">
+                  <input type="text" id="node-config-input-dataName1">
                 </td>
               </tr>
             </table>
@@ -57,10 +57,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname2">
+                  <input type="text" id="node-config-input-dataName2">
                 </td>
               </tr>
             </table>
@@ -75,10 +75,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname3">
+                  <input type="text" id="node-config-input-dataName3">
                 </td>
               </tr>
             </table>
@@ -93,10 +93,10 @@
             <table>
               <tr>
                 <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataname"></span></label>
+                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-dataname4">
+                  <input type="text" id="node-config-input-dataName4">
                 </td>
               </tr>
             </table>
@@ -115,11 +115,11 @@
             name: {value:"Optex Rocker Switch"},
             // sensor_kind: {value:"u-rd", required:true},
             sensor_id: {value:"", required:true},
-            dataname0: {value:"エネルギースイッチ"},
-            dataname1: {value:"スイッチ1"},
-            dataname2: {value:"スイッチ2"},
-            dataname3: {value:"スイッチ3"},
-            dataname4: {value:"スイッチ4"},
+            dataName0: {value:"エネルギースイッチ"},
+            dataName1: {value:"スイッチ1"},
+            dataName2: {value:"スイッチ2"},
+            dataName3: {value:"スイッチ3"},
+            dataName4: {value:"スイッチ4"},
             configObject: {value:""}
         },
         label: function() {
@@ -130,10 +130,10 @@
         oneditsave: function() {
             var dItems = [];
             for (var i = 0; i < 5; i++) {
-                var item ={dataValue: "", unitType: "", dataname: ""};
+                var item ={dataValue: "", unitType: "", dataName: ""};
                 //item.unitType = $("#node-config-input-unitType" + String(i)).val();
                 item.unitType = null;
-                item.dataname = $("#node-config-input-dataname" + String(i)).val();
+                item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }
             //フォームの各要素をobjectに記述し、JSON文字列に変換する。

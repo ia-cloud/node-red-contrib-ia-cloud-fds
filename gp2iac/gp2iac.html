@@ -6,11 +6,11 @@
             name: {value:"gp2iac"},
             objectkey: {value:"ia-cloud-Node-Red.uniqueKey"},
             sensortype: {value:""},
-            dataname1: {value:""},
+            dataName1: {value:""},
             unit1: {value:""},
-            dataname2: {value:""},
+            dataName2: {value:""},
             unit2: {value:""},
-            dataname3: {value:""},
+            dataName3: {value:""},
             unit3: {value:""}
         },
         inputs:1,
@@ -22,25 +22,25 @@
         oneditprepare: function() {
             $("#node-input-sensortype").change(function() {
                 if ($(this).val() == "button") {
-                    $('#node-input-dataname1').val("ボタンセンサー");
+                    $('#node-input-dataName1').val("ボタンセンサー");
                     $('#node-input-unit1').val("is_pressed");
-                    $('#node-input-dataname2').val("dummy");
+                    $('#node-input-dataName2').val("dummy");
                     $('#node-input-unit2').val("value");
-                    $('#node-input-dataname3').val("dummy");
+                    $('#node-input-dataName3').val("dummy");
                     $('#node-input-unit3').val("value");
                 }else if($(this).val() == "ultrasonic"){
-                    $('#node-input-dataname1').val("距離");
+                    $('#node-input-dataName1').val("距離");
                     $('#node-input-unit1').val("cm");
-                    $('#node-input-dataname2').val("dummy");
+                    $('#node-input-dataName2').val("dummy");
                     $('#node-input-unit2').val("value");
-                    $('#node-input-dataname3').val("dummy");
+                    $('#node-input-dataName3').val("dummy");
                     $('#node-input-unit3').val("value");
                 }else if($(this).val() == "dht11"){
-                    $('#node-input-dataname1').val("温度");
+                    $('#node-input-dataName1').val("温度");
                     $('#node-input-unit1').val("℃");
-                    $('#node-input-dataname2').val("湿度");
+                    $('#node-input-dataName2').val("湿度");
                     $('#node-input-unit2').val("%");
-                    $('#node-input-dataname3').val("ヒートインデックス");
+                    $('#node-input-dataName3').val("ヒートインデックス");
                     $('#node-input-unit3').val("HI");
                 }
             });
@@ -74,8 +74,8 @@
         </select>
     </div>
     <div class="form-row">
-        <label for="node-input-dataname1">dataname1<br>(種類)</label>
-        <input type="text" id="node-input-dataname1" placeholder="dataname1">
+        <label for="node-input-dataName1">dataName1<br>(種類)</label>
+        <input type="text" id="node-input-dataName1" placeholder="dataName1">
     </div>
     <div class="form-row">
         <label for="node-input-unit1">unit1(単位)</label>
@@ -83,8 +83,8 @@
     </div>
     <br>
     <div class="form-row">
-        <label for="node-input-dataname2">dataname2<br>(種類)</label>
-        <input type="text" id="node-input-dataname2" placeholder="dataname2">
+        <label for="node-input-dataName2">dataName2<br>(種類)</label>
+        <input type="text" id="node-input-dataName2" placeholder="dataName2">
     </div>
     <div class="form-row">
         <label for="node-input-unit2">unit2(単位)</label>
@@ -92,8 +92,8 @@
     </div>
     <br>
     <div class="form-row">
-        <label for="node-input-dataname3">dataname3<br>(種類)</label>
-        <input type="text" id="node-input-dataname3" placeholder="dataname3">
+        <label for="node-input-dataName3">dataName3<br>(種類)</label>
+        <input type="text" id="node-input-dataName3" placeholder="dataName3">
     </div>
     <div class="form-row">
         <label for="node-input-unit3">unit3(単位)</label>

@@ -3,7 +3,7 @@
         "label": {
             "object_key": "オブジェクトキー",
             "object_desc": "オブジェクトの説明",
-            "dataname": "データ名称",
+            "dataName": "データ名称",
             "unit": "単位"
          }
     },
