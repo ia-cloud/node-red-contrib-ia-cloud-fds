@@ -69,8 +69,6 @@
       return this.name || 'ia-cloud-change';
     },
     oneditprepare() {
-      // console.log(this.rules);
-
       // Labels
       const labelMsgSource = this._('ia-cloud-fds.change.msg-source');
       const labelMsgDestination = this._('ia-cloud-fds.change.msg-destination');
@@ -84,7 +82,6 @@
         sortable: true,
         // Process when click add button.
         addItem($row, index, data) {
-          // console.log(data);
           const dataName = data.dataName || '';
           const commonName = data.commonName || '';
           const unit = data.unit || '';

@@ -172,7 +172,6 @@
         },
         oneditprepare: function() {
           debugger;
-          console.log("### confsel = " + $('#node-input-confsel').val());
           $('input[name="configSel"]:radio').change(function() {
             if ($("#node-input-configSel1").is(":checked")) {
                 $("#node-row-propertySet").show();
@@ -206,7 +205,6 @@
           // センサー種別が変更されたときの処理
           $("#node-input-sensor_kind").change(function (){
             var str = $("select option:selected").val();
-            console.log("str = " + str);
             // TODO: センサー追加により条件分岐を増やすことのないように工夫する
             if ( str == "u-rd" ) {
                 $("#u-rd").show();
