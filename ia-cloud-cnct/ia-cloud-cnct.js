@@ -28,7 +28,6 @@ module.exports = function(RED) {
             request(opts, function(err, res, body) {
                 var resbody = null;
                 if(err){
-console.dir("エラーが起きた");
                     if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
                         node.error(RED._("runtime.no-response"));
                     }else{
