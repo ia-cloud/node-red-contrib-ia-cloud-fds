@@ -39,7 +39,7 @@ module.exports = function(RED) {
                 RepInfo.init = true;
                 setTimeout(roopGetUsonic, 5000);
             } else if(RepInfo.status == 'on'){
-                //console.log(RepInfo.RoopInterval);
+                //node.log(RepInfo.RoopInterval);
                 node.status({fill:"blue",shape:"dot",text:"取得中"});
                 GetUsonicData(dmsg);
                 node.status({fill:"green",shape:"dot",text:"繰返し取得:On"});

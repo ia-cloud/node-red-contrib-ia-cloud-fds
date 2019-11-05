@@ -139,7 +139,7 @@ module.exports = function(RED) {
                     }
                 }).catch((err) => {
                     // TODO 適切なエラー処理を追加
-                    console.log(err);
+                    node.error(err);
                 });
             }
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ

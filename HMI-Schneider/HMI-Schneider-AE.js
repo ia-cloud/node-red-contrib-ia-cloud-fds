@@ -99,7 +99,7 @@ module.exports = function(RED) {
                     status = alarms[i].type;
                   }
                   if (dataItem.status != status) {
-                    console.log("alarmUpdated "+alarms[i].variable+ "/" +  alarms[i].status);
+                    this.log("alarmUpdated "+alarms[i].variable+ "/" +  alarms[i].status);
                   }
                   dataItem.status = status;
                   dataItem.message = alarms[i].message;
@@ -195,7 +195,7 @@ module.exports = function(RED) {
 
           msg.dataObject.ObjectContent.contentData = contentData;
 
-          console.log("send message to iaCloud node : " + JSON.stringify(msg));
+          this.log("send message to iaCloud node : " + JSON.stringify(msg));
           this.send(msg);
           this.status({fill:"green", shape:"dot", text:"runtime.sent"});
 

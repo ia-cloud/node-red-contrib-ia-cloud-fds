@@ -39,7 +39,7 @@ module.exports = function(RED) {
                 RepInfo.init = true;
                 setTimeout(roopGetSensor, 5000);
             } else if(RepInfo.status == 'on'){
-                //console.log(RepInfo.RoopInterval);
+                //node.log(RepInfo.RoopInterval);
                 node.status({fill:"blue",shape:"dot",text:"取得中"});
                 GetSensorData(dmsg);
                 node.status({fill:"green",shape:"dot",text:"繰返し取得:On"});
@@ -96,12 +96,12 @@ module.exports = function(RED) {
                 // Get a single-ended reading from channel-0 and display the results
                 adc.readChannel(ADS1x15.channel.CHANNEL_0, (err, value, volts) => {
                     if (err) {
-                        console.error('Failed to fetch value from ADC', err);
+                        node.error('Failed to fetch value from ADC', err);
                         //process.exit(1);
                     } else {
-                        //console.log('Channel 0');
-                        //console.log(' * Value:', value);    // will be a 11 or 15 bit integer depending on chip
-                        //console.log(' * Volts:', volts);    // voltage reading factoring in the PGA
+                        //node.log('Channel 0');
+                        //node.log(' * Value:', value);    // will be a 11 or 15 bit integer depending on chip
+                        //node.log(' * Volts:', volts);    // voltage reading factoring in the PGA
 
                         var dist;
                         dist = GetUsonicDist();　//超音波距離測定センサーから距離データ取得

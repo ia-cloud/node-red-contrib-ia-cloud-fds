@@ -132,7 +132,7 @@ module.exports = function(RED) {
         });
 
         this.on("addLinkData",function(lObj) {
-            //console.log("node.onのaddLinkDataが呼ばれた");
+            //this.log("node.onのaddLinkDataが呼ばれた");
             // linkObjに新たなリンクデータを追加
             let found = false;
             for (let i=0; i<this.linkObjs.length; i++){
@@ -163,7 +163,7 @@ module.exports = function(RED) {
         });
 
         this.on("delLinkData",function(nodeId) {
-            //console.log("node.onのdelLinkDataが呼ばれた");
+            //this.log("node.onのdelLinkDataが呼ばれた");
             if ((this.linkObjs[i] != null) && (this.linkObjs[i].nodeId == nodeId)) {
                 this.linkObjs[i] = null;
                 break;

@@ -40,7 +40,7 @@ module.exports = function(RED) {
 
         nfc.on('error', (err) => {
             // standard error output (color is red)
-            console.error('\u001b[31m', err, '\u001b[0m');
+            node.error('\u001b[31m', err, '\u001b[0m');
             node.error("カードリーダーにエラーが発生しました");
         });
 

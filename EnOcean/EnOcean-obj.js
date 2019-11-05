@@ -41,8 +41,8 @@ module.exports = function(RED) {
           try{
               //EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8')).EnObjects;
               EnObjects = JSON.parse(config.configdata);
-              console.log('EnObjects = ' + EnObjects);
-              console.log('The number of EnObjects = ' + EnObjects.length);
+              node.log('EnObjects = ' + EnObjects);
+              node.log('The number of EnObjects = ' + EnObjects.length);
           } catch(e) {
               //エラーの場合は、nodeステータスを変更。
               //node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
@@ -138,7 +138,7 @@ module.exports = function(RED) {
                 });
 
                 msg.dataObject.ObjectContent.contentData = contentData;
-                console.log(JSON.stringify(msg.dataObject));
+                node.log(JSON.stringify(msg.dataObject));
                 node.send(msg);
                 /* node.status({fill:"green", shape:"dot", text:"runtime.sent"}); */
                 node.status({fill:"green",shape:"dot",text:"データ送信済み"});
