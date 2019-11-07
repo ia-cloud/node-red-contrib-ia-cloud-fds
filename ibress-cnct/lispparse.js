@@ -68,7 +68,7 @@ module.exports = Lisp;
  * Numbers are converted to numbers.  Non-numbers are always strings.
  *
  * e.g., Process: (a "b \n \d \"c\"" (c d e)) f (g h)
- *	==> [ [ "a" "b \n d \"c\"" [ "c" "d" "e" ] ] "f" [ "g" "h" ] ]
+ * ==> [ [ "a" "b \n d \"c\"" [ "c" "d" "e" ] ] "f" [ "g" "h" ] ]
  */
 
 Lisp.tokenize = function(str, i, list)
@@ -99,17 +99,17 @@ Lisp.tokenize = function(str, i, list)
          }
          else
          {
-	     if (token.indexOf('\\') != -1)
-	     {
-		 token = token.replace(nl,"\n")
-	     	     .replace(retpat,"\r")
-	     	     .replace(tab,"\t")
-	     	     .replace(ff,"\f");
-		 pat = /\\(.)/g;
-		 token = token.replace(pat, "$1");
-	     }
-	    
-             list[ix++] = token;
+         if (token.indexOf('\\') != -1)
+         {
+         token = token.replace(nl,"\n")
+                  .replace(retpat,"\r")
+                  .replace(tab,"\t")
+                  .replace(ff,"\f");
+         pat = /\\(.)/g;
+         token = token.replace(pat, "$1");
+         }
+         
+         list[ix++] = token;
          }
       }
    };
@@ -192,17 +192,17 @@ Lisp.tokenize = function(str, i, list)
       }
       else if (string)
       {
-	 if (escaped)
-	 {
-	     ++i;
-	     escaped = false;
-	 }
-	 else if (c == "\\")
-	 {
-	     escaped = true;
-	     ++i;
-	 }
-	 else if (c == "\"")
+     if (escaped)
+     {
+         ++i;
+         escaped = false;
+     }
+     else if (c == "\\")
+     {
+         escaped = true;
+         ++i;
+     }
+     else if (c == "\"")
          {
             string = false;
             getToken(true);
@@ -228,7 +228,7 @@ Lisp.tokenize = function(str, i, list)
          else
          {
             ++i;
-	    escaped = false;
+        escaped = false;
          }
       }
    }

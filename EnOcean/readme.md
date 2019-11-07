@@ -33,13 +33,13 @@
 |:----------|:-----:|:--------------------|
 |"sensorID n"|string|"EnOcean sensor ID"|
 
-	サンプル
+    サンプル
 ```
- msg.payload = {[
-	 "40001162",
-	 "0028E83C",
-	 "0400D857"
-	 ]}
+msg.payload = {[
+    "40001162",
+    "0028E83C",
+    "0400D857"
+]}
 ```
 
 ## リンクデータオブジェクト（Flowコンテキストオブジェクト）　　
@@ -58,18 +58,18 @@ EnOcean依存の要素は以下の通り
 enOceanLinkObjの例
 ```
 flow.enOceanDatObj = {[
-	{
-		"address": "04009AAB",
-		"notify": true,
-		"value": "0x4e18cc6a"
-	},{
-		"address": "04009630",
-		"notify": true,
-		"value": "0x4e18cc6a"
-	},{
-		"address": "0400A88D",
-		"notify": false,
-		"value":  "0x0020ef71"
-	}
+    {
+        "address": "04009AAB",
+        "notify": true,
+        "value": "0x4e18cc6a"
+    },{
+        "address": "04009630",
+        "notify": true,
+        "value": "0x4e18cc6a"
+    },{
+        "address": "0400A88D",
+        "notify": false,
+        "value":  "0x0020ef71"
+    }
 ]}
 ```

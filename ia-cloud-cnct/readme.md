@@ -59,10 +59,10 @@ ia-cloudサーバへconnectやstoreなどのリクエストをした結果、返
 **connectリクエストの場合**
 ```
 msg.payload = {
-	"userID" : { string } ,
-	"FDSKey" : { string } ,
-	"FDSType" : "iaCloudFDS",
-	"serviceID" : { string }
+    "userID" : { string } ,
+    "FDSKey" : { string } ,
+    "FDSType" : "iaCloudFDS",
+    "serviceID" : { string }
 }
 ```
 

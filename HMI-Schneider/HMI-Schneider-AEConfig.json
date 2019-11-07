@@ -1,77 +1,110 @@
 {
-  	"name": "hmiSchneiderAEConfig.json",
-  	"comment": "hmi schneider ia-cloud A&E object configration data for test.",
-    "AnEObjects":
-      [{
-        "name": "アラームブロック1",
-    		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
-    		"objectType": "iaCloudObject",
-    		"objectDescription": "hmiSchneiderのアラームデータ",
-        "options":{"storeInterval": 30, "storeAsync": true},
-    		"ObjectContent": {
-      			"contentType": "Alarm&Event",
-      			"contentData": [
-              {
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "E201",
-                "AnEDescription": "インバータNo.3異常"
-              },
-              "options": {"deviceType": "Coil", "source": "58", "logic": "pos"}
-              },{
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "E202",
-                "AnEDescription": "インバータNo.5異常"
-              },
-              "options": {"deviceType": "IS", "source": "152", "logic": "neg"}
-              },{
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "E887",
-                "AnEDescription": "異常温度上昇"
-              },
-              "options": {"deviceType": "IS", "source": "552", "logic": "neg"}
-              }
-            ]
-        }
-      },{
-        "name": "アラームブロック2",
-    		"objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
-    		"objectType": "iaCloudObject",
-    		"objectDescription": "hmiSchneiderのアラームデータ",
-    		"ObjectContent": {
-      			"contentType": "Alarm&Event",
-      			"contentData": [
-              {
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "W401",
-                "AnEDescription": "インバータNo.3警報"
-                },
-              "options": {"deviceType": "Coil", "source": "158", "logic": "pos"}
-              },{
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "W402",
-                "AnEDescription": "インバータNo.5警報"
-                },
-              "options": {"deviceType": "IS", "source": "252", "logic": "neg"}
-              },{
-              "commonName":"Alarm&Event",
-              "dataValue": {
-                "AnEStatus": "",
-                "AnECode": "W1087",
-                "AnEDescription": "温度上昇警報"
-                },
-              "options": {"deviceType": "IS", "source": "652", "logic": "neg"}
-              }
-            ]
-        }
-    }]
+  "name": "hmiSchneiderAEConfig.json",
+  "comment": "hmi schneider ia-cloud A&E object configration data for test.",
+  "AnEObjects": [
+    {
+      "name": "アラームブロック1",
+      "objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
+      "objectType": "iaCloudObject",
+      "objectDescription": "hmiSchneiderのアラームデータ",
+      "options": {
+        "storeInterval": 30,
+        "storeAsync": true
+      },
+      "ObjectContent": {
+        "contentType": "Alarm&Event",
+        "contentData": [
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "E201",
+              "AnEDescription": "インバータNo.3異常"
+            },
+            "options": {
+              "deviceType": "Coil",
+              "source": "58",
+              "logic": "pos"
+            }
+          },
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "E202",
+              "AnEDescription": "インバータNo.5異常"
+            },
+            "options": {
+              "deviceType": "IS",
+              "source": "152",
+              "logic": "neg"
+            }
+          },
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "E887",
+              "AnEDescription": "異常温度上昇"
+            },
+            "options": {
+              "deviceType": "IS",
+              "source": "552",
+              "logic": "neg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "アラームブロック2",
+      "objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
+      "objectType": "iaCloudObject",
+      "objectDescription": "hmiSchneiderのアラームデータ",
+      "ObjectContent": {
+        "contentType": "Alarm&Event",
+        "contentData": [
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "W401",
+              "AnEDescription": "インバータNo.3警報"
+            },
+            "options": {
+              "deviceType": "Coil",
+              "source": "158",
+              "logic": "pos"
+            }
+          },
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "W402",
+              "AnEDescription": "インバータNo.5警報"
+            },
+            "options": {
+              "deviceType": "IS",
+              "source": "252",
+              "logic": "neg"
+            }
+          },
+          {
+            "commonName": "Alarm&Event",
+            "dataValue": {
+              "AnEStatus": "",
+              "AnECode": "W1087",
+              "AnEDescription": "温度上昇警報"
+            },
+            "options": {
+              "deviceType": "IS",
+              "source": "652",
+              "logic": "neg"
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

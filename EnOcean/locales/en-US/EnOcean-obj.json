@@ -13,7 +13,7 @@
             "itec_ac": "ITEC AC Sensor",
             "optex_rocker": "OPTEX Rocker SW",
             "optex_occupancy": "OPTEX Occupancy Sensor"
-         }
+        }
     },
     "serial": {
         "status": {

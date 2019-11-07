@@ -13,7 +13,7 @@
             "itec_ac": "ITEC電流センサー",
             "optex_rocker": "OPTEXスイッチ",
             "optex_occupancy": "OPTEX人感センサー"
-         }
+        }
     },
     "serial": {
         "label": {

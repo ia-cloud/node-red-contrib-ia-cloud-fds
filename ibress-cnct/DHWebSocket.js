@@ -173,21 +173,21 @@ module.exports = function(host, port, is_ssl) {
             ws.reregisterDomains();
         };
 
-    	this.eventno = 0;
-	
+        this.eventno = 0;
+    
         this.ws.onmessage = function (e) {
-    	    this.dhws.haveData = true;
+            this.dhws.haveData = true;
             this.dhws.process(e.data);
         };
 
         this.ws.onclose = function () {
-	        this.dhws.stopAliveTimer();
+            this.dhws.stopAliveTimer();
             if (this.dhws.onConnectionFailure)
                 this.dhws.onConnectionFailure(this.dhws.host, this.dhws.port);
         };
 
         this.ws.onerror = function (e) {
-	        this.dhws.stopAliveTimer();
+            this.dhws.stopAliveTimer();
             if (this.dhws.onConnectionError)
                 this.dhws.onConnectionError(this.dhws.host, this.dhws.port, e);
         };
@@ -254,7 +254,7 @@ module.exports = function(host, port, is_ssl) {
     };
 
     this.disconnect = function () {
-    	this.stopAliveTimer();
+        this.stopAliveTimer();
         if (this.ws && this.ws.readyState != this.ws.CLOSED)
             this.ws.close();
         if (this.interval)
@@ -358,7 +358,7 @@ module.exports = function(host, port, is_ssl) {
     this.unregisterAllPoints = function () {
         var name;
         for (name in this.registeredPoints) {
-	    this.unregisterPoint(name);
+        this.unregisterPoint(name);
         }
     };
 
