@@ -89,9 +89,9 @@ module.exports = function(RED) {
               for (let i=0; i<variables.length; i++){
                 if (dataItem.variableName == variables[i].name) {
                   let value = (variables[i].quality != "good") ? null : variables[i].value;
-                  if (dataItem.value != value) {
-                    this.log("valueUpdated "+variables[i].name+ "/" +  variables[i].quality + "/" + variables[i].value);
-                  }
+                  //if (dataItem.value != value) {
+                  //  this.log("valueUpdated "+variables[i].name+ "/" +  variables[i].quality + "/" + variables[i].value);
+                  //}
                   dataItem.value = value;
                   break;
                 }
@@ -178,7 +178,7 @@ module.exports = function(RED) {
 
           msg.dataObject.ObjectContent.contentData = contentData;
           
-          this.log("send message to iaCloud node : " + JSON.stringify(msg));
+          //this.log("send message to iaCloud node : " + JSON.stringify(msg));
           this.send(msg);
           this.status({fill:"blue", shape:"dot", text:"runtime.sent"});
 
