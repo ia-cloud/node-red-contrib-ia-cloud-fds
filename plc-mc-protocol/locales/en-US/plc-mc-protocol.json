@@ -2,8 +2,6 @@
   "ia-cloud-fds": {
     "plc-mc-protocol": {
       "connection-config": "Connection config",
-      "node-name": "Node name",
-      "this-node-name": "This node name",
       "tab": {
         "object-settings": "Object Settings",
         "data-settings": "Data Settings"
