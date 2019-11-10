@@ -3,7 +3,6 @@
     "label" : {
       "waitTime"      : "カード検出間隔",
       "waitTimeUnit"  : "秒",
-      "nodeName"      : "ノード名称",
       "sendTime"      : "データ送信間隔",
       "sendTimeUnit"  : "秒",
       "dataName"      : "データ名称",

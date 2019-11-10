@@ -3,7 +3,6 @@
     "label" : {
       "waitTime"      : "Wait Time",
       "waitTimeUnit"  : "Sec",
-      "nodeName"      : "Node Name",
       "sendTime"      : "Send Interval",
       "sendTimeUnit"  : "Sec",
       "dataName"      : "Data Name",
