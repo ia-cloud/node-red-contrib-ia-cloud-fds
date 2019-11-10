@@ -2,7 +2,6 @@
   "ia-cloud-fds": {
     "change": {
       "instance-key": "instanceKey",
-      "node-name": "名前",
       "object-description": "objectDescription",
       "object-key": "objectKey",
       "rules": "ルール",
