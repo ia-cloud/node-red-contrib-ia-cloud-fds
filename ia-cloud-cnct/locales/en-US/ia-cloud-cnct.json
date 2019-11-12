@@ -20,7 +20,7 @@
         "requesting": "requesting...",
         "request-done": "request-done",
         "error": "error",
-        "no-response": "CCS did not responde",
+        "no-response": "CCS did not respond",
         "bad-response": "CCS bad response",
         "json-error": "CCS bad JSON message"
     }
