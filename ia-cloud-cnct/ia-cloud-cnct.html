@@ -38,20 +38,20 @@
         <input type="text" id="node-input-comment">
     </div>
     <div class="form-row">
-         <input type="checkbox" id="node-input-details" style="display: inline-block; width: auto; vertical-align: top;">
-         <label for="node-input-details" style="width: 70%;"><span data-i18n="editor.details"></span></label>
-         <div style="margin-left: 20px" class="node-input-details-row hide">
+        <input type="checkbox" id="node-input-details" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-details" style="width: 70%;"><span data-i18n="editor.details"></span></label>
+        <div style="margin-left: 20px" class="node-input-details-row hide">
             <div class="form-row">
-                 <label for="node-input-cnctRetryInterval"><span data-i18n="editor.cnctRetryInterval"></span></label>
-                 <input type="number" min="0" id="node-input-cnctRetryInterval">
+                <label for="node-input-cnctRetryInterval"><span data-i18n="editor.cnctRetryInterval"></span></label>
+                <input type="number" min="0" id="node-input-cnctRetryInterval">
             </div>
             <div class="form-tips" id="tip-cnctRetryInterval"><span data-i18n="editor.tip-cnctRetryInterval"></span></div>
             <div class="form-row">
-                 <label for="node-input-tappingInterval"><span data-i18n="editor.tappingInterval"></span></label>
-                 <input type="number"  min="0" id="node-input-tappingInterval">
+                <label for="node-input-tappingInterval"><span data-i18n="editor.tappingInterval"></span></label>
+                <input type="number"  min="0" id="node-input-tappingInterval">
             </div>
             <div class="form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-tappingInterval"></span></div>
-         </div>
+        </div>
     </div>
 
 </script>
@@ -70,9 +70,11 @@
 <h3>Outputs</h3>
 <dl class="message-properties">
     <dt>payload <span class="property-type">string | object</span></dt>
-    <dd>The body of the response. The node can be configured to return the body
-         as a string, attempt to parse it as a JSON string or leave it as a
-         binary buffer.</dd>
+    <dd>
+        The body of the response. The node can be configured to return the body
+        as a string, attempt to parse it as a JSON string or leave it as a
+        binary buffer.
+    </dd>
     <dt>statusCode <span class="property-type">number</span></dt>
     <dd>The status code of the response, or the error code if the request could not be completed.</dd>
 </dl>
