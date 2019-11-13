@@ -12,6 +12,9 @@ rules:
   func-names:
     - error
     - never
+  indent:
+    - error
+    - 4
   no-param-reassign:
     - error
     - ignorePropertyModificationsFor:
