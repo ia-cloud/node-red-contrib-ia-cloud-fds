@@ -53,29 +53,31 @@
             <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
             <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
         </div>
-        <div class="form-row" id="u-rd">
-            <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.u_rd_ac"></span></label>
-            <input type="text" id="node-input-urd_ac_sensor">
-        </div>
-        <div class="form-row" id="watty">
-            <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.watty_temp"></span></label>
-            <input type="text" id="node-input-watty_temp_sensor">
-        </div>
-        <div class="form-row" id="core_staff">
-            <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.core_temp"></span></label>
-            <input type="text" id="node-input-core_temp_sensor">
-        </div>
-        <div class="form-row" id="itec">
-            <label for="node-input-itec_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.itec_ac"></span></label>
-            <input type="text" id="node-input-itec_ac_sensor">
-        </div>
-        <div class="form-row" id="optex_rocker">
-            <label for="node-input-optex_rocker_sw"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_rocker"></span></label>
-            <input type="text" id="node-input-optex_rocker_sw">
-        </div>
-        <div class="form-row" id="optex_occupancy">
-            <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_occupancy"></span></label>
-            <input type="text" id="node-input-optex_occupancy_sensor">
+        <div id="ia_cloud_enocean_sensors">
+            <div class="form-row" id="u-rd">
+                <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.u_rd_ac"></span></label>
+                <input type="text" id="node-input-urd_ac_sensor">
+            </div>
+            <div class="form-row" id="watty">
+                <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.watty_temp"></span></label>
+                <input type="text" id="node-input-watty_temp_sensor">
+            </div>
+            <div class="form-row" id="core_staff">
+                <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.core_temp"></span></label>
+                <input type="text" id="node-input-core_temp_sensor">
+            </div>
+            <div class="form-row" id="itec">
+                <label for="node-input-itec_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.itec_ac"></span></label>
+                <input type="text" id="node-input-itec_ac_sensor">
+            </div>
+            <div class="form-row" id="optex_rocker">
+                <label for="node-input-optex_rocker_sw"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_rocker"></span></label>
+                <input type="text" id="node-input-optex_rocker_sw">
+            </div>
+            <div class="form-row" id="optex_occupancy">
+                <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_occupancy"></span></label>
+                <input type="text" id="node-input-optex_occupancy_sensor">
+            </div>
         </div>
     </div>
 
@@ -229,62 +231,44 @@ RED.nodes.registerType('EnOcean-obj', {
             const str = $('select option:selected').val();
             // TODO: センサー追加により条件分岐を増やすことのないように工夫する
             if (str === 'u-rd') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#u-rd').show();
-                $('#watty').hide();
-                $('#core_staff').hide();
-                $('#itec').hide();
-                $('#optex_rocker').hide();
-                $('#optex_occupancy').hide();
+
                 $('#node-input-name').val('U_RD CT Sensor');
                 $('#node-input-object_key').val('u_rd.sensor');
                 $('#node-input-object_desc').val('U_RD電流センサー');
             } else if (str === 'watty') {
-                $('#u-rd').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#watty').show();
-                $('#core_staff').hide();
-                $('#itec').hide();
-                $('#optex_rocker').hide();
-                $('#optex_occupancy').hide();
+
                 $('#node-input-name').val('Watty Temperature Sensor');
                 $('#node-input-object_key').val('watty.sensor');
                 $('#node-input-object_desc').val('Watty温度センサー');
             } else if (str === 'core_staff') {
-                $('#u-rd').hide();
-                $('#watty').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#core_staff').show();
-                $('#itec').hide();
-                $('#optex_rocker').hide();
-                $('#optex_occupancy').hide();
+
                 $('#node-input-name').val('Core-Staff Temperature Sensor');
                 $('#node-input-object_key').val('core_staff.sensor');
                 $('#node-input-object_desc').val('Core-Staff温湿度センサー');
             } else if (str === 'itec') {
-                $('#u-rd').hide();
-                $('#watty').hide();
-                $('#core_staff').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#itec').show();
-                $('#optex_rocker').hide();
-                $('#optex_occupancy').hide();
+
                 $('#node-input-name').val('ITEC CT Sensor');
                 $('#node-input-object_key').val('itec.sensor');
                 $('#node-input-object_desc').val('ITEC電流センサー');
             } else if (str === 'optex_rocker') {
-                $('#u-rd').hide();
-                $('#watty').hide();
-                $('#core_staff').hide();
-                $('#itec').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#optex_rocker').show();
-                $('#optex_occupancy').hide();
+
                 $('#node-input-name').val('OPTEX Rocker Sensor');
                 $('#node-input-object_key').val('optex.rocker.sensor');
                 $('#node-input-object_desc').val('OPTEXロッカーセンサー');
             } else {
-                $('#u-rd').hide();
-                $('#watty').hide();
-                $('#core_staff').hide();
-                $('#itec').hide();
-                $('#optex_rocker').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#optex_occupancy').show();
+
                 $('#node-input-name').val('OPTEX Occupancy Sensor');
                 $('#node-input-object_key').val('optex.occupancy.sensor');
                 $('#node-input-object_desc').val('OPTEX人感センサー');
