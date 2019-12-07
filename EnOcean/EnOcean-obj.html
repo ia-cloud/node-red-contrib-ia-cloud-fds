@@ -234,44 +234,44 @@ RED.nodes.registerType('EnOcean-obj', {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#u-rd').show();
 
-                $('#node-input-name').val('U_RD CT Sensor');
-                $('#node-input-object_key').val('u_rd.sensor');
-                $('#node-input-object_desc').val('U_RD電流センサー');
+                // $('#node-input-name').val('U_RD CT Sensor');
+                // $('#node-input-object_key').val('u_rd.sensor');
+                // $('#node-input-object_desc').val('U_RD電流センサー');
             } else if (str === 'watty') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#watty').show();
 
-                $('#node-input-name').val('Watty Temperature Sensor');
-                $('#node-input-object_key').val('watty.sensor');
-                $('#node-input-object_desc').val('Watty温度センサー');
+                // $('#node-input-name').val('Watty Temperature Sensor');
+                // $('#node-input-object_key').val('watty.sensor');
+                // $('#node-input-object_desc').val('Watty温度センサー');
             } else if (str === 'core_staff') {
-                $('#ia_cloud_enocean_sensors div.form-row').hide();
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
                 $('#core_staff').show();
 
-                $('#node-input-name').val('Core-Staff Temperature Sensor');
-                $('#node-input-object_key').val('core_staff.sensor');
-                $('#node-input-object_desc').val('Core-Staff温湿度センサー');
+                // $('#node-input-name').val('Core-Staff Temperature Sensor');
+                // $('#node-input-object_key').val('core_staff.sensor');
+                // $('#node-input-object_desc').val('Core-Staff温湿度センサー');
             } else if (str === 'itec') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#itec').show();
 
-                $('#node-input-name').val('ITEC CT Sensor');
-                $('#node-input-object_key').val('itec.sensor');
-                $('#node-input-object_desc').val('ITEC電流センサー');
+                // $('#node-input-name').val('ITEC CT Sensor');
+                // $('#node-input-object_key').val('itec.sensor');
+                // $('#node-input-object_desc').val('ITEC電流センサー');
             } else if (str === 'optex_rocker') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#optex_rocker').show();
 
-                $('#node-input-name').val('OPTEX Rocker Sensor');
-                $('#node-input-object_key').val('optex.rocker.sensor');
-                $('#node-input-object_desc').val('OPTEXロッカーセンサー');
+                // $('#node-input-name').val('OPTEX Rocker Sensor');
+                // $('#node-input-object_key').val('optex.rocker.sensor');
+                // $('#node-input-object_desc').val('OPTEXロッカーセンサー');
             } else {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#optex_occupancy').show();
 
-                $('#node-input-name').val('OPTEX Occupancy Sensor');
-                $('#node-input-object_key').val('optex.occupancy.sensor');
-                $('#node-input-object_desc').val('OPTEX人感センサー');
+                // $('#node-input-name').val('OPTEX Occupancy Sensor');
+                // $('#node-input-object_key').val('optex.occupancy.sensor');
+                // $('#node-input-object_desc').val('OPTEX人感センサー');
             }
         });
     },
