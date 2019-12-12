@@ -5,7 +5,7 @@
             "object_desc": "オブジェクトの説明",
             "dataName": "データ名称",
             "unit": "単位"
-       }
+        }
     },
     "serial": {
         "label": {
