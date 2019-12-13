@@ -16,6 +16,10 @@
         }
     },
     "serial": {
+        "status": {
+            "waiting": "待機中",
+            "timeout": "タイムアウト"
+        },
         "label": {
             "serialport": "シリアルポート",
             "settings": "設定",
@@ -27,6 +31,9 @@
             "split": "入力の分割方法",
             "deliver": "分割後の配信データ",
             "output": "出力",
+            "request": "Request",
+            "responsetimeout": "Default response timeout",
+            "ms": "ms",
             "serial": "EnOcean-com",
             "enoceanDataItems": "EnOceanデータ項目",
             "linkObjName": "リンクデータオブジェクト",
@@ -52,6 +59,7 @@
         "split": {
             "character": "文字列で区切る",
             "timeout": "タイムアウト後で区切る",
+            "silent": "after a silence of",
             "lengths": "一定の文字数で区切る"
         },
         "output": {
@@ -60,7 +68,9 @@
         },
         "addsplit": "出力メッセージに分割文字を追加する",
         "tip": {
+            "responsetimeout": "Tip: The default response timeout can be overridden by setting msg.timeout.",
             "split": "Tip: \"区切り\" 文字は、入力を別々のメッセージに分割するために使用され、シリアルポートに送信されるすべてのメッセージに追加することもできます。",
+            "silent": "Tip: In line-silent mode timeout is restarted upon arrival of any character (i.e. inter-byte timeout).", 
             "timeout": "Tip: タイムアウトモードでのタイムアウトは最初の文字が到着したときから始まります。"
         },
         "onopen": "serial port __port__ opened at __baud__ baud __config__",
