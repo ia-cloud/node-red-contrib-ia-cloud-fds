@@ -24,7 +24,6 @@
             "deliver": "分割後の配信データ",
             "output": "出力",
             "request": "リクエスト",
-            "responsetimeout": "Default response timeout",
             "ms": "ms",
             "serial": "EnOcean-com",
             "enoceanDataItems": "EnOceanデータ項目",

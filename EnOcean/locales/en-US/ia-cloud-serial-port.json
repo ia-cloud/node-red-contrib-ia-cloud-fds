@@ -24,7 +24,6 @@
             "deliver": "and deliver",
             "output": "Output",
             "request": "Request",
-            "responsetimeout": "Default response timeout",
             "ms": "ms",
             "serial": "serial",
             "enoceanDataItems": "EnOcean Data Items",
