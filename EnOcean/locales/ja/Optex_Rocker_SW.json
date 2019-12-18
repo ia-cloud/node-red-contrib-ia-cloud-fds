@@ -6,6 +6,7 @@
     },
     "serial": {
         "label": {
+            "dataItem": "データ項目",
             "sensor_id": "センサーID"
         }
     }
