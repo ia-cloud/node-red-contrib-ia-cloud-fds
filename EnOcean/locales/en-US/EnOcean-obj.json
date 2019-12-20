@@ -1,16 +1,31 @@
 {
     "enoceanDataItem": {
         "label": {
-            "object_key": "Object Key",
-            "object_desc": "Object Description",
-            "sensor_kind": "sensor kind",
-            "enoceanCom": "EnOcean Communication Object",
-            "u_rd_ac": "U_RD AC Sensor",
-            "watty_temp": "Watty Temp Sensor",
-            "core_temp": "Core-Staff Temp Sensor",
-            "itec_ac": "ITEC AC Sensor",
-            "optex_rocker": "OPTEX Rocker SW",
-            "optex_occupancy": "OPTEX Occupancy Sensor"
+            "coreStaffTemp": "CoreStaff Temp sensor",
+            "enoceanCom": "EnOcean communication object",
+            "fileContentHere": "The content of file will be shown here.",
+            "filename": "Filename",
+            "itecAC": "ITEC AC Sensor",
+            "objectDesc": "Object description",
+            "objectKey": "Object key",
+            "optexOccupancy": "OPTEX occupancy sensor",
+            "optexRocker": "OPTEX Rocker SW",
+            "selectFile": "Select setting file.",
+            "sensor_kind": "Sensor type",
+            "urdAC": "U_RD AC sensor",
+            "wattyTemp": "Watty Temp sensor",
+            "setting": {
+                "file": "From file",
+                "object": "Object settings"
+            }
+        },
+        "sensors": {
+            "coreStaff": "Temperature / Humidity (CoreStaff)",
+            "itec": "Current sensor (ITEC)",
+            "optexOccupancy": "Occupancy sensor (OPTEX)",
+            "optexRocker": "Rocker switch (OPTEX)",
+            "urd": "Current sensor (U_RD)",
+            "watty": "Temperature (Watty)"
         }
     }
 }

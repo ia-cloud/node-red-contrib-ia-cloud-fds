@@ -7,75 +7,72 @@
 
     <div class="form-row">
         <input type="text" style="display: none;" id="node-input-confsel" value="propertySet">
-        <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="node-input-configSel1"
-            value="propertySet" checked="checked">
-        <label style="width: 40%;" for="node-input-configSel1">オブジェクト設定</label>
-        <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="node-input-configSel2" value="fileSet">
-        <label style="width: 40%;" for="node-input-configSel2">設定ファイル</label>
+        <input type="radio" style="display: inline-block; width: auto; vertical-align: top;" name="configSel" id="node-input-configSel1" value="propertySet" checked="checked">
+        <label style="width: 40%;" for="node-input-configSel1" data-i18n="enoceanDataItem.label.setting.object"></label>
+        <input type="radio" style="display: inline-block; width: auto; vertical-align: top;" name="configSel" id="node-input-configSel2" value="fileSet">
+        <label style="width: 40%;" for="node-input-configSel2" data-i18n="enoceanDataItem.label.setting.file"></label>
     </div>
 
     <br>
 
     <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
         <div>
-            <label>設定ファイル名を選択してください <span style="color: #ff0000;">*</span></label>
-            <!--<input id="node-input-configfile" type="text" style="width: 400px;" placeholder="フルパスのファイル名">-->
+            <label><span data-i18n="enoceanDataItem.label.selectFile" /> <span style="color: #ff0000;">*</span></label>
+            <!--<input id="node-input-configfile" type="text" style="width: 400px;" placeholder="Full path of file">-->
             <input type="file" id="select_config_file">
         </div>
         <div>
-            <input type="text" id="node-input-configfile" style="width: 400px;" placeholder="設定ファイル名">
+            <input type="text" id="node-input-configfile" style="width: 400px;" data-i18n="[placeholder]enoceanDataItem.label.filename">
         </div>
         <div>
-            <textarea id="node-input-configdata" cols="80" rows="20" style="width: 400px;" placeholder="現在の設定ファイルの中身がここに表示されます"></textarea>
+            <textarea id="node-input-configdata" cols="80" rows="20" style="width: 400px;" data-i18n="[placeholder]enoceanDataItem.label.fileContentHere"></textarea>
         </div>
     </div>
 
-    <!-- object propertyの設定 -->
+    <!-- Object property setting -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
             <label for="node-input-sensor_kind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensor_kind"></span></label>
             <select type="text" id="node-input-sensor_kind">
-                <option value="u-rd">電流センサー (U-RD)</option>
-                <option value="watty">温度センサー (Watty)</option>
-                <option value="core_staff">温湿度センサー (Core Staff)</option>
-                <option value="itec">電流センサー (ITEC)</option>
-                <option value="optex_rocker">ロッカースイッチ (OPTEX)</option>
-                <option value="optex_occupancy">人感センサー (OPTEX)</option>
+                <option value="u-rd" data-i18n="enoceanDataItem.sensors.urd"></option>
+                <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
+                <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
+                <option value="itec" data-i18n="enoceanDataItem.sensors.itec"></option>
+                <option value="optex_rocker" data-i18n="enoceanDataItem.sensors.optexRocker"></option>
+                <option value="optex_occupancy" data-i18n="enoceanDataItem.sensors.optexOccupancy"></option>
             </select>
         </div>
         <div class="form-row">
-            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.object_key"></span></label>
-            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.object_key">
+            <label for="node-input-object_key"><i class="fa fa-flag"></i> <span data-i18n="enoceanDataItem.label.objectKey"></span></label>
+            <input type="text" id="node-input-object_key" data-i18n="enoceanDataItem.label.objectKey">
         </div>
         <div class="form-row">
-            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.object_desc"></span></label>
-            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.object_desc">
+            <label for="node-input-object_desc"><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.objectDesc"></span></label>
+            <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.objectDesc">
         </div>
         <div id="ia_cloud_enocean_sensors">
             <div class="form-row" id="u-rd">
-                <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.u_rd_ac"></span></label>
+                <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.urdAC"></span></label>
                 <input type="text" id="node-input-urd_ac_sensor">
             </div>
             <div class="form-row" id="watty">
-                <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.watty_temp"></span></label>
+                <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyTemp"></span></label>
                 <input type="text" id="node-input-watty_temp_sensor">
             </div>
             <div class="form-row" id="core_staff">
-                <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.core_temp"></span></label>
+                <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.coreStaffTemp"></span></label>
                 <input type="text" id="node-input-core_temp_sensor">
             </div>
             <div class="form-row" id="itec">
-                <label for="node-input-itec_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.itec_ac"></span></label>
+                <label for="node-input-itec_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.itecAC"></span></label>
                 <input type="text" id="node-input-itec_ac_sensor">
             </div>
             <div class="form-row" id="optex_rocker">
-                <label for="node-input-optex_rocker_sw"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_rocker"></span></label>
+                <label for="node-input-optex_rocker_sw"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optexRocker"></span></label>
                 <input type="text" id="node-input-optex_rocker_sw">
             </div>
             <div class="form-row" id="optex_occupancy">
-                <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optex_occupancy"></span></label>
+                <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optexOccupancy"></span></label>
                 <input type="text" id="node-input-optex_occupancy_sensor">
             </div>
         </div>
@@ -83,7 +80,7 @@
 
     <hr>
 
-    <!-- EnOcean-com node の選択-->
+    <!-- EnOcean-com node setting -->
     <div class="form-row">
         <label for="node-input-enoceancom"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.enoceanCom"></span></label>
         <input type="text" id="node-input-enoceancom">

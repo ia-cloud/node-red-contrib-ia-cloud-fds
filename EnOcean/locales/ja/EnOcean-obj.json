@@ -1,16 +1,31 @@
 {
     "enoceanDataItem": {
         "label": {
-            "object_key": "オブジェクトキー",
-            "object_desc": "オブジェクトの説明",
-            "sensor_kind": "センサ種別",
+            "coreStaffTemp": "CoreStaff温湿度センサー", 
             "enoceanCom": "EnOcean通信オブジェクト",
-            "u_rd_ac": "U_RD電流センサー",
-            "watty_temp": "Watty温度センサー", 
-            "core_temp": "CoreStaff温湿度センサー", 
-            "itec_ac": "ITEC電流センサー", 
-            "optex_rocker": "OPTEXスイッチ",
-            "optex_occupancy": "OPTEX人感センサー" 
+            "fileContentHere": "現在の設定ファイルの中身がここに表示されます",
+            "filename": "設定ファイル名",
+            "itecAC": "ITEC電流センサー", 
+            "objectDesc": "オブジェクトの説明",
+            "objectKey": "オブジェクトキー",
+            "optexOccupancy": "OPTEX人感センサー",
+            "optexRocker": "OPTEXスイッチ",
+            "selectFile": "設定ファイル名を選択してください",
+            "sensor_kind": "センサー種別",
+            "urdAC": "U_RD電流センサー",
+            "wattyTemp": "Watty温度センサー", 
+            "setting": {
+                "file": "設定ファイル",
+                "object": "オブジェクト設定"
+            }
+        },
+        "sensors": {
+            "coreStaff": "温湿度センサー (CoreStaff)",
+            "itec": "電流センサー (ITEC)",
+            "optexOccupancy": "人感センサー (OPTEX)",
+            "optexRocker": "ロッカースイッチ (OPTEX)",
+            "urd": "電流センサー (U_RD)",
+            "watty": "温度センサー (Watty)"
         }
     }
 }
