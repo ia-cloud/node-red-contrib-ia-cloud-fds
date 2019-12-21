@@ -6,8 +6,6 @@ module.exports = function(RED) {
     //var crc = require("crc");
     //const { crc81wire } = require('crc');
     const CRC = require('crc-full').CRC;
-    var moment = require("moment");
-    var fs = require("fs");
 
     function ParseHeader(header) {
         // ERP2 Header Check
