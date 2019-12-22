@@ -3,8 +3,6 @@ module.exports = function(RED) {
     var settings = RED.settings;
     var events = require("events");
     var serialp = require("serialport");
-    //var crc = require("crc");
-    //const { crc81wire } = require('crc');
     const CRC = require('crc-full').CRC;
 
     function ParseHeader(header) {
