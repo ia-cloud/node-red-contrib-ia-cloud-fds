@@ -1,13 +1,13 @@
 module.exports = function(RED) {
-    "use strict";
+    'use strict';
     var settings = RED.settings;
-    var events = require("events");
-    var serialp = require("serialport");
+    var events = require('events');
+    var serialp = require('serialport');
     const CRC = require('crc-full').CRC;
 
     function ParseHeader(header) {
         // ERP2 Header Check
-        var result = {orgid_len:0, destid_len:0, ext_hdr:false, telegram_type:"", RORG:"", ext_tlg:false};
+        var result = {orgid_len:0, destid_len:0, ext_hdr:false, telegram_type:'', RORG:'', ext_tlg:false};
         var dec = parseInt(header,16);
 
         // Check address control
@@ -142,17 +142,17 @@ module.exports = function(RED) {
 
         if (this.serialConfig) {
             var node = this;
-            node.status({fill:"grey",shape:"dot",text:"node-red:common.status.not-connected"});
+            node.status({fill:'grey',shape:'dot',text:'node-red:common.status.not-connected'});
             node.port = this.serialPool.get(this.serialConfig);
             
             this.port.on('data', function(msgout) {
-                node.status({fill:"yellow",shape:"dot",text:"データ受信済み"});
+                node.status({fill:'yellow',shape:'dot',text:'データ受信済み'});
                 
                 var en_data = Buffer.from(msgout.payload).toString('hex');
                 node.log(en_data);
                 //node.send(msgout);
                 
-                if (en_data.substr(0,2) != "55") {
+                if (en_data.substr(0,2) != '55') {
                     node.log('Received data is invalid. The start data is not 0x55.');
                     return;
                 }
@@ -163,7 +163,7 @@ module.exports = function(RED) {
                     node.log('Data length is less than 6 bytes. Enocean signal is too short. skip...');
                     return;
                 }
-                if (en_data.substr(8,2) != "0a") {
+                if (en_data.substr(8,2) != '0a') {
                     node.log('Packet type is not 10 (RADIO_ERP2). This data is discarded.');
                     return;
                 }
@@ -171,7 +171,7 @@ module.exports = function(RED) {
                 var header = en_data.substr(2,8);
                 //node.log('header = ' + header);
                 //var calc_crc = crc8(header).toString(16);
-                var crc = new CRC("CRC8", 8, 0x07, 0x00, 0x00, false, false);
+                var crc = new CRC('CRC8', 8, 0x07, 0x00, 0x00, false, false);
                 var calc_crc = crc.compute(Buffer.from(header, 'hex')).toString(16);
                 // 計算したCRCの0パディング (2桁)
                 calc_crc = ('00' + calc_crc).slice(-2);
@@ -227,14 +227,14 @@ module.exports = function(RED) {
                 listeners = {};     // 通知先をクリアする
             });
             this.port.on('ready', function() {
-                node.status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
+                node.status({fill:'green',shape:'dot',text:'node-red:common.status.connected'});
             });
             this.port.on('closed', function() {
-                node.status({fill:"red",shape:"ring",text:"node-red:common.status.not-connected"});
+                node.status({fill:'red',shape:'ring',text:'node-red:common.status.not-connected'});
             });
         }
         else {
-            this.error(RED._("serial.errors.missing-conf"));
+            this.error(RED._('serial.errors.missing-conf'));
         }
 
         var MakeListeners = function(sensor_id, data){
@@ -267,7 +267,7 @@ module.exports = function(RED) {
             node.log('linkObj = ' + JSON.stringify(linkObj));
         }
 
-        this.on("close", function(done) {
+        this.on('close', function(done) {
             if (this.serialConfig) {
                 // TODO: serialPoolをSerialPortノードから取得するように変更する
                 this.serialPool.close(this.serialConfig.serialport,done);
@@ -277,6 +277,6 @@ module.exports = function(RED) {
             }
         });
     }
-    RED.nodes.registerType("EnOcean-com",EnOceanComNode);
+    RED.nodes.registerType('EnOcean-com',EnOceanComNode);
     
 }
