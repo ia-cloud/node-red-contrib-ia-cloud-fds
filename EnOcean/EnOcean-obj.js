@@ -1,15 +1,8 @@
 module.exports = function (RED) {
     'use strict';
 
-    var settings = RED.settings;
-    var events = require('events');
-    var serialp = require('serialport');
     var moment = require('moment');
-    var fs = require('fs');
     var sensor = require('./sensor');
-
-    var bufMaxSize = 32768; // Max serial buffer size, for inputs...
-    var gEnOceanData = '';
 
     // EnOcean-obj node function definition
     function EnOceanObjNode(config) {
