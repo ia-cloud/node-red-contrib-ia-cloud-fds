@@ -1,9 +1,6 @@
 module.exports = function (RED) {
     'use strict';
 
-    var settings = RED.settings;
-    var events = require('events');
-    var serialp = require('serialport');
     const CRC = require('crc-full').CRC;
 
     function ParseHeader(header) {
@@ -135,11 +132,9 @@ module.exports = function (RED) {
         this.serial = n.serial;
         this.serialConfig = RED.nodes.getNode(this.serial);
         this.serialPool = this.serialConfig.serialpool;
-        var gContext = this.context().global;
         var node = this;
         var linkObj = [];
         var listeners = {};
-        var serialPool = this.serialPool;
 
         if (this.serialConfig) {
             var node = this;
