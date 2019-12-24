@@ -208,7 +208,7 @@ module.exports = function (RED) {
                 }
                 node.log('radio data = ' + data_info.radio_data);
 
-                MakeListeners(data_info.originId, data_info.radio_data);
+                propagateReceivedValue(data_info.originId, data_info.radio_data);
                 node.log('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
@@ -231,28 +231,26 @@ module.exports = function (RED) {
             this.error(RED._('serial.errors.missing-conf'));
         }
 
-        var MakeListeners = function (sensor_id, data) {
-            var linkData = linkObj.filter(function (elm) {
-                var lower_id = elm.sensor_id.toLowerCase(); // Sensor IDを一旦小文字に合わせる
-                return (lower_id == sensor_id);
+        var propagateReceivedValue = function (receivedSensorId, data) {
+            // Pick up sensor node that has same sensorId.
+            const linkData = linkObj.filter((e) => {
+                if (e.sensor_id === receivedSensorId) return true;
+                return parseInt(e.sensor_id, 16) === parseInt(receivedSensorId, 16);
             });
-            if (linkData.length > 0) {
-                // 一つ以上の要素が見つかったら
-                for (var i = 0; i < linkData.length; i++) {
-                    linkData[i].value = data;
-                    var nodeId = linkData[i].nodeId;
-                    if (nodeId) {
-                        // リストに追加（または上書き）
-                        listeners[nodeId] = [linkData[i].objectKey, linkData[i].value];
-                        node.log('listeners[' + nodeId + '] = ' + listeners[nodeId]);
-                    }
-                }
-                // node.log('$$$$$ A specified sensor ID is found in linkObj [' + linkData.sensor_id + ']');
-                // node.log('$$$$$ The received data is set into listeners array list.');
+            if (linkData.length === 0) {
+                node.debug(`Sensor ID "${receivedSensorId}" received but there's no node with matched id.`);
             } else {
-                node.log('[ERROR] Sensor-ID [' + sensor_id + '] is not found in linkObj');
+                linkData.forEach(function (e) {
+                    e.value = data;
+                    if (e.nodeId) {
+                        // Add/overwrite to list.
+                        const objectKeyAndValueArray = [e.objectKey, e.value];
+                        listeners[e.nodeId] = objectKeyAndValueArray;
+                        node.log(`listeners[${e.nodeId}] = ${objectKeyAndValueArray}`);
+                    }
+                });
             }
-        }
+        };
 
         EnOceanComNode.prototype.addLinkData = function (lObj) {
             // linkObjに新たなリンクデータを追加
