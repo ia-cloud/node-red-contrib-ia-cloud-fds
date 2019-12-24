@@ -137,7 +137,6 @@ module.exports = function (RED) {
         var listeners = {};
 
         if (this.serialConfig) {
-            var node = this;
             node.status({ fill: 'grey', shape: 'dot', text: 'node-red:common.status.not-connected' });
             node.port = this.serialPool.get(this.serialConfig);
 
