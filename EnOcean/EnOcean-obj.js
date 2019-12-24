@@ -1,14 +1,14 @@
 module.exports = function(RED) {
-    "use strict";
+    'use strict';
     var settings = RED.settings;
-    var events = require("events");
-    var serialp = require("serialport");
-    var moment = require("moment");
-    var fs = require("fs");
-    var sensor = require("./sensor");
+    var events = require('events');
+    var serialp = require('serialport');
+    var moment = require('moment');
+    var fs = require('fs');
+    var sensor = require('./sensor');
     
     var bufMaxSize = 32768;  // Max serial buffer size, for inputs...
-    var gEnOceanData = "";
+    var gEnOceanData = '';
 
     // EnOcean-obj node function definition
     function EnOceanObjNode(config) {
@@ -28,15 +28,15 @@ module.exports = function(RED) {
         var enCom = RED.nodes.getNode(this.enoceancom);
         if ( enCom == null ) {
             node.log('[ERROR] EnOcean-com node is not specified. [object = ' + enCom + ']');
-            node.status({fill:"red", shape:"ring", text:"EnOcean通信ノードが設定されていません"});
+            node.status({fill:'red', shape:'ring', text:'EnOcean通信ノードが設定されていません'});
             return false;
         }
         var linkObj = [];
         var linkData = {};
         var EnObjects = [{}];
-        node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
+        node.status({fill:'blue', shape:'ring', text:'runtime.preparing'});
 
-        if (config.confsel == "fileSet"){
+        if (config.confsel == 'fileSet'){
           // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
           try{
               //EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8')).EnObjects;
@@ -45,9 +45,9 @@ module.exports = function(RED) {
               node.log('The number of EnObjects = ' + EnObjects.length);
           } catch(e) {
               //エラーの場合は、nodeステータスを変更。
-              //node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
-              //node.error(RED._("runtime.badFilePath"), configObj);
-              node.status({fill:"red",shape:"ring",text:"JSON読み込みエラー"});
+              //node.status({fill:'red',shape:'ring',text:'runtime.badFilePath'});
+              //node.error(RED._('runtime.badFilePath'), configObj);
+              node.status({fill:'red',shape:'ring',text:'JSON読み込みエラー'});
               configObj = null;
           }
         } else {
@@ -56,8 +56,8 @@ module.exports = function(RED) {
             
             // TODO: センサー種別からオブジェクトをどう取り出すかを検討する
             var sensor_obj = config.selectSensor;
-            //var sensor_obj = "";
-            //if ( config.sensor_kind == "u-rd" ) {
+            //var sensor_obj = '';
+            //if ( config.sensor_kind == 'u-rd' ) {
             //    sensor_obj = config.urd_ac_sensor;
             //} else {
             //    sensor_obj = config.watty_temp_sensor;
@@ -65,7 +65,7 @@ module.exports = function(RED) {
             var SensorNode = (RED.nodes.getNode(sensor_obj));
             if ( SensorNode == null ) {
                 node.log('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
-                node.status({fill:"red", shape:"ring", text:"センサー情報が設定されていません"});
+                node.status({fill:'red', shape:'ring', text:'センサー情報が設定されていません'});
                 return false;
             }
             node.log('SensorNode = ' + JSON.stringify(SensorNode));
@@ -74,10 +74,10 @@ module.exports = function(RED) {
             EnObjects = [{options:{}, ObjectContent:{}}];
             EnObjects[0].options.sensor_id = SensorNode.sensor_id;
             EnObjects[0].options.sensor_kind = config.sensor_kind;
-            EnObjects[0].objectName = "ObjectName";           // 仮設定
+            EnObjects[0].objectName = 'ObjectName';           // 仮設定
             EnObjects[0].objectKey = config.object_key;
             EnObjects[0].objectDescription = config.object_desc;
-            EnObjects[0].ObjectContent.contentType = "iaCloudData";
+            EnObjects[0].ObjectContent.contentType = 'iaCloudData';
             EnObjects[0].ObjectContent.contentData = SensorNode.dItems;
         }
         if (EnObjects) {
@@ -93,7 +93,7 @@ module.exports = function(RED) {
         }
         //EnOcean-com nodeのデータ追加メソッドを呼ぶ
         enCom.addLinkData(linkObj);
-        node.status({fill:"green", shape:"dot", text:"送信準備中"});
+        node.status({fill:'green', shape:'dot', text:'送信準備中'});
         
         //EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
         this.linkDatachangeListener = function (element) {
@@ -102,9 +102,9 @@ module.exports = function(RED) {
         }
 
         var iaCloudObjectSend = function(element) {
-            node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
+            node.status({fill:'blue',shape:'ring',text:'runtime.preparing'});
 
-            var msg = {request: "store", dataObject:{ObjectContent:{}}};
+            var msg = {request: 'store', dataObject:{ObjectContent:{}}};
             var contentData = [];
 
             var iaObject = EnObjects.find(function(objItem, idx) {
@@ -116,9 +116,9 @@ module.exports = function(RED) {
             if (iaObject) {
                 msg.dataObject.objectKey = element[0];
                 msg.dataObject.timeStamp = moment().format();
-                msg.dataObject.objectType = "iaCloudObject";
+                msg.dataObject.objectType = 'iaCloudObject';
                 msg.dataObject.objectDescription = iaObject.objectDescription;
-                msg.dataObject.ObjectContent.contentType = "iaCloudData";
+                msg.dataObject.ObjectContent.contentType = 'iaCloudData';
 
                 var options = iaObject.options;
                 node.log('options = ' + JSON.stringify(options));
@@ -126,7 +126,7 @@ module.exports = function(RED) {
                 // 関数名を取り出す
                 var calc_func = sensor.module_list[options.sensor_kind];
                 node.log('function name : ' + calc_func);
-                sensor_val = eval("sensor." + calc_func + "(element[1])");
+                sensor_val = eval('sensor.' + calc_func + '(element[1])');
                 node.log(calc_func + ' value = ' + sensor_val);
                 
                 var contentData = iaObject.ObjectContent.contentData;
@@ -140,18 +140,18 @@ module.exports = function(RED) {
                 msg.dataObject.ObjectContent.contentData = contentData;
                 node.log(JSON.stringify(msg.dataObject));
                 node.send(msg);
-                /* node.status({fill:"green", shape:"dot", text:"runtime.sent"}); */
-                node.status({fill:"green",shape:"dot",text:"データ送信済み"});
+                /* node.status({fill:'green', shape:'dot', text:'runtime.sent'}); */
+                node.status({fill:'green',shape:'dot',text:'データ送信済み'});
             } else {
                 node.log('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
             }
         }
 
-        this.on("input", function(msg) {
+        this.on('input', function(msg) {
             // 処理なし
         });
 
-        this.on("close", function(done) {
+        this.on('close', function(done) {
             if (this.serialConfig) {
                 // TODO: ここのserialPoolをSerialPortノードから取得するようにする
                 serialPool.close(this.serialConfig.serialport,done);
@@ -161,5 +161,5 @@ module.exports = function(RED) {
             }
         });
     }
-    RED.nodes.registerType("EnOcean-obj",EnOceanObjNode);
+    RED.nodes.registerType('EnOcean-obj',EnOceanObjNode);
 }
