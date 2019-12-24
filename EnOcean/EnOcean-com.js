@@ -265,8 +265,7 @@ module.exports = function (RED) {
             if (this.serialConfig) {
                 // TODO: serialPoolをSerialPortノードから取得するように変更する
                 this.serialPool.close(this.serialConfig.serialport, done);
-            }
-            else {
+            } else {
                 done();
             }
         });
