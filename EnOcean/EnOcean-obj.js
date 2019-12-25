@@ -22,7 +22,7 @@ module.exports = function (RED) {
         var enCom = RED.nodes.getNode(this.enoceancom);
         if (enCom == null) {
             node.log('[ERROR] EnOcean-com node is not specified. [object = ' + enCom + ']');
-            node.status({ fill: 'red', shape: 'ring', text: 'EnOcean通信ノードが設定されていません' });
+            node.status({ fill: 'red', shape: 'ring', text: 'status.noEnOceanCom' });
             return false;
         }
         var linkObj = [];
@@ -40,7 +40,7 @@ module.exports = function (RED) {
             } catch (e) {
                 // エラーの場合は、nodeステータスを変更。
                 // node.status({fill:'red',shape:'ring',text:'runtime.badFilePath'});
-                node.status({ fill: 'red', shape: 'ring', text: 'JSON読み込みエラー' });
+                node.status({ fill: 'red', shape: 'ring', text: 'status.jsonParseError' });
             }
         } else {
             // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
@@ -57,7 +57,7 @@ module.exports = function (RED) {
             var SensorNode = RED.nodes.getNode(sensor_obj);
             if (SensorNode == null) {
                 node.log('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
-                node.status({ fill: 'red', shape: 'ring', text: 'センサー情報が設定されていません' });
+                node.status({ fill: 'red', shape: 'ring', text: 'status.noSensor' });
                 return false;
             }
             node.log('SensorNode = ' + JSON.stringify(SensorNode));
@@ -85,7 +85,7 @@ module.exports = function (RED) {
         }
         // EnOcean-com nodeのデータ追加メソッドを呼ぶ
         enCom.addLinkData(linkObj);
-        node.status({ fill: 'green', shape: 'dot', text: '送信準備中' });
+        node.status({ fill: 'green', shape: 'dot', text: 'status.ready' });
 
         // EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
         this.linkDatachangeListener = function (element) {
@@ -133,7 +133,7 @@ module.exports = function (RED) {
                 node.log(JSON.stringify(msg.dataObject));
                 node.send(msg);
                 // node.status({fill:'green', shape:'dot', text:'runtime.sent'});
-                node.status({ fill: 'green', shape: 'dot', text: 'データ送信済み' });
+                node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             } else {
                 node.log('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
             }

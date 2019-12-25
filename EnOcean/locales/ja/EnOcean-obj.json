@@ -1,4 +1,11 @@
 {
+    "status": {
+        "jsonParseError": "JSON読み込みエラー",
+        "noEnOceanCom": "EnOcean通信オブジェクトが設定されていません",
+        "noSensor": "センサー情報が設定されていません",
+        "ready": "受信待機中",
+        "received": "データ受信済"
+    },
     "enoceanDataItem": {
         "label": {
             "coreStaffTemp": "CoreStaff温湿度センサー", 
