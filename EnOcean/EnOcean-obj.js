@@ -40,9 +40,7 @@ module.exports = function (RED) {
             } catch (e) {
                 // エラーの場合は、nodeステータスを変更。
                 // node.status({fill:'red',shape:'ring',text:'runtime.badFilePath'});
-                // node.error(RED._('runtime.badFilePath'), configObj);
                 node.status({ fill: 'red', shape: 'ring', text: 'JSON読み込みエラー' });
-                configObj = null;
             }
         } else {
             // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
