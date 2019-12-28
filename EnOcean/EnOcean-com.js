@@ -137,12 +137,9 @@ module.exports = function (RED) {
         var listeners = {};
 
         if (this.serialConfig) {
-            node.status({ fill: 'grey', shape: 'dot', text: 'node-red:common.status.not-connected' });
             node.port = this.serialPool.get(this.serialConfig);
 
             this.port.on('data', function (msgout) {
-                node.status({ fill: 'yellow', shape: 'dot', text: 'データ受信済み' });
-
                 var en_data = Buffer.from(msgout.payload).toString('hex');
                 node.log(en_data);
                 // node.send(msgout);
@@ -220,12 +217,6 @@ module.exports = function (RED) {
                     }
                 });
                 listeners = {}; // 通知先をクリアする
-            });
-            this.port.on('ready', function () {
-                node.status({ fill: 'green', shape: 'dot', text: 'node-red:common.status.connected' });
-            });
-            this.port.on('closed', function () {
-                node.status({ fill: 'red', shape: 'ring', text: 'node-red:common.status.not-connected' });
             });
         } else {
             this.error(RED._('serial.errors.missing-conf'));
