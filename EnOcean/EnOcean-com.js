@@ -3,6 +3,20 @@ module.exports = function (RED) {
 
     const CRC = require('crc-full').CRC;
 
+    /**
+     * Pick up "Sync. Byte", "Header" and "CRC8H" from receivedEspData.
+     * @param {Buffer} receivedEspData
+     */
+    const pickupEspHeaderAround = (receivedEspData) => ({
+        syncByte: receivedEspData.slice(0, 1).toString('hex'), // receivedEspData[0].toString(16),
+        header: {
+            dataLength: receivedEspData.slice(1, 3).toString('hex'),
+            optionalLength: receivedEspData.slice(3, 4).toString('hex'),
+            packetType: receivedEspData.slice(4, 5).toString('hex'),
+        },
+        crc8h: receivedEspData.slice(5, 6).toString('hex'),
+    });
+
     function ParseHeader(header) {
         // ERP2 Header Check
         var result = { orgid_len: 0, destid_len: 0, ext_hdr: false, telegram_type: '', RORG: '', ext_tlg: false };
@@ -140,41 +154,40 @@ module.exports = function (RED) {
             node.port = this.serialPool.get(this.serialConfig);
 
             this.port.on('data', function (msgout) {
-                var en_data = Buffer.from(msgout.payload).toString('hex');
-                node.log(en_data);
-                // node.send(msgout);
+                const espHeaderAround = pickupEspHeaderAround(msgout.payload);
 
-                if (en_data.substr(0, 2) != '55') {
-                    node.log('Received data is invalid. The start data is not 0x55.');
+                if (espHeaderAround.syncByte !== '55') {
+                    node.log(`Invalid syncByte ${espHeaderAround.syncByte}`);
                     return;
                 }
-                var data_len = parseInt(en_data.substr(2, 4), 16);
-                var opt_len = parseInt(en_data.substr(6, 2), 16);
-                node.log('EnOcean data length = ' + data_len);
-                if (data_len <= 6) {
-                    node.log('Data length is less than 6 bytes. Enocean signal is too short. skip...');
+                if (parseInt(espHeaderAround.header.dataLength, 16) <= 6) {
+                    node.log(`Data Length (${espHeaderAround.header.dataLength}) is less than 6 bytes.`);
                     return;
                 }
-                if (en_data.substr(8, 2) != '0a') {
-                    node.log('Packet type is not 10 (RADIO_ERP2). This data is discarded.');
+                if (espHeaderAround.header.packetType !== '0a') {
+                    node.log(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${espHeaderAround.header.packetType}`);
                     return;
                 }
+
                 // Header CRC Check
-                var header = en_data.substr(2, 8);
-                // node.log('header = ' + header);
-                // var calc_crc = crc8(header).toString(16);
+                const espHeaderBuffer = Buffer.from(`${espHeaderAround.header.dataLength}${espHeaderAround.header.optionalLength}${espHeaderAround.header.packetType}`, 'hex');
+
+                // var calc_crc = crc8(espHeader).toString(16);
                 var crc = new CRC('CRC8', 8, 0x07, 0x00, 0x00, false, false);
-                var calc_crc = crc.compute(Buffer.from(header, 'hex')).toString(16);
+                var calc_crc = crc.compute(espHeaderBuffer).toString(16);
                 // 計算したCRCの0パディング (2桁)
                 calc_crc = ('00' + calc_crc).slice(-2);
-                var head_crc = en_data.substr(10, 2);
-                if (calc_crc != head_crc) {
+                if (calc_crc !== espHeaderAround.crc8h) {
                     node.log('Check Header CRC....NG!! This data is discarded.');
-                    node.log('head_crc = ' + head_crc + '  calc_crc = ' + calc_crc);
+                    node.log(`head_crc = ${espHeaderAround.crc8h}  calc_crc = ${calc_crc}`);
                     return;
-                } else {
-                    node.log('Check Header CRC.... OK!!  header crc = ' + head_crc + '  compute crc = ' + calc_crc);
                 }
+                node.log(`Check Header CRC.... OK!!  header crc = ${espHeaderAround.crc8h}  compute crc = ${calc_crc}`);
+
+                var en_data = Buffer.from(msgout.payload).toString('hex');
+                var data_len = parseInt(espHeaderAround.header.dataLength, 16);
+                var opt_len = parseInt(espHeaderAround.header.optionalLength, 16);
+
                 // Data CRC Check
                 var pos_crc = 12 + (data_len + opt_len) * 2;
                 var check_str = en_data.substr(12, (data_len + opt_len) * 2);
@@ -186,9 +199,9 @@ module.exports = function (RED) {
                     node.log('Check Data CRC....NG!! This data is discarded.');
                     node.log('data_crc = ' + data_crc + '  calc_crc = ' + calc_crc);
                     return;
-                } else {
-                    node.log('Check Data CRC....OK!!  data crc = ' + data_crc + '  compute crc = ' + calc_crc);
                 }
+                node.log('Check Data CRC....OK!!  data crc = ' + data_crc + '  compute crc = ' + calc_crc);
+
 
                 var erp2_hdr = en_data.substr(12, 2);
                 node.log('erp2_hdr = ' + erp2_hdr);
