@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     'use strict';
 
-    const CRC = require('crc-full').CRC;
+    const crc8 = require('crc-full').CRC.default('CRC8');
 
     /**
      * Pick up "Sync. Byte", "Header" and "CRC8H" from receivedEspData.
@@ -171,18 +171,12 @@ module.exports = function (RED) {
 
                 // Header CRC Check
                 const espHeaderBuffer = Buffer.from(`${espHeaderAround.header.dataLength}${espHeaderAround.header.optionalLength}${espHeaderAround.header.packetType}`, 'hex');
-
-                // var calc_crc = crc8(espHeader).toString(16);
-                var crc = new CRC('CRC8', 8, 0x07, 0x00, 0x00, false, false);
-                var calc_crc = crc.compute(espHeaderBuffer).toString(16);
-                // 計算したCRCの0パディング (2桁)
-                calc_crc = ('00' + calc_crc).slice(-2);
-                if (calc_crc !== espHeaderAround.crc8h) {
-                    node.log('Check Header CRC....NG!! This data is discarded.');
-                    node.log(`head_crc = ${espHeaderAround.crc8h}  calc_crc = ${calc_crc}`);
+                const computedCrcNumber = crc8.compute(espHeaderBuffer);
+                const computedCrc = (`00${computedCrcNumber.toString(16)}`).slice(-2);
+                if (computedCrc !== espHeaderAround.crc8h) {
+                    node.log(`Failed to header CRC check. header: ${espHeaderAround.crc8h} computed: ${computedCrc}`);
                     return;
                 }
-                node.log(`Check Header CRC.... OK!!  header crc = ${espHeaderAround.crc8h}  compute crc = ${calc_crc}`);
 
                 var en_data = Buffer.from(msgout.payload).toString('hex');
                 var data_len = parseInt(espHeaderAround.header.dataLength, 16);
@@ -192,12 +186,11 @@ module.exports = function (RED) {
                 var pos_crc = 12 + (data_len + opt_len) * 2;
                 var check_str = en_data.substr(12, (data_len + opt_len) * 2);
                 var data_crc = en_data.substr(pos_crc, 2);
-                calc_crc = crc.compute(Buffer.from(check_str, 'hex')).toString(16);
+                var calc_crc = crc8.compute(Buffer.from(check_str, 'hex')).toString(16);
                 // 計算したCRCの0パディング (2桁)
                 calc_crc = ('00' + calc_crc).slice(-2);
                 if (calc_crc != data_crc) {
-                    node.log('Check Data CRC....NG!! This data is discarded.');
-                    node.log('data_crc = ' + data_crc + '  calc_crc = ' + calc_crc);
+                    node.log(`Failed to data CRC check. data: ${data_crc} computed: ${calc_crc}`);
                     return;
                 }
                 node.log('Check Data CRC....OK!!  data crc = ' + data_crc + '  compute crc = ' + calc_crc);
