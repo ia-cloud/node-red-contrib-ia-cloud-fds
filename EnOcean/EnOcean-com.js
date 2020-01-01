@@ -6,23 +6,37 @@ module.exports = function (RED) {
     /**
      * Pick up "Sync. Byte", "Header" and "CRC8H" from receivedEspData.
      * @param {Buffer} receivedEspData
+     * @returns {object} ESP3 Packet as object.
      */
-    const pickupEspHeaderAround = (receivedEspData) => {
+    const pickupEspPacketAsObject = (receivedEspData) => {
         const syncByte = receivedEspData.slice(0, 1).toString('hex'); // receivedEspData[0].toString(16),
         const dataLength = receivedEspData.slice(1, 3).toString('hex');
         const optionalLength = receivedEspData.slice(3, 4).toString('hex');
         const packetType = receivedEspData.slice(4, 5).toString('hex');
         const crc8h = receivedEspData.slice(5, 6).toString('hex');
+        //
+        const dataLengthAsInt = parseInt(dataLength, 16);
+        const optionalLengthAsInt = parseInt(optionalLength, 16);
+        const offsetOptionalData = 6 + dataLengthAsInt;
+        const offsetCrc8d = offsetOptionalData + optionalLengthAsInt;
+        //
+        const data = receivedEspData.slice(6, offsetOptionalData).toString('hex');
+        const optionalData = receivedEspData.slice(offsetOptionalData, offsetCrc8d).toString('hex');
+        const crc8d = receivedEspData.slice(offsetCrc8d).toString('hex');
+
         return {
             syncByte,
             header: {
                 dataLength,
-                dataLengthAsInt: parseInt(dataLength, 16),
+                dataLengthAsInt,
                 optionalLength,
-                optionalLengthAsInt: parseInt(optionalLength, 16),
+                optionalLengthAsInt,
                 packetType,
             },
             crc8h,
+            data,
+            optionalData,
+            crc8d,
         };
     };
 
@@ -163,51 +177,46 @@ module.exports = function (RED) {
             node.port = this.serialPool.get(this.serialConfig);
 
             this.port.on('data', function (msgout) {
-                const espHeaderAround = pickupEspHeaderAround(msgout.payload);
+                const esp = pickupEspPacketAsObject(msgout.payload);
 
-                if (espHeaderAround.syncByte !== '55') {
-                    node.log(`Invalid syncByte ${espHeaderAround.syncByte}`);
+                if (esp.syncByte !== '55') {
+                    node.log(`Invalid syncByte ${esp.syncByte}`);
                     return;
                 }
-                if (espHeaderAround.header.dataLengthAsInt <= 6) {
-                    node.log(`Data Length (${espHeaderAround.header.dataLength}) is less than 6 bytes.`);
+                if (esp.header.dataLengthAsInt <= 6) {
+                    node.log(`Data Length (${esp.header.dataLength}) is less than 6 bytes.`);
                     return;
                 }
-                if (espHeaderAround.header.packetType !== '0a') {
-                    node.log(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${espHeaderAround.header.packetType}`);
+                if (esp.header.packetType !== '0a') {
+                    node.log(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
                     return;
                 }
 
                 // Header CRC Check
-                const espHeaderBuffer = Buffer.from(`${espHeaderAround.header.dataLength}${espHeaderAround.header.optionalLength}${espHeaderAround.header.packetType}`, 'hex');
-                const computedCrcNumber = crc8.compute(espHeaderBuffer);
-                const computedCrc = (`00${computedCrcNumber.toString(16)}`).slice(-2);
-                if (computedCrc !== espHeaderAround.crc8h) {
-                    node.log(`Failed to header CRC check. header: ${espHeaderAround.crc8h} computed: ${computedCrc}`);
+                const espHeaderBuffer = Buffer.from(`${esp.header.dataLength}${esp.header.optionalLength}${esp.header.packetType}`, 'hex');
+                const computedCrc8hNumber = crc8.compute(espHeaderBuffer);
+                const computedCrc8h = (`00${computedCrc8hNumber.toString(16)}`).slice(-2);
+                if (computedCrc8h !== esp.crc8h) {
+                    node.log(`Failed to header CRC check. header: ${esp.crc8h} computed: ${computedCrc8h}`);
+                    return;
+                }
+
+                // Data CRC Check
+                const espDataBuffer = Buffer.from(`${esp.data}${esp.optionalData}`, 'hex');
+                const computedCrc8dNumber = crc8.compute(espDataBuffer);
+                const computedCrc8d = (`00${computedCrc8dNumber.toString(16)}`).slice(-2);
+                if (computedCrc8d !== esp.crc8d) {
+                    node.log(`Failed to data CRC check. data: ${esp.crc8d} computed: ${computedCrc8d}`);
                     return;
                 }
 
                 var en_data = Buffer.from(msgout.payload).toString('hex');
-                const dataAndOptionalDataLength = (espHeaderAround.header.dataLengthAsInt + espHeaderAround.header.optionalLengthAsInt) * 2;
-
-                // Data CRC Check
-                var check_str = en_data.substr(12, dataAndOptionalDataLength);
-                var data_crc = en_data.substr(12 + dataAndOptionalDataLength, 2);
-                var calc_crc = crc8.compute(Buffer.from(check_str, 'hex')).toString(16);
-                // 計算したCRCの0パディング (2桁)
-                calc_crc = ('00' + calc_crc).slice(-2);
-                if (calc_crc != data_crc) {
-                    node.log(`Failed to data CRC check. data: ${data_crc} computed: ${calc_crc}`);
-                    return;
-                }
-                node.log('Check Data CRC....OK!!  data crc = ' + data_crc + '  compute crc = ' + calc_crc);
-
 
                 var erp2_hdr = en_data.substr(12, 2);
                 node.log('erp2_hdr = ' + erp2_hdr);
                 var header_info = ParseHeader(erp2_hdr);
-                var data = en_data.substr(12, espHeaderAround.header.dataLengthAsInt * 2);
-                var data_info = ParseData(data, espHeaderAround.header.dataLengthAsInt, header_info);
+                var data = en_data.substr(12, esp.header.dataLengthAsInt * 2);
+                var data_info = ParseData(data, esp.header.dataLengthAsInt, header_info);
 
                 if (data_info.originId != null) {
                     node.log('Originator ID = ' + data_info.originId);
