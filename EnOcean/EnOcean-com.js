@@ -7,15 +7,24 @@ module.exports = function (RED) {
      * Pick up "Sync. Byte", "Header" and "CRC8H" from receivedEspData.
      * @param {Buffer} receivedEspData
      */
-    const pickupEspHeaderAround = (receivedEspData) => ({
-        syncByte: receivedEspData.slice(0, 1).toString('hex'), // receivedEspData[0].toString(16),
-        header: {
-            dataLength: receivedEspData.slice(1, 3).toString('hex'),
-            optionalLength: receivedEspData.slice(3, 4).toString('hex'),
-            packetType: receivedEspData.slice(4, 5).toString('hex'),
-        },
-        crc8h: receivedEspData.slice(5, 6).toString('hex'),
-    });
+    const pickupEspHeaderAround = (receivedEspData) => {
+        const syncByte = receivedEspData.slice(0, 1).toString('hex'); // receivedEspData[0].toString(16),
+        const dataLength = receivedEspData.slice(1, 3).toString('hex');
+        const optionalLength = receivedEspData.slice(3, 4).toString('hex');
+        const packetType = receivedEspData.slice(4, 5).toString('hex');
+        const crc8h = receivedEspData.slice(5, 6).toString('hex');
+        return {
+            syncByte,
+            header: {
+                dataLength,
+                dataLengthAsInt: parseInt(dataLength, 16),
+                optionalLength,
+                optionalLengthAsInt: parseInt(optionalLength, 16),
+                packetType,
+            },
+            crc8h,
+        };
+    };
 
     function ParseHeader(header) {
         // ERP2 Header Check
@@ -160,7 +169,7 @@ module.exports = function (RED) {
                     node.log(`Invalid syncByte ${espHeaderAround.syncByte}`);
                     return;
                 }
-                if (parseInt(espHeaderAround.header.dataLength, 16) <= 6) {
+                if (espHeaderAround.header.dataLengthAsInt <= 6) {
                     node.log(`Data Length (${espHeaderAround.header.dataLength}) is less than 6 bytes.`);
                     return;
                 }
@@ -179,13 +188,11 @@ module.exports = function (RED) {
                 }
 
                 var en_data = Buffer.from(msgout.payload).toString('hex');
-                var data_len = parseInt(espHeaderAround.header.dataLength, 16);
-                var opt_len = parseInt(espHeaderAround.header.optionalLength, 16);
+                const dataAndOptionalDataLength = (espHeaderAround.header.dataLengthAsInt + espHeaderAround.header.optionalLengthAsInt) * 2;
 
                 // Data CRC Check
-                var pos_crc = 12 + (data_len + opt_len) * 2;
-                var check_str = en_data.substr(12, (data_len + opt_len) * 2);
-                var data_crc = en_data.substr(pos_crc, 2);
+                var check_str = en_data.substr(12, dataAndOptionalDataLength);
+                var data_crc = en_data.substr(12 + dataAndOptionalDataLength, 2);
                 var calc_crc = crc8.compute(Buffer.from(check_str, 'hex')).toString(16);
                 // 計算したCRCの0パディング (2桁)
                 calc_crc = ('00' + calc_crc).slice(-2);
@@ -199,8 +206,8 @@ module.exports = function (RED) {
                 var erp2_hdr = en_data.substr(12, 2);
                 node.log('erp2_hdr = ' + erp2_hdr);
                 var header_info = ParseHeader(erp2_hdr);
-                var data = en_data.substr(12, data_len * 2);
-                var data_info = ParseData(data, data_len, header_info);
+                var data = en_data.substr(12, espHeaderAround.header.dataLengthAsInt * 2);
+                var data_info = ParseData(data, espHeaderAround.header.dataLengthAsInt, header_info);
 
                 if (data_info.originId != null) {
                     node.log('Originator ID = ' + data_info.originId);
