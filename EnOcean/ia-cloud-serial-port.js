@@ -291,12 +291,4 @@ module.exports = function(RED) {
             res.json(ports);
         });
     });
-    
-    RED.httpAdmin.get("/endata", function(req,res) {
-        var recv_data = gEnOceanData;
-        var data_json = {
-            endata: recv_data
-        };
-        res.json(data_json);
-    });
 }
