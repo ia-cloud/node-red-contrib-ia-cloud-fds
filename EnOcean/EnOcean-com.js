@@ -40,128 +40,136 @@ module.exports = function (RED) {
         };
     };
 
-    function ParseHeader(header) {
-        // ERP2 Header Check
-        var result = { orgid_len: 0, destid_len: 0, ext_hdr: false, telegram_type: '', RORG: '', ext_tlg: false };
-        var dec = parseInt(header, 16);
+    /**
+     * Pick up individual data from ESP2 data.
+     * @param {string} esp3RawData
+     * @returns {object} ERP2 data
+     * @see {@link EnOceanRadioProtocol2.pdf} 4.5 Data contents for Length > 6 Bytes
+     */
+    const pickupErp2DataAsObject = (esp3RawData) => {
+        let index = 0;
 
-        // Check address control
-        var addr_ctl = dec >> 5;
-        if (addr_ctl == 0) {
-            result['orgid_len'] = 3;
-            result['destid_len'] = 0;
-        } else if (addr_ctl == 1) {
-            result['orgid_len'] = 4;
-            result['destid_len'] = 0;
-        } else if (addr_ctl == 2) {
-            result['orgid_len'] = 4;
-            result['destid_len'] = 4;
-        } else if (addr_ctl == 3) {
-            result['orgid_len'] = 6;
-            result['destid_len'] = 0;
-        } else {
-            result['orgid_len'] = 0;
-            result['destid_len'] = 0;
-        }
-        // Check if Extended header is available
-        if (dec & 0x10) {
-            result['ext_hdr'] = true;
-        } else {
-            result['ext_hdr'] = false;
-        }
-        // Check the Telegram type(R-ORG), Extended Telegram type field
-        var telegram_type = dec & 0x0f;
-        if (telegram_type == 0) {
-            result['telegram_type'] = 'RPS';
-            result['RORG'] = '0xF6';
-            result['ext_tlg'] = false;
-        } else if (telegram_type == 1) {
-            result['telegram_type'] = '1BS';
-            result['RORG'] = '0xD5';
-            result['ext_tlg'] = false;
-        } else if (telegram_type == 2) {
-            result['telegram_type'] = '4BS';
-            result['RORG'] = '0xA5';
-            result['ext_tlg'] = false;
-        } else if (telegram_type == 4) {
-            result['telegram_type'] = 'VLD';
-            result['RORG'] = '0xD2';
-            result['ext_tlg'] = false;
-        } else if (telegram_type == 15) {
-            result['telegram_type'] = 'EXT';
-            result['RORG'] = '0x00';
-            result['ext_tlg'] = true;
-        } else {
-            result['telegram_type'] = 'RSV';
-            result['RORG'] = '0x00';
-            result['ext_tlg'] = false;
-        }
-        return result;
-    }
+        // ----------------------------------------
+        // Header
 
-    function ParseData(data, data_len, header_info) {
-        var result = { header: null, ext_hdr: null, ext_tlg: null, originId: null, destId: null, radio_data: null };
-        var index = 0;
-        // Check a length of radio data.
-        if (data.length < data_len * 2) {
-            return null;
-        }
-
-        result['header'] = data.slice(0, 2);
+        const erp2Header = parseInt(esp3RawData.substr(index, 2), 16);
         index += 2;
 
-        if (header_info['ext_hdr']) {
-            result['ext_hdr'] = data.slice(index, index + 2);
+        const [addressControl, extendedHeaderAvailable, telegramType] = [
+            (erp2Header & 0b11100000) >> 5, // Bit 5...7 Address Control
+            (erp2Header & 0b00010000) >> 4, // Bit 4 Extended header available
+            (erp2Header & 0b00001111) >> 0, // Bit 0...3 Telegram type (R-ORG)
+        ];
+
+        // Bit 5...7 Address Control
+        // 000: Originator-ID 24 bit; no Destination-ID
+        // 001: Originator-ID 32 bit; no Destination-ID
+        // 010: Originator-ID 32 bit, Destination-ID 32 bit
+        // 011: Originator-ID 48 bit, no Destination-ID
+        // 100: reserved    101: reserved    110: reserved    111: reserved
+        let originatorIdLength = 0;
+        let destinationIdLength = 0;
+        if (addressControl === 0b000) { originatorIdLength = 3; }
+        if (addressControl === 0b001) { originatorIdLength = 4; }
+        if (addressControl === 0b010) { originatorIdLength = 4; destinationIdLength = 4; }
+        if (addressControl === 0b011) { originatorIdLength = 6; }
+
+        // Bit 0…3 Telegram type (R-ORG)
+        // 0000: RPS telegram (0xF6)
+        // 0001: 1BS telegram (0xD5)
+        // 0010: 4BS telegram (0xA5)
+        // 0011: Smart Acknowledge Signal telegram (0xD0)
+        // 0100: Variable length data telegram (0xD2)
+        // 0101: Universal Teach-In EEP based (0xD4)
+        // 0110: Manufacturer Specific Communication (0xD1)
+        // 0111: Secure telegram (0x30)
+        // 1000: Secure telegram with encapsulation (0x31)
+        // 1001: Secure Teach-In telegram for switch (0x35)
+        // 1010: Generic Profiles selective data (0xB3)
+        // 1011: reserved
+        // 1100: reserved
+        // 1101: reserved
+        // 1110: reserved
+        // 1111: Extended Telegram type available
+
+        // ----------------------------------------
+        // Extended Header
+
+        let extendedHeader;
+        if (extendedHeaderAvailable === 0b1) {
+            extendedHeader = parseInt(esp3RawData.substr(index, 2), 16);
             index += 2;
-        } else {
-            result['ext_hdr'] = null;
+            // FIXME in the future. { repeaterCount, lengthOfOptionalData }.
         }
 
-        if (header_info['ext_tlg']) {
-            result['ext_tlg'] = data.slice(index, index + 2);
+        // ----------------------------------------
+        // Extended Telegram type
+
+        // Available when  1111: Extended Telegram type available
+        let extendedTelegramType;
+        if (telegramType === 0b1111) {
+            extendedTelegramType = parseInt(esp3RawData.substr(index, 2), 16);
             index += 2;
-        } else {
-            result['ext_tlg'] = null;
+            // FIXME in the future. undefined OR string.
         }
 
-        if (header_info['orgid_len'] > 0) {
-            result['originId'] = data.slice(index, index + (header_info['orgid_len'] * 2));
-            index += (header_info['orgid_len'] * 2);
-        } else {
-            result['originId'] = null;
+        // ----------------------------------------
+        // Originator-ID
+
+        let originatorId;
+        if (originatorIdLength) {
+            originatorId = esp3RawData.substr(index, originatorIdLength * 2);
+            index += originatorIdLength * 2;
         }
 
-        if (header_info['destid_len'] > 0) {
-            result['destId'] = data.slice(index, index + (header_info['destid_len'] * 2));
-            index += (header_info['destid_len'] * 2);
-        } else {
-            result['destId'] = null;
+        // ----------------------------------------
+        // Destination-ID
+
+        let destinationId;
+        if (destinationIdLength) {
+            destinationId = esp3RawData.substr(index, destinationIdLength * 2);
+            index += destinationIdLength * 2;
         }
 
-        if ((header_info['telegram_type'] == 'RPS') || (header_info['telegram_type'] == '1BS')) {
-            result['radio_data'] = data.slice(index, index + 2);
+        // ----------------------------------------
+        // Data_DL  (The Data_DL field contains the payload of the telegram.)
+
+        let dataDL;
+        if (telegramType === 0b0000 || telegramType === 0b0001) { // RPS || 1BS
+            dataDL = esp3RawData.substr(index, 2);
             index += 2;
-        } else if (header_info['telegram_type'] == '4BS') {
-            result['radio_data'] = data.slice(index, index + 8);
+        } else if (telegramType === 0b0010) { // 4BS
+            dataDL = esp3RawData.substr(index, 8);
             index += 8;
-        } else if (header_info['telegram_type'] == 'VLD') {
+        } else if (telegramType === 0b0100) { // VLD
             // 取り急ぎ VLD Telegram のデータ長さは3Byte長とする
             // TODO: 正式なパースの仕方をどうするか要検討
-            result['radio_data'] = data.slice(index, index + 6);
+            dataDL = esp3RawData.substr(index, 6);
             index += 6;
-        } else if (header_info['telegram_type'] == 'EXT') { // Extended Telegram-Type is available
-            if (result['ext_tlg'] != null && parseInt(result['ext_tlg'], 16) == 7) { // GPの場合
-                result['radio_data'] = data.slice(index, index + 10);
+        } else if (telegramType === 0b1111) { // EXT
+            if (extendedTelegramType === 0x07) { // In case of GP // 0x07: Generic Profiles Complete data (0xB2)
+                dataDL = esp3RawData.substr(index, 10);
                 index += 10;
-            } else {
-                result['radio_data'] = null;
             }
-        } else {
-            result['radio_data'] = null; // その他のTypeは解析しない
         }
 
-        return result;
-    }
+        // ----------------------------------------
+
+        return {
+            header: {
+                addressControl,
+                extendedHeaderAvailable,
+                telegramType,
+            },
+            extendedHeader,
+            extendedTelegramType,
+            originatorId,
+            destinationId,
+            dataDL,
+            optionalData: '',
+            crc: '',
+        };
+    };
 
     // EnOcean-com node function definition
     function EnOceanComNode(n) {
@@ -210,24 +218,19 @@ module.exports = function (RED) {
                     return;
                 }
 
-                var en_data = Buffer.from(msgout.payload).toString('hex');
+                // --- ERP2 ---
+                const erp2 = pickupErp2DataAsObject(esp.data, esp.optionalData);
 
-                var erp2_hdr = en_data.substr(12, 2);
-                node.log('erp2_hdr = ' + erp2_hdr);
-                var header_info = ParseHeader(erp2_hdr);
-                var data = en_data.substr(12, esp.header.dataLengthAsInt * 2);
-                var data_info = ParseData(data, esp.header.dataLengthAsInt, header_info);
-
-                if (data_info.originId != null) {
-                    node.log('Originator ID = ' + data_info.originId);
+                if (erp2.originatorId) {
+                    node.debug(`Originator ID = ${erp2.originatorId}`);
                 } else {
-                    node.log('Originator ID = ---');
-                    node.log('parse error : Can not find Originator-ID, so this packet is discarded.');
+                    node.log('Originator-ID is empty.');
                     return;
                 }
-                node.log('radio data = ' + data_info.radio_data);
 
-                propagateReceivedValue(data_info.originId, data_info.radio_data);
+                node.debug(`radio data = ${erp2.dataDL}`);
+
+                propagateReceivedValue(erp2.originatorId, erp2.dataDL);
                 node.log('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
