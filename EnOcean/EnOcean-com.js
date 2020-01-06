@@ -231,13 +231,13 @@ module.exports = function (RED) {
                 node.debug(`radio data = ${erp2.dataDL}`);
 
                 propagateReceivedValue(erp2.originatorId, erp2.dataDL);
-                node.log('listeners = ' + JSON.stringify(listeners));
+                node.debug('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
                 Object.keys(listeners).forEach(function (nodeId) {
                     if (nodeId) {
                         var EnObjNode = RED.nodes.getNode(nodeId);
-                        node.log('nodeId = ' + nodeId + ', EnObjNode = ' + JSON.stringify(EnObjNode));
+                        node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
                         if (EnObjNode) EnObjNode.linkDatachangeListener(listeners[nodeId]);
                     }
                 });
@@ -262,7 +262,7 @@ module.exports = function (RED) {
                         // Add/overwrite to list.
                         const objectKeyAndValueArray = [e.objectKey, e.value];
                         listeners[e.nodeId] = objectKeyAndValueArray;
-                        node.log(`listeners[${e.nodeId}] = ${objectKeyAndValueArray}`);
+                        node.debug(`listeners[${e.nodeId}] = ${objectKeyAndValueArray}`);
                     }
                 });
             }
@@ -271,8 +271,8 @@ module.exports = function (RED) {
         EnOceanComNode.prototype.addLinkData = function (lObj) {
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj, lObj);
-            node.log('lObj = ' + JSON.stringify(lObj));
-            node.log('linkObj = ' + JSON.stringify(linkObj));
+            node.log(`lObj = ${JSON.stringify(lObj)}`);
+            node.log(`linkObj = ${JSON.stringify(linkObj)}`);
         }
 
         this.on('close', function (done) {
