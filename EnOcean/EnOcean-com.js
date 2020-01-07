@@ -273,7 +273,7 @@ module.exports = function (RED) {
             Array.prototype.push.apply(linkObj, lObj);
             node.log(`lObj = ${JSON.stringify(lObj)}`);
             node.log(`linkObj = ${JSON.stringify(linkObj)}`);
-        }
+        };
 
         this.on('close', function (done) {
             if (this.serialConfig) {
@@ -286,4 +286,4 @@ module.exports = function (RED) {
     }
 
     RED.nodes.registerType('EnOcean-com', EnOceanComNode);
-}
+};
