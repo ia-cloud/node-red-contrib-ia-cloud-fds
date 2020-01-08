@@ -1,18 +1,19 @@
 // 各センサー毎の測定値計算モジュールをここに定義する
 
 // 登録されているセンサーの計算モジュールリスト
-module.exports.module_list = {"u-rd":"calc_ac",
-                              "watty":"calc_temperature", 
-                              "core_staff":"calc_temp_humidity",
-                              "itec":"calc_itec_ct",
-                              "optex_rocker":"get_rocker_sw",
-                              "optex_occupancy":"get_occupancy"
-                              };
+module.exports.module_list = {
+    "u-rd": "calc_ac",
+    "watty": "calc_temperature",
+    "core_staff": "calc_temp_humidity",
+    "itec": "calc_itec_ct",
+    "optex_rocker": "get_rocker_sw",
+    "optex_occupancy": "get_occupancy",
+};
 
 // 温度計算（Watty）
-module.exports.calc_temperature = function (data){
+module.exports.calc_temperature = function (data) {
     var ret = [];
-    if (data.length < 5*2) {
+    if (data.length < 5 * 2) {
         // 5Byte以上でなければ空リスト返却
         return ret;
     }
@@ -20,17 +21,17 @@ module.exports.calc_temperature = function (data){
     // 数値を10bit毎に分割してから計算する
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
-    var dec1 = parseInt(bin.substr(0,10),2);
-    var dec2 = parseInt(bin.substr(10,10),2);
-    
-    var dec3 = parseInt(bin.substr(20,10),2);
-    var dec4 = parseInt(bin.substr(30,10),2);
+    var dec1 = parseInt(bin.substr(0, 10), 2);
+    var dec2 = parseInt(bin.substr(10, 10), 2);
+
+    var dec3 = parseInt(bin.substr(20, 10), 2);
+    var dec4 = parseInt(bin.substr(30, 10), 2);
     var decList = [];
     decList.push(dec1);
     decList.push(dec2);
     decList.push(dec3);
     decList.push(dec4);
-    
+
     var tempList = [];
     for (var ch_val of decList) {
         var temp = 130.0 - (parseFloat(ch_val) / 1024.0 * 170.0);
@@ -40,9 +41,9 @@ module.exports.calc_temperature = function (data){
 };
 
 // 電流計算（UR-D）
-module.exports.calc_ac = function (data){
+module.exports.calc_ac = function (data) {
     var ret = [];
-    if (data.length < 4*2) {
+    if (data.length < 4 * 2) {
         // 4Byte以上でなければ空リスト返却
         return ret;
     }
@@ -68,7 +69,7 @@ module.exports.calc_ac = function (data){
     var c = 56;
     var d = 3000;
 
-    var I = (ad_val * K * E * d)/(2.8 * c);
+    var I = (ad_val * K * E * d) / (2.8 * c);
     var ac = I / 1000;
     acList.push(ac);
 
@@ -76,9 +77,9 @@ module.exports.calc_ac = function (data){
 };
 
 // 温湿度計算（Core Staff）
-module.exports.calc_temp_humidity = function (data){
+module.exports.calc_temp_humidity = function (data) {
     var result = [];
-    if (data.length < 4*2) {
+    if (data.length < 4 * 2) {
         // 4Byte以上でなければ空リスト返却
         return result;
     }
@@ -88,7 +89,7 @@ module.exports.calc_temp_humidity = function (data){
     var dec1 = (dec >> 16) & 0xFF;
     // 温度の抽出(3Byte目)
     var dec2 = (dec >> 8) & 0xFF;
-    
+
     // 湿度、温度の計算（0～250の数値を0～100%、-20～60℃に変換する)
     var hid = dec1 * (100 / 250);
     var temp = dec2 * (80 / 250) - 20;
@@ -97,26 +98,26 @@ module.exports.calc_temp_humidity = function (data){
     hid = hid / 10;
     temp = Math.round(temp * 100);
     temp = temp / 100;
-    
+
     result.push(hid);
     result.push(temp);
-    
+
     return result;
 };
 
 // 電流計算（ITEC）
-module.exports.calc_itec_ct = function (data){
+module.exports.calc_itec_ct = function (data) {
     var result = [];
-    if (data.length < 3*2) {
+    if (data.length < 3 * 2) {
         // 3Byte以上でなければ空リスト返却
         return result;
     }
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
-    var bin = ('000000000000000000000000' + bin).slice(-24);  // 0パディング（24桁）
+    var bin = ('000000000000000000000000' + bin).slice(-24); // 0パディング（24桁）
     // Divisor（先頭から2bit目)の値を取得する
-    var div = parseInt(bin.substr(1,1),2);
-    
+    var div = parseInt(bin.substr(1, 1), 2);
+
     // 1CH分の値とDivisor（及びPower Fail）を取得
     var div_ch = dec >> 4;
 
@@ -125,7 +126,7 @@ module.exports.calc_itec_ct = function (data){
 
     if (div == 1) {
         // Scaleが10分の1
-        result.push(ch1/10);
+        result.push(ch1 / 10);
     } else {
         // Scaleがそのまま
         result.push(ch1);
@@ -135,7 +136,7 @@ module.exports.calc_itec_ct = function (data){
 };
 
 // ロッカースイッチの状況取得（OPTEX）
-module.exports.get_rocker_sw = function (data){
+module.exports.get_rocker_sw = function (data) {
     var result = [];
     if (data.length < 2) {
         // 1Byte以上でなければ空リスト返却
@@ -143,39 +144,39 @@ module.exports.get_rocker_sw = function (data){
     }
     var dec = parseInt(data, 16);
     var bin = dec.toString(2);
-    var bin = ('00000000' + bin).slice(-8);     // 0パディング（8桁）
+    var bin = ('00000000' + bin).slice(-8); // 0パディング（8桁）
     // State of the energy bow
-    var ebo = parseInt(bin.substr(0,1),2);
+    var ebo = parseInt(bin.substr(0, 1), 2);
     // State I of rocker B
-    var rbi = parseInt(bin.substr(4,1),2);
+    var rbi = parseInt(bin.substr(4, 1), 2);
     // State O of rocker B
-    var rbo = parseInt(bin.substr(5,1),2);
+    var rbo = parseInt(bin.substr(5, 1), 2);
     // State I of rocker A
-    var rai = parseInt(bin.substr(6,1),2);
+    var rai = parseInt(bin.substr(6, 1), 2);
     // State O of rocker A
-    var rao = parseInt(bin.substr(7,1),2);
+    var rao = parseInt(bin.substr(7, 1), 2);
 
-    if ( ebo == 1 ) {
+    if (ebo == 1) {
         result.push("pressed");
     } else {
         result.push("released");
     }
-    if ( rbi == 1 ) {
+    if (rbi == 1) {
         result.push("pressed");
     } else {
         result.push("released");
     }
-    if ( rbo == 1 ) {
+    if (rbo == 1) {
         result.push("pressed");
     } else {
         result.push("released");
     }
-    if ( rai == 1 ) {
+    if (rai == 1) {
         result.push("pressed");
     } else {
         result.push("released");
     }
-    if ( rao == 1 ) {
+    if (rao == 1) {
         result.push("pressed");
     } else {
         result.push("released");
@@ -185,9 +186,9 @@ module.exports.get_rocker_sw = function (data){
 };
 
 // 在室センサーの状況取得（OPTEX）
-module.exports.get_occupancy = function (data){
+module.exports.get_occupancy = function (data) {
     var result = [];
-    if (data.length < 4*2) {
+    if (data.length < 4 * 2) {
         // 4Byte以上でなければ空リスト返却
         return result;
     }
@@ -200,7 +201,7 @@ module.exports.get_occupancy = function (data){
     var dec2 = (dec >> 8) & 0xFF;
     // 供給電圧利用可否フラグ
     var is_supply = dec & 0x01;
-    
+
     // 供給電圧の計算（0～250の数値を0～5.0Vに変換する)
     var volt = dec1 * (5 / 250);
     // 誤差を丸める
@@ -209,14 +210,14 @@ module.exports.get_occupancy = function (data){
 
     // 在室状態
     var occupancy = "";
-    if ( dec2 < 128 ) {
-        occupancy = "不在です";    // 不在
+    if (dec2 < 128) {
+        occupancy = "不在です"; // 不在
     } else {
-        occupancy = "在室しています";   // 在室
+        occupancy = "在室しています"; // 在室
     }
-    
+
     // 供給電圧利用不可の場合は供給電圧を無効とする
-    if ( is_supply == 0 ) {
+    if (is_supply == 0) {
         volt = "利用不可";
     }
     result.push(volt);
@@ -224,4 +225,3 @@ module.exports.get_occupancy = function (data){
 
     return result;
 };
-
