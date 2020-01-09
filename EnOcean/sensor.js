@@ -2,12 +2,12 @@
 
 // 登録されているセンサーの計算モジュールリスト
 module.exports.module_list = {
-    "u-rd": "calc_ac",
-    "watty": "calc_temperature",
-    "core_staff": "calc_temp_humidity",
-    "itec": "calc_itec_ct",
-    "optex_rocker": "get_rocker_sw",
-    "optex_occupancy": "get_occupancy",
+    'u-rd': 'calc_ac',
+    'watty': 'calc_temperature',
+    'core_staff': 'calc_temp_humidity',
+    'itec': 'calc_itec_ct',
+    'optex_rocker': 'get_rocker_sw',
+    'optex_occupancy': 'get_occupancy',
 };
 
 // 温度計算（Watty）
@@ -157,29 +157,29 @@ module.exports.get_rocker_sw = function (data) {
     var rao = parseInt(bin.substr(7, 1), 2);
 
     if (ebo == 1) {
-        result.push("pressed");
+        result.push('pressed');
     } else {
-        result.push("released");
+        result.push('released');
     }
     if (rbi == 1) {
-        result.push("pressed");
+        result.push('pressed');
     } else {
-        result.push("released");
+        result.push('released');
     }
     if (rbo == 1) {
-        result.push("pressed");
+        result.push('pressed');
     } else {
-        result.push("released");
+        result.push('released');
     }
     if (rai == 1) {
-        result.push("pressed");
+        result.push('pressed');
     } else {
-        result.push("released");
+        result.push('released');
     }
     if (rao == 1) {
-        result.push("pressed");
+        result.push('pressed');
     } else {
-        result.push("released");
+        result.push('released');
     }
 
     return result;
@@ -209,16 +209,16 @@ module.exports.get_occupancy = function (data) {
     volt = volt / 100;
 
     // 在室状態
-    var occupancy = "";
+    var occupancy = '';
     if (dec2 < 128) {
-        occupancy = "不在です"; // 不在
+        occupancy = '不在です'; // 不在
     } else {
-        occupancy = "在室しています"; // 在室
+        occupancy = '在室しています'; // 在室
     }
 
     // 供給電圧利用不可の場合は供給電圧を無効とする
     if (is_supply == 0) {
-        volt = "利用不可";
+        volt = '利用不可';
     }
     result.push(volt);
     result.push(occupancy);
