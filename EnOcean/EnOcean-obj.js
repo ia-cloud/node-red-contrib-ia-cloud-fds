@@ -97,7 +97,6 @@ module.exports = function (RED) {
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
             var msg = { request: 'store', dataObject: { ObjectContent: {} } };
-            var contentData = [];
 
             var iaObject = EnObjects.find(function (objItem, idx) {
                 node.log('objItem.objectKey = ' + objItem.objectKey);
