@@ -91,7 +91,7 @@ module.exports = function (RED) {
         this.linkDatachangeListener = function (element) {
             // 引数に [objectKey, radio_data] を受け取る
             iaCloudObjectSend(element);
-        }
+        };
 
         var iaCloudObjectSend = function (element) {
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
@@ -136,7 +136,7 @@ module.exports = function (RED) {
             } else {
                 node.log('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
             }
-        }
+        };
 
         this.on('input', function (msg) {
             // 処理なし
