@@ -63,14 +63,14 @@ module.exports = function (RED) {
             node.log('SensorNode = ' + JSON.stringify(SensorNode));
             node.log('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
 
-            EnObjects = [{ options: {}, ObjectContent: {} }];
+            EnObjects = [{ options: {}, objectContent: {} }];
             EnObjects[0].options.sensor_id = SensorNode.sensor_id;
             EnObjects[0].options.sensor_kind = config.sensor_kind;
             EnObjects[0].objectName = 'ObjectName'; // 仮設定
             EnObjects[0].objectKey = config.object_key;
             EnObjects[0].objectDescription = config.object_desc;
-            EnObjects[0].ObjectContent.contentType = 'iaCloudData';
-            EnObjects[0].ObjectContent.contentData = SensorNode.dItems;
+            EnObjects[0].objectContent.contentType = 'iaCloudData';
+            EnObjects[0].objectContent.contentData = SensorNode.dItems;
         }
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
@@ -96,7 +96,7 @@ module.exports = function (RED) {
         var iaCloudObjectSend = function (element) {
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
-            var msg = { request: 'store', dataObject: { ObjectContent: {} } };
+            var msg = { request: 'store', dataObject: { objectContent: {} } };
 
             var iaObject = EnObjects.find(function (objItem, idx) {
                 node.log('objItem.objectKey = ' + objItem.objectKey);
@@ -109,7 +109,7 @@ module.exports = function (RED) {
                 msg.dataObject.timeStamp = moment().format();
                 msg.dataObject.objectType = 'iaCloudObject';
                 msg.dataObject.objectDescription = iaObject.objectDescription;
-                msg.dataObject.ObjectContent.contentType = 'iaCloudData';
+                msg.dataObject.objectContent.contentType = 'iaCloudData';
 
                 var options = iaObject.options;
                 node.log('options = ' + JSON.stringify(options));
@@ -120,7 +120,7 @@ module.exports = function (RED) {
                 sensor_val = eval('sensor.' + calc_func + '(element[1])');
                 node.log(calc_func + ' value = ' + sensor_val);
 
-                var contentData = iaObject.ObjectContent.contentData;
+                var contentData = iaObject.objectContent.contentData;
                 contentData.some(function (dItem, idx) {
                     if ((idx + 1) > sensor_val.length) {
                         return true;
@@ -128,7 +128,7 @@ module.exports = function (RED) {
                     dItem.dataValue = sensor_val[idx];
                 });
 
-                msg.dataObject.ObjectContent.contentData = contentData;
+                msg.dataObject.objectContent.contentData = contentData;
                 node.log(JSON.stringify(msg.dataObject));
                 node.send(msg);
                 // node.status({fill:'green', shape:'dot', text:'runtime.sent'});
