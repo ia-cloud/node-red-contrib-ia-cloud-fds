@@ -1,4 +1,12 @@
 {
+    "serial": {
+        "errors": {
+            "closed": "クローズ時エラー (ポート＝__port__)",
+            "error": "シリアル通信エラー (ポート＝__port__)\r\n__error__",
+            "unexpected-close": "予期せぬクローズ (ポート＝__port__)"
+        },
+        "onopen": "オープンされました (ポート＝__port__ ボーレート＝__baud__ 設定＝__config__)"
+    },
     "ia-cloud-serial": {
         "label": {
             "serialport": "シリアルポート",

@@ -1,4 +1,12 @@
 {
+    "serial": {
+        "errors": {
+            "closed": "Close error (port=__port__)",
+            "error": "Serial error (port=__port__)\r\n__error__",
+            "unexpected-close": "Unexpected close (port=__port__)"
+        },
+        "onopen": "Opened (port=__port__ baud=__baud__ config=__config__)"
+    },
     "ia-cloud-serial": {
         "label": {
             "serialport": "Serial Port",
