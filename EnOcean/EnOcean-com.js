@@ -22,7 +22,7 @@ module.exports = function (RED) {
         //
         const data = receivedEspData.slice(6, offsetOptionalData).toString('hex');
         const optionalData = receivedEspData.slice(offsetOptionalData, offsetCrc8d).toString('hex');
-        const crc8d = receivedEspData.slice(offsetCrc8d).toString('hex');
+        const crc8d = receivedEspData.slice(offsetCrc8d, offsetCrc8d + 1).toString('hex');
 
         return {
             syncByte,
@@ -185,6 +185,7 @@ module.exports = function (RED) {
             node.port = this.serialPool.get(this.serialConfig);
 
             this.port.on('data', function (msgout) {
+                // TODO msgout.payload can be 32 bytes when 2 sensors send telegram at the same time.
                 const esp = pickupEspPacketAsObject(msgout.payload);
 
                 if (esp.syncByte !== '55') {
