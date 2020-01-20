@@ -2,7 +2,7 @@ module.exports = function (RED) {
     'use strict';
 
     var moment = require('moment');
-    var sensor = require('./sensor');
+    const sensors = require('./sensors');
 
     // EnOcean-obj node function definition
     function EnOceanObjNode(config) {
@@ -113,19 +113,19 @@ module.exports = function (RED) {
 
                 var options = iaObject.options;
                 node.log('options = ' + JSON.stringify(options));
-                var sensor_val = [];
-                // 関数名を取り出す
-                var calc_func = sensor.module_list[options.sensor_kind];
-                node.log('function name : ' + calc_func);
-                sensor_val = eval('sensor.' + calc_func + '(element[1])');
-                node.log(calc_func + ' value = ' + sensor_val);
+                // 関数を取り出す
+                const sensor = sensors.find((sensor) => sensor.type === options.sensor_kind); // TODO Refactor sensor_kind to sensorType, naming s, ss.
+                const sensorValues = sensor ? sensor.process(element[1]) : [];
+                if (sensor) {
+                    node.log(sensor.name + ' value = ' + sensorValues);
+                }
 
                 var contentData = iaObject.objectContent.contentData;
                 contentData.some(function (dItem, idx) {
-                    if ((idx + 1) > sensor_val.length) {
+                    if ((idx + 1) > sensorValues.length) {
                         return true;
                     }
-                    dItem.dataValue = sensor_val[idx];
+                    dItem.dataValue = sensorValues[idx];
                 });
 
                 msg.dataObject.objectContent.contentData = contentData;
