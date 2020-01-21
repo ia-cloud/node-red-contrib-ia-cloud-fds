@@ -99,8 +99,8 @@ module.exports = function (RED) {
             var msg = { request: 'store', dataObject: { objectContent: {} } };
 
             var iaObject = EnObjects.find(function (objItem, idx) {
-                node.log('objItem.objectKey = ' + objItem.objectKey);
-                node.log('element[0] = ' + element[0]);
+                node.debug('objItem.objectKey = ' + objItem.objectKey);
+                node.debug('element[0] = ' + element[0]);
                 return (objItem.objectKey == element[0]);
             });
 
@@ -112,12 +112,12 @@ module.exports = function (RED) {
                 msg.dataObject.objectContent.contentType = 'iaCloudData';
 
                 var options = iaObject.options;
-                node.log('options = ' + JSON.stringify(options));
+                node.debug('options = ' + JSON.stringify(options));
                 // 関数を取り出す
                 const sensor = sensors.find((sensor) => sensor.type === options.sensor_kind); // TODO Refactor sensor_kind to sensorType, naming s, ss.
                 const sensorValues = sensor ? sensor.process(element[1]) : [];
                 if (sensor) {
-                    node.log(sensor.name + ' value = ' + sensorValues);
+                    node.debug(sensor.name + ' value = ' + sensorValues);
                 }
 
                 var contentData = iaObject.objectContent.contentData;
@@ -129,7 +129,7 @@ module.exports = function (RED) {
                 });
 
                 msg.dataObject.objectContent.contentData = contentData;
-                node.log(JSON.stringify(msg.dataObject));
+                node.debug(JSON.stringify(msg.dataObject));
                 node.send(msg);
                 // node.status({fill:'green', shape:'dot', text:'runtime.sent'});
                 node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
