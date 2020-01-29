@@ -1,8 +1,6 @@
 {
     "editor": {
-        "url": "ia-cloud URL",
-        "username": "ユーザID",
-        "password": "パスワード",
+        "ccs-connection-config": "接続先CCS",
         "details": "詳細設定有効",
         "FDSKey": "データソースのユニークキー",
         "comment": "データソースの説明",
