@@ -51,111 +51,115 @@
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('ia-cloud-change', {
-    category: 'iaCloud',
-    color: 'rgb(231, 180, 100)',
-    // align: 'right',
-    defaults: {
-      name: { value: 'ia-cloud-change' },
-      objectKey: { value: '' },
-      objectDescription: { value: '' },
-      instanceKey: { value: '' },
-      rules: { value: '' },
-    },
-    inputs: 1,
-    outputs: 1,
-    icon: 'swap.png',
-    label() {
-      return this.name || 'ia-cloud-change';
-    },
-    oneditprepare() {
-      // Labels
-      const labelMsgSource = this._('ia-cloud-fds.change.msg-source');
-      const labelMsgDestination = this._('ia-cloud-fds.change.msg-destination');
-      const labelDataName = this._('ia-cloud-fds.change.data-name');
-      const labelCommonName = this._('ia-cloud-fds.change.common-name');
-      const labelUnit = this._('ia-cloud-fds.change.unit');
+  // To avoids polluting the global namespace.
+  (() => {
+    RED.nodes.registerType('ia-cloud-change', {
+      category: 'iaCloud',
+      color: 'rgb(231, 180, 100)',
+      // align: 'right',
+      defaults: {
+        name: { value: 'ia-cloud-change' },
+        objectKey: { value: '' },
+        objectDescription: { value: '' },
+        instanceKey: { value: '' },
+        rules: { value: '' },
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'swap.png',
+      label() {
+        return this.name || 'ia-cloud-change';
+      },
+      oneditprepare() {
+        // Labels
+        const labelMsgSource = this._('ia-cloud-fds.change.msg-source');
+        const labelMsgDestination = this._('ia-cloud-fds.change.msg-destination');
+        const labelDataName = this._('ia-cloud-fds.change.data-name');
+        const labelCommonName = this._('ia-cloud-fds.change.common-name');
+        const labelUnit = this._('ia-cloud-fds.change.unit');
 
-      // Define editableList.
-      $('#rule_table').css('min-height', '300px').css('min-width', '400px').editableList({
-        removable: true,
-        sortable: true,
-        // Process when click add button.
-        addItem($row, index, data) {
-          const dataName = data.dataName || '';
-          const commonName = data.commonName || '';
-          const unit = data.unit || '';
+        // Define editableList.
+        $('#rule_table').css('min-height', '300px').css('min-width', '400px').editableList({
+          removable: true,
+          sortable: true,
+          // Process when click add button.
+          addItem($row, index, data) {
+            const dataName = data.dataName || '';
+            const commonName = data.commonName || '';
+            const unit = data.unit || '';
 
-          const template = `
-            <div class="row-source form-row">
-              <label style="width:22%"><i class="fa fa-random"></i> <span>${labelMsgSource}</span></label>
-              <input type="text" class="rule-from" placeholder="payload" />
-            </div>
-            <div class="row-destination form-row">
-              <label style="width:22%"><i class="fa fa-arrow-right"></i> <span>${labelMsgDestination}</span></label>
-              <input type="text" style="width:30%;" class="rule-to-data-name" value="${dataName}" placeholder="${labelDataName}" />
-              <input type="text" style="width:30%;" class="rule-to-common-name" value="${commonName}" placeholder="${labelCommonName}" />
-              <input type="text" style="width:14%;" class="rule-to-unit" value="${unit}" placeholder="${labelUnit}" />
-            </div>
-          `;
+            const template = `
+              <div class="row-source form-row">
+                <label style="width:22%"><i class="fa fa-random"></i> <span>${labelMsgSource}</span></label>
+                <input type="text" class="rule-from" placeholder="payload" />
+              </div>
+              <div class="row-destination form-row">
+                <label style="width:22%"><i class="fa fa-arrow-right"></i> <span>${labelMsgDestination}</span></label>
+                <input type="text" style="width:30%;" class="rule-to-data-name" value="${dataName}" placeholder="${labelDataName}" />
+                <input type="text" style="width:30%;" class="rule-to-common-name" value="${commonName}" placeholder="${labelCommonName}" />
+                <input type="text" style="width:14%;" class="rule-to-unit" value="${unit}" placeholder="${labelUnit}" />
+              </div>
+            `;
 
-          $(template).appendTo($row)
-            .find('.rule-from')
-              .typedInput({
-                types: [ 'msg' ],
-                width: '200px',
-                // typeField: '.my-type-field',
-              })
-              .typedInput('type', data.type)
-              .typedInput('value', data.value);
-        },
-      });
+            $(template).appendTo($row)
+              .find('.rule-from')
+                .typedInput({
+                  types: [ 'msg' ],
+                  width: '200px',
+                  // typeField: '.my-type-field',
+                })
+                .typedInput('type', data.type)
+                .typedInput('value', data.value);
+          },
+        });
 
-      // Stack rows.
-      const rules = this.rules || [];
-      // rules.push({});
+        // Stack rows.
+        const rules = this.rules || [];
+        // rules.push({});
 
-      const $editableList = $('#rule_table');
-      rules.forEach(rule => $editableList.editableList('addItem', rule));
-    },
-    oneditsave() {
-      const items = $('#rule_table').editableList('items');
+        const $editableList = $('#rule_table');
+        rules.forEach(rule => $editableList.editableList('addItem', rule));
+      },
+      oneditsave() {
+        const items = $('#rule_table').editableList('items');
 
-      const rowValues = Array.from(items).map((item) => {
-        const $item = $(item);
-        $ruleFrom = $item.find('.rule-from');
-        return {
-          type: $ruleFrom.typedInput('type'),
-          value: $ruleFrom.typedInput('value'),
-          dataName: $item.find('.rule-to-data-name').val(),
-          commonName: $item.find('.rule-to-common-name').val(),
-          unit: $item.find('.rule-to-unit').val(),
-        };
-      });
+        const rowValues = Array.from(items).map((item) => {
+          const $item = $(item);
+          $ruleFrom = $item.find('.rule-from');
+          return {
+            type: $ruleFrom.typedInput('type'),
+            value: $ruleFrom.typedInput('value'),
+            dataName: $item.find('.rule-to-data-name').val(),
+            commonName: $item.find('.rule-to-common-name').val(),
+            unit: $item.find('.rule-to-unit').val(),
+          };
+        });
 
-      this.rules = rowValues;
-    },
-  });
+        this.rules = rowValues;
+      },
+    });
 
-  /** Put sequence numbers (1-based). */
-  const refreshSequence = () => {
-    $('.ia-cloud-fds-change-rules-seq').each((index, element) => $(element).text(index + 1));
-  };
+    /** Put sequence numbers (1-based). */
+    const refreshSequence = () => {
+      $('.ia-cloud-fds-change-rules-seq').each((index, element) => $(element).text(index + 1));
+    };
 
-  /** Returns a new row instance. */
-  const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
-    if (!$rowTemplate) {
-      $rowTemplate = $('.ia-cloud-change-rules-row-template .form-row');
-    }
-    if (!rowValues) {
-      rowValues = {};
-    }
+    /** Returns a new row instance. */
+    const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
+      if (!$rowTemplate) {
+        $rowTemplate = $('.ia-cloud-change-rules-row-template .form-row');
+      }
+      if (!rowValues) {
+        rowValues = {};
+      }
 
-    const $newRow = $rowTemplate.clone();
-    $newRow.find('.ia-cloud-fds-change-rules-seq').text(rowNumber);
-    $newRow.find('.rule-origin').val(rowValues.origin);
-    $newRow.find('.rule-dest').val(rowValues.dest);
-    return $newRow;
-  };
+      const $newRow = $rowTemplate.clone();
+      $newRow.find('.ia-cloud-fds-change-rules-seq').text(rowNumber);
+      $newRow.find('.rule-origin').val(rowValues.origin);
+      $newRow.find('.rule-dest').val(rowValues.dest);
+      return $newRow;
+    };
+
+  })();
 
 </script>
