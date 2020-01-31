@@ -27,53 +27,57 @@ function exportsFunction(RED) {
         RED.nodes.createNode(thisNode, config);
 
         // inputイベント(ノードがメッセージを受信)へのリスナー登録.
-        this.on('input', async (msg) => {
-            if (!config.rules || config.rules.length === 0) {
-                // No change rule configured.
-                return;
-            }
+        this.on('input', (msg) => {
+            (async () => {
+                if (!config.rules || config.rules.length === 0) {
+                    // No change rule configured.
+                    return;
+                }
 
-            if (typeof msg.payload === 'object') {
-                // ex. msg.payload = {};
-            } else {
-                // ex. msg.payload = 46;
-            }
+                if (typeof msg.payload === 'object') {
+                    // ex. msg.payload = {};
+                } else {
+                    // ex. msg.payload = 46;
+                }
 
-            // Change values with rules.
-            const contentData = config.rules
-                .filter((rule) => rule.value && rule.dataName)
-                .map((rule) => {
-                    const contentDatum = {
-                        dataValue: resolvePayload(msg, rule.value),
-                        dataName: rule.dataName,
-                        commonName: rule.commonName,
-                    };
-                    if (rule.unit) { contentDatum.unit = rule.unit; }
-                    return contentDatum;
-                });
+                // Change values with rules.
+                const contentData = config.rules
+                    .filter((rule) => rule.value && rule.dataName)
+                    .map((rule) => {
+                        const contentDatum = {
+                            dataValue: resolvePayload(msg, rule.value),
+                            dataName: rule.dataName,
+                            commonName: rule.commonName,
+                        };
+                        if (rule.unit) { contentDatum.unit = rule.unit; }
+                        return contentDatum;
+                    });
 
-            // Variables
+                // Variables
 
-            const dataObject = {
-                objectType: 'iaCloudObject',
-                objectKey: config.objectKey,
-                timestamp: moment().format(),
-                objectContent: {
-                    contentType: 'iaCloudData',
-                    contentData,
-                },
-            };
-            // Optional keys.
-            if (config.objectDescription) { dataObject.objectDescription = config.objectDescription; }
-            if (config.instanceKey) { dataObject.instanceKey = config.instanceKey; }
+                const dataObject = {
+                    objectType: 'iaCloudObject',
+                    objectKey: config.objectKey,
+                    timestamp: moment().format(),
+                    objectContent: {
+                        contentType: 'iaCloudData',
+                        contentData,
+                    },
+                };
+                // Optional keys.
+                if (config.objectDescription) { dataObject.objectDescription = config.objectDescription; }
+                if (config.instanceKey) { dataObject.instanceKey = config.instanceKey; }
 
-            msg = {
-                request: 'store',
-                // serviceID,
-                dataObject,
-            };
+                msg = {
+                    request: 'store',
+                    // serviceID,
+                    dataObject,
+                };
 
-            thisNode.send(msg);
+                thisNode.send(msg);
+            }).catch((err) => {
+                thisNode.error(err, msg);
+            });
         });
 
         /**
