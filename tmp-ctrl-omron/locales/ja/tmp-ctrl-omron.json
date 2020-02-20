@@ -1,0 +1,40 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "ui-config": "ここで設定",
+        "fileConfig": "設定ファイル",
+        "tab": {
+          "object-config": "オブジェクト設定",
+          "data-config": "データ設定"
+        },
+        "filename": "設定ファイル名を入力してください",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "modbusNode": "通信ノード",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "dItem": "データ項目",
+        "dname": "データ名称",
+        "unit": "単位",
+        "pv": "現在値",
+        "sv": "設定値",
+        "pro": "比例帯",
+        "int": "積分時間",
+        "dir": "微分時間",
+        "run": "ランモード",
+        "am": "自動運転",
+        "at": "オートチューニング"
+    },
+    "runtime": {
+        "badFilePath": "ファイルが見つかりません。",
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "sent": "データ送出"
+    }
+}
