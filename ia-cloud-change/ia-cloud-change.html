@@ -138,28 +138,6 @@
         this.rules = rowValues;
       },
     });
-
-    /** Put sequence numbers (1-based). */
-    const refreshSequence = () => {
-      $('.ia-cloud-fds-change-rules-seq').each((index, element) => $(element).text(index + 1));
-    };
-
-    /** Returns a new row instance. */
-    const getNewRow = (rowNumber, rowValues, $rowTemplate) => {
-      if (!$rowTemplate) {
-        $rowTemplate = $('.ia-cloud-change-rules-row-template .form-row');
-      }
-      if (!rowValues) {
-        rowValues = {};
-      }
-
-      const $newRow = $rowTemplate.clone();
-      $newRow.find('.ia-cloud-fds-change-rules-seq').text(rowNumber);
-      $newRow.find('.rule-origin').val(rowValues.origin);
-      $newRow.find('.rule-dest').val(rowValues.dest);
-      return $newRow;
-    };
-
   })();
 
 </script>
