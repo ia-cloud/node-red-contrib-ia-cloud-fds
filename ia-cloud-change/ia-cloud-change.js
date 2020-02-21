@@ -27,8 +27,8 @@ function exportsFunction(RED) {
         RED.nodes.createNode(thisNode, config);
 
         // inputイベント(ノードがメッセージを受信)へのリスナー登録.
-        this.on('input', (msg) => {
-            (async () => {
+        this.on('input', (message) => {
+            (async (msg) => {
                 if (!config.rules || config.rules.length === 0) {
                     // No change rule configured.
                     return;
@@ -75,8 +75,8 @@ function exportsFunction(RED) {
                 };
 
                 thisNode.send(msg);
-            }).catch((err) => {
-                thisNode.error(err, msg);
+            })(message).catch((err) => {
+                thisNode.error(err, message);
             });
         });
 
