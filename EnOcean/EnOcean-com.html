@@ -24,7 +24,7 @@
         category: 'config',
         defaults: {
             name: {name:"EnOcean-com"},
-            serial: {type:"ia-cloud-serial-port",required:true}
+            serial: {type:"ia-cloud-serialport",required:true}
         },
         label: function() {
             var serialNode = RED.nodes.node(this.serial);
