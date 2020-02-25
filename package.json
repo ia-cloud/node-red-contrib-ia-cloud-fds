@@ -43,7 +43,6 @@
       "ia-cloud-nfcpy-id": "ia-cloud-nfcpy-id/ia-cloud-nfcpy-id.js",
       "EnOcean-com": "EnOcean/EnOcean-com.js",
       "EnOcean-obj": "EnOcean/EnOcean-obj.js",
-      "ia-cloud-serial-port": "EnOcean/ia-cloud-serial-port.js",
       "enocean-sensor-core-staff-temperature-humidity": "EnOcean/sensor-core-staff-temperature-humidity-node.js",
       "enocean-sensor-itec-ct": "EnOcean/sensor-itec-ct-node.js",
       "enocean-sensor-optex-occupancy": "EnOcean/sensor-optex-occupancy-node.js",
@@ -58,7 +57,8 @@
       "gp2iac": "gp2iac/gp2iac.js",
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "tmp-ctrl-omron": "tmp-ctrl-omron/tmp-ctrl-omron.js",
-      "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js"
+      "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js",
+      "ia-cloud-serialport": "ia-cloud-serialport/ia-cloud-serialport.js"
     }
   },
   "repository": {
