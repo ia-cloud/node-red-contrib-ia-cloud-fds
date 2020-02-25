@@ -56,13 +56,14 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,config);
 
         var node = this;
+        const ccsConnectionConfigNode = RED.nodes.getNode(config.ccsConnectionConfig);
 
         // 接続情報を保持するオブジェクト
         var info = {
             status: "disconnected",
             serviceID: "",
-            url: config.url,
-            userID: this.credentials.userID,
+            url: ccsConnectionConfigNode.url,
+            userID: ccsConnectionConfigNode.credentials.userId,
             FDSKey: config.FDSKey,
             FDSType: "iaCloudFDS",
             cnctTs:"",
@@ -80,8 +81,8 @@ module.exports = function(RED) {
         opts.url = info.url;
 
         opts.auth = {
-            user: this.credentials.userID,
-            pass: this.credentials.password
+            user: ccsConnectionConfigNode.credentials.userId,
+            pass: ccsConnectionConfigNode.credentials.password,
         };
         opts.method = "POST";
         opts.headers = {};

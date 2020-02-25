@@ -17,17 +17,10 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
+    <!-- CCS connection config -->
     <div class="form-row">
-        <label for="node-input-url"><i class="fa fa-globe"></i> <span data-i18n="editor.url"></span></label>
-        <input id="node-input-url" type="text" placeholder="https://">
-    </div>
-    <div class="form-row">
-        <label for="node-input-userID"><i class="fa fa-user"></i> <span data-i18n="editor.username"></span></label>
-        <input type="text" id="node-input-userID">
-    </div>
-    <div class="form-row">
-        <label for="node-input-password"><i class="fa fa-lock"></i> <span data-i18n="editor.password"></span></label>
-        <input type="password" id="node-input-password">
+        <label for="node-input-ccsConnectionConfig"><i class="fa fa-link"></i> <span data-i18n="editor.ccs-connection-config" /></label>
+        <input type="text" id="node-input-ccsConnectionConfig" data-i18n="[placeholder]editor.ccs-connection-config">
     </div>
     <div class="form-row">
         <label for="node-input-FDSKey"> <span data-i18n="editor.FDSKey"></span></label>
@@ -99,18 +92,13 @@ variable should be set and Node-RED restarted.</p>
         color:"rgb(231, 180, 100)",
         align: "right",
         defaults: {
+            ccsConnectionConfig: { value: '', type: 'ia-cloud-ccs-connection-config', required: true },
             name: {value:"ia-cloud-cnct"},
-            url:{value:"", required: true, validate:function(v) { return (v.trim().indexOf("https://") === 0)} },
             FDSKey: {value:"", required: true},
             comment:{value:""},
             cnctRetryInterval:{value:60, validate: RED.validators.number()},
             tappingInterval:{value:24, validate: RED.validators.number()}
         },
-        credentials: {
-            userID: {type:"text"},
-            password: {type: "password"}
-        },
-
         inputs:1,
         outputs:1,
         icon: "ia-cloud.png",
