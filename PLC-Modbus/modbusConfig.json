@@ -1,7 +1,7 @@
-{
-    "configName": "modbusConfig.json",
+[{
+    "targetNodeName": "PLC-Modbus-test",
     "comment": "modbus ia-cloud object configration data for test.",
-    "dataObjects":
+    "configObjects":
         [{
         "objectName": "bit系データ",
         "objectKey": "com.atbridge-cnsltg.node-RED.test1",
@@ -177,4 +177,4 @@
           }]
         }
     }]
-}
+}]

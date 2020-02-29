@@ -2,13 +2,17 @@
 
 ## PLC-Modbus-AE
 Modbus通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。  
-設定Nodeとして、Modbus-com、Modbus-AnEを使用する。
+設定Nodeとして、Modbus-comを使用する。
 
 ## 入力メッセージ
-なし  
+ia-cloudオブジェクトを送出するタイミングを指示するメッセージ
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|payload|string|NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。|
 
 ## 出力メッセージ
-オブジェクトのia-cloud CSへストアーするためのメッセージを出力する。ia-cloud-cnct Nodeへの接続を想定している。
+オブジェクトをia-cloud CSへストアーするためのメッセージを出力する。ia-cloud-cnct Nodeへの接続を想定している。
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
@@ -25,21 +29,20 @@ msg = {
     objectDescription: "説明",
     ObjectContent: {
       contentType: "Alarm&Event",
-      contentData: [{
-        commonName: "Alarm&Event",
-        dataValue: {
-          AnEStatus: "set",
-          AnECode: "E309",
-          AnEdescription: "XXエラー発生"
+      contentData: [
+        {
+          commonName: "Alarm&Event",
+          dataValue: {
+            AnEStatus: "set",
+            AnECode: "E309",
+            AnEdescription: "XXエラー発生"}
+        },{
+          commonName: "Alarm&Event",
+          dataValue: {
+            AnEStatus: "reset",
+            AnECode: "W590",
+            AnEdescription: "xx警報発生"}
         }
-      },{
-        commonName: "Alarm&Event",
-        dataValue: {
-          AnEStatus: "reset",
-          AnECode: "W590",
-          AnEdescription: "xx警報発生"
-        }
-      }
                 .
                 .
                 .
@@ -52,18 +55,25 @@ msg = {
 
 本nodeは以下のプロパティを持つ
 
-| 名称 | 種別 | 説明 |
-|:----------|:-----:|:--------------------|
+| 名称 | 種別 | 説明 | 備考 |
+|:----------|:-----:|:-----|:-------|
 |Node name|string|PLC-Modbus Nodeの名称|
 |Modbus Node|設定Node|Modbus通信の設定Node|
+|confSel|string|設定が設定ファイルでされたか、UI画面からされたかを示す文字列。|
+|configJson|string|設定情報ObjectをJSON化した文字列。後述のプロパティ方自動生成される。|非表示のプロパティ
+|configReady|boolean|必須のプロパティがすべて設定済みかを表すフラグ|非表示のプロパティ
+
 
 **設定ファイルの場合**  
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
-|設定ファイル|string|設定ファイルでの設定の場合、設定JSONファイルのフルパスファイル名称。|
+|設定ファイル|string|設定ファイルでの設定の場合、設定JSONファイルのファイル名称。|
+|設定情報|string|設定ファイルから取り出した、設定オブジェクト文字列。これから設定オブジェクトjsonが生成される。|
 
-**データオブジェクト設定の場合**
+**UI画面設定の場合**
+
+***オブジェクトの設定***
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
@@ -72,14 +82,26 @@ msg = {
 |オブジェクト名称|string| ia-cloudオブジェクトの任意の名称。　|
 |オブジェクトキー|string| ia-cloudオブジェクトのobjectKeyとして使われる。|
 |オブジェクトの説明|string| ia-cloudオブジェクトのobjectdescriptionとして使われる。|
-|A&E情報|設定Node| objectContentとして挿入されるアラーム＆イベントデータを設定するための設定Node。|
+
+***データの設定***
+
+| 名称 | 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|データの構造型|string| ia-cloudオブジェクトのデータアイテムとしての型。"Alarm&Event"固定。|
+|デバイス種別|string |アラーム＆イベント情報を取得するModbusデバイスの種別。Coil/IS(Input Status)のいずれか。|
+|先頭アドレス　　　|number|データを取得するデータのModbusアドレス。|
+|論理　　　|string|対象データの論理　正論理・負論理|
+|A&Eコード　|string|アラーム＆イベントのコード。通常アラーム番号や警報番号など。|
+|A&Eの説明|string|該当するアラーム＆イベントの説明文字列。|
+
 
 ## 設定ファイルの構造
+設定ファイルの内容記述例
 ```
 {
-    "name": "modbusAEConfig.json",
-    "comment": "modbus ia-cloud A&E object configration data for test.",
-    "AnEObjects":
+    "targetNodeName": "{設定データが対象とするPLC-Modbus-AE nodeの名称}",
+    "comment": "{設定データに関する説明}",
+    "dataObjects":
       [{
         "name": "アラームブロック1",
         "objectKey": "com.atbridge-cnsltg.node-RED.testAE1",

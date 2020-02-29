@@ -18,12 +18,10 @@ module.exports = function(RED) {
     "use strict";
     var request = require("request");
     var moment = require("moment");
-    var fs = require("fs");
 
     function PLCModbusAE(config) {
 
         RED.nodes.createNode(this,config);
-
         var node = this;
         var AnEObjects = [{}];
         var storeObj;
@@ -32,29 +30,16 @@ module.exports = function(RED) {
         // Nodeステータスを、preparingにする。
         node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
 
-        if (config.confsel == "fileSet"){
-          // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
-          try{
-            AnEObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
-              .AnEObjects;
-          } catch(e) {
-            //エラーの場合は、nodeステータスを変更。
-            node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
-            node.error(RED._("runtime.badFilePath"), configObj);
-            configObj = null;
-          }
-        } else {
-          // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
-          var AnENode = (RED.nodes.getNode(config.AnE));
-          AnEObjects = [{options:{}, ObjectContent:{}}];
-          AnEObjects[0].options.storeInterval = config.storeInterval;
-          AnEObjects[0].options.storeAsync = config.storeAsync;
-          AnEObjects[0].objectName = config.objectName;
-          AnEObjects[0].objectKey = config.objectKey;
-          AnEObjects[0].objectDescription = config.objectDescription;
-          AnEObjects[0].ObjectContent.contentType = AnENode.contentType;
-          AnEObjects[0].ObjectContent.contentData = AnENode.AnE;
+        // 設定ObjectsをconfigJsonプロパティからパース
+        try{
+          AnEObjects = JSON.parse(config.configJson);
+        } catch(e) {
+          //エラーの場合は、nodeステータスを変更。
+          node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
+          node.error(RED._("runtime.badFilePath"), config.configObjects);
+          AnEObjects = null;
         }
+
         if (AnEObjects) {
             // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
             var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
@@ -62,6 +47,7 @@ module.exports = function(RED) {
             AnEObjects.forEach(function(objItem, idx) {
               // 定期収集のためのカウンターをセット
               objItem.options.timeCount = objItem.options.storeInterval;
+              // データItemを設定
               objItem.ObjectContent.contentData.forEach(function(dataItem, index) {
                 var options = dataItem.options;
                 var linkData = {};
@@ -126,34 +112,46 @@ module.exports = function(RED) {
           iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
               // 対象のデータアイテムのシャローコピーを作成
               var dItem = Object.assign( {}, dataItem);
-              var options = dataItem.options;
+              var deviceType = dataItem.options.deviceType;
+              var source = dataItem.options.source;
+              var logic = dataItem.options.logic;
               delete dItem.options;
               dItem.dataValue.AnEStatus = "";
 
-              var value = linkObj[options.deviceType].find(function(lData){
-                return (lData.address == Number(options.source));
-              }).value;
-              var preValue = linkObj[options.deviceType].find(function(lData){
-                return (lData.address == Number(options.source));
-              }).preValue;
-              value = (value == "1") ? true: false;
-              preValue = (preValue == "1") ? true: false;
-              if (options.logic == "neg") {
+              var lvalue = linkObj[deviceType].find(function(lData){
+                return (lData.address == Number(source));});
+              var value = lvalue.value;
+              var preValue = lvalue.preValue;
+
+              if(deviceType == "coil" || deviceType == "IS") {
+                value = (value == "0") ? false : true;
+                preValue = (preValue == "0") ? false : true;
+              }
+              if(deviceType == "IR" || deviceType == "HR") {
+                value = (value == "0x0000") ? false : true;
+                preValue = (preValue == "0x0000") ? false : true;
+              }
+              if (logic == "neg") {
                 value = !value;
                 preValue = !preValue;
               }
               if (value) {dItem.dataValue.AnEStatus = (preValue)? "on": "set";}
               else {dItem.dataValue.AnEStatus = (!preValue)? "off": "reset";}
-            contentData.push(dItem);
+              contentData.push(dItem);
           });
 
           msg.dataObject.ObjectContent.contentData = contentData;
+          msg.payload = RED._("runtime.sent");
           node.send(msg);
           node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }
 
         this.on("input",function(msg) {
-          //何もしない
+            if (msg.payload) {
+              dataObjects.forEach(function(objItem, idx) { 
+                  iaCloudObjectSend(objItem.objectKey);
+              });
+            }
         });
         this.on("close",function() {
           clearInterval(sendObjectId);

@@ -18,7 +18,7 @@ module.exports = function(RED) {
     "use strict";
     var request = require("request");
     var moment = require("moment");
-    var fs = require("fs");
+
     const iconv = require("iconv-lite");
 
     function PLCModbus(config) {
@@ -32,28 +32,14 @@ module.exports = function(RED) {
         // Nodeステータスを、preparingにする。
         node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
 
-        if (config.confsel == "fileSet"){
-          // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
-          try{
-                    dataObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8'))
-              .dataObjects;
-          } catch(e) {
-            //エラーの場合は、nodeステータスを変更。
-            node.status({fill:"red", shape:"ring", text:"runtime.badFilePath"});
-            node.error(RED._("runtime.badFilePath"), config.configfile);
-            dataObjects = null;
-          }
-        } else if(config.confsel == "propertySet") {
-          // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
-          var dItemsNode = (RED.nodes.getNode(config.dItems));
-          dataObjects = [{options:{}, ObjectContent:{}}]
-          dataObjects[0].options.storeInterval = config.storeInterval;
-          dataObjects[0].options.storeAsync = config.storeAsync;
-          dataObjects[0].objectName = config.objectName;
-          dataObjects[0].objectKey = config.objectKey;
-          dataObjects[0].objectDescription = config.objectDescription;
-          dataObjects[0].ObjectContent.contentType = dItemsNode.contentType;
-          dataObjects[0].ObjectContent.contentData = dItemsNode.dItems;
+        // 設定ObjectsをconfigJsonプロパティからパース
+        try{
+          dataObjects = JSON.parse(config.configJson);
+        } catch(e) {
+          //エラーの場合は、nodeステータスを変更。
+          node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
+          node.error(RED._("runtime.badFilePath"), config.configObjects);
+          dataObjects = null;
         }
 
         // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
@@ -265,11 +251,16 @@ module.exports = function(RED) {
               contentData.push(dItem);
           });
           msg.dataObject.ObjectContent.contentData = contentData;
+          msg.payload = RED._("runtime.sent");
           node.send(msg);
           node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }
         this.on("input",function(msg) {
-          //何もしない
+            if (msg.payload) {
+                dataObjects.forEach(function(objItem, idx) {  
+                    iaCloudObjectSend(objItem.objectKey);
+                });
+            }
         });
         this.on("close",function() {
           clearInterval(sendObjectId);

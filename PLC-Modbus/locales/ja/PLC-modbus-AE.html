@@ -15,7 +15,8 @@
 
 <h3>入力メーッセージ</h3>
 <dl class="message-properties">
-    <dd>なし</dd>
+    <dt>msg.payload<span class="property-type">string</span></dt>
+    <dd>iia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
 </dl>
 
 <h3>出力メッセージ</h3>
@@ -28,6 +29,6 @@
 
 <h3>詳細説明</h3>
 <p>Modbus通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
-設定Nodeとして、Modbus-com、Modbus-AnEを使用する。</p>
+設定Nodeとして、Modbus-comを使用する。</p>
 
 </script>
