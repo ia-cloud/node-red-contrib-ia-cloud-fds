@@ -33,13 +33,12 @@
   "node-red": {
     "nodes": {
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+      "object-array": "ia-cloud-object-array/object-array.js",
       "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
       "plc-mc-protocol-config": "plc-mc-protocol/plc-mc-protocol-config.js",
       "PLC-Modbus": "PLC-Modbus/PLC-modbus.js",
       "PLC-Modbus-AE": "PLC-Modbus/PLC-modbus-AE.js",
-      "Modbus-dItems": "PLC-Modbus/Modbus-dItems.js",
-      "Modbus-AnE": "PLC-Modbus/Modbus-AnE.js",
       "Modbus-com": "PLC-Modbus/Modbus-com.js",
       "ia-cloud-nfcpy-id": "ia-cloud-nfcpy-id/ia-cloud-nfcpy-id.js",
       "EnOcean-com": "EnOcean/EnOcean-com.js",
@@ -57,7 +56,9 @@
       "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
       "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
       "gp2iac": "gp2iac/gp2iac.js",
-      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js"
+      "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
+      "tmp-ctrl-omron": "tmp-ctrl-omron/tmp-ctrl-omron.js",
+      "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js"
     }
   },
   "repository": {

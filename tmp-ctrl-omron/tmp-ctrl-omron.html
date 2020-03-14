@@ -31,131 +31,108 @@
     <div class="form-row hide">
         <input type="text" id="node-input-configJson">
     </div>
-    <!-- ui-config か fileSet かのラジオ -->
-    <div class="form-row">
-      <input type="text" style="display: none;" id="node-input-confsel" value="ui-config">
-      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="configSel1"
-            value="ui-config" checked="checked">
-      <label style="width: 40%;" for="configSel1"><span data-i18n="editor.ui-config"></label>
-      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="configSel2" value="fileSet">
-      <label style="width: 40%;" for="configSel2"><span data-i18n="editor.fileConfig"></label>
-    </div>
 
-    <!-- ファイルからの設定情報リード -->
-    <div id="file-conf" class="hide">
-      <div class="form-row" style="margin-left: 20px;">
-          <label style="width: 80%;"><span data-i18n="editor.filename"></span><span style="color: #ff0000;">*</span></label>
-          <input id="configfile" type="file" accept=".json">
-      </div>
-      <div class="form-row" style="margin-left: 20px;">
-          <textarea id="fileConfig" rows="12" style="width: 400px" disabled></textarea>
-      </div>
-    </div>
 
-    <!-- UIでの設定 -->
-    <div id="ui-config">
-      <!-- Tab, ownself -->
-      <div class="red-ui-tabs" id="ui-tabs">
-        <ul>
-          <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
-            class="nav-link red-ui-tab-label" data-toggle="tab">
-            <span data-i18n="editor.tab.object-config" /></a>
-          </li>
-          <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
-            class="nav-link red-ui-tab-label" data-toggle="tab">
-            <span data-i18n="editor.tab.data-config" /></a>
-          </li>
-        </ul>
-      </div>
+  <!-- Tab, ownself -->
+  <div class="red-ui-tabs" id="ui-tabs">
+    <ul>
+      <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
+        class="nav-link red-ui-tab-label" data-toggle="tab">
+        <span data-i18n="editor.tab.object-config" /></a>
+      </li>
+      <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
+        class="nav-link red-ui-tab-label" data-toggle="tab">
+        <span data-i18n="editor.tab.data-config" /></a>
+      </li>
+    </ul>
+  </div>
 
-      <!-- Tab contents -->
-      <div class="tab-content">
+  <!-- Tab contents -->
+  <div class="tab-content">
 
-        <!-- tab1 starts for dataObject-->
-        <div id="tab1" class="tab-pane active">
-          <!-- objectの設定 -->
-          <div class="form-group">
-              <div class="form-row">
-                  <label for="storeInterval">
-                      <span data-i18n="editor.period"></span></label>
-                  <input type="number" id="storeInterval" min="0" step="10"
-                      value="300" style="display: inline-block; width: auto;">
-                  <label for="storeAsync" style="margin-left: 20px;">
-                      <span data-i18n="editor.async"></span></label>
-                  <input type="checkbox" checked="checked" id="storeAsync"
-                      style="display: inline-block; width: auto;" >
-              </div>
-              <div class="form-row">
-                  <label for="objectName">
-                      <span data-i18n="editor.objectname"></span></label>
-                  <input type="text" style="width: 300px" id="objectName">
-              </div>
-              <div class="form-row">
-                  <label 
-                      for="objectKey"><span data-i18n="editor.objectKey"></span>
-                      <span style="color: #ff0000;">*</span></label>
-                  <input class="form-control" type="text" style="width: 300px"
-                   id="objectKey" data-i18n="[placeholder]editor.objectKeyholder">
-              </div>
-              <div class="form-row">
-                  <label 
-                      for="objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-                  <input type="text" style="width: 300px" id="objectDescription">
-              </div>
-          </div>
-        </div>
-        <!-- tab1 ends -->
-
-        <!-- tab2 starts for alarmObject-->
-        <div id="tab2" class="tab-pane">
-          <!-- dataItemの設定 -->
+    <!-- tab1 starts for dataObject-->
+    <div id="tab1" class="tab-pane active">
+      <!-- objectの設定 -->
+      <div class="form-group">
           <div class="form-row">
-            <label for="contentType"><span data-i18n="editor.contentType"></span></label>
-            <input type="text" style="width: 300px" id="contentType" value="tmp-ctrl">
+              <label for="storeInterval">
+                  <span data-i18n="editor.period"></span></label>
+              <input type="number" id="storeInterval" min="0" step="10"
+                  value="300" style="display: inline-block; width: auto;">
+              <label for="storeAsync" style="margin-left: 20px;">
+                  <span data-i18n="editor.async"></span></label>
+              <input type="checkbox" checked="checked" id="storeAsync"
+                  style="display: inline-block; width: auto;" >
           </div>
-          <div id="blocks">
-              <div class="form-block" id="dItem_block[0]">
-                  <div class="form-row" id="ｄItem_del[0]" >
-                    <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
-                    <input type="text" id="dItem[0]" style="width: 30px;" value="1"
-                        disabled="disabled">
-                    <input type="button" id="del_btn[0]" data-i18n="[value]editor.del"
-                    style="margin-left: 30px; width: 70px; display: none;">
-                  </div>
-                  <div class="form-row">
-                    <label><span data-i18n="editor.dItem"></span><span style="color: #ff0000;">*</span></label>
-                    <select style="width: 150px" id="dataSelect[0]">
-                        <option selected="selected" value="pv" data-i18n="editor.pv"></option>
-                        <option value="sv" data-i18n="editor.sv"></option>
-                        <option value="pro" data-i18n="editor.pro"></option>
-                        <option value="int" data-i18n="editor.int"></option>
-                        <option value="dir" data-i18n="editor.dir"></option>
-                        <option value="run" data-i18n="editor.run"></option>
-                        <option value="am" data-i18n="editor.am"></option>
-                        <option value="at" data-i18n="editor.at"></option>
-                    </select>
-                  </div>
+          <div class="form-row">
+              <label for="objectName">
+                  <span data-i18n="editor.objectname"></span></label>
+              <input type="text" style="width: 300px" id="objectName">
+          </div>
+          <div class="form-row">
+              <label 
+                  for="objectKey"><span data-i18n="editor.objectKey"></span>
+                  <span style="color: #ff0000;">*</span></label>
+              <input class="form-control" type="text" style="width: 300px"
+                id="objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+          </div>
+          <div class="form-row">
+              <label 
+                  for="objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+              <input type="text" style="width: 300px" id="objectDescription">
+          </div>
+      </div>
+    </div>
+    <!-- tab1 ends -->
 
-                  <div class="form-row">
-                      <div class="form-inline" style="vertical-align: middle;" >
-                          <label><span data-i18n="editor.dname"></span></label>
-                          <input type="text" style="width: 150px;" id="dName[0]" data-i18n="[value]editor.pv">
-                          <label style="margin-left: 20px; width: 50px;"><span data-i18n="editor.unit"></span></label>
-                          <input type="text" style="width: 40px;" id="unit[0]">
-                      </div>
+    <!-- tab2 starts for alarmObject-->
+    <div id="tab2" class="tab-pane">
+      <!-- dataItemの設定 -->
+      <div class="form-row">
+        <label for="contentType"><span data-i18n="editor.contentType"></span></label>
+        <input type="text" style="width: 300px" id="contentType" value="tmp-ctrl">
+      </div>
+      <div id="blocks">
+          <div class="form-block" id="dItem_block[0]">
+              <div class="form-row" id="ｄItem_del[0]" >
+                <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
+                <input type="text" id="dItem[0]" style="width: 30px;" value="1"
+                    disabled="disabled">
+                <input type="button" id="del_btn[0]" data-i18n="[value]editor.del"
+                style="margin-left: 30px; width: 70px; display: none;">
+              </div>
+              <div class="form-row">
+                <label><span data-i18n="editor.dItem"></span><span style="color: #ff0000;">*</span></label>
+                <select style="width: 150px" id="dataSelect[0]">
+                    <option selected="selected" value="pv" data-i18n="editor.pv"></option>
+                    <option value="sv" data-i18n="editor.sv"></option>
+                    <option value="pro" data-i18n="editor.pro"></option>
+                    <option value="int" data-i18n="editor.int"></option>
+                    <option value="dir" data-i18n="editor.dir"></option>
+                    <option value="run" data-i18n="editor.run"></option>
+                    <option value="am" data-i18n="editor.am"></option>
+                    <option value="at" data-i18n="editor.at"></option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                  <div class="form-inline" style="vertical-align: middle;" >
+                      <label><span data-i18n="editor.dname"></span></label>
+                      <input type="text" style="width: 150px;" id="dName[0]" data-i18n="[value]editor.pv">
+                      <label style="margin-left: 20px; width: 50px;"><span data-i18n="editor.unit"></span></label>
+                      <input type="text" style="width: 40px;" id="unit[0]">
                   </div>
               </div>
           </div>
-          <!-- Addボタン -->
-          <div class="form-block">
-            <input type="button" id="form_add" data-i18n="[value]editor.add">
-          </div>
-          <br>
-        </div>
-        <!-- tab2 ends -->
+      </div>
+      <!-- Addボタン -->
+      <div class="form-block">
+        <input type="button" id="form_add" data-i18n="[value]editor.add">
+      </div>
+      <br>
     </div>
+    <!-- tab2 ends -->
+  </div>
 
 </script>
 
@@ -204,109 +181,63 @@
         // データItemの数を保持する変数
         var frm_cnt = 0;
 
-        // 設定方法を確認（"ui-config" or "fileSet"）
-        $('input[name="configSel"]:radio').change(function() {
-              if ($("#configSel1").is(":checked")) {
-                  $("#file-conf").hide();
-                  $("#ui-config").show();
-                  $('#node-input-confsel').val("ui-config");
-              } else {
-                  $("#file-conf").show();
-                  $("#ui-config").hide();
-                  $('#node-input-confsel').val("fileSet");
-              }
-        });
-        if($("#node-input-confsel").val() == "ui-config"){
-          $('#configSel1').prop('checked', true);
-        } else {
-          $('#configSel2').prop('checked', true);
+        // 設定データを取り出して、各formに展開する。
+        if ($("#node-input-configJson").val()) {
+
+          try{ var conf = JSON.parse($("#node-input-configJson").val());}
+          catch(e){ conf = null; }
         }
-        $('input[name="configSel"]:radio').change();
+        //設定データがあったら
+        if(conf) {
+          $("#storeInterval").val(conf[0].options.storeInterval);
+          $("#storeAsync").prop("checked", conf[0].options.storeAsync);
+          $("#objectName").val(conf[0].objectName);
+          $("#objectKey").val(conf[0].objectKey);
+          $("#objectDescription").val(conf[0].objectDescription);
 
-        // データ項目が選択されたら
-        $("#blocks").off('change', 'select[id^="dataSelect"]');
-        $("#blocks").on('change', 'select[id^="dataSelect"]', function() {
-          var dn = $(this).parents(".form-block").find("input[id^='dName']");
-          var ut = $(this).parents(".form-block").find("input[id^='unit']");
-          dn.val($("option:selected", this).text());
-          switch($(this).val()) {
-            case "pv":
-            case "sv":
-              $(ut).prop("disabled", false);
-              break;
-            default:
-              $(ut).val("");
-              $(ut).prop("disabled", true);
-              break;
-          }
-        });
+          $("contentType").val(conf[0].ObjectContent.contentType);
+          var dItems = conf[0].ObjectContent.contentData;
 
-        // ファイルでの設定の場合
-        if ($("#node-input-confsel").val() == "fileSet") {
-          $("#fileConfig").val($("#node-input-configJson").val());
-        }
+          //フォームを一つ保存
+          var original = $('#dItem_block\\[0\\]');
 
-        // UIでの設定の場合
-        if ($("#node-input-confsel").val() == "ui-config") {
-          // 設定データを取り出して、各formに展開する。
-          if ($("#node-input-configJson").val()) {
+          //一旦フォームオブジェクトをすべて削除
+          $(".form-block[id^='dItem_block']")
+              .each(function(index, formObj) {$(formObj).remove();});
 
-            try{ var conf = JSON.parse($("#node-input-configJson").val());}
-            catch(e){ conf = null; }
-          }
-          //設定データがあったら
-          if(conf) {
-console.log(conf);
-            $("#storeInterval").val(conf[0].options.storeInterval);
-            $("#storeAsync").prop("checked", conf[0].options.storeAsync);
-            $("#objectName").val(conf[0].objectName);
-            $("#objectKey").val(conf[0].objectKey);
-            $("#objectDescription").val(conf[0].objectDescription);
-
-            $("contentType").val(conf[0].ObjectContent.contentType);
-            var dItems = conf[0].ObjectContent.contentData;
-
-            //フォームを一つ保存
-            var original = $('#dItem_block\\[0\\]');
-
-            //一旦フォームオブジェクトをすべて削除
-            $(".form-block[id^='dItem_block']")
-                .each(function(index, formObj) {$(formObj).remove();});
-
-            dItems.forEach(function(value, idx){
-                original
-                .clone()
-                .hide()
-                .appendTo("#blocks")
-                .attr('id', 'dItem_block[' + idx + ']') // クローンのid属性を変更。
-                .end() // 一度適用する
-                .find('div, input, select, label').each(function(index, obj) {
-                  if ($(obj).attr('id') != null) {
-                    if($(obj).attr("id").substr(0,5) == "dItem"){
-                        $(obj).val("" + (idx + 1));
-                    }
-                    $(obj).attr({
-                      id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-                    });
+          dItems.forEach(function(value, idx){
+              original
+              .clone()
+              .hide()
+              .appendTo("#blocks")
+              .attr('id', 'dItem_block[' + idx + ']') // クローンのid属性を変更。
+              .end() // 一度適用する
+              .find('div, input, select, label').each(function(index, obj) {
+                if ($(obj).attr('id') != null) {
+                  if($(obj).attr("id").substr(0,5) == "dItem"){
+                      $(obj).val("" + (idx + 1));
                   }
-                  if ($(obj).attr('for') != null) {
-                    $(obj).attr({
-                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-                    });
-                  }
-                });
-                $("#dName\\[" + idx + "\\]").val(value.dataName);
-                $("#unit\\[" + idx + "\\]").val(value.unit);
-                $("#dataSelect\\[" + idx + "\\]").val(value.options.source);
-                if (value.options.source == "pv" || value.options.source == "sv") 
-                    $("#unit\\[" + idx + "\\]").prop("disabled", false);
-                else $("#unit\\[" + idx + "\\]").prop("disabled", true);
-                var block = $('#dItem_block\\[' + idx + '\\]');
-                if (idx != 0) block.find('input[id^="del_btn"]').show();
-                block.slideDown('slow');
-                frm_cnt = idx;
-            });
-          }
+                  $(obj).attr({
+                    id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+                if ($(obj).attr('for') != null) {
+                  $(obj).attr({
+                      for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                  });
+                }
+              });
+              $("#dName\\[" + idx + "\\]").val(value.dataName);
+              $("#unit\\[" + idx + "\\]").val(value.unit);
+              $("#dataSelect\\[" + idx + "\\]").val(value.options.source);
+              if (value.options.source == "pv" || value.options.source == "sv") 
+                  $("#unit\\[" + idx + "\\]").prop("disabled", false);
+              else $("#unit\\[" + idx + "\\]").prop("disabled", true);
+              var block = $('#dItem_block\\[' + idx + '\\]');
+              if (idx != 0) block.find('input[id^="del_btn"]').show();
+              block.slideDown('slow');
+              frm_cnt = idx;
+          });
         }
 
         //追加ボタンが押されたら
@@ -372,87 +303,37 @@ console.log(conf);
             });
           });
         });
-
-        // 設定ファイルが設定されたら
-        $('#configfile').on("change",function(){
-          if ($('#configfile').val() !== '') {
-              var fileConfig = "";
-              //propを使って、file[0]にアクセスする
-              var configfile = $('#configfile').prop('files')[0];
-              // ファイルリーダをインスタンス化
-              var reader = new FileReader();
-              // 設定ファイルを読み込が完了function
-              reader.onload = function () {
-
-                  // 設定JSONを設定Objectにパース、自身の設定を探して再度JSONに
-                  try{
-                      var nodeConfig = JSON.parse(reader.result);
-                      // 設定オブジェクトの部分のみ取り出しJSONに戻す
-                      var cfgobjs = nodeConfig.find((value) =>
-                          value.targetNodeName == $("#node-input-name").val()
-                      );
-                      if (cfgobjs) {
-                          fileConfig = JSON.stringify(cfgobjs.configObjects);
-                      }
-                      else {
-                          fileConfig = "";
-                          alert("対象データがありません");
-                      }
-                  } catch(e) {
-                    //エラーの場合
-                    fileConfig = "";
-                    alert("ファイルの記述が正しくありません");
-                  }
-                  //Textareaに設定jsonを表示
-                  $("#fileConfig").val(fileConfig);
-              }
-              // ファイルの読み込み
-              reader.readAsText(configfile);
-            }
-        });
-
     },
 
     oneditsave: function() {
       var configReady = "ready";
-      // UI-configの場合
-      if ($("#node-input-confsel").val() == "ui-config") {
-        if (!$("#objectKey").val()) configReady = "";
-        // データ設定を作成
-        var dItems = [];
-        $(".form-block[id^='dItem_block']").each(function(idx, obj){
-            var item ={options:{}};
-            item.dataName = $("#dName\\[" + idx + "\\]").val();
-            if (!item.dataName) configReady = "";
-            item.unit = $("#unit\\[" + idx + "\\]").val();
-            item.options.source = $("#dataSelect\\[" + idx + "\\]").val();
-            if (!item.options.source) configReady = "";
+      if (!$("#objectKey").val()) configReady = "";
+      // データ設定を作成
+      var dItems = [];
+      $(".form-block[id^='dItem_block']").each(function(idx, obj){
+          var item ={options:{}};
+          item.dataName = $("#dName\\[" + idx + "\\]").val();
+          if (!item.dataName) configReady = "";
+          item.unit = $("#unit\\[" + idx + "\\]").val();
+          item.options.source = $("#dataSelect\\[" + idx + "\\]").val();
+          if (!item.options.source) configReady = "";
 
-            dItems[idx]=item;
-        });
-        // オブジェクト設定を追加
-        var cfgobj = [{ObjectContent:{}, options:{}}];
-        cfgobj[0].ObjectContent.contentType = $("#contentType").val();
-        cfgobj[0].ObjectContent.contentData = dItems;
-        cfgobj[0].objectKey = $("#objectKey").val();
-        cfgobj[0].objectDescription = $("#objectDescription").val();
-        cfgobj[0].objectName = $("#objectName").val();
-        cfgobj[0].options.storeInterval = $("#storeInterval").val();
-        cfgobj[0].options.storeAsync = $("#storeAsync").is(":checked");
-        $("#node-input-configReady").val(configReady);
-        //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-        try {$("#node-input-configJson").val(JSON.stringify(cfgobj));}
-        catch(e) {$("#node-input-configJson").val("");}
-      }
-console.log(cfgobj);
-      // fileでの設定の場合
-      if ($("#node-input-confsel").val() == "fileSet") {
-        // 設定は無効
-        if (!$("#fileConfig").val()) configReady = "";
-        // 設定データを、Nodeプロパティにコピー
-        $("#node-input-configJson").val($("#fileConfig").val());
+          dItems[idx]=item;
+      });
+      // オブジェクト設定を追加
+      var cfgobj = [{ObjectContent:{}, options:{}}];
+      cfgobj[0].ObjectContent.contentType = $("#contentType").val();
+      cfgobj[0].ObjectContent.contentData = dItems;
+      cfgobj[0].objectKey = $("#objectKey").val();
+      cfgobj[0].objectDescription = $("#objectDescription").val();
+      cfgobj[0].objectName = $("#objectName").val();
+      cfgobj[0].options.storeInterval = $("#storeInterval").val();
+      cfgobj[0].options.storeAsync = $("#storeAsync").is(":checked");
+      $("#node-input-configReady").val(configReady);
+      //フォームの各要素をobjectに記述し、JSON文字列に変換する。
+      try {$("#node-input-configJson").val(JSON.stringify(cfgobj));}
+      catch(e) {$("#node-input-configJson").val("");}
 
-      }
       // 設定完了フラグをセット
       $("#node-input-configReady").val(configReady);
 
