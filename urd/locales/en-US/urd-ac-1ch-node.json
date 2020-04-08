@@ -1,10 +1,15 @@
 {
-    "enoceanDataItem": {
+    "urdDataItem": {
         "label": {
-            "object_key": "Object Key",
-            "object_desc": "Object Description",
+            "objectKey": "Object Key",
+            "objectDesc": "Object Description",
+            "itemNo": "Item No :",
             "dataName": "Data Name",
             "unit": "Unit"
+        },
+        "input": {
+            "dataName": "Current1",
+            "unit": "A"
         }
     },
     "serial": {
@@ -27,18 +32,19 @@
             "responsetimeout": "Default response timeout",
             "ms": "ms",
             "serial": "serial",
-            "enoceanDataItems": "EnOcean Data Items",
+            "urdDataItems": "URD Sensor Data Items",
             "linkObjName": "linkObjName",
-            "enoceanCom": "EnOcean Communication Object",
-            "sensor_id": "sensor ID",
-            "sensor_kind": "sensor kind",
+            "urdCom": "EnOcean Communication Object",
+            "sensorId": "sensor ID",
+            "sensorType": "sensor kind",
             "notify": "notify flag",
-            "value": "EnOcean Data",
+            "value": "URD Sensor Data",
             "objectName": "object name",
             "entryID": "entry ID",
             "none": "none"
         },
         "placeholder": {
+            "sensorId": "input sensor ID e.g. 0500ef1c",
             "serialport": "for example: /dev/ttyUSB0/"
         },
         "parity": {

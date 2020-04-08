@@ -1,0 +1,30 @@
+{
+    "status": {
+        "excluded": "Received data not to send",
+        "jsonParseError": "JSON parse error",
+        "noUrdCom": "URD sensor communication object has no setting",
+        "noSensor": "No sensor setting",
+        "ready": "Ready",
+        "received": "Received"
+    },
+    "urdDataItem": {
+        "label": {
+            "urdCom": "URD sensor communication object",
+            "fileContentHere": "The content of file will be shown here.",
+            "filename": "Filename",
+            "objectDesc": "Object description",
+            "objectKey": "Object key",
+            "selectFile": "Select setting file.",
+            "sensor": "Sensor type",
+            "sensorConfig": "Sensor config",
+            "setting": {
+                "file": "From file",
+                "object": "Object settings"
+            }
+        },
+        "sensors": {
+            "AC1ch": "Current sensor (1ch)",
+            "AC3ch": "Current sensor (3ch)"
+        }
+    }
+}

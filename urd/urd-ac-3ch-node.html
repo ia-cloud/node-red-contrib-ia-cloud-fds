@@ -1,0 +1,276 @@
+<!--
+(C) 2020 URD
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!-- urd-ac-3ch-node Config Node の記述 -->
+<script type="text/html" data-template-name="URD AC 3ch sensor">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
+        <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]serial.placeholder.sensorId">
+    </div>
+    <div class="form-row" hidden>
+        <input type="text" id="node-config-input-configObject">
+        <input type="text" id="node-config-input-range">
+    </div>
+    <div id="blocks">
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;" data-i18n="urdDataItem.label.itemNo"></span>
+                    <input type="text" id="dItem1" style="width: 30px;" value="1" disabled="disabled">
+                </div>
+            </div>
+            <table class="form-table">
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.ct"></span></label>
+                    </td>
+                    <td>
+                        <select type="text" id="node-config-input-clampType0" class="clamp-type">
+                            <option value="WLS50">CTT-10-CLS-WLS50(400x)</option>
+                            <option value="WLS100">CTT-16-CLS-WLS100(400x)</option>
+                            <option value="WLS250">CTT-24-CLS-WLS250(400x)</option>
+                            <option value="WLS600">CTT-36-CLS-WLS600(700x)</option>
+                            <option value="custom" data-i18n="urdDataItem.clamp.custom"></option>
+                            <option value="unconnect" data-i18n="urdDataItem.clamp.unconnect"></option>
+                        </select>
+                        <input style="width:80px;" type="text" name="range0Input" class="range-input" id="node-config-input-clampType0-custom" data-i18n="[placeholder]urdDataItem.placeholder.numeric" pattern="^[-]?([1-9]\d*|0)(\.\d+)?$" disabled="disabled">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.dataName"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-dataName0">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.unit"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-unit0" style="width: 100px;" value="A">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;" data-i18n="urdDataItem.label.itemNo"></span>
+                    <input type="text" id="dItem2" style="width: 30px;" value="2" disabled="disabled">
+                </div>
+            </div>
+            <table class="form-table">
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.ct"></span></label>
+                    </td>
+                    <td>
+                        <select type="text" id="node-config-input-clampType1" class="clamp-type">
+                            <option value="WLS50">CTT-10-CLS-WLS50(400x)</option>
+                            <option value="WLS100">CTT-16-CLS-WLS100(400x)</option>
+                            <option value="WLS250">CTT-24-CLS-WLS250(400x)</option>
+                            <option value="WLS600">CTT-36-CLS-WLS600(700x)</option>
+                            <option value="custom" data-i18n="urdDataItem.clamp.custom"></option>
+                            <option value="unconnect" data-i18n="urdDataItem.clamp.unconnect"></option>
+                        </select>
+                        <input style="width:80px;" type="text" name="range1Input" class="range-input" id="node-config-input-clampType1-custom" data-i18n="[placeholder]urdDataItem.placeholder.numeric" pattern="^[-]?([1-9]\d*|0)(\.\d+)?$" disabled="disabled">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.dataName"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-dataName1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.unit"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-unit1" style="width: 100px;" value="A">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;" data-i18n="urdDataItem.label.itemNo"></span>
+                    <input type="text" id="dItem3" style="width: 30px;" value="3" disabled="disabled">
+                </div>
+            </div>
+            <table class="form-table">
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.ct"></span></label>
+                    </td>
+                    <td>
+                        <select type="text" id="node-config-input-clampType2" class="clamp-type">
+                            <option value="WLS50">CTT-10-CLS-WLS50(400x)</option>
+                            <option value="WLS100">CTT-16-CLS-WLS100(400x)</option>
+                            <option value="WLS250">CTT-24-CLS-WLS250(400x)</option>
+                            <option value="WLS600">CTT-36-CLS-WLS600(700x)</option>
+                            <option value="custom" data-i18n="urdDataItem.clamp.custom"></option>
+                            <option value="unconnect" data-i18n="urdDataItem.clamp.unconnect"></option>
+                        </select>
+                        <input style="width:80px;" type="text" name="range2Input" class="range-input" id="node-config-input-clampType2-custom" data-i18n="[placeholder]urdDataItem.placeholder.numeric" pattern="^[-]?([1-9]\d*|0)(\.\d+)?$" disabled="disabled">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.dataName"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-dataName2">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.unit"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-unit2" style="width: 100px;" value="A">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="URD AC 3ch sensor" charset="utf-8">
+    <p>Configure the 3ch current sensor.</p>
+    <p>Set the ID of the sensor, each CT parts, data names, and units of measurement targets.</p>
+    <p>Each CT parts of the sensor have default measurement magnifications.</p>
+    <p>The magnification of 10 mm to 24 mm diameter CT parts are 400, and 36 mm diameter CT parts are 700.</p>
+    <p>To set a optional magnification, set the CT part to "Customize magnification" and input the magnification.</p>
+    <p>When the data which has an channel without CT part is recieved, measured value(dataValue) of the channel is set to 9999.99.</p>
+    <p>Excluding the channel from sending data is required, set the CT part to "unconnected".</p>    
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('URD AC 3ch sensor', {
+        category: 'config',
+        defaults: {
+            name: { value: 'ac-3ch-Sensor' },
+            sensorId: { value: '', required: true },
+            dataName0: { value: '', required: true },
+            unit0: { value: '' },
+            clampType0: { value: 'WLS50', required: true },
+            dataName1: { value: '', required: true },
+            unit1: { value: '' },
+            clampType1: { value: 'WLS50', required: true },
+            dataName2: { value: '', required: true },
+            unit2: { value: '' },
+            clampType2: { value: 'WLS50', required: true },
+            configObject: { value: '' },
+            range: { value: '[400, 400, 400]' },
+        },
+        label() { return this.name || ('ac-1ch-Sensor'); },
+        oneditprepare() {
+            const rangeRegExp = new RegExp('[^,\\d\\.\\-]', 'g');
+            const rangeArray = this.range.replace(rangeRegExp, '').split(',');
+
+            $('#node-config-input-dataName0').val(this.dataName0 || this._('urdDataItem.input.dataName0'));
+            $('#node-config-input-unit0').val(this.unit0 || this._('urdDataItem.input.unit'));
+            $('#node-config-input-clampType0').val(this.clampType0 || 'WLS50');
+            $('#node-config-input-dataName1').val(this.dataName1 || this._('urdDataItem.input.dataName1'));
+            $('#node-config-input-unit1').val(this.unit1 || this._('urdDataItem.input.unit'));
+            $('#node-config-input-clampType1').val(this.clampType1 || 'WLS50');
+            $('#node-config-input-dataName2').val(this.dataName2 || this._('urdDataItem.input.dataName2'));
+            $('#node-config-input-unit2').val(this.unit2 || this._('urdDataItem.input.unit'));
+            $('#node-config-input-clampType2').val(this.clampType2 || 'WLS50');
+
+            for (let i = 0; i < 3; i += 1) {
+                switch ($(`#node-config-input-clampType${i}`).val()) {
+                    case 'custom':
+                        $(`#node-config-input-clampType${i}-custom`).prop({ value: rangeArray[i], disabled: false, required: true });
+                        break;
+                    case 'unconnect':
+                        $(`#node-config-input-clampType${i}-custom`).prop({ disabled: true, required: false });
+                        $(`#node-config-input-clampType${i}`).closest('tr').nextAll().find('input')
+                            .prop({ disabled: true });
+                        break;
+                    default:
+                        $(`#node-config-input-clampType${i}-custom`).prop({ disabled: true, required: false });
+                };
+            };
+
+            $('.clamp-type').on('change', function () {
+                switch ($(this).val()) {
+                    case 'custom': // 「カスタム」選択時、テキスト入力欄を有効&必須化
+                        $(this).closest('tr').nextAll().find('input')
+                            .prop({ disabled: false });
+                        $(this).next().prop({ disabled: false, required: true });
+                        break;
+                    case 'unconnect': // 「未接続」選択時、テキスト入力欄を無効化&必須化解除
+                        $(this).closest('tr').nextAll().find('input')
+                            .prop({ disabled: true });
+                        $(this).next().prop({ disabled: true, required: false });
+                        break;
+                    default: // 上記以外を選択時、テキスト入力欄を無効化&必須化解除
+                        $(this).closest('tr').nextAll().find('input')
+                            .prop({ disabled: false });
+                        $(this).next().prop({ disabled: true, required: false });
+                }
+            });
+
+            // 数値入力チェック
+            $('.range-input').on('blur', function () {
+                if (Number.isNaN(Number($(this).val()))) {
+                    $(this).val('');
+                }
+            });
+        },
+        oneditsave() {
+            const formTable = $('.form-table');
+            const dItems = formTable.map(function (idx) {
+                return {
+                    dataValue: '',
+                    unit: $(this).find(`#node-config-input-unit${idx}`).val(),
+                    dataName: $(this).find(`#node-config-input-dataName${idx}`).val(),
+                };
+            }).get();
+            const rangeInputs = formTable.map(function (idx) {
+                const clampType = $(this).find(`#node-config-input-clampType${idx}`).val();
+                if (clampType === 'custom') {
+                    return $(this).find(`#node-config-input-clampType${idx}-custom`).val();
+                } if (['WLS50', 'WLS100', 'WLS250'].includes(clampType)) {
+                    return '400';
+                } if (clampType === 'WLS600') {
+                    return '700';
+                } if (clampType === 'unconnect') {
+                    return 'unconnect';
+                }
+                return 'undefined';
+            }).get();
+            // フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {
+                $('#node-config-input-configObject').val(JSON.stringify(dItems));
+                $('#node-config-input-range').val(JSON.stringify(rangeInputs));
+            } catch (e) {
+                $('#node-config-input-configObject').val('');
+            }
+        },
+    });
+</script>

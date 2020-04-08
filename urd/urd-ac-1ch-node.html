@@ -1,0 +1,94 @@
+<!--
+(C) 2020 URD
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!-- urd-ac-1ch-node Config Node の記述 -->
+<script type="text/html" data-template-name="URD AC 1ch sensor">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
+        <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]serial.placeholder.sensorId">
+    </div>
+    <div class="form-row" hidden>
+        <input type="text" id="node-config-input-configObject">
+    </div>
+    <div id="blocks">
+        <div class="form-block">
+            <div class="form-row">
+                <div class="form-inline">
+                    <span style="border-bottom:solid 2px;" data-i18n="urdDataItem.label.itemNo"></span>
+                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.dataName"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-dataName">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.unit"></span></label>
+                    </td>
+                    <td>
+                        <input type="text" id="node-config-input-unit" style="width: 100px;" value="A">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="URD AC 1ch sensor" charset="utf-8">
+    <p>Configure the 1ch current sensor.</p>
+    <p>Set the ID of the sensor, the data name and the unit of the measurement target.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('URD AC 1ch sensor', {
+        category: 'config',
+        defaults: {
+            name: { value: 'ac-1ch-Sensor' },
+            sensorId: { value: '', required: true },
+            dataName: { value: '', required: true },
+            unit: { value: '' },
+            configObject: { value: '' },
+        },
+        label() { return this.name || ('ac-1ch-Sensor'); },
+        oneditprepare() {
+            $('#node-config-input-dataName').val(this.dataName || this._('urdDataItem.input.dataName'));
+            $('#node-config-input-unit').val(this.unit || this._('urdDataItem.input.unit'));
+        },
+        oneditsave() {
+            const dItems = [{
+                dataValue: '',
+                unit: $('#node-config-input-unit').val(),
+                dataName: $('#node-config-input-dataName').val(),
+            }];
+            // フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {
+                $('#node-config-input-configObject').val(JSON.stringify(dItems));
+            } catch (e) {
+                $('#node-config-input-configObject').val('');
+            }
+        },
+    });
+</script>

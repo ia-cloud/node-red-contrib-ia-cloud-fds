@@ -34,7 +34,6 @@
         <div class="form-row">
             <label for="node-input-sensor_kind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensor_kind"></span></label>
             <select type="text" id="node-input-sensor_kind">
-                <option value="u-rd" data-i18n="enoceanDataItem.sensors.urd"></option>
                 <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
                 <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
                 <option value="itec" data-i18n="enoceanDataItem.sensors.itec"></option>
@@ -51,10 +50,6 @@
             <input type="text" id="node-input-object_desc" data-i18n="enoceanDataItem.label.objectDesc">
         </div>
         <div id="ia_cloud_enocean_sensors">
-            <div class="form-row" id="u-rd">
-                <label for="node-input-urd_ac_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.urdAC"></span></label>
-                <input type="text" id="node-input-urd_ac_sensor">
-            </div>
             <div class="form-row" id="watty">
                 <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyTemp"></span></label>
                 <input type="text" id="node-input-watty_temp_sensor">
@@ -109,17 +104,7 @@ RED.nodes.registerType('EnOcean-obj', {
         object_key: { value: '' },
         object_desc: { value: '' },
         enoceancom: { type: 'EnOcean-com', required: true, value: '' },
-        sensor_kind: { value: 'u-rd' },
-        urd_ac_sensor: {
-            type: 'UR_D_AC_Sensor',
-            value: '',
-            validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'u-rd') {
-                    return v !== '';
-                }
-                return true;
-            },
-        },
+        sensor_kind: { value: 'watty' },
         watty_temp_sensor: {
             type: 'Watty_Temp_Sensor',
             value: '',
@@ -170,7 +155,6 @@ RED.nodes.registerType('EnOcean-obj', {
                 return true;
             },
         },
-        // urd_ac_sensor: {type:'UR_D_AC_Sensor', required:false, value: ''},
         // watty_temp_sensor: {type:'Watty_Temp_Sensor', required:false, value: ''},
         // core_temp_sensor: {type:'Core_Staff_Sensor', required:false, value: ''},
         // itec_ac_sensor: {type:'Itec_CT_Sensor', required:false, value: ''},
@@ -188,8 +172,6 @@ RED.nodes.registerType('EnOcean-obj', {
     label: function () {
         if (this.name) {
             return this.name;
-        } else if (this.sensor_kind === 'u-rd') {
-            return 'U_RD CT Sensor';
         } else if (this.sensor_kind === 'watty') {
             return 'Watty Temperature Sensor';
         } else if (this.sensor_kind === 'core_staff') {
@@ -242,14 +224,7 @@ RED.nodes.registerType('EnOcean-obj', {
         $('#node-input-sensor_kind').change(function () {
             const str = $('select option:selected').val();
             // TODO: センサー追加により条件分岐を増やすことのないように工夫する
-            if (str === 'u-rd') {
-                $('#ia_cloud_enocean_sensors div.form-row').hide();
-                $('#u-rd').show();
-
-                // $('#node-input-name').val('U_RD CT Sensor');
-                // $('#node-input-object_key').val('u_rd.sensor');
-                // $('#node-input-object_desc').val('U_RD電流センサー');
-            } else if (str === 'watty') {
+            if (str === 'watty') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide();
                 $('#watty').show();
 
@@ -303,9 +278,7 @@ RED.nodes.registerType('EnOcean-obj', {
         const str = $('select option:selected').val();
         let selectSensor = '';
         // TODO: センサー追加により条件分岐を増やすことのないように工夫する
-        if (str === 'u-rd') {
-            selectSensor = $('#node-input-urd_ac_sensor').val();
-        } else if (str === 'watty') {
+        if (str === 'watty') {
             selectSensor = $('#node-input-watty_temp_sensor').val();
         } else if (str === 'core_staff') {
             selectSensor = $('#node-input-core_temp_sensor').val();

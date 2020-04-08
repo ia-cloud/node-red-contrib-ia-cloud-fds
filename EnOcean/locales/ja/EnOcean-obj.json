@@ -19,7 +19,6 @@
             "optexRocker": "OPTEXスイッチ",
             "selectFile": "設定ファイル名を選択してください",
             "sensor_kind": "センサー種別",
-            "urdAC": "U_RD電流センサー",
             "wattyTemp": "Watty温度センサー", 
             "setting": {
                 "file": "設定ファイル",
@@ -31,7 +30,6 @@
             "itec": "電流センサー (ITEC)",
             "optexOccupancy": "人感センサー (OPTEX)",
             "optexRocker": "ロッカースイッチ (OPTEX)",
-            "urd": "電流センサー (U_RD)",
             "watty": "温度センサー (Watty)"
         }
     }

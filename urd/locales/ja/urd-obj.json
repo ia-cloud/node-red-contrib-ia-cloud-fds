@@ -1,0 +1,30 @@
+{
+    "status": {
+        "excluded": "送信対象外データ受信",
+        "jsonParseError": "JSON読み込みエラー",
+        "noUrdCom": "URDセンサー通信オブジェクトが設定されていません",
+        "noSensor": "センサー情報が設定されていません",
+        "ready": "受信待機中",
+        "received": "データ受信済"
+    },
+    "urdDataItem": {
+        "label": {
+            "urdCom": "URDセンサー通信オブジェクト",
+            "fileContentHere": "現在の設定ファイルの中身がここに表示されます",
+            "filename": "設定ファイル名",
+            "objectDesc": "オブジェクトの説明",
+            "objectKey": "オブジェクトキー",
+            "selectFile": "設定ファイル名を選択してください",
+            "sensor": "センサー種別",
+            "sensorConfig": "センサー詳細設定",
+            "setting": {
+                "file": "設定ファイル",
+                "object": "オブジェクト設定"
+            }
+        },
+        "sensors": {
+            "AC1ch": "電流センサー (1ch)",
+            "AC3ch": "電流センサー (3ch)"
+        }
+    }
+}

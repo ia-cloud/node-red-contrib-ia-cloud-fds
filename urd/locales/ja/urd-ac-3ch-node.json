@@ -1,10 +1,25 @@
 {
-    "enoceanDataItem": {
+    "urdDataItem": {
         "label": {
-            "object_key": "オブジェクトキー",
-            "object_desc": "オブジェクトの説明",
+            "objectKey": "オブジェクトキー",
+            "objectDesc": "オブジェクトの説明",
+            "itemNo": "データ項目 :",
             "dataName": "データ名称",
-            "unit": "単位"
+            "unit": "単位",
+            "ct": "CT部の選択"
+        },
+        "input": {
+            "dataName0": "電流1",
+            "dataName1": "電流2",
+            "dataName2": "電流3",
+            "unit": "A"
+        },
+        "placeholder": {
+            "numeric": "数値入力"
+        },
+        "clamp": {
+            "custom": "カスタム倍率設定",
+            "unconnect": "非接続"
         }
     },
     "serial": {
@@ -24,20 +39,22 @@
             "deliver": "分割後の配信データ",
             "output": "出力",
             "request": "リクエスト",
+            "responsetimeout": "タイムアウト",
             "ms": "ms",
-            "serial": "EnOcean-com",
-            "enoceanDataItems": "EnOceanデータ項目",
+            "serial": "urd-com",
+            "urdDataItems": "URDセンサーデータ項目",
             "linkObjName": "リンクデータオブジェクト",
-            "enoceanCom": "EnOcean通信オブジェクト",
-            "sensor_id": "センサID",
-            "sensor_kind": "センサ種別",
+            "urdCom": "EnOcean通信オブジェクト",
+            "sensorId": "センサID",
+            "sensorType": "センサ種別",
             "notify": "通知有無",
-            "value": "EnOceanデータ",
+            "value": "センサーデータ",
             "objectName": "オブジェクト名",
             "entryID": "エントリーID",
             "none": "なし"
         },
         "placeholder": {
+            "sensorId": "センサーIDを入力します　例) 0500ef1c",
             "serialport": "例: /dev/ttyUSB0/"
         },
         "parity": {

@@ -3,7 +3,6 @@ const coreStaffTemperatureHumidity = require('./sensor-core-staff-temperature-hu
 const itecCT = require('./sensor-itec-ct');
 const optexOccupancy = require('./sensor-optex-occupancy');
 const optexRockerSwitch = require('./sensor-optex-rocker-switch');
-const urdAC = require('./sensor-urd-ac');
 const wattyTemperature = require('./sensor-watty-temperature');
 
 module.exports = [
@@ -30,12 +29,6 @@ module.exports = [
         type: 'optex_rocker',
         process: optexRockerSwitch.process,
         nodeRedFunction: optexRockerSwitch.nodeRedFunction,
-    },
-    {
-        name: 'URD AC',
-        type: 'u-rd',
-        process: urdAC.process,
-        nodeRedFunction: urdAC.nodeRedFunction,
     },
     {
         name: 'Watty temperature',

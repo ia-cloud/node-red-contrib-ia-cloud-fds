@@ -28,7 +28,7 @@
   "keywords": [
     "node-red"
   ],
-  "license": "ISC",
+  "license": "Apache-2.0",
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
   "node-red": {
     "nodes": {
@@ -47,7 +47,6 @@
       "enocean-sensor-itec-ct": "EnOcean/sensor-itec-ct-node.js",
       "enocean-sensor-optex-occupancy": "EnOcean/sensor-optex-occupancy-node.js",
       "enocean-sensor-optex-rocker-switch": "EnOcean/sensor-optex-rocker-switch-node.js",
-      "enocean-sensor-urd-ac": "EnOcean/sensor-urd-ac-node.js",
       "enocean-sensor-watty-temperature": "EnOcean/sensor-watty-temperature-node.js",
       "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
       "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
@@ -59,7 +58,11 @@
       "tmp-ctrl-omron": "tmp-ctrl-omron/tmp-ctrl-omron.js",
       "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js",
       "ia-cloud-serialport": "ia-cloud-serialport/ia-cloud-serialport.js",
-      "caliper-Mitsutoyo": "Caliper-Mitsutoyo/caliper-Mitsutoyo.js"
+      "caliper-Mitsutoyo": "Caliper-Mitsutoyo/caliper-Mitsutoyo.js",
+      "urd-com": "urd/urd-com.js",
+      "URD Current Sensor": "urd/urd-obj.js",
+      "urd-ac-1ch": "urd/urd-ac-1ch-node.js",
+      "urd-ac-3ch": "urd/urd-ac-3ch-node.js"
     }
   },
   "repository": {

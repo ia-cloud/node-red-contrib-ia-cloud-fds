@@ -1,0 +1,176 @@
+<!--
+(C) 2020 URD
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!-- urd-object Node の記述 -->
+<script type="text/html" data-template-name="URD Current Sensor">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+
+    <br>
+
+    <!-- Object property setting -->
+    <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
+        <div class="form-row">
+            <label for="node-input-sensor"><i class="fa fa-eye"></i> <span data-i18n="urdDataItem.label.sensor"></span></label>
+            <select type="text" id="node-input-sensor">
+                <option value="CTL-10-CLS-WLS30">CTL-10-CLS-WLS30(1ch)</option>
+                <option value="CTL-16-CLS-WLS80">CTL-16-CLS-WLS80(1ch)</option>
+                <option value="CTL-24-CLS-WLS100">CTL-24-CLS-WLS100(1ch)</option>
+                <option value="CTL-36-CLS-WLS300">CTL-36-CLS-WLS300(1ch)</option>
+                <option value="CWD-3-1">CWD-3-1(3ch)</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-objectKey"><i class="fa fa-flag"></i> <span data-i18n="urdDataItem.label.objectKey"></span></label>
+            <input type="text" id="node-input-objectKey" data-i18n="urdDataItem.label.objectKey">
+        </div>
+        <div class="form-row">
+            <label for="node-input-objectDescription"><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.objectDesc"></span></label>
+            <input type="text" id="node-input-objectDescription" data-i18n="urdDataItem.label.objectDesc">
+        </div>
+        <div id="ia_cloud_urd_sensors">
+            <div class="form-row" id="AC1ch">
+                <label for="node-input-ac1chSensor"><i class="fa fa-random"></i> <span data-i18n="urdDataItem.label.sensorConfig"></span></label>
+                <input type="text" id="node-input-ac1chSensor">
+            </div>
+            <div class="form-row" id="AC3ch">
+                <label for="node-input-ac3chSensor"><i class="fa fa-random"></i> <span data-i18n="urdDataItem.label.sensorConfig"></span></label>
+                <input type="text" id="node-input-ac3chSensor">
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- urd-com node setting -->
+    <div class="form-row">
+        <label for="node-input-urdCom"><i class="fa fa-random"></i> <span data-i18n="urdDataItem.label.urdCom"></span></label>
+        <input type="text" id="node-input-urdCom">
+    </div>
+    <div class="form-row hide">
+        <input type="text" style="width: 300px" id="node-input-selectSensor">
+        <input type="text" style="width: 300px" id="node-input-sensorType">
+    </div>
+
+</script>
+
+<script type="text/html" data-help-name="URD Current Sensor" charset="utf-8">
+    <p>This node recieves URD sensor data, and generates and outputs ia-cloud object</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dd>None</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>msg.request<span class="property-type">string</span></dt>
+        <dd>"store" fixed string to send to ia-cloud-cnct Node</dd>
+        <dt>msg.dataObject<span class="property-type">object</span></dt>
+        <dd>ia cloud object supporsed to be send to ia cloud CCS</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>
+        Select the sensor type and define the sensor data from the setting Node according to the type.
+        Set the receiving port for sensor data in the URD sensor communication object (urd-com Node).
+        When it receives data from the sensor, it will generate and output an ia-cloud object.
+        objectKey hopes to be a unique key, Since the objectKey is the name that identifies the sensor.
+    </p>
+</script>
+
+<script type="text/javascript">
+    const ac1chSensor = ['CTL-10-CLS-WLS30', 'CTL-16-CLS-WLS80', 'CTL-24-CLS-WLS100', 'CTL-36-CLS-WLS300'];
+    const ac3chSensor = ['CWD-3-1'];
+    RED.nodes.registerType('URD Current Sensor', {
+        category: 'iaCloud',
+        defaults: {
+            name: { name: '' },
+            objectKey: { value: '', required: true },
+            objectDescription: { value: '' },
+            urdCom: { type: 'urd-com', required: true, value: '' },
+            sensor: { value: 'CTL-10-CLS-WLS30' },
+            sensorType: { value: 'AC1ch' },
+            ac1chSensor: {
+                type: 'URD AC 1ch sensor',
+                value: '',
+                validate(v) {
+                    if ($('#node-input-sensorType').val() === 'AC1ch') {
+                        return v !== '';
+                    }
+                    return true;
+                },
+            },
+            ac3chSensor: {
+                type: 'URD AC 3ch sensor',
+                value: '',
+                validate(v) {
+                    if ($('#node-input-sensorType').val() === 'AC3ch') {
+                        return v !== '';
+                    }
+                    return true;
+                },
+            },
+            selectSensor: { value: '', required: true },
+        },
+        color: 'rgb(231, 180, 100)',
+        inputs: 1,
+        outputs: 1,
+        icon: 'ia-cloud.png',
+        label() {
+            if (this.name) return this.name;
+            const { sensorType } = this;
+            if (ac1chSensor.includes(sensorType)) {
+                return 'URD 1ch CT Sensor';
+            } if (ac3chSensor.includes(sensorType)) {
+                return 'URD 3ch CT Sensor';
+            }
+            return 'URD Current Sensor';
+        },
+        labelStyle: this.name ? 'node_label_italic' : '',
+        oneditprepare() {
+            // センサー種別が変更されたときの処理
+            $('#node-input-sensor').change(() => {
+                const selectedSensor = $('#node-input-sensor option:selected').val();
+                if (ac1chSensor.includes(selectedSensor)) {
+                    $('#node-input-sensorType').val('AC1ch');
+                    $('#ia_cloud_urd_sensors div.form-row').hide();
+                    $('#AC1ch').show();
+                } else if (ac3chSensor.includes(selectedSensor)) {
+                    $('#node-input-sensorType').val('AC3ch');
+                    $('#ia_cloud_urd_sensors div.form-row').hide();
+                    $('#AC3ch').show();
+                }
+            });
+        },
+
+        oneditsave() {
+            const selectedSensor = $('#node-input-sensor option:selected').val();
+            $('#node-input-selectSensor').val(() => {
+                if (ac1chSensor.includes(selectedSensor)) {
+                    return $('#node-input-ac1chSensor').val();
+                }
+                if (ac3chSensor.includes(selectedSensor)) {
+                    return $('#node-input-ac3chSensor').val();
+                }
+                // 設定にない値が入っている場合はそのまま返す
+                return $('#node-input-selectSensor').val();
+            });
+        },
+    });
+</script>

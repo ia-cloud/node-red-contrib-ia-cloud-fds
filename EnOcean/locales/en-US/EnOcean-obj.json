@@ -19,7 +19,6 @@
             "optexRocker": "OPTEX Rocker SW",
             "selectFile": "Select setting file.",
             "sensor_kind": "Sensor type",
-            "urdAC": "U_RD AC sensor",
             "wattyTemp": "Watty Temp sensor",
             "setting": {
                 "file": "From file",
@@ -31,7 +30,6 @@
             "itec": "Current sensor (ITEC)",
             "optexOccupancy": "Occupancy sensor (OPTEX)",
             "optexRocker": "Rocker switch (OPTEX)",
-            "urd": "Current sensor (U_RD)",
             "watty": "Temperature (Watty)"
         }
     }
