@@ -1,6 +1,6 @@
 const SensorInterface = require('./sensors-interface');
 
-module.exports = class WattyTemperature extends SensorInterface {
+module.exports = class itecCT extends SensorInterface {
     /**
      * 電流計算.
      */
