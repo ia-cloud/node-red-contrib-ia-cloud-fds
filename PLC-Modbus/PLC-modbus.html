@@ -11,257 +11,92 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="PLC-Modbus">
+<script type="text/html" data-template-name="PLC-Modbus">
 
     <div class="form-row">
-        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+        <label for="node-input-name" >
+            <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
         <input type="text" class="form-control" id="node-input-name">
     </div>
     <!-- modbus node（設定Node）の選択-->
     <div class="form-row">
         <label for="node-input-ModbusCom" style= "vertical-align: middle;">
-            <span data-i18n="editor.modbusNode"></span><span style="color: #ff0000;">*</span></label>
+            <span data-i18n="editor.modbusNode"></span>
+            <span style="color: #ff0000;">*</span></label>
         <input type="text" style="width: 300px" id="node-input-ModbusCom">
     </div>
-<hr>
 
     <!-- 隠しのNodeプロパティ -->
     <div class="form-row hide">
         <input type="text" id="node-input-configReady">
     </div>
-    <div class="form-row hide">
-        <input type="text" id="node-input-configJson">
-    </div>
     
-
     <!-- Tab, ownself -->
     <div class="red-ui-tabs" id="ui-tabs">
       <ul>
-        <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
+        <li class="red-ui-tab" style="width: 50%;"><a href="#tab-object-property"
           class="nav-link red-ui-tab-label" data-toggle="tab">
-          <span data-i18n="editor.tab.object-settings" /></a>
+          <span data-i18n="editor.tab.object-settings" ></span></a>
         </li>
-        <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
+        <li class="red-ui-tab active" style="width: 50%;"><a href="#tab-dItem-property"
           class="nav-link red-ui-tab-label" data-toggle="tab">
-          <span data-i18n="editor.tab.data-settings" /></a>
+          <span data-i18n="editor.tab.data-settings" ></span></a>
         </li>
       </ul>
     </div>
 
     <!-- Tab contents -->
     <div class="tab-content">
-      <!-- tab1 starts -->
-      <div id="tab1" class="tab-pane active">
+      
+      <!-- tab-object-property starts -->
+      <div id="tab-object-property" class="tab-pane">
         <!-- object propertyの設定 -->
         <div class="form-group" style="margin-left: 20px;">
             <div class="form-row">
-                <label style="margin-right: 10px;" for="storeInterval">
+                <label style="margin-right: 10px;" for="node-input-storeInterval">
                     <span data-i18n="editor.period"></span></label>
-                <input type="number" id="storeInterval" min="0" step="10"
+                <input type="number" id="node-input-storeInterval" min="0" step="10"
                     value="300" style="display: inline-block; width: auto;">
-                <label for="storeAsync" style="margin-left: 20px;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
                     <span data-i18n="editor.async"></span></label>
-                <input type="checkbox" checked="checked" id="storeAsync"
+                <input type="checkbox" id="node-input-storeAsync"
                     style="display: inline-block; width: auto;" >
             </div>
             <div class="form-row">
-                <label style="margin-right: 10px;" for="objectName">
+                <label style="margin-right: 10px;" for="node-input-objectName">
                     <span data-i18n="editor.objectname"></span></label>
-                <input type="text" style="width: 300px" id="objectName">
+                <input type="text" style="width: 300px" id="node-input-objectName">
             </div>
             <div class="form-row">
                 <label style="margin-right: 10px;"
-                    for="objectKey"><span data-i18n="editor.objectKey"></span>
+                    for="node-input-objectKey"><span data-i18n="editor.objectKey"></span>
                     <span style="color: #ff0000;">*</span></label>
-                <input class="form-control" type="text" style="width: 300px"
-                  id="objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+                <input required="required" class="form-control" type="text" style="width: 300px"
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
             </div>
             <div class="form-row">
-                <label style="margin-right: 10px;"
-                    for="objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-                <input type="text" style="width: 300px" id="objectDescription">
+                <label style="margin-right: 10px;" for="node-input-objectdescription">
+                    <span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
             </div>
         </div>
       </div>
-      <!-- tab1 ends -->
+      <!-- tab-object-property ends -->
 
-      <!-- tab2 starts -->
-      <div id="tab2" class="tab-pane">
-        <!-- dataItem propertyの設定 -->
-        <div class="form-row">
-          <label for="contentType"><i class="fa fa-tag"></i>
-              <span data-i18n="editor.contentType"></span></label>
-          <input type="text" id="contentType" value="ModbusPLC">
-        </div>
-        <div id="blocks">
-            <div class="form-block" id="form_block[0]">
-                <div class="form-row">
-                  <div class="form-inline" id="from_del[0]" >
-                    <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
-                    <input type="text" id="dItem[0]" style="width: 30px;" value="1"
-                        disabled="disabled">
-                    <select style="width: 150px; margin-left: 30px;" name="dataType[0]"
-                        id="dataType[0]">
-                        <option selected="selected" value="bit" data-i18n="editor.bit"></option>
-                        <option value="number" data-i18n="editor.number"></option>
-                        <option value="string" data-i18n="editor.string"></option>
-                        <option value="numList" data-i18n="editor.numList"></option>
-                    </select>
-                    <input type="button" name="del_btn" data-i18n="[value]editor.del"
-                        style="margin-left: 30px; width: 70px; display: none;">
-                    </div>
-                </div>
-                <div class="form-row" id="block-bit[0]" name="bit" style="margin-left: 10px;">
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;" >
-                            <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="text" style="width: 150px;" id="bit-dName[0]">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;">
-                            <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
-                            <select id="bit-deviceType[0]" style="width: 50px;">
-                                <option selected="selected" value="Coil">Coil</option>
-                                <option value="IS">IS</option>
-                            </select>
-                            <input type="text" style="margin-right: 10px; width: 150px"
-                                id="bit-src[0]">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;">
-                            <label><span data-i18n="editor.bitNum"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="number" min="1" style="margin-right: 10px; width: 50px"
-                                id="bit-num[0]" value="1">
-                            <select style="width: 70px" id="bit-logic[0]">
-                                <option selected="selected" value= "pos" data-i18n="editor.pos"></option>
-                                <option value= "neg" data-i18n="editor.neg"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row hidden" id="block-number[0]" name="number"
-                        style="margin-left: 10px;">
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;" >
-                            <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="text" style="width: 150px; margin-right: 20px;"
-                                id="number-dName[0]">
-                            <label style="width: 50px"><span data-i18n="editor.unit"></span></label>
-                            <input type="text" style="width: 50px; margin-right: 10px;"
-                                id="number-unit[0]">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-row">
-                            <div class="form-inline" style="vertical-align: middle;">
-                                <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
-                                <select id="number-deviceType[0]" style="width: 50px;">
-                                    <option selected="selected" value="IR">IR</option>
-                                    <option value="HR">HR</option>
-                                </select>
-                                <input type="text" style="width: 120px; margin-right: 10px;"
-                                    id="number-src[0]">
-                                <select id="number-type[0]" style="width: 100px;">
-                                    <option selected="selected" value="1w">1word</option>
-                                    <option value="2w-b">2word-big</option>
-                                    <option value="2w-l">2word-little</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-inline" style="vertical-align: middle;">
-                                <label><span data-i18n="editor.dType"></span></label>
-                                <select id="number-encode[0]" style="width: 100px;">
-                                    <option selected="selected" value="unsigned" data-i18n="editor.unsigned"></option>
-                                    <option value="signed" data-i18n="editor.signed"></option>
-                                    <option value="BCD" data-i18n="editor.BCD"></option>
-                                </select>
-                                <label style="width:50px; margin-left: 10px;"><span data-i18n="editor.offset"></span></label>
-                                <input type="number" style="width: 50px; margin-right: 10px;"
-                                    id="number-offset[0]" value="0">
-                                <label style="width:50px;"><span data-i18n="editor.gain"></span></label>
-                                <input type="number" style="width: 50px;"
-                                    id="number-gain[0]" value="1">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row hidden" id="block-string[0]" name="string"
-                        style="margin-left: 10px;">
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;" >
-                            <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="text" style="width: 150px" id="string-dName[0]">
-                            <select id="string-encode[0]"
-                                style="width: 100px; margin-right: 10px;">
-                                <option value="sJIS" data-i18n="editor.sjis"></option>
-                                <option selected="selected" value="utf-8" data-i18n="editor.utf"></option>
-                                <option value="EUC" data-i18n="editor.euc"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-inline" style="vertical-align: middle;">
-                        <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
-                        <select id="string-deviceType[0]" style="width: 50px;">
-                            <option selected="selected" value="IR">IR</option>
-                            <option value="HR">HR</option>
-                        </select>
-                        <input type="text" style="width: 80px; margin-right: 10px;"
-                            id="string-src[0]">
-                        <label><span data-i18n="editor.wnumber"></span><span style="color: #ff0000;">*</span></label>
-                        <input type="number" min="1" style="width: 50px; margin-right: 10px;"
-                            id="string-num[0]">
-                    </div>
-                </div>
-                <div class="form-row hidden" id="block-numList[0]" name="numList"
-                        style="margin-left: 10px;">
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;" >
-                            <label><span data-i18n="editor.dname"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="text" style="width: 150px" id="numList-dName[0]">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;">
-                            <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
-                            <select id="numList-deviceType[0]" style="width: 50px;">
-                                <option selected="selected" value="IR">IR</option>
-                                <option value="HR">HR</option>
-                            </select>
-                            <input type="text" style="width: 120px; margin-right: 10px;"
-                                id="numList-src[0]">
-                            <select id="numList-type[0]" style="width: 100px;">
-                                <option selected="selected" value="1w">1word</option>
-                                <option value="2w-b">2word-big</option>
-                                <option value="2w-l">2word-little</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-inline" style="vertical-align: middle;">
-                            <label><span data-i18n="editor.wnumber"></span><span style="color: #ff0000;">*</span></label>
-                            <input type="number" min="1"style="width: 50px; margin-right: 10px;"
-                                id="numList-num[0]">
-                            <select id="numList-encode[0]"
-                                style="width: 100px; margin-right: 10px;">
-                                <option selected="selected" value="unsigned" data-i18n="editor.unsigned"></option>
-                                <option value="signed" data-i18n="editor.signed"></option>
-                                <option value="BCD" data-i18n="editor.BCD"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Addボタン -->
-        <div class="form-block">
-          <input type="button" id="form_add" name="add_btn"  data-i18n="[value]editor.add">
-        </div>
-
+      <!-- tab-dItem-property starts -->
+      <div id="tab-dItem-property" class="tab-pane active">
+          <!-- dataItem propertyの設定 -->
+          <div class="form-row">
+              <label for="node-input-contentType"><i class="fa fa-tag"></i>
+                  <span data-i18n="editor.node-input-contentType"></span></label>
+              <input type="text" id="node-input-contentType" value="ModbusPLC">
+          </div>
+          <div class="form-row node-input-dItemcontainer-row">
+              <ol id="node-input-dItemcontainer">
+              </ol>
+          </div>
       </div>
-      <!-- tab2 ends -->
+      <!-- tab-dItem-property ends -->
     </div>
 
 </script>
@@ -291,9 +126,21 @@
     category: 'iaCloud',
     color:"rgb(231, 180, 100)",
     defaults: {
+        // node properties
         name: {value:"PLC-Modbus"},
-        configJson: {value:"", required: true},
         ModbusCom: {value:"", type:"Modbus-com", required: true},
+        // object properties
+        storeInterval: {value:"300"},
+        storeAsync: {value: false},
+        objectName: {value:""},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+        contentType: {value: "ModbusPLC", required: true},
+        // dataItems property
+        dataItems: {
+            value: [{}],
+        },
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true}
     },
     inputs:1,
@@ -305,285 +152,360 @@
     labelStyle: function() {
         return this.name?"node_label_italic":"";
     },
+
     oneditprepare: function() {
 
-        // データItemの数を保持する変数
-        var frm_cnt = 0;
+        const node = this;
+        // Locale strings
+        const lblBit = node._("editor.bit");
+        const lblNum = node._("editor.number");
+        const lblStr = node._("editor.string");
+        const lblNuml = node._("editor.numList");
+        const lblDname = node._("editor.dname");
+        const lblAdd = node._("editor.address");
+        const lblBitnum = node._("editor.bitNum");
+        const lblPos = node._("editor.pos");
+        const lblNeg = node._("editor.neg");
+        const lblUnit = node._("editor.unit");
+        const lblDType = node._("editor.dType");
+        const lblUsign = node._("editor.unsigned");
+        const lblSign = node._("editor.signed");
+        const lblBCD = node._("editor.BCD");
+        const lblOff = node._("editor.offset");
+        const lblGain = node._("editor.gain");
+        const lblSjis = node._("editor.sjis");
+        const lblUTF8 = node._("editor.utf");
+        const lblEUC = node._("editor.euc");
+        const lblWnum = node._("editor.wnumber");
 
-        // 設定データを取り出して、各formに展開する。
-        if ($("#node-input-configJson").val()) {
+        // editableList item のhtml要素
+        // 1行目のデータタイプとデータ名称
+        const itemTypefm =`
+            <select style="display:inline-block; width:80px;"
+                class="itemType">
+                <option selected="selected" value="bit" label=${lblBit}></option>
+                <option value="number" label=${lblNum}></option>
+                <option value="string" label=${lblStr}></option>
+                <option value="numList" label=${lblNuml}></option>
+            </select>
+            <label style="width:90px; display:inline-block; text-align:right;">${lblDname}</label>
+            <input required="required" type="text" style="display:inline-block; text-align:left; width:auto;"
+                class="dataName" placeholder="${lblDname}">
+        `;
+        // 2行目以降のプロパティ設定。データタイプ毎に4種類あり、必要に応じてshow(),hide()する。
+        const paraForm =`
+            <div class="bitFm">
+                <span style="display:inline-block; width:30px"> </span>
+                <select class="bit-deviceType" 
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;"">
+                    <option selected="selected" value="Coil">Coil</option>
+                    <option value="IS">IS</option>
+                </select>
+                <input required="required" class="bit-add" placeholder="${lblAdd}" type="number" min="0" 
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <label style="width:50px; 
+                    display:inline-block; text-align:right; margin-left:10px;">${lblBitnum}</label>
+                <input required="required" type="number"  min="1" class="bit-num" placeholder="${lblBitnum}"
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                <select class="bit-logic" style="width:70px; display:inline-block; text-align:right;">
+                    <option selected="selected" value= "pos" label="${lblPos}"></option>
+                    <option value= "neg" label="${lblNeg}"></option>
+                </select>
+            </div>
+            <div class="numberFm hidden">
+                <div style="margin-top:8px;">
+                    <span style="display:inline-block; width:30px"> </span>
+                    <select class="number-deviceType" 
+                        style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                        <option selected="selected" value="IR">IR</option>
+                        <option value="HR">HR</option>
+                    </select>
+                    <input required="required" type="number" min="0"
+                        style="width:80px; display:inline-block; text-align:right; padding-right:5px;"
+                        class="number-add" placeholder="${lblAdd}">
+                    <select class="number-type" 
+                        style="width:70px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">
+                        <option selected="selected" value="1w">1word</option>
+                        <option value="2w-b">2w-b</option>
+                        <option value="2w-l">2w-l</option>
+                    </select>
+                    <select class="number-encode" 
+                        style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                        <option selected="selected" value="unsigned" label=${lblUsign}></option>
+                        <option value="signed" label=${lblSign}"></option>
+                        <option value="BCD" label=${lblBCD}></option>
+                    </select>
+                </div>
+                <div style="margin-top:8px;">
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:50px; display:inline-block; text-align:right;">${lblOff}</label>
+                    <input type="number" step="any" class="number-offset" placeholder="${lblOff}"
+                        style="width:70px; display:inline-block; text-align:right; padding-right:5px;">                     
+                    <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblGain}</label>
+                    <input type="number" step="any" class="number-gain" placeholder="${lblGain}"
+                        style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                    <input type="text" class="number-unit" placeholder="${lblUnit}"
+                        style="width:50px; display:inline-block; text-align:right; padding-right:5px;margin-left:20px;">              
+                </div>
+            </div>
+            <div class="stringFm hidden" style="margin-top:8px;">
+                <span style="display:inline-block; width:30px"> </span>
+                <select class="string-deviceType" 
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;"> 
+                    <option selected="selected" value="IR">IR</option>
+                    <option value="HR">HR</option>
+                </select>
+                <input required="required" type="number"  min="0" class="string-add" placeholder="${lblAdd}"
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblWnum}</label>
+                <input type="number" min="1" class="string-num" placeholder="${lblWnum}"
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                <select class="string-encode"
+                    style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                    <option value="sJIS" label=${lblSjis}></option>
+                    <option selected="selected" value="utf-8" label=${lblUTF8}></option>
+                    <option value="EUC" label=${lblEUC}></option>
+                </select>
+            </div>
+            <div class="numListFm hidden" style="margin-top:8px;">
+                <span style="display:inline-block; width:30px"> </span>
+                <select class="numList-deviceType" 
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                    <option selected="selected" value="IR">IR</option>
+                    <option value="HR">HR</option>
+                </select>
+                <input required="required" type="number" min="0" class="numList-add" placeholder="${lblAdd}"
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <label style="width:40px; display:inline-block; text-align:right;">${lblWnum}</label>
+                <input required="required" type="number" min="1" class="numList-num" placeholder="${lblWnum}"
+                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                <select class="numList-type" 
+                    style="width:55px; display:inline-block; text-align:right; padding-right:5px;">
+                    <option selected="selected" value="1w">1w</option>
+                    <option value="2w-b">2wb</option>
+                    <option value="2w-l">2wl</option>
+                </select>
+                <select class="numList-encode"
+                    style="width:60px; display:inline-block; text-align:right; padding-right:5px;">
+                    <option selected="selected" value="unsigned" label="${lblUsign}"></option>
+                    <option value="signed" label="${lblSign}"></option>
+                    <option value="BCD" label="${lblBCD}"></option>
+                </select>
+            </div>
+        `;
 
-          try{ var conf = JSON.parse($("#node-input-configJson").val());}
-          catch(e){ conf = null; }
-        }
-        //設定データがあったら
-        if(conf) {
-          $("#storeInterval").val(conf[0].options.storeInterval);
-          $("#storeAsync").prop("checked", conf[0].options.storeAsync);
-          $("#objectName").val(conf[0].objectName);
-          $("#objectKey").val(conf[0].objectKey);
-          $("#objectDescription").val(conf[0].objectDescription);
+        // Define editableList.
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 400,
 
-          $("contentType").val(conf[0].ObjectContent.contentType);
-          var dItems = conf[0].ObjectContent.contentData;
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+                let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+                // 追加ボタンが押されたら、AnEItemは 空{} で呼ばれます。
+                if(!dItem.hasOwnProperty("itemType")) {
+                    dItem = {
+                        itemType:"bit",
+                        dataName:"",
+                        bit: {deviceType:"Coil", address:"", number:1, logic:"pos"},
+                        number: {deviceType:"HR", address:"", type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
+                        string: {deviceType:"HR", address:"", encode:"utf-8", number:1}, 
+                        numList: {deviceType:"HR", address:"", type:"1w", encode:"unsigned", number:1}
+                    };
+                };
 
-          //フォームを一つ保存
-          var original = $('#form_block\\[0\\]');
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(itemTypefm).appendTo(div1);
+                $(paraForm).appendTo(div2);
 
-          //一旦フォームオブジェクトをすべて削除
-          $(".form-block[id^='form_block']")
-              .each(function(index, formObj) {$(formObj).remove();});
+                if(!(dItem.itemType == "number" | dItem.itemType == "string" | dItem.itemType == "numList"))
+                    dItem.itemType = "bit";
+                div1.find(".itemType").val(dItem.itemType);
 
-          dItems.forEach(function(value, idx){
-            original
-            .clone()
-            .hide()
-            .appendTo("#blocks")
-            .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
-            .end() // 一度適用する
-            .find('div, input, select, label').each(function(index, obj) {
-              if ($(obj).attr('id') != null) {
-                if($(obj).attr("id").substr(0,5) == "dItem"){
-                    $(obj).val("" + (idx + 1));
-                }
-                $(obj).attr({
-                  id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                div1.find(".dataName").val(dItem.dataName);
+                // bit type parameters
+                div2.find(".bit-deviceType").val(dItem.bit.deviceType);
+                div2.find(".bit-add").val(dItem.bit.address);
+                div2.find(".bit-num").val(dItem.bit.number);
+                div2.find(".bit-logic").val(dItem.bit.logic);
+                // number type parameters
+                div2.find(".number-deviceType").val(dItem.number.deviceType);
+                div2.find(".number-add").val(dItem.number.address);
+                div2.find(".number-type").val(dItem.number.type);
+                div2.find(".number-encode").val(dItem.number.encode);
+                div2.find(".number-offset").val(dItem.number.offset);
+                div2.find(".number-gain").val(dItem.number.gain);
+                div2.find(".number-unit").val(dItem.number.unit);
+                // string type parameters
+                div2.find(".string-deviceType").val(dItem.string.deviceType);
+                div2.find(".string-add").val(dItem.string.address);
+                div2.find(".string-num").val(dItem.string.number);
+                div2.find(".string-encode").val(dItem.string.encode);
+                // numberList type parameters
+                div2.find(".numList-deviceType").val(dItem.numList.deviceType);
+                div2.find(".numList-add").val(dItem.numList.address);
+                div2.find(".numList-num").val(dItem.numList.number);
+                div2.find(".numList-type").val(dItem.numList.type);
+                div2.find(".numList-encode").val(dItem.numList.encode);
+
+                // データタイプが変更されたら呼ばれる処理関数を登録
+                div1.find(".itemType").change(function(){
+                    let type = $(this).val();
+                    // 該当するhtml要素を表示、他を隠す。
+                    switch(type) {
+                        case "bit":
+                            div2.find(".bitFm").show();
+                            div2.find(".numberFm").hide();
+                            div2.find(".stringFm").hide();
+                            div2.find(".numListFm").hide();
+                            break;
+                        case "number":
+                            div2.find(".bitFm").hide();
+                            div2.find(".numberFm").show();
+                            div2.find(".stringFm").hide();
+                            div2.find(".numListFm").hide();
+                            break;
+                        case "string":
+                            div2.find(".bitFm").hide();
+                            div2.find(".numberFm").hide();
+                            div2.find(".stringFm").show();
+                            div2.find(".numListFm").hide();
+                            break;
+                        case "numList":
+                            div2.find(".bitFm").hide();
+                            div2.find(".numberFm").hide();
+                            div2.find(".stringFm").hide();
+                            div2.find(".numListFm").show();
+                            break;
+                    }
                 });
-              }
-              if ($(obj).attr('name') != null) {
-                $(obj).attr({
-                    name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-                  });
-              }
-              if ($(obj).attr('for') != null) {
-                $(obj).attr({
-                    for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                div1.find(".itemType").change();
+
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
                 });
-              }
-            });
-
-            var itemType = value.options.itemType;
-
-            switch(itemType) {
-              case "bit":
-                  $("#bit-dName\\[" + idx + "\\]").val(value.dataName);
-                  $("#bit-src\\[" + idx + "\\]").val(value.options.source);
-                  $("#bit-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
-                  $("#bit-num\\[" + idx + "\\]").val(value.options.number);
-                  $("#bit-logic\\[" + idx + "\\]").val(value.options.logic);
-                  break;
-              case "number":
-                  $("#number-dName\\[" + idx + "\\]").val(value.dataName);
-                  $("#number-unit\\[" + idx + "\\]").val(value.unit);
-                  $("#number-src\\[" + idx + "\\]").val(value.options.source);
-                  $("#number-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
-                  $("#number-type\\[" + idx + "\\]").val(value.options.type);
-                  $("#number-encode\\[" + idx + "\\]").val(value.options.encode);
-                  $("#number-offset\\[" + idx + "\\]").val(value.options.offset);
-                  $("#number-gain\\[" + idx + "\\]").val(value.options.gain);
-                  break;
-              case "string":
-                  $("#string-dName\\[" + idx + "\\]").val(value.dataName);
-                  $("#string-src\\[" + idx + "\\]").val(value.options.source);
-                  $("#string-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
-                  $("#string-num\\[" + idx + "\\]").val(value.options.number);
-                  $("#string-encode\\[" + idx + "\\]").val(value.options.encode);
-                  break;
-              case "numList":
-                  $("#numList-dName\\[" + idx + "\\]").val(value.dataName);
-                  $("#numList-src\\[" + idx + "\\]").val(value.options.source);
-                  $("#numList-deviceType\\[" + idx + "\\]").val(value.options.deviceType);
-                  $("#numList-num\\[" + idx + "\\]").val(value.options.number);
-                  $("#numList-type\\[" + idx + "\\]").val(value.options.type);
-                  $("#numList-encode\\[" + idx + "\\]").val(value.options.encode);
-                  break;
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
             }
-            var block = $('#form_block\\[' + idx + '\\]');
-            if (idx != 0) block.find('input[name="del_btn"]').show();
-            //   $("select[name='dataType\\[" + idx + "\\]']").val(itemType);
-            block.children('div[id ^= "block-"]').each(function(ind,obj){
-                if ($(obj).attr("name") == itemType) $(obj).show();
-                else $(obj).hide();
-            });
-            $(function(){
-                $("select[name='dataType\\[" + idx + "\\]']").val(itemType);
-            });
+        });
 
-            block.slideDown('slow');
-            frm_cnt = idx;
-          });
-
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataItems.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
         }
-
-        //追加ボタンが押されたら
-        $("#form_add").off("click");
-        $("#form_add").on("click", function() {
-          var original = $('#form_block\\[' + frm_cnt + '\\]');
-          var itemType =
-              original.find("select[id='dataType\\[" + frm_cnt + "\\]']").val();
-          frm_cnt++;
-          original
-          .clone()
-          .hide()
-          .insertAfter(original)
-          .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
-          var clone = $('#form_block\\[' + frm_cnt + '\\]');
-          clone.find('div, input, select, label').each(function(idx, obj) {
-            if ($(obj).attr('id') != null) {
-              if($(obj).attr("id").substr(0,5) == "dItem"){
-                  $(obj).val("" + (frm_cnt + 1));
-              }
-              $(obj).attr({
-                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-              });
-            }
-            if ($(obj).attr('name') != null) {
-              $(obj).attr({
-                name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-               });
-            }
-            if ($(obj).attr('for') != null) {
-              $(obj).attr({
-                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-              });
-            }
-          });
-          clone.find('input[name="del_btn"]').show();
-          clone.children("div[id = 'block-\\[" + frm_cnt + "\\]']").each(function(ind,obj){
-              if ($(obj).attr("name") == itemType) $(obj).show();
-              else $(obj).hide();
-          });
-          clone.find("select[id='dataType\\[" + frm_cnt + "\\]']").val(itemType);
-          clone.slideDown('fast');
-        });
-
-        //削除ボタンが押されたら
-        $("#blocks").off('click', 'input[name="del_btn"]');
-        $("#blocks").on('click', 'input[name="del_btn"]', function() {
-          var removeObj = $(this).parents(".form-block");
-          removeObj.fadeOut('fast', function() {
-            removeObj.remove();
-            // 番号振り直し
-            frm_cnt = 0;
-            $(".form-block[id^='form_block']").each(function(index, formObj) {
-              if ($(formObj).attr('id') != 'form_block[0]') {
-                frm_cnt++;
-                $(formObj)
-                  .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
-                  .find('div, input, select, label').each(function(idx, obj) {
-                   if ($(obj).attr('id') != null) {
-                      if($(obj).attr("id").substr(0,5) == "dItem"){
-                            $(obj).val("" + (frm_cnt + 1));
-                      }
-                      $(obj).attr({
-                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                      });
-                    }
-                    if ($(obj).attr('name') != null) {
-                      $(obj).attr({
-                        name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                      });
-                    }
-                    if ($(obj).attr('for') != null) {
-                      $(obj).attr({
-                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                      });
-                    }
-                  });
-              }
-            });
-          });
-        });
-
-        //データタイプボタンが変化したら
-        $("#blocks").off('change', 'select[name^="dataType"]');
-        $("#blocks").on('change', 'select[name^="dataType"]', function() {
-            var val = $(this).val();
-            $(this)
-            .parents(".form-block").children('div[id ^= "block-"]')
-            .each(function(idx,obj){
-                if ($(obj).attr("name") == val) $(obj).show();
-                else $(obj).hide();
-            });
-        });
-
     },
 
     oneditsave: function() {
-      var configReady = "ready";
-        if (!$("#objectKey").val()) configReady = "";
+        const node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+
         // データ設定を作成
-        var dItems = [];
-        $(".form-block[id^='form_block']").each(function(idx, obj){
-          var itemType = $(obj)
-              .find("select[name='dataType\\[" + idx + "\\]']").val();
-          var item ={options:{}};
-          item.options.itemType = itemType;
-          switch(itemType) {
-            case "bit":
-              item.dataName = $("#bit-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configReady = "";
-              item.options.source = $("#bit-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configReady = "";
-              item.options.deviceType = $("#bit-deviceType\\[" + idx + "\\]").val();
-              if (!item.options.deviceType) configReady = "";
-              item.options.number = $("#bit-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configReady = "";
-              item.options.logic = $("#bit-logic\\[" + idx + "\\]").val();
-              break;
-            case "number":
-              item.dataName = $("#number-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configReady = "";
-              item.unit = $("#number-unit\\[" + idx + "\\]").val();
-              item.options.source = $("#number-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configReady = "";
-              item.options.deviceType = $("#number-deviceType\\[" + idx + "\\]").val();
-              if (!item.options.deviceType) configReady = "";
-              item.options.type = $("#number-type\\[" + idx + "\\]").val();
-              item.options.encode = $("#number-encode\\[" + idx + "\\]").val();
-              item.options.offset = $("#number-offset\\[" + idx + "\\]").val();
-              item.options.gain = $("#number-gain\\[" + idx + "\\]").val();
-              break;
-            case "string":
-              item.dataName = $("#string-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configReady = "";
-              item.options.source = $("#string-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configReady = "";
-              item.options.deviceType = $("#string-deviceType\\[" + idx + "\\]").val();
-              if (!item.options.deviceType) configReady = "";
-              item.options.number = $("#string-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configReady = "";
-              item.options.encode = $("#string-encode\\[" + idx + "\\]").val();
-              break;
-            case "numList":
-              item.dataName = $("#numList-dName\\[" + idx + "\\]").val();
-              if (!item.dataName) configReady = "";
-              item.options.source = $("#numList-src\\[" + idx + "\\]").val();
-              if (!item.options.source) configReady = "";
-              item.options.deviceType = $("#numList-deviceType\\[" + idx + "\\]").val();
-              if (!item.options.deviceType) configReady = "";
-              item.options.number = $("#numList-num\\[" + idx + "\\]").val();
-              if (!item.options.number) configReady = "";
-              item.options.type = $("#numList-type\\[" + idx + "\\]").val();
-              item.options.encode = $("#numList-encode\\[" + idx + "\\]").val();
-              break;
-          }
-          dItems[idx]=item;
+        node.dataItems = [];
+
+        items.each(function(i, elm){
+            let item = {
+                itemType: elm.find(".itemType").val(),
+                dataName: elm.find(".dataName").val(),
+                bit: {          // bit type parameter
+                    deviceType: elm.find(".bit-deviceType").val(),
+                    address: parseInt(elm.find(".bit-add").val()),
+                    number: elm.find(".bit-num").val(),
+                    logic: elm.find(".bit-logic").val(),
+                },
+                number: {       // number type parameters
+                    deviceType: elm.find(".number-deviceType").val(),
+                    address: parseInt(elm.find(".number-add").val()),
+                    type: elm.find(".number-type").val(),
+                    encode: elm.find(".number-encode").val(),
+                    offset: Number(elm.find(".number-offset").val()),
+                    gain: Number(elm.find(".number-gain").val()),
+                    unit: elm.find(".number-unit").val(),
+                },
+                string: {       // string type parameters
+                    deviceType: elm.find(".string-deviceType").val(),
+                    address: parseInt(elm.find(".string-add").val()),
+                    number: parseInt(elm.find(".string-num").val()),
+                    encode: elm.find(".string-encode").val(),
+                },
+                numList: {      // numberList type parameters
+                    devideType: elm.find(".numList-deviceType").val(),
+                    address: parseInt(elm.find(".numList-add").val()),
+                    number: parseInt(elm.find(".numList-num").val()),
+                    type: elm.find(".numList-type").val(),
+                    encode: elm.find(".numList-encode").val(),
+                }
+            }
+            // 必須propertyが揃っているか？
+            if (!item.dataName) configReady = "";
+            switch(item.itemType) {
+                case "bit":
+                    if (!Number.isInteger(item.bit.address)) configReady = "";
+                    break;
+                case "number":
+                    if (!Number.isInteger(item.number.address)) configReady = "";
+                    if (!Number.isInteger(item.number.offset)) configReady = "";
+                    if (!Number.isInteger(item.number.gain)) configReady = "";
+                    break;
+                case "string":
+                    if (!Number.isInteger(item.string.address)) configReady = "";
+                    if (!Number.isInteger(item.string.number)) configReady = "";
+                    break;
+                case "numList":
+                    if (!Number.isInteger(item.numList.address)) configReady = "";
+                    if (!Number.isInteger(item.numList.number)) configReady = "";
+                    break;
+            }
+            node.dataItems.push(item);
         });
-        // オブジェクト設定を追加
-        var cfgobj = [{ObjectContent:{}, options:{}}];
-        cfgobj[0].ObjectContent.contentType = $("#contentType").val();
-        cfgobj[0].ObjectContent.contentData = dItems;
-        cfgobj[0].objectKey = $("#objectKey").val();
-        cfgobj[0].objectDescription = $("#objectDescription").val();
-        cfgobj[0].objectName = $("#objectName").val();
-        cfgobj[0].options.storeInterval = $("#storeInterval").val();
-        cfgobj[0].options.storeAsync = $("#storeAsync").is(":checked");
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.dataItems[0]) configReady = "";
+        // 設定完了フラグをセット
         $("#node-input-configReady").val(configReady);
-        //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-        try {$("#node-input-configJson").val(JSON.stringify(cfgobj));}
-        catch(e) {$("#node-input-configJson").val("");}
-      }
+    },
+
+    oneditresize: function(size) {
+        // エディタがリサイズされたら
+        let height = size.height;
+        // Tab以外の部分の高さを引く
+        let rows = $("#dialog-form>div:not(.tab-content");
+        for (let i=0; i<rows.length; i++) {
+            // 非表示要素は省く
+            if ($(rows[i]).is(":visible")) height -= $(rows[i]).outerHeight(true);
+        }
+        // dataItemプロパティTab内の、editableList以外の行の高さを引く
+        rows = $("#tab-dItem-property>div:not(.node-input-dItemcontainer-row)");
+        for (let i=0; i<rows.length; i++) {
+            height -= $(rows[i]).outerHeight(true);
+        }
+        // editableListのマージンを引く
+        const editorRow = $("#tab-dItem-property>div.node-input-dItemcontainer-row");
+        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+        
+        height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
+
+        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+        $("#node-input-dItemcontainer").editableList('height',height);
+    }
 
   });
 

@@ -10,7 +10,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.   -->
 
-<script type="text/x-red" data-template-name="PLC-Modbus-AE">
+<script type="text/html" data-template-name="PLC-Modbus-AE">
 
     <div class="form-row">
         <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
@@ -22,26 +22,22 @@
             <span data-i18n="editor.modbusNode"></span><span style="color: #ff0000;">*</span></label>
         <input type="text" style="width: 300px" id="node-input-ModbusCom">
     </div>
-<hr>
 
     <!-- 隠しのNodeプロパティ -->
     <div class="form-row hide">
         <input type="text" id="node-input-configReady">
     </div>
-    <div class="form-row hide">
-        <input type="text" id="node-input-configJson">
-    </div>
     
     <!-- Tab, ownself -->
     <div class="red-ui-tabs" id="ui-tabs">
       <ul>
-        <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
+        <li class="red-ui-tab" style="width: 50%;"><a href="#tab-object-property"
           class="nav-link red-ui-tab-label" data-toggle="tab">
-          <span data-i18n="editor.tab.object-settings" /></a>
+          <span data-i18n="editor.tab.object-settings" ></span></a>
         </li>
-        <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
+        <li class="red-ui-tab active" style="width: 50%;"><a href="#tab-AnE-property"
           class="nav-link red-ui-tab-label" data-toggle="tab">
-          <span data-i18n="editor.tab.data-settings" /></a>
+          <span data-i18n="editor.tab.data-settings" ></span></a>
         </li>
       </ul>
     </div>
@@ -49,95 +45,55 @@
     <!-- Tab contents -->
     <div class="tab-content">
 
-      <!-- tab1 starts -->
-      <div id="tab1" class="tab-pane active">
+      <!-- tab-object-property starts -->
+      <div id="tab-object-property" class="tab-pane">
         <!-- object propertyの設定 -->
         <div class="form-group" style="margin-left: 20px;">
             <div class="form-row">
-                <label style="margin-right: 10px;" for="storeInterval">
+                <label style="margin-right: 10px;" for="node-input-storeInterval">
                     <span data-i18n="editor.period"></span></label>
-                <input type="number" id="storeInterval" min="0" step="10"
+                <input type="number" id="node-input-storeInterval" min="0" step="10"
                     value="300" style="display: inline-block; width: auto;">
-                <label for="storeAsync" style="margin-left: 20px;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
                     <span data-i18n="editor.async"></span></label>
-                <input type="checkbox" checked="checked" id="storeAsync"
+                <input type="checkbox" checked="checked" id="node-input-storeAsync"
                     style="display: inline-block; width: auto;" disabled='disabled'>
             </div>
             <div class="form-row">
-                <label style="margin-right: 10px;" for="objectName">
+                <label style="margin-right: 10px;" for="node-input-objectName">
                     <span data-i18n="editor.objectname"></span></label>
-                <input type="text" style="width: 300px" id="objectName">
+                <input type="text" style="width: 300px" id="node-input-objectName">
             </div>
             <div class="form-row">
                 <label style="margin-right: 10px;"
-                    for="objectKey"><span data-i18n="editor.objectKey"></span>
+                    for="node-input-objectKey"><span data-i18n="editor.objectKey"></span>
                     <span style="color: #ff0000;">*</span></label>
                 <input class="form-control" type="text" style="width: 300px"
-                  id="objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
             </div>
             <div class="form-row">
                 <label style="margin-right: 10px;"
-                    for="objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-                <input type="text" style="width: 300px" id="objectDescription">
+                    for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
             </div>
         </div>
       </div>
-      <!-- tab1 ends -->
+      <!-- tab-object-property ends -->
 
-      <!-- tab2 starts -->
-      <div id="tab2" class="tab-pane">
+      <!-- tab-AnE-property starts -->
+      <div id="tab-AnE-property" class="tab-pane active">
         <!-- dataItem propertyの設定 -->
         <div class="form-row">
-          <label for="node-config-input-contentType"><i class="fa fa-tag"></i>
-              <span data-i18n="editor.contentType"></span></label>
-          <input type="text" id="node-config-input-contentType" value="Alarm&Event" disabled="disabled">
+            <label for="contentType">
+                <span data-i18n="editor.contentType"></span></label>
+            <input type="text" id="contentType" value="Alarm&Event" disabled="disabled">
         </div>
-        <div id="blocks">
-          <div class="form-block" id="form_block[0]">
-
-              <div class="form-row">
-                <div class="form-inline" id="from_del[0]" >
-                  <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
-                  <input type="text" id="dItem[0]" style="width: 30px;" value="1"
-                      disabled="disabled">
-                  <input type="button" name="del_btn" data-i18n="[value]editor.del"
-                      style="margin-left: 30px; width: 70px; display: none;">
-                  </div>
-              </div>
-              <div class="form-row">
-                  <div class="form-inline" style="vertical-align: middle;">
-                      <label><span data-i18n="editor.address"></span><span style="color: #ff0000;">*</span></label>
-                      <select id="deviceType[0]" style="width: 50px;">
-                          <option selected="selected" value="Coil">Coil</option>
-                          <option value="IS">IS</option>
-                          <option value="IR">IR</option>
-                          <option value="HR">HR</option>
-                      </select>
-                      <input type="text" style="margin-right: 10px; width: 80px" id="source[0]">
-                      <select style="width: 70px" id="logic[0]">
-                          <option selected="selected" value= "pos" data-i18n="editor.pos"></option>
-                          <option value= "neg" data-i18n="editor.neg"></option>
-                      </select>
-                  </div>
-              </div>
-              <div class="form-row">
-                  <label><span data-i18n="editor.AECode"></span></label>
-                  <input type="text" style="width: 100px;" id="AnECode[0]">
-              </div>
-              <div class="form-row">
-                  <label><span data-i18n="editor.AEDescription"></span></label>
-                  <textarea style="width: 300px" id="AnEdescription[0]" rows="2"></textarea>
-              </div>
-              <br>
-          </div>
+        <div class="form-row node-input-AnEcontainer-row">
+            <ol id="node-input-AnEcontainer">
+            </ol>
         </div>
-        <!-- Addボタン -->
-        <div class="form-block">
-          <input type="button" id="form_add" name="add_btn"  data-i18n="[value]editor.add">
-        </div>
-
-      </div>
-      <!-- tab2 ends -->
+      </div>  
+      <!-- tab-AnE-property ends -->      
     </div>
 
 </script>
@@ -164,14 +120,22 @@
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('PLC-Modbus-AE',{
+RED.nodes.registerType('PLC-Modbus-AE',{
     category: 'iaCloud',
     color:"rgb(231, 180, 100)",
     defaults: {
+        // node properties
         name: {value:"PLC-Modbus-AE"},
-        confsel: {value:"ui-config", required: true },
-        configJson:{value:"", required: true },
         ModbusCom: {value:"", type:"Modbus-com", required: true},
+        // object properties
+        storeInterval: {value:"300"},
+        storeAsync: {value: true},
+        objectName: {value:""},
+        objectKey: {value:""},
+        objectDescription: {value:""},
+        // AnEItem property
+        AnEItems:{value:[{deviceType:"Coil", address:0, logic: "pos", AneCode:"", AnEDescription:""}], required: true},
+
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true}
     },
@@ -187,185 +151,131 @@
 
     oneditprepare: function() {
 
-      // データItemの数を保持する変数
-      var frm_cnt = 0;
+        const node = this;
+        // Locale strings
+        const address = node._("editor.address");
+        const pos = node._("editor.pos");
+        const neg = node._("editor.neg");
+        const AnECode = node._("editor.AECode");
+        const AnEDesc = node._("editor.AEDescription");
 
-      // 設定データを取り出して、各formに展開する。
-      if ($("#node-input-configJson").val()) {
+        // Define editableList.
+        $('#node-input-AnEcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 180,
 
-        try{ var conf = JSON.parse($("#node-input-configJson").val());}
-        catch(e){ conf = null; }
-      }
-      //設定データがあったら
-      if(conf) {
-        $("#storeInterval").val(conf[0].options.storeInterval);
-        $("#storeAsync").prop("checked", conf[0].options.storeAsync);
-        $("#objectName").val(conf[0].objectName);
-        $("#objectKey").val(conf[0].objectKey);
-        $("#objectDescription").val(conf[0].objectDescription);
+            // Process when click add button.
+            addItem: function(container, index, AnEItem) {
+                const row1 = $('<div></div>').appendTo(container);
+                const row2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+                let element;
 
-        var dItems = conf[0].ObjectContent.contentData;
+                // 追加ボタンが押されたら、AnEItemは 空{} で呼ばれます。
+                if(!AnEItem.hasOwnProperty("deviceType")) {
+                    AnEItem = {deviceType:"Coil", address:0, logic: "pos", AneCode:"", AnEDescription:""}
+                };
+                $('<span></span>',{class:"index", style:"display:inline-block;text-align:right; width:30px; padding-right:10px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(row1);
+                element = $('<select/>',{class:"node-input-device-type",style:"width:50px; margin-right:10px;"}).appendTo(row1);
+                element.append($("<option></option>").val("Coil").text("Coil"));
+                element.append($("<option></option>").val("IS").text("IS"));
+                element.append($("<option></option>").val("HR").text("HR"));
+                element.append($("<option></option>").val("IR").text("IR"));
+                element.val(AnEItem.deviceType);
+                
+                element = $('<input></input>',
+                    {class:"node-input-address",type:"number",min:"0",setp:"1",style: "width:100px; margin-right:20px", placeholder: address})
+                    .appendTo(row1);
+                element.val(AnEItem.address);
+                
+                element = $('<select/>',{class:"node-input-logic",style:"width:80px; margin-right:10px;"}).appendTo(row1);
+                element.append($("<option></option>").val("pos").text(pos));
+                element.append($("<option></option>").val("neg").text(neg));                
+                element.val(AnEItem.logic);
 
-        //フォームを一つ保存
-        var original = $('#form_block\\[0\\]');
-
-        //一旦フォームオブジェクトをすべて削除
-        $(".form-block[id^='form_block']")
-            .each(function(index, formObj) {$(formObj).remove();});
-
-        dItems.forEach(function(value, idx){
-          original
-          .clone()
-          .hide()
-          .appendTo("#blocks")
-          .attr('id', 'form_block[' + idx + ']') // クローンのid属性を変更。
-          .end() // 一度適用する
-          .find('div, input, textarea, select, label').each(function(index, obj) {
-            if ($(obj).attr('id') != null) {
-              if($(obj).attr("id").substr(0,5) == "dItem"){
-                  $(obj).val("" + (idx + 1));
-              }
-              $(obj).attr({
-                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-              });
-            }
-            if ($(obj).attr('name') != null) {
-              $(obj).attr({
-                  name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + idx + ']')
+                $('<span></span>',{style:"display:inline-block;text-align:right; width:30px; padding-right:10px;"})
+                    .appendTo(row2);
+                element = $('<input></input>',{class:"node-input-AnECode",type:"text", style: "width:90px; margin-right:10px", placeholder: AnECode})
+                    .appendTo(row2);
+                element.val(AnEItem.AnECode);
+                element = $('<textarea></textarea>',{class:"node-input-AnEDescription",rows:"1", style: "width:240px;", placeholder: AnEDesc})
+                    .appendTo(row2);
+                element.val(AnEItem.AnEDescription);
+            },
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            removeItem: function(dItem){
+                let items = $('#node-input-AnEcontainer').editableList("items");
+                items.each(function(i, elm){
+                    elm.find(".index").text((i + 1) + ":");
                 });
             }
-            if ($(obj).attr('for') != null) {
-              $(obj).attr({
-                  for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-              });
-            }
-        });
-        $("#deviceType\\[" + idx + "\\]").val(value.options.deviceType);
-        $("#source\\[" + idx + "\\]").val(value.options.source);
-        $("#logic\\[" + idx + "\\]").val(value.options.logic);
-        $("#AnECode\\[" + idx + "\\]").val(value.dataValue.AnECode);
-        $("#AnEdescription\\[" + idx + "\\]").val(value.dataValue.AnEdescription);
 
-        var block = $('#form_block\\[' + idx + '\\]');
-        if (idx != 0) block.find('input[name="del_btn"]').show();
-        block.slideDown('slow');
-        frm_cnt = idx;
         });
-      }
 
-      //追加ボタンが押されたら
-      $("#form_add").off("click");
-      $("#form_add").on("click", function() {
-
-        var original = $('#form_block\\[' + frm_cnt + '\\]');
-        frm_cnt++;
-        original
-        .clone()
-        .hide()
-        .insertAfter(original)
-        .attr('id', 'form_block[' + frm_cnt + ']'); // クローンのid属性を変更。
-        var clone = $('#form_block\\[' + frm_cnt + '\\]');
-        clone.find('div, input, textarea, select, label').each(function(idx, obj) {
-          if ($(obj).attr('id') != null) {
-            if($(obj).attr("id").substr(0,5) == "dItem"){
-                $(obj).val("" + (frm_cnt + 1));
-            }
-            $(obj).attr({
-              id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-            });
-          }
-          if ($(obj).attr('name') != null) {
-            $(obj).attr({
-              name: $(obj).attr('name').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-             });
-          }
-          if ($(obj).attr('for') != null) {
-            $(obj).attr({
-              for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-            });
-          }
-        });
-        clone.find('input[name="del_btn"]').show();
-        clone.slideDown('fast');
-      });
-
-      //削除ボタンが押されたら
-      $("#blocks").off('click', 'input[name="del_btn"]');
-      $("#blocks").on('click', 'input[name="del_btn"]', function() {
-        var removeObj = $(this).parents(".form-block");
-        removeObj.fadeOut('fast', function() {
-          removeObj.remove();
-          // 番号振り直し
-          frm_cnt = 0;
-          $(".form-block[id^='form_block']").each(function(index, formObj) {
-            if ($(formObj).attr('id') != 'form_block[0]') {
-              frm_cnt++;
-              $(formObj)
-                .attr('id', 'form_block[' + frm_cnt + ']') // id属性を変更。
-                .find('div, input, textarea, select, label').each(function(idx, obj) {
-                 if ($(obj).attr('id') != null) {
-                    if($(obj).attr("id").substr(0,5) == "dItem"){
-                          $(obj).val("" + (frm_cnt + 1));
-                    }
-                    $(obj).attr({
-                      id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                    });
-                  }
-                  if ($(obj).attr('name') != null) {
-                    $(obj).attr({
-                      name: $(obj).attr('name').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                    });
-                  }
-                  if ($(obj).attr('for') != null) {
-                    $(obj).attr({
-                      for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                    });
-                  }
-                });
-            }
-          });
-        });
-      });
+        // 開始時にeditableListを構成します。
+        for (let i=0; i<node.AnEItems.length; i++) {
+            $("#node-input-AnEcontainer").editableList('addItem',node.AnEItems[i]);
+        }
     },
 
     oneditsave: function() {
 
-        var configReady = "ready";
-        // UI-configの場合
+        const node = this;
+        let configReady = "ready";
+        let items = $("#node-input-AnEcontainer").editableList('items');
 
-        if (!$("#objectKey").val()) configReady = "";
-        // データ設定を作成
-        var dItems = [];
-        $(".form-block[id^='form_block']").each(function(idx, obj){
-            var item ={commonName: "Alarm&Event", dataValue: {}, options:{}};
-
-            item.options.deviceType = $("#deviceType\\[" + idx + "\\]").val();
-            item.options.source = $("#source\\[" + idx + "\\]").val();
-            if (!item.options.source) configReady = "";
-            item.options.logic = $("#logic\\[" + idx + "\\]").val();
-            item.dataValue.AnECode = $("#AnECode\\[" + idx + "\\]").val();
-            item.dataValue.AnEdescription = $("#AnEdescription\\[" + idx + "\\]").val();
-
-            dItems[idx]=item;
+        // A＆Eデータ設定を作成
+        node.AnEItems = [];
+        items.each(function(i, elm){
+            let item = {
+                deviceType: elm.find(".node-input-device-type").val(),
+                address: parseInt(elm.find(".node-input-address").val()),
+                logic: elm.find(".node-input-logic").val(),
+                AnECode: elm.find(".node-input-AnECode").val(),
+                AnEDescription: elm.find(".node-input-AnEDescription").val()
+            }
+            // アドレスは数値？
+            if (!Number.isInteger(item.address)) configReady = "";
+            node.AnEItems.push(item);
         });
-        // オブジェクト設定を追加
-        var cfgobj = [{ObjectContent:{}, options:{}}];
-        cfgobj[0].ObjectContent.contentType = "Alarm&Event";
-        cfgobj[0].ObjectContent.contentData = dItems;
-        cfgobj[0].objectKey = $("#objectKey").val();
-        cfgobj[0].objectDescription = $("#objectDescription").val();
-        cfgobj[0].objectName = $("#objectName").val();
-        cfgobj[0].options.storeInterval = $("#storeInterval").val();
-        cfgobj[0].options.storeAsync = $("#storeAsync").is(":checked");
-        $("#node-input-configReady").val(configReady);
-        //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-        try {$("#node-input-configJson").val(JSON.stringify(cfgobj));}
-        catch(e) {$("#node-input-configJson").val("")}
-      
+
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+        // A&Eデータ設定はある？
+        if (!node.AnEItems) configReady = "";
         // 設定完了フラグをセット
         $("#node-input-configReady").val(configReady);
 
+    },
+    oneditresize: function(size) {
+        // エディタがリサイズされたら
+        let height = size.height;
+        // Tab以外の部分の高さを引く
+        let rows = $("#dialog-form>div:not(.tab-content");
+        for (let i=0; i<rows.length; i++) {
+            // 非表示要素は省く
+            if ($(rows[i]).is(":visible")) height -= $(rows[i]).outerHeight(true);
+        }
+        // AnEプロパティTab内の、editableList以外の行の高さを引く
+        rows = $("#tab-AnE-property>div:not(.node-input-AnEcontainer-row)");
+        for (let i=0; i<rows.length; i++) {
+            height -= $(rows[i]).outerHeight(true);
+        }
+        // editableListのマージンを引く
+        const editorRow = $("#tab-AnE-property>div.node-input-AnEcontainer-row");
+        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+        
+        height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
+
+        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+        $("#node-input-AnEcontainer").editableList('height',height);
     }
-  });
+});
 
 </script>
