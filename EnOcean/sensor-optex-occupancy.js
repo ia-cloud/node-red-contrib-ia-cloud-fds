@@ -1,6 +1,6 @@
 const SensorInterface = require('./sensors-interface');
 
-module.exports = class OptexRockerSwitch extends SensorInterface {
+module.exports = class OptexOccupancy extends SensorInterface {
     /**
      * 在室センサーの状況取得.
      */
