@@ -15,7 +15,6 @@
         "objectKey": "object key",
         "objectKeyholder": "required: unique key",
         "objectDescription": "object description",
-        "modbusNode": "modbus com. node",
         "contentType": "content type",
         "itemNumber": "item No.",
         "bit": "bit",
@@ -26,25 +25,18 @@
         "add": "add",
         "dname": "data name",
         "address": "start address",
-        "bitNum": "number of bits",
+        "bitNum": "number of bit",
         "pos": "positive",
         "neg": "negative",
-        "unit": "unit",
-        "dType": "data type",
-        "unsigned": "unsigned",
-        "signed": "signed",
-        "BCD": "BCD",
-        "offset": "offset",
-        "gain": "gain",
-        "sjis": "shift JIS",
-        "utf": "UTF-8",
-        "euc": "EUC-JP",
-        "wnumber": "number of words",
+        "AnECode": "A&E code",
+        "AnEDescription": "A$E description",
+        "modbusNode": "modbus com. node"
     },
     "runtime": {
         "badFilePath": "bad file path",
         "ready": "Ready",
         "preparing": "preparing",
         "sent": "data sent",
+        "jsonerror": "invalid json data."
     }
 }

@@ -22,8 +22,8 @@ module.exports = function(RED) {
 
         const HmiSchneiderWebSocket = require('./HMI-Schneider-Websocket.js');
 
-        this.host = config.etherAdd;
-        this.port = config.etherPort;
+        this.host = config.IPAdd;
+        this.port = config.TCPPort;
 
         this.subscription = false;
         this.ws = null;

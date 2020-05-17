@@ -28,8 +28,8 @@
         "bitNum": "ビット数",
         "pos": "正論理",
         "neg": "負論理",
-        "AECode": "A&Eコード",
-        "AEDescription": "A&Eの説明",
+        "AnECode": "A&Eコード",
+        "AnEDescription": "A&Eの説明",
         "modbusNode": "通信ノード"
     },
     "runtime": {

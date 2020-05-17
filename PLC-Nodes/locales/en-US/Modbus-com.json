@@ -5,12 +5,12 @@
         "maxDataNum": "max consec.",
         "noBlanck": "no blanck",
         "comType": "com. type",
-        "etherPort": "Ether port",
+        "TCPPort": "TCP port",
         "netAddress": "Network add.",
         "unitID": "unit ID",
         "serialPort": "port",
         "serialAddress": "address",
-        "board": "board rate",
+        "baud": "baud rate",
         "parity": "parity"
     },
     "runtime": {

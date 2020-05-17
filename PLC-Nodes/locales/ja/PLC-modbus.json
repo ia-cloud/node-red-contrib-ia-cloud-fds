@@ -10,11 +10,11 @@
         },
         "period": "定期収集周期",
         "async": "非同期収集有り",
-        "objectname": "object名称",
+        "objectName": "object名称",
         "objectKey": "objectキー",
         "objectKeyholder": "必須: 固有のキー",
         "objectDescription": "objectの説明",
-        "modbusNode": "通信ノード",
+        "comNode": "通信ノード",
         "contentType": "データ構造型",
         "bit": "ビット",
         "number": "数値",
@@ -39,7 +39,6 @@
         "wnumber": "W数"
     },
     "runtime": {
-        "badFilePath": "ファイルが見つかりません。",
         "ready": "Ready",
         "preparing": "データ準備中...",
         "sent": "データ送出"
