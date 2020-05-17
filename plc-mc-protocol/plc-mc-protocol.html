@@ -12,18 +12,15 @@
   </div>
 
   <!-- Tab, ownself -->
-  <div class="red-ui-tabs">
-    <ul>
-      <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1" class="nav-link red-ui-tab-label" data-toggle="tab"><span data-i18n="ia-cloud-fds.plc-mc-protocol.tab.object-settings" /></a></li>
-      <li class="red-ui-tab       " style="width: 50%;"><a href="#tab2" class="nav-link red-ui-tab-label" data-toggle="tab"><span data-i18n="ia-cloud-fds.plc-mc-protocol.tab.data-settings" /></a></li>
-    </ul>
+  <div class="form-row">
+    <ul style="min-width: 500px; margin-bottom: 20px;" id="node-config-ia-cloud-plc-mc-protocol-tabs"></ul>
   </div>
 
   <!-- Tab contents -->
-  <div class="tab-content">
+  <div id="node-config-ia-cloud-plc-mc-protocol-tabs-content" style="min-height:150px;">
 
     <!-- Object Settings (starts) -->
-    <div id="tab1" class="tab-pane active">
+    <div id="ia-cloud-plc-mc-protocol-tab-object-settings" style="display:none">
       <div class="form-row">
         <label for="node-input-objectKey" style="width:150px"><i class="fa fa-tag"></i> <span data-i18n="ia-cloud-fds.plc-mc-protocol.object-name" /></label>
         <input type="text" id="node-input-objectKey" data-i18n="[placeholder]ia-cloud-fds.plc-mc-protocol.this-object-name">
@@ -40,7 +37,7 @@
     <!-- Object Settings (ends) -->
 
     <!-- Data settings (starts) -->
-    <div id="tab2" class="tab-pane">
+    <div id="ia-cloud-plc-mc-protocol-tab-data-settings" style="display:none">
       <!-- Addresses : rows -->
       <div class="ia-cloud-fds-plc-mc-addresses">
       </div>
@@ -120,6 +117,23 @@
       return this.name || 'PLC MC protocol';
     },
     oneditprepare() {
+      // Tab
+      const tabs = RED.tabs.create({
+        id: 'node-config-ia-cloud-plc-mc-protocol-tabs',
+        onchange(tab) {
+          $('#node-config-ia-cloud-plc-mc-protocol-tabs-content').children().hide();
+          $("#" + tab.id).show();
+        },
+      });
+      tabs.addTab({
+        id: 'ia-cloud-plc-mc-protocol-tab-object-settings',
+        label: this._('ia-cloud-fds.plc-mc-protocol.tab.object-settings'),
+      });
+      tabs.addTab({
+        id: 'ia-cloud-plc-mc-protocol-tab-data-settings',
+        label: this._('ia-cloud-fds.plc-mc-protocol.tab.data-settings'),
+      });
+
       // Stack object name.
       const objectKey = this.objectKey || '';
       $('.node-input-objectKey').val(objectKey);
