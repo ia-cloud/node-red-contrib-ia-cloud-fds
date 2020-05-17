@@ -14,21 +14,19 @@
 <script type="text/html" data-template-name="PLC-Modbus-AE">
 
     <div id="PLC-name-block">
-        <div class="form-row" id="PLC-name-block">
+        <div class="form-row">
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
             <input type="text" class="form-control" id="node-input-name">
         </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
         <!-- modbus node（設定Node）の選択-->
         <div class="form-row">
-            <label for="node-input-ModbusCom" style= "vertical-align: middle;">
+            <label for="node-input-comNode" style= "vertical-align: middle;">
                 <span data-i18n="editor.modbusNode"></label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
-
-        <!-- 隠しのNodeプロパティ -->
-        <div class="form-row hide">
-            <input type="text" id="node-input-configReady">
-        </div>
+        <hr>
     </div>
     <!-- Tab, ownself -->
     <div id="ui-tabs">

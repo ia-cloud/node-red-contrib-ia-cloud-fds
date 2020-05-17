@@ -19,13 +19,14 @@ const path = require("path");
 const fs = require("fs");
 const serialp = require("serialport");
 const ModbusRTU = require('modbus-serial');
+// const MitsubishiSLMP = require('./util/mitsubishi-SLMP');
 const PLCCom = require('./util/PLC-Com');
 
-class ModbusCom extends PLCCom {
+class MitsubishiCom extends PLCCom {
     constructor(config, MBObject){
         super(config, MBObject);
     }
-    // PLCCom のreadItemFromPLC()をModbus仕様にオーバーライド
+    // PLCCom のreadItemFromPLC()をMitsubishi仕様にオーバーライド
     async readItemsFromPLC(config, params) {
 
         let mbObj = this.comObj;
@@ -68,7 +69,7 @@ class ModbusCom extends PLCCom {
         await mbObj.close();
         return values;
     }
-    // LinkObject形式へのデータ変換。Modbus仕様にオーバーライドする。
+    // LinkObject形式へのデータ変換。Mitsubishi仕様にオーバーライドする。
     toLinkObjectValue(value) {
         let type = typeof value;
         if (type == "boolean")
@@ -78,7 +79,7 @@ class ModbusCom extends PLCCom {
     }
 
     // 通信リンクオブジェクトを登録するメソッド
-    // Modbusの特有デバイス名でフィルタリングし、Baseクラスのメソッドコール
+    // Mitsubishiの特有デバイス名でフィルタリングし、Baseクラスのメソッドコール
     addLinkData(lObj) {   
         //デバイス名が不正でないかチェック（error,Coil,IS,HR,IR）
         for(let dev of Object.keys(lObj)) {
@@ -89,7 +90,7 @@ class ModbusCom extends PLCCom {
     }
     // 通信エラーのハンドラーメソッド
     comError(err) {
-        this.linkObj.error = "Modbus com error!";
+        this.linkObj.error = "Mitsubishi com error!";
     }
 }
 
@@ -99,8 +100,8 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
 
         const node = this;
-        const mbObj = new ModbusRTU();
-        const mbcom = new ModbusCom(config, mbObj);
+        const mbObj = new MitsubishiRTU();
+        const mbcom = new MitsubishiCom(config, mbObj);
 
         let cycleId;
 
@@ -131,7 +132,7 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("Modbus-com",modbusCom);
+    RED.nodes.registerType("Mitsubishi-com",modbusCom);
 
     RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
         serialp.list().then(
@@ -145,7 +146,7 @@ module.exports = function(RED) {
         )
     });
 
-    RED.httpAdmin.get("/PLCComhtml", RED.auth.needsPermission('Modbus-com.read'), function(req,res) {
+    RED.httpAdmin.get("/PLCComhtml", RED.auth.needsPermission('Mitsubishi-com.read'), function(req,res) {
         let jscript;
         let fname = path.join(__dirname, 'util/PLC-Com.script.js')
         try{

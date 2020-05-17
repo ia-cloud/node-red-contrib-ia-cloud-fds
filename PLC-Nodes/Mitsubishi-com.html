@@ -11,7 +11,7 @@
     limitations under the License.
 -->
 
-<script type="text/html" data-template-name="Modbus-com">
+<script type="text/html" data-template-name="Mitsubishi-com">
 
     <div id="PLCCom-main-block">
         <div class="form-row">
@@ -86,7 +86,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="Modbus-com">
+<script type="text/x-red" data-help-name="Mitsubishi-com">
     <p>preparing ia-cloud objects for store to CCS</p>
 
 <h3>Inputs</h3>
@@ -110,20 +110,24 @@
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
     $.getScript("PLCComhtml", function(script, textStatus){
 
+        const lblTCP = this._("editor.TCP");
+        const lblserial4 = this._("editor.serial4");
+        const lblserial5 = this._("editor.serial5");
+
         let cfg = new PLCComNodeConfig();
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name = {value:"Modbus-com"}; 
+        cfg.defaults.name = {value:"Mitsubishi-com"}; 
 
         // 通信種別のselect要素を追加する関数を上書き
         cfg.comTypeDef = [
-            {v:"TCP",l:"ModbusTCP", com:"TCP"},
-            {v:"RTU",l:"ModbusRTU", com:"serial"},
-            {v:"ASCII",l:"ModbusASCII", com:"serial"}
+            {v:"TCP",l:`${lblTCP}`, com:"TCP"},
+            {v:"Serial4",l:`${lblserial4}`, com:"serial"},
+            {v:"Serial5",l:`${lblserial5}`, com:"serial"}
         ];
 
         // NodeをNode-REDへ登録
-        RED.nodes.registerType('Modbus-com', cfg);
+        RED.nodes.registerType('Mitsubishi-com', cfg);
     });
 
 </script>

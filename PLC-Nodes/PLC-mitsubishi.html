@@ -11,19 +11,20 @@
     limitations under the License.
 -->
 
-<script type="text/html" data-template-name="PLC-Modbus">
+<script type="text/html" data-template-name="PLC-Mitsubishi">
 
     <div id="PLC-name-block">
         <div class="form-row">
-            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <label for="node-input-name" >
+                <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
             <input type="text" class="form-control" id="node-input-name">
         </div>
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
-        <!-- modbus node（設定Node）の選択-->
         <div class="form-row">
             <label for="node-input-comNode" style= "vertical-align: middle;">
-                <span data-i18n="editor.comNode"></span></label>
+                <span data-i18n="editor.comNode"></span>
+            </label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
         <hr>
@@ -75,7 +76,7 @@
             <!-- dataItem propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
                 <label for="node-input-contentType"><i class="fa fa-tag"></i><span data-i18n="editor.contentType"></span></label>
-                <input type="text" id="node-input-contentType" value="ModbusPLC">
+                <input type="text" id="node-input-contentType" value="MitsubishiPLC">
             </div>
             <div class="node-input-dItemcontainer-row">
                 <ol id="node-input-dItemcontainer">
@@ -86,7 +87,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="PLC-Modbus">
+<script type="text/x-red" data-help-name="PLC-Mitsubishi">
     <p>preparing ia-cloud objects for store to CCS</p>
 
 <h3>Inputs</h3>
@@ -113,32 +114,32 @@
         let cfg = new PLCNodeConfig();
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name.value = "PLC-Modbus"; 
+        cfg.defaults.name.value = "PLC-Mitsubishi"; 
         cfg.defaults.comNode.value = "通信Node";
-        cfg.defaults.comNode.type = "Modbus-com";
-        cfg.defaults.contentType.value = "ModbusPLC";
+        cfg.defaults.comNode.type = "Mitsubishi-com";
+        cfg.defaults.contentType.value = "MitsubishiPLC";
 
         // DataItem設定リストのデバイスsellect要素のoptionを定義
         cfg.defaults.deviceTypeDef.value = {
-            bit: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
-                    {value:"HR", text:"HR"},{value:"IR", text:"IR"},],
-            number: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}],
-            string: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}],
-            numList: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}]
+            bit: [{value:"X", text:"X"},{value:"Y", text:"Y"},
+                    {value:"M", text:"M"},{value:"L", text:"L"},],
+            number: [{value:"D", text:"D"},{value:"W", text:"W"}],
+            string: [{value:"D", text:"D"},{value:"W", text:"W"}],
+            numList: [{value:"D", text:"D"},{value:"W", text:"W"}]
         }
 
         //  デフォルトのPLCデータ項目を定義
         cfg.defaults.defaultDataItem.value = {
                 itemType:"bit",
                 dataName:"",
-                bit: {deviceType:"Coil", address:0, number:1, logic:"pos"},
-                number: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
-                string: {deviceType:"HR", address:0,  number:1, encode:"utf-8"}, 
-                numList: {deviceType:"HR", address:0, number:1, type:"1w", encode:"unsigned"}
+                bit: {deviceType:"M", address:0, number:1, logic:"pos"},
+                number: {deviceType:"D", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
+                string: {deviceType:"D", address:0,  number:1, encode:"utf-8"}, 
+                numList: {deviceType:"D", address:0, number:1, type:"1w", encode:"unsigned"}
         };
 
         // NodeをNode-REDへ登録
-        RED.nodes.registerType('PLC-Modbus', cfg);
+        RED.nodes.registerType('PLC-Mitsubishi', cfg);
     });
    
 </script>

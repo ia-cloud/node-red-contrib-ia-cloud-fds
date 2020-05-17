@@ -233,7 +233,7 @@ class PLCAENodeConfig {
         height -= $("#PLC-name-block").outerHeight(true);
 
         // dataItemプロパティTab内の、editableList以外の行の高さを引く
-        let rows = $("#node-input-AnEcontainer>div:not(.node-input-AnEcontainer-row)");
+        let rows = $("#tab-AnE-property>div:not(.node-input-AnEcontainer-row)");
         for (let i=0; i<rows.length; i++) {
             height -= $(rows[i]).outerHeight(true);
         }

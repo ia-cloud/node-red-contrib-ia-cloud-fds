@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "cycle": "通信周期",
+        "maxDataNum": "連続読出数",
+        "noBlank": "連続読出限定",
+        "comType": "通信種別",
+        "TCPPort": "ポート番号",
+        "netAddress": "Netアドレス",
+        "unitID": "ユニットID",
+        "serialPort": "ポート",
+        "serialAddress": "アドレス",
+        "baud": "ボーレート",
+        "parity": "パリティ",
+        "TCP": "TCP",
+        "serial4": "形式4",
+        "serial5": "形式5"
+    },
+    "runtime": {
+
+    }
+}
