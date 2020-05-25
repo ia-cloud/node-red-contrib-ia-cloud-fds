@@ -12,9 +12,9 @@
         "serialAddress": "address",
         "baud": "baud rate",
         "parity": "parity",
-        "ModbusTCP": "ModbusTCP",
-        "ModbusRTU": "ModbusRTU",
-        "ModbusASCII": "ModbusASCII"
+        "TCP": "TCP",
+        "Serial4": "Serial F.4",
+        "Serial5": "Serial F.5"
     },
     "runtime": {
 

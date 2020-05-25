@@ -48,12 +48,13 @@
                 <label for="node-config-input-TCPPort"><span data-i18n="editor.TCPPort"></span></label>
                 <input type="text" value=502 required="required" style="width: 300px" id="node-config-input-TCPPort" data-i18n="[placeholder]editor.TCPPort">
             </div>
+            <!--
             <div class="form-row">
                 <label for="node-config-input-unitID"><span data-i18n="editor.unitID"></span></label>
                 <input type="text" value=255 required="required" style="width: 300px" id="node-config-input-unitID" data-i18n="[placeholder]editor.unitID">
             </div>
+            -->
         </div>
-
         <div class="form-group hide" id="serialConf">
             <div class="form-row">
                 <label for="node-config-input-serialPort"><i class="fa fa-random"></i><span data-i18n="editor.serialPort"></span></label>
@@ -83,6 +84,11 @@
             </select>
         </div>
     </div>
+    <hr>
+    <div class="form-row form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-accessRoute"></span></div>
+    <div class="form-row">
+        <label for="node-config-input-accessRoute"><span data-i18n="editor.accessRoute"></span></label>
+        <input type="text" style="width: 200px" id="node-config-input-accessRoute" data-i18n="[placeholder]editor.accessRouteExp">
     </div>
 </script>
 
@@ -108,23 +114,26 @@
 <script type="text/javascript">
 
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLCComhtml", function(script, textStatus){
+    $.getScript("PLC-Com.script", function(script, textStatus){
 
-        const lblTCP = this._("editor.TCP");
-        const lblserial4 = this._("editor.serial4");
-        const lblserial5 = this._("editor.serial5");
-
-        let cfg = new PLCComNodeConfig();
+        // Node登録オブジェクトのシャローコピー
+        let cfg = Object.assign({}, PLCComNodeConfig);
+        // デフォルトプロパティのシャローコピー
+        let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name = {value:"Mitsubishi-com"}; 
+        dflts.name = {value:"Mitsubishi-com"}; 
 
-        // 通信種別のselect要素を追加する関数を上書き
-        cfg.comTypeDef = [
-            {v:"TCP",l:`${lblTCP}`, com:"TCP"},
-            {v:"Serial4",l:`${lblserial4}`, com:"serial"},
-            {v:"Serial5",l:`${lblserial5}`, com:"serial"}
-        ];
+        // 通信種別のselect要素を上書き
+        dflts.comTypeDef = {value:
+            [
+                {v:"TCP",l:"editor.TCP", com:"TCP"},
+                {v:"Serial4",l:"editor.Serial4", com:"serial"},
+                {v:"Serial5",l:"editor.Serial5", com:"serial"}
+            ]
+        };
+        // デフォルトプロパティを付け替え
+        cfg.defaults = dflts;
 
         // NodeをNode-REDへ登録
         RED.nodes.registerType('Mitsubishi-com', cfg);

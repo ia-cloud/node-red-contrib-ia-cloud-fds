@@ -31,10 +31,10 @@
         "AnECode": "A&Eコード",
         "AnEDescription": "A&Eの説明",
         "modbusNode": "通信ノード",
-        "dev-Coil": "コイル",
-        "dev-IS": "IS",
-        "dev-HR": "HR",
-        "dev-IR": "IR"
+        "dev-X": "X",
+        "dev-Y": "Y",
+        "dev-D": "D",
+        "dev-W": "W"
     },
     "runtime": {
         "badFilePath": "ファイルが見つかりません。",

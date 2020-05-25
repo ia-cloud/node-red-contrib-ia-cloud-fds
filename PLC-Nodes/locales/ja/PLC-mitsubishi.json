@@ -37,10 +37,12 @@
         "utf": "UTF8",
         "euc": "EUCjp",
         "wnumber": "W数",
-        "dev-Coil": "コイル",
-        "dev-IS": "IS",
-        "dev-HR": "HR",
-        "dev-IR": "IR"
+        "dev-X": "X",
+        "dev-Y": "Y",
+        "dev-M": "M",
+        "dev-L": "L",
+        "dev-D": "D",
+        "dev-W": "W"
     },
     "runtime": {
         "ready": "Ready",

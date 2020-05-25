@@ -40,11 +40,15 @@
         "utf": "UTF-8",
         "euc": "EUC-JP",
         "wnumber": "number of words",
+        "dev-Coil": "Coil",
+        "dev-IS": "IS",
+        "dev-HR": "HR",
+        "dev-IR": "IR"
     },
     "runtime": {
         "badFilePath": "bad file path",
         "ready": "Ready",
         "preparing": "preparing",
-        "sent": "data sent",
+        "sent": "data sent"
     }
 }

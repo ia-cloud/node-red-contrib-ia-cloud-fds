@@ -11,7 +11,10 @@
         "serialPort": "ポート",
         "serialAddress": "アドレス",
         "baud": "ボーレート",
-        "parity": "パリティ"
+        "parity": "パリティ",
+        "ModbusTCP": "ModbusTCP",
+        "ModbusRTU": "ModbusRTU",
+        "ModbusASCII": "ModbusASCII"
     },
     "runtime": {
 

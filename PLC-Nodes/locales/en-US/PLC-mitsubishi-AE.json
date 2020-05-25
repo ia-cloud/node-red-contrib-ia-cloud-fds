@@ -31,10 +31,10 @@
         "AnECode": "A&E code",
         "AnEDescription": "A$E description",
         "modbusNode": "modbus com. node",
-        "dev-Coil": "Coil",
-        "dev-IS": "IS",
-        "dev-HR": "HR",
-        "dev-IR": "IR"
+        "dev-X": "X",
+        "dev-Y": "Y",
+        "dev-D": "D",
+        "dev-W": "W"
     },
     "runtime": {
         "badFilePath": "bad file path",

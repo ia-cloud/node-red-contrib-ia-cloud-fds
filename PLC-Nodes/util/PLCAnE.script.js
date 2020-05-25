@@ -14,70 +14,68 @@
  * limitations under the License.
  **/
 
-class PLCAENodeConfig {
+var PLCAENodeConfig = {
 
-    constructor () {
-        this.category = 'iaCloud';
-        this.color = "rgb(231, 180, 100)";
 
-        this.defaults = {
-            // node properties
-            // Nodeのデフォルトプロパティ。
-            // 必要に応じて、利用する個別の個別のPLCAnE Nodeの.htmlファイルのjavscriptでオーバライド?する。
-            /*  [example]
-                PLCNodeConfig.defaults.name = {value:"PLC-ModbusAnE"}; 
-                PLCNodeConfig.defaults.comNode = {value:"通信Node", type:"Modbus-com", required: true};
-            */
-            name: {value:""},
-            comNode: {value:"", type:"", required: true},
-            contentType: {value: "Alarm&Event", required: true},
+    category: 'iaCloud',
+    color: "rgb(231, 180, 100)",
 
-            // object properties
-            storeInterval: {value:"300"},
-            storeAsync: {value: true, required: true},
-            objectName: {value:""},
-            objectKey: {value:"", required: true},
-            objectDescription: {value:""},
+    defaults: {
+        // node properties
+        // Nodeのデフォルトプロパティ。
+        // 必要に応じて、利用する個別の個別のPLCAnE Nodeの.htmlファイルのjavscriptでオーバライド?する。
+        /*  [example]
+            PLCNodeConfig.defaults.name = {value:"PLC-ModbusAnE"}; 
+            PLCNodeConfig.defaults.comNode = {value:"通信Node", type:"Modbus-com", required: true};
+        */
+        name: {value:""},
+        comNode: {value:"", type:"", required: true},
+        contentType: {value: "Alarm&Event", required: true},
 
-            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
-            configReady: {value: "", required: true},
+        // object properties
+        storeInterval: {value:"300"},
+        storeAsync: {value: true, required: true},
+        objectName: {value:""},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
 
-            // dataItems property（editableListで使用する。
-            dataItems: {value: [{}],},
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
 
-            // defaultのdataItem定義（editableListで追加ボタンが押された時のdataItem）
+        // dataItems property（editableListで使用する。
+        dataItems: {value: [{}],},
+
+        // defaultのdataItem定義（editableListで追加ボタンが押された時のdataItem）
+        /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
+        [Example]
+            PLCNodeConfig.defaults.defaultDataItem.value = {
+                itemType:"bit",
+                commonName:"",
+                AnE: {deviceType:"Coil", address:0, logic:"pos", AnECode:"", AnEDesc:""},
+        };           */
+        defaultDataItem: {value:{}},
+
+            // DataItem設定リストのデバイスsellect要素のoptionを追加するDOM要素
             /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
             [Example]
-                PLCNodeConfig.defaults.defaultDataItem.value = {
-                    itemType:"bit",
-                    commonName:"",
-                    AnE: {deviceType:"Coil", address:0, logic:"pos", AnECode:"", AnEDesc:""},
-            };           */
-            defaultDataItem: {value:{}},
+                PLCNodeConfig.defaults.deviceTypeDef.value = {
+                    AnE: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
+                            {value:"HR", text:"HR"},{value:"IR", text:"IR"},],
+        }            */
+        deviceTypeDef: {value:{},}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "ia-cloud.png",  //アイコンはTBD
 
-                // DataItem設定リストのデバイスsellect要素のoptionを追加するDOM要素
-                /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
-                [Example]
-                    PLCNodeConfig.defaults.deviceTypeDef.value = {
-                        AnE: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
-                                {value:"HR", text:"HR"},{value:"IR", text:"IR"},],
-            }            */
-            deviceTypeDef: {value:{},}
-        };
-        this.inputs = 1;
-        this.outputs = 1;
-        this.icon = "ia-cloud.png";  //アイコンはTBD
-
-    }
-
-    label() {
+    label: function () {
         return this.name||this._("PlcData-object");
-    };
-    labelStyle() {
+    },
+    labelStyle: function () {
         return this.name?"node_label_italic":"";
-    }
+    },
 
-    oneditprepare () {
+    oneditprepare: function () {
 
         const node = this;
 
@@ -152,7 +150,7 @@ class PLCAENodeConfig {
                     }
                     if (!selField) break;
                     for (var i=0; i<len; i++) {
-                        selField.append($("<option></option>").val(ops[i].value).text(ops[i].text));
+                        selField.append($("<option></option>").val(ops[i].value).text(node._(ops[i].text)));
                     }
                 }
 
@@ -187,9 +185,9 @@ class PLCAENodeConfig {
         for (let i=0; i<node.dataItems.length; i++) {
             $("#node-input-AnEcontainer").editableList('addItem',node.dataItems[i]);
         }  
-   };
+   },
 
-    oneditsave() {
+    oneditsave: function () {
         const node = this;
         let configReady = "ready";
         let items = $("#node-input-AnEcontainer").editableList('items');
@@ -223,9 +221,9 @@ class PLCAENodeConfig {
         // 設定完了フラグをセット
         $("#node-input-configReady").val(configReady);
 
-    };
+    },
 
-    oneditresize(size) {
+    oneditresize: function (size) {
         // エディタがリサイズされたら
         let height = size.height;
 
@@ -247,6 +245,6 @@ class PLCAENodeConfig {
         // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
         $("#node-input-AnEcontainer").editableList('height',height);
 
-    };
+    },
 }
 

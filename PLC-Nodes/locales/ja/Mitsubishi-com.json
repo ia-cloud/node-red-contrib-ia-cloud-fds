@@ -13,8 +13,11 @@
         "baud": "ボーレート",
         "parity": "パリティ",
         "TCP": "TCP",
-        "serial4": "形式4",
-        "serial5": "形式5"
+        "Serial4": "シリアル形式4",
+        "Serial5": "シリアル形式5",
+        "accessRoute": "アクセス経路",
+        "accessRouteExp": "通常は空欄のまま",
+        "tip-accessRoute": "ネットワーク上の他局PLCにアクセスする場合、その経路を記述する。記述形式：nn:dd:uuuu:mm　各文字は[0-9、A-F]"
     },
     "runtime": {
 

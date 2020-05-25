@@ -22,7 +22,7 @@ const PLC = require('./util/PLC');
 
 module.exports = function(RED) {
 
-    function PLCMitsubishi(config) {
+    function PLCModbusAE(config) {
 
         RED.nodes.createNode(this, config);
         
@@ -47,18 +47,18 @@ module.exports = function(RED) {
         });
     };
 
-    RED.nodes.registerType("PLC-Mitsubishi",PLCMitsubishi);
+    RED.nodes.registerType("PLC-Mitsubishi-AE",PLCModbusAE);
 
 
-    RED.httpAdmin.get("/PLC.script", RED.auth.needsPermission('PLC-Mitsubishi.read'), function(req,res) {
+    RED.httpAdmin.get("/PLCAnE.script", RED.auth.needsPermission('PLC-Mitsubishi.read'), function(req,res) {
         let jscript;
-        let fname = path.join(__dirname, 'util/PLC.script.js')
+        let fname = path.join(__dirname, 'util/PLCAnE.script.js');
         try{
             jscript = fs.readFileSync(fname);
-          } catch(e) {
+        } catch(e) {
             //エラーの場合。
             jscript = null;
-          }
+        }
         res.type("text/javascript").send(jscript);
     });
 }

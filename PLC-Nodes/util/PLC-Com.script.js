@@ -15,60 +15,58 @@
  **/
 
 // RED.nodes.registerType()の第2引数を定義
-// 必要に応じてRED.nodes.registerType()に渡す前に、オーバーライト（書き換え）する。
-// 通信種別選択部分は、書き換えのための関数を定義してある。
-class  PLCComNodeConfig {
+// 必要に応じてRED.nodes.registerType()に渡す前に、オーバーライドする。
+// 通信種別選択部分は、書き換えのための設定オブジェクトを定義してある。
+var PLCComNodeConfig = {
 
-    constructor () {
-
-        this.category = 'config';
-        this.defaults = {
-            name: {value:""},
-            refreshCycle: {value:60, required:true},
-            maxDataNum: {value:64, required:true},
-            noBlank: {value:false, required:true},
-            comType: {value:""},
-            TCPPort:{value:502 },
-            IPAdd:{value:"" },
-            unitID:{value:255 },
-            serialPort:{value:"" },
-            serialAdd:{value:1 },
-            baud:{value:115200 },
-            parity:{value:"even" },
-            configJson:{value:"", required:true},
-            requiredSet: {value: "", required:true},
-        };
+    category: 'config',
+    defaults: {
+        name: {value:""},
+        refreshCycle: {value:60, required:true},
+        maxDataNum: {value:64, required:true},
+        noBlank: {value:false, required:true},
+        comType: {value:""},
+        TCPPort:{value:502 },
+        IPAdd:{value:"" },
+        unitID:{value:255 },
+        serialPort:{value:"" },
+        serialAdd:{value:1 },
+        baud:{value:115200 },
+        parity:{value:"even" },
+        configJson:{value:"", required:true},
 
         // 通信の種別を定義するオブジェクト
         // 利用する個別の通信Nodeの.htmlファイルのjavscriptでオーバライド?する。
         /*  [example]
-        comTypeDef = [
-                {v:"TCP",l:"ModbusTCP", com:"TCP"},
-                {v:"RTU",l:"ModbusRTU", com:"serial"},
-                {v:"ASCII",l:"ModbusASCII", com:"serial"}
+        comTypeDef: [
+                {v:"TCP",l:"editor.ModbusTCP", com:"TCP"},
+                {v:"RTU",l:"editor.ModbusRTU", com:"serial"},
+                {v:"ASCII",l:"editor.ModbusASCII", com:"serial"}
             ];
         }; */
-        this.comTypeDef = [{},];
+        comTypeDef: {value:[{},]},
 
-    };
+        requiredSet: {value: "", required:true},
+    },
 
-    label() {
+
+    label: function () {
         return this.name||this._("Modbus-com");
-    };
+    },
 
-    // thisを固定し、内部メソッドや変数にアクセスするため、
-    // アロー関数でoneditprepare関数を定義。
-    // 結果、this._()を使ってロケールメッセージを取り出すことができないので注意。
-    oneditprepare = () => {
+    oneditprepare: function() {
 
+        let node = this;
+        
         // 通信種別を設定するSelectタグのoptionを設定する。
-        let selectOptions = this.comTypeDef;
+        let selectOptions = node.comTypeDef;
+
         for (var i=0; i < selectOptions.length; i++) {
             $("#node-config-input-comType").append($("<option></option>")
-                .val(selectOptions[i].v).text(selectOptions[i].l));
+                .val(selectOptions[i].v).text(node._(selectOptions[i].l)));
         }
 
-        //通信種別ボタンが変化したら、設定画面を切り替える関数を定義
+        // 通信種別ボタンが変化したら、設定画面を切り替える関数を定義
         // $("#node-config-input-comType").off('change');
         $("#node-config-input-comType").on('change', function(){
             let value = $("#node-config-input-comType").val();
@@ -101,12 +99,11 @@ class  PLCComNodeConfig {
                 }).autocomplete("search","");
             });
         });
-    };
+    },
 
-    oneditsave() {
+    oneditsave: function() {
         var comType = $("#node-config-input-comType").val();
         var requiredSet = "ready";
-        let configObj = {};
         
         $("#modbus-com-block").find("input[type='text']").each(function(idx, obj){
             switch($(obj).attr("id")) {
@@ -126,22 +123,6 @@ class  PLCComNodeConfig {
         });
         $("#node-config-input-requiredSet").val(requiredSet);
 
-        // Nodeプロパティをオブジェクトに代入し、JSONにしてプロパティにセット
-        configObj.name = $("#node-config-input-name").val();
-        configObj.refreshCycle = $("#node-config-input-refreshCycle").val();
-        configObj.maxDataNum = $("#node-config-input-maxDataNum").val();
-        configObj.noBlank = $("#node-config-input-noBlank").val();
-        configObj.comType = $("#node-config-input-comType").val();
-        configObj.TCPPort = $("#node-config-input-TCPPort").val();
-        configObj.IPAdd = $("#node-config-input-IPAdd").val();
-        configObj.unitID = $("#node-config-input-unitID").val();
-        configObj.serialPort = $("#node-config-input-serialPort").val();
-        configObj.serialAdd = $("#node-config-input-serialAdd").val();
-        configObj.baud = $("#node-config-input-baud").val();
-        configObj.parity = $("#node-config-input-parity").val();
-        configObj.requiredSet = $("#node-config-input-requiredSet").val();
-
-        $("#node-config-input-configJson").val(JSON.stringify(configObj));
-    };
+    },
 };
 

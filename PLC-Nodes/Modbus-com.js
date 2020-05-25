@@ -145,16 +145,16 @@ module.exports = function(RED) {
         )
     });
 
-    RED.httpAdmin.get("/PLCComhtml", RED.auth.needsPermission('Modbus-com.read'), function(req,res) {
+    RED.httpAdmin.get("/PLC-Com.script", RED.auth.needsPermission('Modbus-com.read'), function(req,res) {
         let jscript;
         let fname = path.join(__dirname, 'util/PLC-Com.script.js')
         try{
             jscript = fs.readFileSync(fname);
-          } catch(e) {
-            //エラーの場合。
-            jscript = null;
-          }
-        res.send(jscript);
+        } catch(e) {
+        //エラーの場合。
+        jscript = null;
+        }
+        res.type("text/javascript").send(jscript);
     });
 
 }

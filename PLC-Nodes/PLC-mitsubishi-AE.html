@@ -8,10 +8,10 @@
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
-    limitations under the License.
+    limitations under the License.   
 -->
 
-<script type="text/html" data-template-name="PLC-Modbus">
+<script type="text/html" data-template-name="PLC-Mitsubishi-AE">
 
     <div id="PLC-name-block">
         <div class="form-row">
@@ -23,7 +23,7 @@
         <!-- modbus node（設定Node）の選択-->
         <div class="form-row">
             <label for="node-input-comNode" style= "vertical-align: middle;">
-                <span data-i18n="editor.comNode"></span></label>
+                <span data-i18n="editor.modbusNode"></label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
         <hr>
@@ -31,62 +31,70 @@
     <!-- Tab, ownself -->
     <div id="ui-tabs">
         <ul>
-            <li>
-                <a href="#tab-object-property"><span data-i18n="editor.tab.object-settings"></span></a>
+            <li >
+                <a href="#tab-object-property">
+                    <span data-i18n="editor.tab.object-settings" ></span></a>
             </li>
             <li>
-                <a href="#tab-dItem-property"><span data-i18n="editor.tab.data-settings"></span></a>
+                <a href="#tab-AnE-property">
+                    <span data-i18n="editor.tab.data-settings" ></span></a>
             </li>
         </ul>
-        
+
         <!-- tab-object-property starts -->
-        <div id="tab-object-property">
+        <div id="tab-object-property" class="tab-pane">
             <!-- object propertyの設定 -->
-            <div class="form-group" style="margin-left: 20px; margin-top:8px;">
+            <div class="form-group" style="margin-left: 20px; margin-top:8px";>
                 <div class="form-row">
-                    <label style="margin-right: 10px;" for="node-input-storeInterval"><span data-i18n="editor.period"></span></label>
+                    <label style="margin-right: 10px;" for="node-input-storeInterval">
+                        <span data-i18n="editor.period"></span></label>
                     <input type="number" id="node-input-storeInterval" min="0" step="10"
                         value="300" style="display: inline-block; width: auto;">
-                    <label for="node-input-storeAsync" style="margin-left: 20px;"><span data-i18n="editor.async"></span></label>
-                    <input type="checkbox" id="node-input-storeAsync"
-                        style="display: inline-block; width: auto;" >
+                    <label for="node-input-storeAsync" style="margin-left: 20px;">
+                        <span data-i18n="editor.async"></span></label>
+                    <input type="checkbox" checked="checked" id="node-input-storeAsync"
+                        style="display: inline-block; width: auto;" disabled='disabled'>
                 </div>
                 <div class="form-row">
                     <label style="margin-right: 10px;" for="node-input-objectName">
-                        <span data-i18n="editor.objectName"></span></label>
-                    <input type="text" style="width: 300px" id="node-input-objectName" data-i18n="[placeholder]editor.objectName">
+                        <span data-i18n="editor.objectname"></span></label>
+                    <input type="text" style="width: 300px" id="node-input-objectName">
                 </div>
                 <div class="form-row">
-                    <label style="margin-right: 10px;" for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
-                    <input required="required" class="form-control" type="text" style="width: 300px"
-                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKey">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                    <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
                 </div>
                 <div class="form-row">
                     <label style="margin-right: 10px;"
                         for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-                    <input type="text" style="width: 300px" id="node-input-objectDescription" data-i18n="[placeholder]editor.objectDescription">
+                    <input type="text" style="width: 300px" id="node-input-objectDescription">
                 </div>
             </div>
         </div>
         <!-- tab-object-property ends -->
 
-        <!-- tab-dItem-property starts -->
-        <div id="tab-dItem-property">
-            <!-- dataItem propertyの設定 -->
+        <!-- tab-AnE-property starts -->
+        <div id="tab-AnE-property">
+            <!-- A&E Item propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
-                <label for="node-input-contentType"><i class="fa fa-tag"></i><span data-i18n="editor.contentType"></span></label>
-                <input type="text" id="node-input-contentType" value="ModbusPLC">
+                <label for="node-input-contentType">
+                    <span data-i18n="editor.contentType"></span></label>
+                <input type="text" id="node-input-contentType" value="Alarm&Event" disabled="disabled">
             </div>
-            <div class="node-input-dItemcontainer-row">
-                <ol id="node-input-dItemcontainer">
+            <div class="form-row node-input-AnEcontainer-row">
+                <ol id="node-input-AnEcontainer">
                 </ol>
             </div>
-        </div>
-        <!-- tab-dItem-property ends -->
+        </div>  
+        <!-- tab-AnE-property ends -->      
     </div>
+
 </script>
 
-<script type="text/x-red" data-help-name="PLC-Modbus">
+
+<script type="text/x-red" data-help-name="PLC-Mitsubishi-AE">
     <p>preparing ia-cloud objects for store to CCS</p>
 
 <h3>Inputs</h3>
@@ -108,44 +116,39 @@
 <script type="text/javascript">
 
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLC.script").done(function(script, textStatus){
-
+    $.getScript("PLCAnE.script").done(function(script, textStatus){
+        
         // Node登録オブジェクトのシャローコピー
-        let cfg = Object.assign({},PLCNodeConfig);
+        let cfg = Object.assign({}, PLCAENodeConfig);
         // デフォルトプロパティのシャローコピー
         let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value: "PLC-Modbus"}; 
+        dflts.name = {value: "PLC-Modbus-AE"}; 
         dflts.comNode = {value: "", type: "Modbus-com", required: true};
-        dflts.contentType = {value: "ModbusPLC"};
+        dflts.contentType = {value: "Alarm&Event"};
 
         // DataItem設定リストのデバイスsellect要素のoptionを定義
-        dflts.deviceTypeDef = {value: 
+        dflts.deviceTypeDef = {value:
             {
-                bit: [{value:"Coil", text:"editor.dev-Coil"},{value:"IS", text:"editor.dev-IS"},
-                        {value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"},],
-                number: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}],
-                string: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}],
-                numList: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}]
+            AnE: [{value:"X", text:"editor.dev-X"},{value:"Y", text:"editor.dev-Y"},
+                    {value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"},]
             }
         };
+
         //  デフォルトのPLCデータ項目を定義
-        dflts.defaultDataItem = {value: 
+        dflts.defaultDataItem = {value:
             {
-                itemType:"bit",
-                dataName:"",
-                bit: {deviceType:"Coil", address:0, number:1, logic:"pos"},
-                number: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
-                string: {deviceType:"HR", address:0,  number:1, encode:"utf-8"}, 
-                numList: {deviceType:"HR", address:0, number:1, type:"1w", encode:"unsigned"}
+                itemType:"AnE",
+                commonName:"Alarm&Event",
+                AnE: {deviceType:"M", address:0 , logic:"pos", AnECode:"", AnEDesc:""}
             }
         };
         // デフォルトプロパティを付け替え
         cfg.defaults = dflts;
 
         // NodeをNode-REDへ登録
-        RED.nodes.registerType('PLC-Modbus', cfg);
+        RED.nodes.registerType('PLC-Mitsubishi-AE', cfg);
     });
-   
+
 </script>

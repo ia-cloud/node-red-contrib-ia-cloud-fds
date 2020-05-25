@@ -109,34 +109,42 @@
 <script type="text/javascript">
 
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLCscript").done(function(script, textStatus){
+    $.getScript("PLC.script").done(function(script, textStatus){
 
-        let cfg = new PLCNodeConfig();
+        // Node登録オブジェクトのシャローコピー
+        let cfg = Object.assign({},PLCNodeConfig);
+        // デフォルトプロパティのシャローコピー
+        let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name.value = "PLC-Mitsubishi"; 
-        cfg.defaults.comNode.value = "通信Node";
-        cfg.defaults.comNode.type = "Mitsubishi-com";
-        cfg.defaults.contentType.value = "MitsubishiPLC";
+        dflts.name = {value:"PLC-Mitsubishi"};
+        dflts.comNode = {value: "", type: "Mitsubishi-com", required: true};
+        dflts.contentType = {value: "MitsubishiPLC"};
 
         // DataItem設定リストのデバイスsellect要素のoptionを定義
-        cfg.defaults.deviceTypeDef.value = {
-            bit: [{value:"X", text:"X"},{value:"Y", text:"Y"},
-                    {value:"M", text:"M"},{value:"L", text:"L"},],
-            number: [{value:"D", text:"D"},{value:"W", text:"W"}],
-            string: [{value:"D", text:"D"},{value:"W", text:"W"}],
-            numList: [{value:"D", text:"D"},{value:"W", text:"W"}]
-        }
+        dflts.deviceTypeDef = {value:
+            {
+                bit: [{value:"X", text:"editor.dev-X"},{value:"Y", text:"editor.dev-Y"},
+                        {value:"M", text:"editor.dev-M"},{value:"L", text:"editor.dev-L"},],
+                number: [{value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"}],
+                string: [{value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"}],
+                numList: [{value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"}]
+            }
+        };
 
         //  デフォルトのPLCデータ項目を定義
-        cfg.defaults.defaultDataItem.value = {
+        dflts.defaultDataItem = {value:
+            {
                 itemType:"bit",
                 dataName:"",
                 bit: {deviceType:"M", address:0, number:1, logic:"pos"},
                 number: {deviceType:"D", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
                 string: {deviceType:"D", address:0,  number:1, encode:"utf-8"}, 
                 numList: {deviceType:"D", address:0, number:1, type:"1w", encode:"unsigned"}
+            }
         };
+        // デフォルトプロパティを付け替え
+        cfg.defaults = dflts;
 
         // NodeをNode-REDへ登録
         RED.nodes.registerType('PLC-Mitsubishi', cfg);

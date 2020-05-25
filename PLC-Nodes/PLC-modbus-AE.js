@@ -22,7 +22,7 @@ const PLC = require('./util/PLC');
 
 module.exports = function(RED) {
 
-    function PLCModbus(config) {
+    function PLCModbusAE(config) {
 
         RED.nodes.createNode(this, config);
         
@@ -47,18 +47,18 @@ module.exports = function(RED) {
         });
     };
 
-    RED.nodes.registerType("PLC-Modbus-AE",PLCModbus);
+    RED.nodes.registerType("PLC-Modbus-AE",PLCModbusAE);
 
 
-    RED.httpAdmin.get("/PLCAnEscript", RED.auth.needsPermission('PLC-Modbus.read'), function(req,res) {
+    RED.httpAdmin.get("/PLCAnE.script", RED.auth.needsPermission('PLC-Modbus.read'), function(req,res) {
         let jscript;
-        let fname = path.join(__dirname, 'util/PLCAnE.script.js')
+        let fname = path.join(__dirname, 'util/PLCAnE.script.js');
         try{
             jscript = fs.readFileSync(fname);
-          } catch(e) {
+        } catch(e) {
             //エラーの場合。
             jscript = null;
-          }
-        res.send(jscript);
+        }
+        res.type("text/javascript").send(jscript);
     });
 }

@@ -108,19 +108,26 @@
 <script type="text/javascript">
 
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLCComhtml", function(script, textStatus){
+    $.getScript("PLC-Com.script", function(script, textStatus){
 
-        let cfg = new PLCComNodeConfig();
+        // Node登録オブジェクトのシャローコピー
+        let cfg = Object.assign({}, PLCComNodeConfig);
+        // デフォルトプロパティのシャローコピー
+        let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name = {value:"Modbus-com"}; 
+        dflts.name = {value:"Modbus-com"}; 
 
-        // 通信種別のselect要素を追加する関数を上書き
-        cfg.comTypeDef = [
-            {v:"TCP",l:"ModbusTCP", com:"TCP"},
-            {v:"RTU",l:"ModbusRTU", com:"serial"},
-            {v:"ASCII",l:"ModbusASCII", com:"serial"}
-        ];
+        // 通信種別のselect要素を上書き
+        dflts.comTypeDef = {value:
+            [
+                {v:"TCP",l:"editor.ModbusTCP", com:"TCP"},
+                {v:"RTU",l:"editor.ModbusRTU", com:"serial"},
+                {v:"ASCII",l:"editor.ModbusASCII", com:"serial"}
+            ]
+        };
+        // デフォルトプロパティを付け替え
+        cfg.defaults = dflts;
 
         // NodeをNode-REDへ登録
         RED.nodes.registerType('Modbus-com', cfg);

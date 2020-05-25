@@ -116,28 +116,36 @@
 <script type="text/javascript">
 
     // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLCAnEscript").done(function(script, textStatus){
-
-        let cfg = new PLCAENodeConfig();
+    $.getScript("PLCAnE.script").done(function(script, textStatus){
+        
+        // Node登録オブジェクトのシャローコピー
+        let cfg = Object.assign({}, PLCAENodeConfig);
+        // デフォルトプロパティのシャローコピー
+        let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        cfg.defaults.name.value = "PLC-Modbus-AE"; 
-        cfg.defaults.comNode.value = "通信Node";
-        cfg.defaults.comNode.type = "Modbus-com";
-        cfg.defaults.contentType.value = "Alarm&Event";
+        dflts.name = {value: "PLC-Modbus-AE"}; 
+        dflts.comNode = {value: "", type: "Modbus-com", required: true};
+        dflts.contentType = {value: "Alarm&Event"};
 
         // DataItem設定リストのデバイスsellect要素のoptionを定義
-        cfg.defaults.deviceTypeDef.value = {
-            AnE: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
-                    {value:"HR", text:"HR"},{value:"IR", text:"IR"},]
-        }
+        dflts.deviceTypeDef = {value:
+            {
+            AnE: [{value:"Coil", text:"editor.dev-Coil"},{value:"IS", text:"editor.dev-IS"},
+                    {value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"},]
+            }
+        };
 
         //  デフォルトのPLCデータ項目を定義
-        cfg.defaults.defaultDataItem.value = {
-            itemType:"AnE",
-            commonName:"Alarm&Event",
-            AnE: {deviceType:"Coil", address:0 , logic:"pos", AnECode:"", AnEDesc:""}
+        dflts.defaultDataItem = {value:
+            {
+                itemType:"AnE",
+                commonName:"Alarm&Event",
+                AnE: {deviceType:"Coil", address:0 , logic:"pos", AnECode:"", AnEDesc:""}
+            }
         };
+        // デフォルトプロパティを付け替え
+        cfg.defaults = dflts;
 
         // NodeをNode-REDへ登録
         RED.nodes.registerType('PLC-Modbus-AE', cfg);

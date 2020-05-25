@@ -26,6 +26,8 @@ module.exports = function(RED) {
 
         RED.nodes.createNode(this, config);
         
+        if(config.configReady !== "ready") return;
+        
         const plcmb = new PLC(this, RED, config);
         plcmb.plcNode();
 
@@ -50,7 +52,7 @@ module.exports = function(RED) {
     RED.nodes.registerType("PLC-Modbus",PLCModbus);
 
 
-    RED.httpAdmin.get("/PLCscript", RED.auth.needsPermission('PLC-Modbus.read'), function(req,res) {
+    RED.httpAdmin.get("/PLC.script", RED.auth.needsPermission('PLC-Modbus.read'), function(req,res) {
         let jscript;
         let fname = path.join(__dirname, 'util/PLC.script.js')
         try{
@@ -59,6 +61,6 @@ module.exports = function(RED) {
             //エラーの場合。
             jscript = null;
           }
-        res.send(jscript);
+        res.type("text/javascript").send(jscript);
     });
 }
