@@ -17,9 +17,8 @@
 "use strict";
 const path = require("path");
 const fs = require("fs");
+const serialp = require("serialport");
 const MCProtocol = require("./util/MCProtocol/MCProtocol");
-
-// const MitsubishiSLMP = require('./util/mitsubishi-SLMP');
 const PLCCom = require('./util/PLC-Com');
 
 class MitsubishiCom extends PLCCom {
@@ -33,29 +32,33 @@ class MitsubishiCom extends PLCCom {
         let values = [];
         let resp;
 
+        let comType = config.comType;
         let TCPOptions = {port: Number(config.port)};
         let serialOptions = {baudRate: config.baud, parity: config.parity};
-        let accessRoute = [];
-        if (config.accessRout) {
-            accessRoute = config.accessRoute.split(":");
-        }
-        else{
-            accessRout = ["00","FF","3FFF","00"];
+        
+        // アクセス経路を設定
+        let accessRoute = "";
+        if (config.accessRoute) {
+            // アクセス経路が設定されていたら
+            accessRoute = config.accessRoute.split("H:").join("");
         }
 
-        if (config.comType == "TCP") {
-            await mcpObj.connectTCP(config.IPAdd, TCPOptions)
+        if (comType == "TCP") {
+            if (!accessRoute) accessRout = ["00FF03FF00"];
+            await mcpObj.connectTCP(config.IPAdd, TCPOptions);
         }
-        else if (config.comType == "Serial4") {
+        else if (comType == "Serial4") {
+            accessRout = ["0000FF00"];
             await mcpObj.SerialF4(config.serialPort, serialOptions);
         }
-        else if (config.comType == "Serial5") {
+        else if (comType == "Serial5") {
+            accessRout = ["0000FF03FF0000"];
             await mcpObj.SerialF5(config.serialPort, serialOptions);
         }
 
         for (let param of params){
 
-            resp = await mcpObj.readPLCDev(accesssRoute, param.addr, param.qty);
+            resp = await mcpObj.readPLCDev(accesssRoute, param);
 
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
         }
@@ -89,12 +92,11 @@ class MitsubishiCom extends PLCCom {
 
 module.exports = function(RED) {
 
-    function modbusCom(config) {
+    function mitsubishiCom(config) {
         RED.nodes.createNode(this, config);
 
         const node = this;
-        const mcpObj = require("./util/MCProtocol/MCProtocol");
-
+        const mcpObj = new MCProtocol();
         const mccom = new MitsubishiCom(config, mcpObj);
 
         let cycleId;
@@ -126,7 +128,7 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("Mitsubishi-com",modbusCom);
+    RED.nodes.registerType("Mitsubishi-com", mitsubishiCom);
 
     RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
         serialp.list().then(

@@ -19,6 +19,29 @@
 // Modbus-serialモジュールを導入
 const ModbusRTU = require("modbus-serial");
 
+const SUB_HEADER1 = 0x5400;
+const SUB_HEADER2 = 0x0000;
+const SUB_HEADER_LEN = 6;
+const MONITORING_TIMER = 16;
+const ACCESS_ROUTE_LEN = 5;
+const REQUEST_LEN = 10;
+const READCMND = 0x0401;
+const DEV_CODE = {
+    "SM": {code: 0x91, subCmnd: 0x0001},
+    "SD": {code: 0xA9, subCmnd: 0x0001},
+    "X" : {code: 0x9C, subCmnd: 0x0001},
+    "Y" : {code: 0x9D, subCmnd: 0x0001},
+    "M" : {code: 0x90, subCmnd: 0x0001},
+    "L" : {code: 0x92, subCmnd: 0x0001},
+    "F" : {code: 0x93, subCmnd: 0x0001},
+    "V" : {code: 0x94, subCmnd: 0x0001},
+    "B" : {code: 0xA0, subCmnd: 0x0001},
+    "D" : {code: 0xA8, subCmnd: 0x0000},
+    "W" : {code: 0xB4, subCmnd: 0x0000},
+    "TN": {code: 0xC2, subCmnd: 0x0000},
+    "CN": {code: 0xC5, subCmnd: 0x0000}
+};
+
 /**
  * ModbusRTUクラスを拡張し、MCProtocolクラスを作成
  * Class making ModbusRTU calls fun and easy.
@@ -77,61 +100,68 @@ class MCProtocol extends ModbusRTU {
                     /* check incoming data
                      */
     
-                    /* check minimal length
-                     */
-                    if (!transaction.lengthUnknown && data.length < 5) {
-                        error = "Data length error, expected " +
-                            transaction.nextLength + " got " + data.length;
-                        if (transaction.next)
-                            transaction.next(new Error(error));
+                    // check access route
+                    if (transaction.route !== data.slice(0, 5)){
                         return;
                     }
-    
-                    // if crc is OK, read address and function code
-                    var address = data.readUInt8(0);
-                    var code = data.readUInt8(1);
-    
-                    /* check for mcprtcl exception
+
+                    /* check for MC protocol return code
                      */
-                    if (data.length >= 5 &&
-                        code === (0x80 | transaction.nextCode)) {
-                        var errorCode = data.readUInt8(2);
+                    if (errorCode = data.readUInt16LE(7)) {
                         if (transaction.next) {
-                            error = new Error("mcprtcl exception " + errorCode + ": " + (mcprtclErrorMessages[errorCode] || "Unknown error"));
+                            error = new Error("MC returns: " + errorCode);
                             error.mcprtclCode = errorCode;
                             transaction.next(error);
                         }
                         return;
                     }
-    
-                    /* check message length
-                     * if we do not expect this data
-                     * raise an error
-                     */
-                    if (!transaction.lengthUnknown && data.length !== transaction.nextLength) {
-                        error = "Data length error, expected " +
-                            transaction.nextLength + " got " + data.length;
-                        if (transaction.next)
-                            transaction.next(new Error(error));
-                        return;
-                    }
-    
-                    /* check message address and code
-                     * if we do not expect this message
-                     * raise an error
-                     */
-                    if (address !== transaction.nextAddress || code !== transaction.nextCode) {
+                    // device code and device number
+                    let address = (data.readUInt32LE(9) & 0x00111111);
+                    let devCode = data.readUInt8(12);
+
+                    // check message address and code
+                    if (address !== transaction.address || devCode !== DEV_CODE[transaction.dev].devCode) {
                         error = "Unexpected data error, expected " +
-                            transaction.nextAddress + " got " + address;
+                        transaction.dev + ":" +transaction.address + 
+                        " got " + dev + ":" + address;
                         if (transaction.next)
                             transaction.next(new Error(error));
                         return;
                     }
-    
-                    /* parse incoming data
-                     */
-                    // Read Input Status (FC=02)
-                    _parseResp(data, transaction.next);
+                    let length = transaction.num;
+                    let contents = [];
+                    // Word access command response
+                    if (DEV_CODE[transaction.dev].subCmnd === 0x0000) {
+                        // check response length
+                        if (data.readUInt32LE(6) !== transaction.num * 2) {
+                            if (transaction.next) {
+                                error = new Error("response deta length does't match: " + data.readUInt32LE(6) );
+                                transaction.next(error);
+                            }
+                            return;
+                        }
+                        for (let i = 0; i < length; i++) {
+                            contets.push(data.readUint16LE(9 + i));
+                        }
+                    } 
+                    // Bit access command response
+                    else {
+                        // check response length
+                        if (data.readUInt32LE(6) !== Math.clel(transaction.num / 2)) {
+                            if (transaction.next) {
+                                error = new Error("response deta length does't match: " + data.readUInt32LE(6) );
+                                transaction.next(error);
+                            }
+                            return;
+                        }
+                        for (let i = 0; i < length; i += 2) {
+                            let value = data.readUint8(9 + i)
+                            contets.push(value >> 4 === 1);
+                            contets.push(value & 0x0f === 1);
+                        }
+                    }
+                    if (next)
+                    next(null, { "data": contents, "buffer": data.slice(9, ) });
                 });
     
                 /* On serial port open OK call next function with no error */
@@ -141,8 +171,6 @@ class MCProtocol extends ModbusRTU {
         });
     };
     
- 
-
     /**
      * MCプロトコールで、PLCへの要求電文を送出する外部メソッドを追加定義する
      * 
@@ -150,63 +178,55 @@ class MCProtocol extends ModbusRTU {
      * 実際にはPromiseでラップして同期的に利用する。
      * 
      */
-    readPLCDev (accessRoute, dataAddress, length, next) {
+    readPLCDev (accessRoute, param, next) {
+
+        let dev;
+        let address = param.address;
+        let length = param.qty;
+        let route =  Buffer.from(accessRoute, "hex");
+
         // check port is actually open before attempting write
         if (this.isOpen !== true) {
             if (next) next(new PortNotOpenError());
             return;
         }
-    
         // sanity check
-        if (typeof accessRoute === "undefined" || typeof dataAddress === "undefined") {
+        if (typeof accessRoute === "undefined" || typeof address === "undefined") {
+            if (next) next(new BadAddressError());
+            return;
+        }
+        if (!accessRoute) {
             if (next) next(new BadAddressError());
             return;
         }
 
+        dev = DEV_CODE[param.dev].devCode;
+        subCmnd = DEV_CODE[param.dev].subCmnd;
+       
         // set state variables
         this._transactions[this._port._transactionIdWrite] = {
-            nextAddress: address,
-            nextLength: 3 + parseInt((length - 1) / 8 + 1) + 2,
+            route: route,
+            dev: param.dev,
+            address: address,
+            num: length,
             next: next
         };
-    
-        var codeLength = 6;
-        var buf = Buffer.alloc(codeLength + 2); // add 2 crc bytes
-    
-        buf.writeUInt8(address, 0);
-        buf.writeUInt8(code, 1);
-        buf.writeUInt16BE(dataAddress, 2);
-        buf.writeUInt16BE(length, 4);
-    
-        // add crc bytes to buffer
-        buf.writeUInt16LE(crc16(buf.slice(0, -2)), codeLength);
-    
-        // write buffer to serial port
-        _writeBufferToPort.call(this, buf, this._port._transactionIdWrite);
+        let request = Buffer.alloc(REQUEST_LEN);
+        request.writeUInt16LE(READCMND,0);   // Command
+        request.writeUInt16LE(subCmnd,2);    // sub-command
+        request.writeUInt32LE(address,4);    // Dev. number
+        request.writeUInt8(dev,7);           // Dev. code
+        request.writeUInt16LE(length,8);     // Number of data
+
+        // Write data to communication port & set transaction params
+        var transaction = this._transactions[transactionIdWrite];
+        this._port.mcWrite(route, reques);
+        if (transaction) {
+            transaction._timeoutFired = false;
+            transaction._timeoutHandle = _startTimeout(this._timeout, transaction);
+        }
     };
 
-    /**
-     * Parse the data for a MCProtocol -
-     *
-     * @param {Buffer} data the data buffer to parse.
-     * @param {Function} next the function to call next.
-     */
-    _parseResp(data, next) {
-        var length = data.readUInt8(2);
-        var contents = [];
-
-        for (var i = 0; i < length; i++) {
-            var reg = data[i + 3];
-
-            for (var j = 0; j < 8; j++) {
-                contents.push((reg & 1) === 1);
-                reg = reg >> 1;
-            }
-        }
-
-        if (next)
-            next(null, { "data": contents, "buffer": data.slice(3, 3 + length) });
-    }
 };
 
 /**
@@ -233,55 +253,58 @@ class MCTcpPort extends ModbusRTU.TcpPort {
             modbusSerialDebug({ action: "receive tcp port strings", data: data });
     
             // check data length
-            while (data.length > MIN_MBAP_LENGTH) {
-                // parse tcp header length
-                length = data.readUInt16BE(4);
+            while (data.length > 0) {
+
+                // response data length
+                length = data.readUInt16BE(11);
     
-                // cut 6 bytes of mbap and copy pdu
-                buffer = Buffer.alloc(length + CRC_LENGTH);
-                data.copy(buffer, 0, MIN_MBAP_LENGTH);
-    
-                // add crc to message
-                crc = crc16(buffer.slice(0, -CRC_LENGTH));
-                buffer.writeUInt16LE(crc, buffer.length - CRC_LENGTH);
+                // cut sub-header
+                buffer = Buffer.alloc(ACCESS_ROUTE_LEN + length + 1);
+                data.copy(buffer, 0, 6);
     
                 // update transaction id and emit data
-                mcprtcl._transactionIdRead = data.readUInt16BE(0);
+                mcprtcl._transactionIdRead = data.readUInt16LE(2);
                 mcprtcl.emit("data", buffer);
     
                 // debug
                 modbusSerialDebug({ action: "parsed tcp port", buffer: buffer, transactionId: mcprtcl._transactionIdRead });
     
                 // reset data
-                data = data.slice(length + MIN_MBAP_LENGTH);
+                data = data.slice(SUB_HEADER_LEN + buffer.length);
             }
         });
     };
-    // Modbus TcpPortの書き込みメソッドをMCプロトコール対応にオーバーライド
-    // TCP電文フォーマットに合わせて、サブヘッダ等を付加
-    write (data) {
-        if(data.length < MIN_DATA_LENGTH) {
-            modbusSerialDebug("expected length of data is to small - minimum is " + MIN_DATA_LENGTH);
+    // Modbus TcpPortのMCプロトコール対応methodを登録
+    // TCP電文フォーマットに合わせて、ヘッダ等を付加
+    mcWrite (route, request) {
+        // Check access route and request string length
+        if (route.length !== 10 || request.length !== 20) {
+            modbusSerialDebug("Access route is invalid");
             return;
-        }
-    
-        // remember current unit and command
-        this._id = data[0];
-        this._cmd = data[1];
-    
-        // remove crc and add mbap
-        var buffer = Buffer.alloc(data.length + MIN_MBAP_LENGTH - CRC_LENGTH);
-        buffer.writeUInt16BE(this._transactionIdWrite, 0);
-        buffer.writeUInt16BE(0, 2);
-        buffer.writeUInt16BE(data.length - CRC_LENGTH, 4);
-        data.copy(buffer, MIN_MBAP_LENGTH);
-    
+        } 
+
+        // prepare TCP/IP 4EFrame buffer
+        let bufLength = route.length + request.length;   //access route & request data length
+        bufLength += 4;        // add the monitoring timer length.
+        bufLength += 6;        // add sub header length
+        var buffer = Buffer.alloc(bufLength);
+
+        buffer.writeUInt16BE(SUB_HEADER1, 0);                    // Fixed sub-header
+        buffer.writeUInt16LE(this._transactionIdWrite, 2);  // seq. Number
+        buffer.writeUInt16BE(SUB_HEADER2, 4);                         // Fixed sub-header
+
+        route.copy(buffer, 6,);         // Access route for 4E frame
+
+        buffer.writeUInt16LE(request.length + 2,11);    // Request length
+        buffer.writeUInt16LE(MONITORING_TIMER,13);    // Monitoring timer
+
+        request.copy(buffer, 15);       // Request data for device read
+
         modbusSerialDebug({
             action: "send tcp port",
-            data: data,
+            request: request,
+            accessRoute: route,
             buffer: buffer,
-            unitid: this._id,
-            functionCode: this._cmd,
             transactionsId: this._transactionIdWrite
         });
     
