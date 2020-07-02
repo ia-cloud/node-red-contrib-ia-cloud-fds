@@ -124,15 +124,17 @@
         let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value: "PLC-Modbus-AE"}; 
-        dflts.comNode = {value: "", type: "Modbus-com", required: true};
+        dflts.name = {value: "PLC-Mitsubishi-AE"}; 
+        dflts.comNode = {value: "", type: "Mitsubishi-com", required: true};
         dflts.contentType = {value: "Alarm&Event"};
 
         // DataItem設定リストのデバイスsellect要素のoptionを定義
         dflts.deviceTypeDef = {value:
             {
-            AnE: [{value:"X", text:"editor.dev-X"},{value:"Y", text:"editor.dev-Y"},
-                    {value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"},]
+            AnE:[ {value:"X", text:"editor.dev-X"},{value:"Y", text:"editor.dev-Y"},
+                  {value:"M", text:"editor.dev-M"},{value:"SM", text:"editor.dev-SM"},
+                  {value:"D", text:"editor.dev-D"},{value:"W", text:"editor.dev-W"}
+                ]
             }
         };
 

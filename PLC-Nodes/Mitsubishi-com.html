@@ -22,7 +22,7 @@
         <input type="hidden" id="node-config-input-requiredSet">
         <div class="form-row">
             <label for="node-config-input-refreshCycle"><span data-i18n="editor.cycle"></span></label>
-            <input type="number" required="required" value=60 min="0.1" step="0.1" style="width: 100px" id="node-config-input-refreshCycle">
+            <input type="number" required="required" value=10 min="1" step="0.1" style="width: 100px" id="node-config-input-refreshCycle">
         </div>
         <div class="form-row">
             <label for="node-config-input-maxDataNum"><span data-i18n="editor.maxDataNum"></span></label>
@@ -37,6 +37,9 @@
         <div class="form-row">
             <label for="node-config-input-comType"><span data-i18n="editor.comType"></span></label>
             <select style="width: 150px;" id="node-config-input-comType">
+                <option selected="selected" value="TCP" data-i18n="editor.TCP"></span></option>
+                <option value="Serial4" data-i18n="editor.Serial4"></option>
+                <option value="Serial5" data-i18n="editor.Serial5"></option>
             </select>
         </div>
         <div class="form-group" id="etherConf">
@@ -46,46 +49,38 @@
             </div>
             <div class="form-row">
                 <label for="node-config-input-TCPPort"><span data-i18n="editor.TCPPort"></span></label>
-                <input type="text" value=502 required="required" style="width: 300px" id="node-config-input-TCPPort" data-i18n="[placeholder]editor.TCPPort">
+                <input type="text" value=1025 required="required" style="width: 300px" id="node-config-input-TCPPort" data-i18n="[placeholder]editor.TCPPort">
             </div>
-            <!--
-            <div class="form-row">
-                <label for="node-config-input-unitID"><span data-i18n="editor.unitID"></span></label>
-                <input type="text" value=255 required="required" style="width: 300px" id="node-config-input-unitID" data-i18n="[placeholder]editor.unitID">
-            </div>
-            -->
         </div>
         <div class="form-group hide" id="serialConf">
+            <div class="form-row form-tips" id="tip-serial"><span data-i18n="editor.tip-serial"></span></div>
             <div class="form-row">
                 <label for="node-config-input-serialPort"><i class="fa fa-random"></i><span data-i18n="editor.serialPort"></span></label>
                 <input type="text" id="node-config-input-serialPort" required="required" style="width:66%;" data-i18n="[placeholder]editor.serialPort">
                 <a id="node-config-lookup-serial" class="red-ui-button"><i id="node-config-lookup-serial-icon" class="fa fa-search"></i></a>
             </div>
 
-        <div class="form-row">
-            <label for="node-config-input-serialAdd"><span data-i18n="editor.serialAddress"></span></label>
-            <input type="text" value=1 required="required" style="width: 300px" id="node-config-input-serialAdd">
-        </div>
-        <div class="form-row">
-            <label for="node-config-input-baud"><span data-i18n="editor.baud"></span></label>
-            <select style="width: 150px;" id="node-config-input-baud">
-                <option selected="selected" value="115200">115200</option>
-                <option value="38400">38400</option>
-                <option value="19200">19200</option>
-                <option value="9600">9600</option>s
-            </select>
-        </div>
-        <div class="form-row">
-            <label for="node-config-input-parity"><span data-i18n="editor.parity"></span></label>
-            <select style="width: 150px;" id="node-config-input-parity">
-                <option selected="selected" value="even">Even</option>
-                <option value="odd">Odd</option>
-                <option value="none">None</option>
-            </select>
+            <div class="form-row">
+                <label for="node-config-input-baud"><span data-i18n="editor.baud"></span></label>
+                <select style="width: 150px;" id="node-config-input-baud">
+                    <option selected="selected" value="115200">115200</option>
+                    <option value="38400">38400</option>
+                    <option value="19200">19200</option>
+                    <option value="9600">9600</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="node-config-input-parity"><span data-i18n="editor.parity"></span></label>
+                <select style="width: 150px;" id="node-config-input-parity">
+                    <option selected="selected" value="even" data-i18n="editor.even"></option>
+                    <option value="odd" data-i18n="editor.odd"></option>
+                    <option value="none" data-i18n="editor.none"></option>
+                </select>
+            </div>
         </div>
     </div>
     <hr>
-    <div class="form-row form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-accessRoute"></span></div>
+    <div class="form-row form-tips" id="tip-accessRoute"><span data-i18n="editor.tip-accessRoute"></span></div>
     <div class="form-row">
         <label for="node-config-input-accessRoute"><span data-i18n="editor.accessRoute"></span></label>
         <input type="text" style="width: 200px" id="node-config-input-accessRoute" data-i18n="[placeholder]editor.accessRouteExp">
@@ -113,30 +108,86 @@
 
 <script type="text/javascript">
 
-    // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLC-Com.script", function(script, textStatus){
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('Mitsubishi-com', {
+        category: 'config',
+        defaults: {
+            name: {value:""},
+            refreshCycle: {value:10, required:true},
+            maxDataNum: {value:64, required:true},
+            noBlank: {value:false, required:true},
+            comType: {value:"TCP"},
+            TCPPort:{value: 1025},
+            IPAdd:{value:"" },
+            serialPort:{value:"" },
+            baud:{value:115200 },
+            parity:{value:"even" },
+            accessRoute: {value: ""},
+            configJson:{value:""},
 
-        // Node登録オブジェクトのシャローコピー
-        let cfg = Object.assign({}, PLCComNodeConfig);
-        // デフォルトプロパティのシャローコピー
-        let dflts = Object.assign({},cfg.defaults);
+            requiredSet: {value: "", required:true},
+        },
+        label: function () {
+            return this.name||this._("Modbus-com");
+        },
 
-        // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value:"Mitsubishi-com"}; 
+        oneditprepare: function() {
 
-        // 通信種別のselect要素を上書き
-        dflts.comTypeDef = {value:
-            [
-                {v:"TCP", l:"editor.TCP", com:"TCP"},
-                {v:"Serial4", l:"editor.Serial4", com:"serial"},
-                {v:"Serial5", l:"editor.Serial5", com:"serial"}
-            ]
-        };
-        // デフォルトプロパティを付け替え
-        cfg.defaults = dflts;
+            let node = this;
+            // 通信種別ボタンが変化したら、設定画面を切り替える関数を定義
+            $("#node-config-input-comType").off('change');
+            $("#node-config-input-comType").on('change', function(){
+                let value = $("#node-config-input-comType").val();
 
-        // NodeをNode-REDへ登録
-        RED.nodes.registerType('Mitsubishi-com', cfg);
+                if (value == "TCP") {
+                    $("#etherConf").show();
+                    $("#serialConf").hide();
+                } else {
+                    $("#etherConf").hide();
+                    $("#serialConf").show();
+                }
+            });
+
+            $("#node-config-input-comType").change();
+
+            // シリアルポートルックアップが押されたら
+            $("#node-config-lookup-serial").click(function() {
+                $("#node-config-lookup-serial").addClass('disabled');
+                $.getJSON('serialPorts',function(data) {
+                    $("#node-config-lookup-serial").removeClass('disabled');
+                    var ports = data || [];
+                    $("#node-config-input-serialPort").autocomplete({
+                        source:ports,
+                        minLength:0,
+                        close: function( event, ui ) {
+                            $("#node-config-input-serialPort").autocomplete( "destroy" );
+                        }
+                    }).autocomplete("search","");
+                });
+            });
+        },
+
+        oneditsave: function() {
+            var comType = $("#node-config-input-comType").val();
+            var requiredSet = "ready";
+
+            $("#modbus-com-block").find("input[type='text']").each(function(idx, obj){
+                switch($(obj).attr("id")) {
+                    case "node-config-input-IPAdd":
+                    case "node-config-input-TCPPort":
+                        if (!$(obj).val() && (comType === "TCP")) requiredSet = "";
+                        break;
+                    case "node-config-input-serialPort":
+                    case "node-config-input-parity":
+                    case "node-config-input-baud":
+                        if (!$(obj).val() && (comType !== "TCP")) requiredSet = "";
+                        break;
+                    default:
+                        break;
+                }
+            });
+            $("#node-config-input-requiredSet").val(requiredSet);
+        }
     });
 
 </script>

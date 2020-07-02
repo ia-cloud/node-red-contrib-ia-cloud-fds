@@ -18,9 +18,11 @@
 const path = require("path");
 const fs = require("fs");
 const serialp = require("serialport");
-const MCProtocol = require("./util/MCProtocol/MCProtocol");
+const MCProtocol = require("./util/mc-protocol/mc-protocol");
 const PLCCom = require('./util/PLC-Com');
 
+const KINDS_OF_DEV = ["error", "SM", "SD", "X", "Y", "M", "L", "F", "V", "B", "D", "W", "TN", "CN"];
+const COMMUNICATION_TIMEOUT = 5000;
 class MitsubishiCom extends PLCCom {
     constructor(config, MCObject){
         super(config, MCObject);
@@ -33,8 +35,8 @@ class MitsubishiCom extends PLCCom {
         let resp;
 
         let comType = config.comType;
-        let TCPOptions = {port: Number(config.port)};
-        let serialOptions = {baudRate: config.baud, parity: config.parity};
+        let TCPOptions = {port: Number(config.TCPPort)};
+        let serialOptions = {baudRate: Number(config.baud), parity: config.parity};
         
         // アクセス経路を設定
         let accessRoute = "";
@@ -44,23 +46,24 @@ class MitsubishiCom extends PLCCom {
         }
 
         if (comType == "TCP") {
-            if (!accessRoute) accessRout = ["00FF03FF00"];
+            if (!accessRoute) accessRoute = "00FF03FF00";
+
             await mcpObj.connectTCP(config.IPAdd, TCPOptions);
         }
         else if (comType == "Serial4") {
-            accessRout = ["0000FF00"];
-            await mcpObj.SerialF4(config.serialPort, serialOptions);
+            accessRoute = "0000FF00";
+            await mcpObj.connectSerialF4(config.serialPort, serialOptions);
         }
         else if (comType == "Serial5") {
-            accessRout = ["0000FF03FF0000"];
-            await mcpObj.SerialF5(config.serialPort, serialOptions);
+            accessRoute = "0000FF03FF0000";
+            await mcpObj.connectSerialF5(config.serialPort, serialOptions);
         }
 
         for (let param of params){
 
-            resp = await mcpObj.readPLCDev(accesssRoute, param);
-
+            resp = await mcpObj.readPLCDev(accessRoute, param);
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
         await mcpObj.close();
         return values;
@@ -77,10 +80,9 @@ class MitsubishiCom extends PLCCom {
     // 通信リンクオブジェクトを登録するメソッド
     // Mitsubishiの特有デバイス名でフィルタリングし、Baseクラスのメソッドコール
     addLinkData(lObj) {   
-        //デバイス名が不正でないかチェック（error,Coil,IS,HR,IR）
+        //デバイス名が不正でないかチェック（KINDS_OF_DEVに定義したデバイスか？）
         for(let dev of Object.keys(lObj)) {
-            if (!(dev == "error") && !(dev == "Coil") && !(dev == "IS") && !(dev == "HR") && !(dev == "IR"))
-                delete lObj[dev];
+            if (!KINDS_OF_DEV.includes(dev)) delete lObj[dev];
         }
         if (Object.keys(lObj).length)  super.addLinkData(lObj);
     }
@@ -97,29 +99,29 @@ module.exports = function(RED) {
 
         const node = this;
         const mcpObj = new MCProtocol();
+        mcpObj._timeout = COMMUNICATION_TIMEOUT;
         const mccom = new MitsubishiCom(config, mcpObj);
 
         let cycleId;
 
         // 設定周期でのサイクリック通信を実施
         if (config.refreshCycle > 0) {
-//            cycleId = setInterval(mccom.CyclicRead, config.refreshCycle * 1000, RED);
 
             (function cycle(){
                 mccom.CyclicRead(RED)
                 .then(() => {
-                    setTimeout(cycle, config.refreshCycle * 1000)
+                    cycleId = setTimeout(cycle, config.refreshCycle * 1000);
                 });
             }());
 
 
         }
         // クローズ時にサイクリック通信を停止
-        // このNodeがクローズされる時っていつ？　誰からも呼ばれなくなったら停止する機能はない？
-        // linkObjが空だったら止めるはあり？
+        // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
-            clearInterval(cycleId);
-            mcpObj.close().then(done());
+            clearTimeout(cycleId);
+            if (mcpObj._port.isOpen) mcpObj.close().then(done());
+            else done();
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録
@@ -133,24 +135,12 @@ module.exports = function(RED) {
     RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
         serialp.list().then(
             ports => {
-                const a = ports.map(p => p.comName);
+                const a = ports.map(p => p.path);    // comName は path にrenameされる。要変更 
                 res.json(a);
             },
             err => {
                 res.json([RED._("serial.errors.list")]);
             }
         )
-    });
-
-    RED.httpAdmin.get("/PLC-Com.script", RED.auth.needsPermission('Mitsubishi-com.read'), function(req,res) {
-        let jscript;
-        let fname = path.join(__dirname, 'util/PLC-Com.script.js')
-        try{
-            jscript = fs.readFileSync(fname);
-          } catch(e) {
-            //エラーの場合。
-            jscript = null;
-          }
-        res.type("text/javascript").send(jscript);
     });
 } 

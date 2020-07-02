@@ -14,7 +14,11 @@
         "parity": "パリティ",
         "ModbusTCP": "ModbusTCP",
         "ModbusRTU": "ModbusRTU",
-        "ModbusASCII": "ModbusASCII"
+        "ModbusASCII": "ModbusASCII",
+        "odd": "奇数",
+        "even": "偶数",
+        "none": "無し",
+        "tip-serial": "ストップビット: 1、チェックサム: 有効、で固定です。"
     },
     "runtime": {
 

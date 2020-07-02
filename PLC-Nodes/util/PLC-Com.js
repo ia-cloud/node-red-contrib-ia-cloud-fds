@@ -107,68 +107,68 @@ class PLCCom {
     // 外部メソッド。this を固定するためアロー関数で記述
     CyclicRead = (RED) => {return new Promise(resolve => {
 
-            let linkObj = this.linkObj;
-            let flagRecon = this.flagRecon;
-            let comList = this.comList;
-            let listeners = this.listeners = {};
-            let config = this.config;
-            
+        let comObj = this.comObj;    
+        let linkObj = this.linkObj;
+        let flagRecon = this.flagRecon;
+        let comList = this.comList;
+        let listeners = this.listeners = {};
+        let config = this.config;
 
-            // 通信フレーム情報の再構成フラグがonの時は、再構成する
-            if (flagRecon) {
-                // 通信フレーム情報の再構成フラグをoff
-                this.flagRecon = false;
-                this._reconfigAddTable();
-            }
-
-            //PLC通信フレーム送受信
-            if (comList.length) {
-                let params = [];
-                comList.forEach(function (com) {
-                    params.push({
-                        dev    : com.device,
-                        addr  : com.address,
-                        qty   : com.quantity,
-                    });
-                });
-                this.readItemsFromPLC(config, params)
-                .then((resp) => {
-                // 通信成功、レスポンスデータをlinkObjに格納
-                    for(let obj of resp){
-
-                        this._storeToLinkObj(obj.dev, obj.addr, obj.qty, obj.value);
-                    }
-                    // 通信が成功したので、linkObjのエラー情報をクリア、PLCnodeへイベント発行
-                    let len = linkObj.error.length;
-                    for (let i = 0; i < len; i++) {
-                        this._valueStoreAddListeners("ok", linkObj.error, listeners);
-                    }
-                })
-                // 通信エラーが発生した場合のエラー処理。LinkObjにエラー情報を格納し、PLCnodeへイベント発行
-                .catch((err) => {
-                    // エラー情報をLinkObjに格納
-                    let num = linkObj.error.length;
-                    for (let i = 0; i < num; i++) {
-                        this._valueStoreAddListeners(err.toString(), linkObj.error, listeners);
-                    }
-                })
-                // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
-                .finally(() => {
-                    // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
-                    Object.keys(listeners).forEach(function (nodeId) {
-                        if (nodeId) {
-                            let listener = RED.nodes.getNode(nodeId);
-                            if (listener)
-                                listener.emit("changeListener", listeners[nodeId]);
-                        }
-                    });
-                    listeners = {};
-                    resolve();
-                });
-            }
-            else resolve();
+        // 通信フレーム情報の再構成フラグがonの時は、再構成する
+        if (flagRecon) {
+            // 通信フレーム情報の再構成フラグをoff
+            this.flagRecon = false;
+            this._reconfigAddTable();
         }
-    )}
+
+        //PLC通信フレーム送受信
+        if (comList.length) {
+            let params = [];
+            comList.forEach(function (com) {
+                params.push({
+                    dev    : com.device,
+                    addr  : com.address,
+                    qty   : com.quantity,
+                });
+            });
+            this.readItemsFromPLC(config, params)
+            .then((resp) => {
+            // 通信成功、レスポンスデータをlinkObjに格納
+                for(let obj of resp){
+
+                    this._storeToLinkObj(obj.dev, obj.addr, obj.qty, obj.value);
+                }
+                // 通信が成功したので、linkObjのエラー情報をクリア、PLCnodeへイベント発行
+                let len = linkObj.error.length;
+                for (let i = 0; i < len; i++) {
+                    this._valueStoreAddListeners("ok", linkObj.error, listeners);
+                }
+            })
+            // 通信エラーが発生した場合のエラー処理。LinkObjにエラー情報を格納し、PLCnodeへイベント発行
+            .catch((err) => {
+                // エラー情報をLinkObjに格納
+                let num = linkObj.error.length;
+                for (let i = 0; i < num; i++) {
+                    this._valueStoreAddListeners(err.message, linkObj.error, listeners);
+                }
+                if (comObj._port.isOpen) comObj.close();
+            })
+            // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
+            .finally(() => {
+                // 変化通知を要求したNodeのリスナーをコール(引数はobjectKeyの配列)
+                Object.keys(listeners).forEach(function (nodeId) {
+                    if (nodeId) {
+                        let listener = RED.nodes.getNode(nodeId);
+                        if (listener)
+                            listener.emit("changeListener", listeners[nodeId]);
+                    }
+                });
+                listeners = {};
+                resolve();
+            });
+        }
+        else resolve();
+    })};
 
     // PLC通信のコールバック関数
     // 通信のレスポンスフレームのデータでlinkObjのvalueを更新、

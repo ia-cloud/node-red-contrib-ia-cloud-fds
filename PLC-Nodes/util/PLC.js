@@ -23,13 +23,14 @@ class PLC {
         // 使用するPLC通信Node（設定Node）を取得
         this.plcCom = RED.nodes.getNode(config.comNode);
         this.linkObj = {};
+        this.intervalId;
     }
 
     plcNode() {
         const plcnd = this;
         const node = this.node;
         const config = this.config;
-        let intervalId;
+
 
         // Nodeのconfigパラメータから、dataItemオブジェクトを生成
         let dataItems = config.dataItems;
@@ -47,7 +48,7 @@ class PLC {
         // Nodeステータスを　Readyに
         node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
-        intervalId = setInterval(function(){
+        this.intervalId = setInterval(function(){
             // 設定された格納周期で,PLCCom Nodeからデータを取得し、ia-cloudオブジェクトを
             // 生成しメッセージで送出
             // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
@@ -61,7 +62,6 @@ class PLC {
                 plcnd.iaCloudObjectSend(config.objectKey);
             }
         }, (minCycle * 1000));
-
     }
 
     makelinkObject(dataItems) {
@@ -73,7 +73,7 @@ class PLC {
         // 非同期収集ありの場合、自身のNodeIDをセット。
         let ownNodeId = this.node.id;
         // エラーリンクデータを登録
-        linkObj.error = [{address: 0, value: "waiting", preValue: "", 
+        linkObj.error = [{address: 0, value: "", preValue: "", 
                         nodeId: ownNodeId, objectKey: config.objectKey}];
         
         // 非同期収集無しの場合、自身のNodeIDをリセット。
@@ -147,11 +147,9 @@ class PLC {
         let ownNodeId = this.node.id;
         let obj = linkObj.error.find(lnkError => lnkError.nodeId === ownNodeId);
         let eMsg = obj.value;
-        if (eMsg !== "ok") {
-            if (!eMsg !== "waiting") {
-                node.error(eMsg);
-                node.status({fill:"red",shape:"ring",text:"comunication error!!"});
-            }
+        if (eMsg !== "ok" && eMsg !== "" ) {
+            node.error(eMsg);
+            node.status({fill:"red",shape:"ring",text:"comunication error!!"});
             return;
         }
 
@@ -227,22 +225,23 @@ class PLC {
                     if(dataItem.unit) ditem[umit] = dataItem.unit;
                     break;
                 case "string":                 
-                options = dataItem.string;
+                    options = dataItem.string;
                     dItem.dataValue = "";
+                    value = "";
                     for (let i = 0, l = options.number; i < l; i++) {
-                        value = value + linkObj[options.deviceType]
-                            .find(function(lData){
+                        value = linkObj[options.deviceType].find(function(lData){
                                 return (lData.address == Number(options.address) + i);
-                            }).value.slice(-4);
+                            }).value;
+                        dItem.dataValue = dItem.dataValue + value.slice(-2) + value.slice(-4, -2);
                     }
                     if (options.encode == "utf-8") {
-                        dItem.dataValue = Buffer.from(value, "hex").toString("utf-8");
+                        dItem.dataValue = Buffer.from(dItem.dataValue, "hex").toString("utf-8");
                     }
                     else if (options.encode == "sJIS") {
-                        dItem.dataValue = iconv.decode(Buffer.from(value, "hex"), "shiftjis");
+                        dItem.dataValue = iconv.decode(Buffer.from(dItem.dataValue, "hex"), "shift-jis");
                     }
                     else if (options.encode == "EUC") {
-                        dItem.dataValue = iconv.decode(Buffer.from(value, "hex"), "eucjp");
+                        dItem.dataValue = iconv.decode(Buffer.from(dItem.dataValue, "hex"), "EUC-JP");
                     }
                     break;
                 case "numList":
@@ -273,7 +272,7 @@ class PLC {
                     options = dataItem.AnE;
                     let lData = linkObj[options.deviceType].find(function(lData) {
                             return (lData.address == Number(options.address));
-                        }).value;
+                        });
                     value = (Number(lData.value)) ? true: false;
                     preValue = (Number(lData.preValue)) ? true: false;
                     if (options.logic === "neg") {
@@ -288,13 +287,16 @@ class PLC {
         });
         
         msg.dataObject.objectContent.contentData = contentData;
-        // set message sent to msg.payload
-        msg.payload = RED._("runtime.sent");
+        // set contentData[] to msg.payload
+        msg.payload = contentData;
         // Send output message to the next Nodes
         node.send(msg);
         // make Node status to "sent"
         node.status({fill:"green", shape:"dot", text:"runtime.sent"});
     }
-        
+    // 周期実行を停止する外部メソッド
+    close = () => {
+        clearInterval(this.intervalId);
+    }
 }
 module.exports = PLC;

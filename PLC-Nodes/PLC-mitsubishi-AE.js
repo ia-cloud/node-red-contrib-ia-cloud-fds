@@ -22,12 +22,12 @@ const PLC = require('./util/PLC');
 
 module.exports = function(RED) {
 
-    function PLCModbusAE(config) {
+    function PLCMitsubishiAE(config) {
 
         RED.nodes.createNode(this, config);
         
-        const plcmb = new PLC(this, RED, config);
-        plcmb.plcNode();
+        const plcmc = new PLC(this, RED, config);
+        plcmc.plcNode();
 
         //登録したlinkObに変化があったら呼ばれる。
         // 通信エラーがあっても呼ばれる
@@ -35,7 +35,7 @@ module.exports = function(RED) {
 
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             objectKeys.forEach(function(key, idx) {
-                plcmb.iaCloudObjectSend(key);
+                plcmc.iaCloudObjectSend(key);
             });
         });
 
@@ -43,11 +43,11 @@ module.exports = function(RED) {
             if (msg.payload) iaCloudObjectSend(config.objectKey);
         });
         this.on("close",function() {
-            clearInterval(intervalId);
+            plcmc.close();
         });
     };
 
-    RED.nodes.registerType("PLC-Mitsubishi-AE",PLCModbusAE);
+    RED.nodes.registerType("PLC-Mitsubishi-AE",PLCMitsubishiAE);
 
 
     RED.httpAdmin.get("/PLCAnE.script", RED.auth.needsPermission('PLC-Mitsubishi.read'), function(req,res) {

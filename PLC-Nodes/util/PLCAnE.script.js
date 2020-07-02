@@ -153,11 +153,11 @@ var PLCAENodeConfig = {
                         selField.append($("<option></option>").val(ops[i].value).text(node._(ops[i].text)));
                     }
                 }
-
                 // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
                 if(!dItem.hasOwnProperty("itemType")) dItem = node.defaultDataItem;
 
                 // AnE parameters
+                div1.find(".deviceType").val(dItem.AnE.deviceType);
                 div1.find(".address").val(dItem.AnE.address);
                 div1.find(".logic").val(dItem.AnE.logic);
                 div2.find(".AnECode").val(dItem.AnE.AnECode);
@@ -180,7 +180,6 @@ var PLCAENodeConfig = {
                 });
             }
         });
-
         // Nodeの設定パラメータを取り出し、editableListに登録
         for (let i=0; i<node.dataItems.length; i++) {
             $("#node-input-AnEcontainer").editableList('addItem',node.dataItems[i]);

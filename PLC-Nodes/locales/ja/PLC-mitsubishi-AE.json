@@ -33,6 +33,8 @@
         "modbusNode": "通信ノード",
         "dev-X": "X",
         "dev-Y": "Y",
+        "dev-M": "M",
+        "dev-SM": "SM",
         "dev-D": "D",
         "dev-W": "W"
     },

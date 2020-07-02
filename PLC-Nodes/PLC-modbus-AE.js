@@ -43,7 +43,7 @@ module.exports = function(RED) {
             if (msg.payload) iaCloudObjectSend(config.objectKey);
         });
         this.on("close",function() {
-            clearInterval(intervalId);
+            plcmb.close();
         });
     };
 

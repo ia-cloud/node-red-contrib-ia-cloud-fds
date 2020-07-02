@@ -12,11 +12,13 @@
     "dateformat": "^3.0.3",
     "iconv-lite": "^0.5.0",
     "mcprotocol": "^0.1.1",
-    "modbus-serial": "^7.6.0",
+    "modbus-serial": "^8.0.0",
     "moment": "^2.24.0",
     "node-nfcpy-id": "^0.1.1",
     "request": "^2.88.0",
-    "serialport": "^7.1.5",
+    "serialport": "^9.0.0",
+    "@serialport/parser-inter-byte-timeout": "^9.0.0",
+    "@serialport/parser-delimiter": "^9.0.0",
     "websocket": "^1.0.30",
     "ws": "^7.1.2"
   },
@@ -66,9 +68,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ia-cloud/node-red-contrib-ia-cloud-fds.git"
+    "url": "git+ssh://git@github.com/ia-cloud/node-red-contrib-ia-cloud-fds.git"
   },
   "scripts": {
     "test": "iacloudtest"
-  }
+  },
+  "homepage": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds#readme"
 }

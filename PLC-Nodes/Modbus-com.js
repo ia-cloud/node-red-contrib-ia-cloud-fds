@@ -20,6 +20,7 @@ const fs = require("fs");
 const serialp = require("serialport");
 const ModbusRTU = require('modbus-serial');
 const PLCCom = require('./util/PLC-Com');
+const COMMUNICATION_TIMEOUT = 2000;
 
 class ModbusCom extends PLCCom {
     constructor(config, MBObject){
@@ -32,7 +33,7 @@ class ModbusCom extends PLCCom {
         let values = [];
         let resp;
 
-        let TCPOptions = {port: Number(config.port)};
+        let TCPOptions = {port: Number(config.TCPport)};
         let serialOptions = {baudRate: config.baud, parity: config.parity};
 
         if (config.comType == "TCP") {
@@ -100,6 +101,7 @@ module.exports = function(RED) {
 
         const node = this;
         const mbObj = new ModbusRTU();
+        mbObj._timeout = COMMUNICATION_TIMEOUT;
         const mbcom = new ModbusCom(config, mbObj);
 
         let cycleId;
@@ -111,18 +113,19 @@ module.exports = function(RED) {
             (function cycle(){
                 mbcom.CyclicRead(RED)
                 .then(() => {
-                    setTimeout(cycle, config.refreshCycle * 1000)
+                    cycleId = setTimeout(cycle, config.refreshCycle * 1000);
+
                 });
             }());
 
 
         }
         // クローズ時にサイクリック通信を停止
-        // このNodeがクローズされる時っていつ？　誰からも呼ばれなくなったら停止する機能はない？
-        // linkObjが空だったら止めるはあり？
+        // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
-            clearInterval(cycleId);
-            mbObj.close().then(done());
+            clearTimeout(cycleId);
+            if (mbObj._port.isOpen) mbObj.close().then(done());
+            else done();
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録
@@ -144,17 +147,4 @@ module.exports = function(RED) {
             }
         )
     });
-
-    RED.httpAdmin.get("/PLC-Com.script", RED.auth.needsPermission('Modbus-com.read'), function(req,res) {
-        let jscript;
-        let fname = path.join(__dirname, 'util/PLC-Com.script.js')
-        try{
-            jscript = fs.readFileSync(fname);
-        } catch(e) {
-        //エラーの場合。
-        jscript = null;
-        }
-        res.type("text/javascript").send(jscript);
-    });
-
 }

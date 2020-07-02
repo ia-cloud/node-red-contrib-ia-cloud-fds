@@ -22,7 +22,7 @@
         <input type="hidden" id="node-config-input-requiredSet">
         <div class="form-row">
             <label for="node-config-input-refreshCycle"><span data-i18n="editor.cycle"></span></label>
-            <input type="number" required="required" value=60 min="0.1" step="0.1" style="width: 100px" id="node-config-input-refreshCycle">
+            <input type="number" required="required" value=10 min="1" step="0.1" style="width: 100px" id="node-config-input-refreshCycle">
         </div>
         <div class="form-row">
             <label for="node-config-input-maxDataNum"><span data-i18n="editor.maxDataNum"></span></label>
@@ -37,6 +37,9 @@
         <div class="form-row">
             <label for="node-config-input-comType"><span data-i18n="editor.comType"></span></label>
             <select style="width: 150px;" id="node-config-input-comType">
+                <option selected="selected" value="TCP" data-i18n="editor.ModbusTCP"></span></option>
+                <option value="RTU" data-i18n="editor.ModbusRTU"></option>
+                <option value="ASCII" data-i18n="editor.ModbusASCII"></option>
             </select>
         </div>
         <div class="form-group" id="etherConf">
@@ -77,9 +80,9 @@
         <div class="form-row">
             <label for="node-config-input-parity"><span data-i18n="editor.parity"></span></label>
             <select style="width: 150px;" id="node-config-input-parity">
-                <option selected="selected" value="even">Even</option>
-                <option value="odd">Odd</option>
-                <option value="none">None</option>
+                <option selected="selected" value="even" data-i18n="editor.even"></option>
+                <option value="odd" data-i18n="editor.odd"></option>
+                <option value="none" data-i18n="editor.none"></option>
             </select>
         </div>
     </div>
@@ -107,30 +110,96 @@
 
 <script type="text/javascript">
 
-    // httpAdmin で作成したエンドポイントからPLC通信設定Nodeの共通スクリプトを読み込み
-    $.getScript("PLC-Com.script", function(script, textStatus){
 
-        // Node登録オブジェクトのシャローコピー
-        let cfg = Object.assign({}, PLCComNodeConfig);
-        // デフォルトプロパティのシャローコピー
-        let dflts = Object.assign({},cfg.defaults);
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('Modbus-com', {
 
-        // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value:"Modbus-com"}; 
+        category: 'config',
+        defaults: {
+            name: {value:""},
+            refreshCycle: {value:10, required:true},
+            maxDataNum: {value:64, required:true},
+            noBlank: {value:false, required:true},  //
+            comType: {value:"TCP"},                    //
+            TCPPort:{value:502 },
+            IPAdd:{value:"" },                      //
+            unitID:{value:255 },
+            serialPort:{value:"" },                 //
+            serialAdd:{value:1 },
+            baud:{value:115200 },
+            parity:{value:"even" },
+            configJson:{value:""},
 
-        // 通信種別のselect要素を上書き
-        dflts.comTypeDef = {value:
-            [
-                {v:"TCP",l:"editor.ModbusTCP", com:"TCP"},
-                {v:"RTU",l:"editor.ModbusRTU", com:"serial"},
-                {v:"ASCII",l:"editor.ModbusASCII", com:"serial"}
-            ]
-        };
-        // デフォルトプロパティを付け替え
-        cfg.defaults = dflts;
+            requiredSet: {value: "", required:true},
+        },
 
-        // NodeをNode-REDへ登録
-        RED.nodes.registerType('Modbus-com', cfg);
+
+        label: function () {
+            return this.name||this._("Modbus-com");
+        },
+
+        oneditprepare: function() {
+
+            let node = this;
+
+            // 通信種別ボタンが変化したら、設定画面を切り替える関数を定義
+            $("#node-config-input-comType").off('change');
+            $("#node-config-input-comType").on('change', function(){
+                let value = $("#node-config-input-comType").val();
+
+                if (value == "TCP") {
+                    $("#etherConf").show();
+                    $("#serialConf").hide();
+                } else {
+                    $("#etherConf").hide();
+                    $("#serialConf").show();
+                }
+            });
+
+            $("#node-config-input-comType").change();
+
+            // シリアルポートルックアップが押されたら
+            $("#node-config-lookup-serial").click(function() {
+                $("#node-config-lookup-serial").addClass('disabled');
+                $.getJSON('serialPorts',function(data) {
+                    $("#node-config-lookup-serial").removeClass('disabled');
+                    var ports = data || [];
+                    $("#node-config-input-serialPort").autocomplete({
+                        source:ports,
+                        minLength:0,
+                        close: function( event, ui ) {
+                            $("#node-config-input-serialPort").autocomplete( "destroy" );
+                        }
+                    }).autocomplete("search","");
+                });
+            });
+        },
+
+        oneditsave: function() {
+            var comType = $("#node-config-input-comType").val();
+            var requiredSet = "ready";
+
+            $("#modbus-com-block").find("input[type='text']").each(function(idx, obj){
+                switch($(obj).attr("id")) {
+                case "node-config-input-TCPPort":
+                case "node-config-input-IPAdd":
+                case "node-config-input-unitID":
+                    if (!$(obj).val() && (comType === "TCP")) requiredSet = "";
+                    break;
+                case "node-config-input-serialPort":
+                case "node-config-input-serialAdd":
+                case "node-config-input-parity":
+                case "node-config-input-baud":
+                    if (!$(obj).val() && (comType !== "TCP")) requiredSet = "";
+                    break;
+                default:
+                    break;
+                }
+            });
+            $("#node-config-input-requiredSet").val(requiredSet);
+        }
+
+    
     });
 
 </script>
