@@ -260,8 +260,8 @@ class PLC {
                             lValue = linkObj[options.deviceType].find(function(lData){
                                 return (lData.address == Number(options.address) + 2 * i + 1);
                             }).value.slice(-4);
-                            if (options.type == "2wb") value = uValue + lValue;
-                            if (options.type == "2wl") value = lValue + uValue;
+                            if (options.type == "2w-b") value = uValue + lValue;
+                            if (options.type == "2w-l") value = lValue + uValue;
                         }
                         if (options.encode == "signed") dItem.dataValue.push(-1 - ~parseInt(value, 16));
                         if (options.encode == "unsigned") dItem.dataValue.push(parseInt("0" + value, 16));

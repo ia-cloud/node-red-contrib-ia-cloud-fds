@@ -158,8 +158,8 @@ var PLCNodeConfig = {
                     <select class="number-type" 
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">
                         <option selected="selected" value="1w">1word</option>
-                        <option value="2w-b">2w-b</option>
-                        <option value="2w-l">2w-l</option>
+                        <option value="2w-b">2wb</option>
+                        <option value="2w-l">2wl</option>
                     </select>
                     <select class="number-encode" 
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px;">

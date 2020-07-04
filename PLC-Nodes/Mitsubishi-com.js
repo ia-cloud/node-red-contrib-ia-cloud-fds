@@ -47,25 +47,29 @@ class MitsubishiCom extends PLCCom {
 
         if (comType == "TCP") {
             if (!accessRoute) accessRoute = "00FF03FF00";
-
-            await mcpObj.connectTCP(config.IPAdd, TCPOptions);
+            if (!mcpObj.isOpen) {
+                await mcpObj.connectTCP(config.IPAdd, TCPOptions);
+            }  
         }
         else if (comType == "Serial4") {
-            accessRoute = "0000FF00";
-            await mcpObj.connectSerialF4(config.serialPort, serialOptions);
+            if (!accessRoute) accessRoute = "0000FF00";
+            if (!mcpObj.isOpen) {
+                await mcpObj.connectSerialF4(config.serialPort, serialOptions);
+            }  
         }
         else if (comType == "Serial5") {
-            accessRoute = "0000FF03FF0000";
-            await mcpObj.connectSerialF5(config.serialPort, serialOptions);
+            if (!accessRoute) accessRoute = "0000FF03FF0000";
+            if (!mcpObj.isOpen) {
+                await mcpObj.connectSerialF5(config.serialPort, serialOptions);
+            }  
         }
-
         for (let param of params){
 
             resp = await mcpObj.readPLCDev(accessRoute, param);
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
             await new Promise(resolve => setTimeout(resolve, 50));
         }
-        await mcpObj.close();
+//        await mcpObj.close();
         return values;
     }
     // LinkObject形式へのデータ変換。Mitsubishi仕様にオーバーライドする。
@@ -116,12 +120,11 @@ module.exports = function(RED) {
 
 
         }
-        // クローズ時にサイクリック通信を停止
+        // クローズ時にサイクリック通信を停止し、ポートをクローズ
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
-            if (mcpObj._port.isOpen) mcpObj.close().then(done());
-            else done();
+            mcpObj.close(done());
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録

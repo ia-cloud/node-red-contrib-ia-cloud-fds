@@ -37,16 +37,21 @@ class ModbusCom extends PLCCom {
         let serialOptions = {baudRate: config.baud, parity: config.parity};
 
         if (config.comType == "TCP") {
-            await mbObj.connectTCP(config.IPAdd, TCPOptions)
-            .then(mbObj.setID(Number(config.unitID)));
+            if (!mcpObj.isOpen) {
+                await mbObj.connectTCP(config.IPAdd, TCPOptions)
+                .then(mbObj.setID(Number(config.unitID)));
+            }      
         }
         else if (config.comType == "RTU") {
-            await mbObj.connectRTU(config.serialPort, serialOptions);
+            if (!mcpObj.isOpen) {
+                await mbObj.connectRTU(config.serialPort, serialOptions);
+            }
         }
         else if (config.comType == "ASCII") {
-            await mbObj.connectAsciiSerial(config.serialPort, serialOptions);
+            if (!mcpObj.isOpen) {
+                await mbObj.connectAsciiSerial(config.serialPort, serialOptions);
+            }
         }
-
         for (let param of params){
             switch(param.dev){
                 case "Coil": // FC:1
@@ -66,9 +71,10 @@ class ModbusCom extends PLCCom {
             }
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
         }
-        await mbObj.close();
+//        await mbObj.close();
         return values;
     }
+
     // LinkObject形式へのデータ変換。Modbus仕様にオーバーライドする。
     toLinkObjectValue(value) {
         let type = typeof value;

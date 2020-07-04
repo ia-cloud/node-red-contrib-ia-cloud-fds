@@ -39,7 +39,7 @@
         "sjis": "shift JIS",
         "utf": "UTF-8",
         "euc": "EUC-JP",
-        "wnumber": "number of words",
+        "wnumber": "num",
         "dev-Coil": "Coil",
         "dev-IS": "IS",
         "dev-HR": "HR",

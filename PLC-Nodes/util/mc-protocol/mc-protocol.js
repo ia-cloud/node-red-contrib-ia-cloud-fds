@@ -57,6 +57,9 @@ const MAX_SERIAL_BUFFER_LEN = 1024;
 
 const TRANSACTION_TIMED_OUT_MESSAGE = "Timed out";
 const TRANSACTION_TIMED_OUT_ERRNO = "ETIMEDOUT";
+const BAD_ACCESSROUTE_MESSAGE = "Bad access route";
+const BAD_ACCESSROUTE_ERRNO = "Bad access route";
+
 
 var PortNotOpenError = function() {
     Error.captureStackTrace(this, this.constructor);
@@ -65,11 +68,11 @@ var PortNotOpenError = function() {
     this.errno = PORT_NOT_OPEN_ERRNO;
 };
 
-var BadAddressError = function() {
+var BadAccessRouteError = function() {
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
-    this.message = BAD_ADDRESS_MESSAGE;
-    this.errno = BAD_ADDRESS_ERRNO;
+    this.message = BAD_ACCESSROUTE_MESSAGE;
+    this.errno = BAD_ACCESSROUTE_ERRNO;
 };
 
 var TransactionTimedOutError = function() {
@@ -234,11 +237,11 @@ class MCProtocol extends ModbusRTU {
         }
         // sanity check
         if (typeof accessRoute === "undefined" || typeof address === "undefined") {
-            if (next) next(new BadAddressError());
+            if (next) next(new BadAccessRouteError());
             return;
         }
         if (!accessRoute) {
-            if (next) next(new BadAddressError());
+            if (next) next(new BadAccessRouteError());
             return;
         }
 
