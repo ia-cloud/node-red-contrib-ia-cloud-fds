@@ -26,6 +26,14 @@ const COMMUNICATION_TIMEOUT = 5000;
 class MitsubishiCom extends PLCCom {
     constructor(config, MCObject){
         super(config, MCObject);
+        // アクセス経路が設定されていたら
+        if (config.accessRoute) 
+            this.accessRoute = config.accessRoute.split("H:").join("");
+        else {
+            if (config.comType == "TCP") this.accessRoute = "00FF03FF00";
+            if (config.comType == "Serial4") this.accessRoute = "0000FF00";
+            if (config.comType == "Serial5") this.accessRoute = "0000FF03FF0000";
+        }
     }
     // PLCCom のreadItemFromPLC()をMitsubishi仕様にオーバーライド
     async readItemsFromPLC(config, params) {
@@ -33,45 +41,27 @@ class MitsubishiCom extends PLCCom {
         let mcpObj = this.comObj;
         let values = [];
         let resp;
-
         let comType = config.comType;
-        let TCPOptions = {port: Number(config.TCPPort)};
-        let serialOptions = {baudRate: Number(config.baud), parity: config.parity};
-        
-        // アクセス経路を設定
-        let accessRoute = "";
-        if (config.accessRoute) {
-            // アクセス経路が設定されていたら
-            accessRoute = config.accessRoute.split("H:").join("");
-        }
 
-        if (comType == "TCP") {
-            if (!accessRoute) accessRoute = "00FF03FF00";
-            if (!mcpObj.isOpen) {
-                await mcpObj.connectTCP(config.IPAdd, TCPOptions);
-            }  
-        }
-        else if (comType == "Serial4") {
-            if (!accessRoute) accessRoute = "0000FF00";
-            if (!mcpObj.isOpen) {
-                await mcpObj.connectSerialF4(config.serialPort, serialOptions);
-            }  
-        }
-        else if (comType == "Serial5") {
-            if (!accessRoute) accessRoute = "0000FF03FF0000";
-            if (!mcpObj.isOpen) {
-                await mcpObj.connectSerialF5(config.serialPort, serialOptions);
-            }  
+        if (!mcpObj.isOpen) {
+            if (comType == "TCP") {
+                await mcpObj.connectTCP(config.IPAdd, {port: Number(config.TCPPort)});
+            }
+            else if (comType == "Serial4") {
+                await mcpObj.connectSerialF4(config.serialPort, {baudRate: Number(config.baud), parity: config.parity});
+            }
+            else if (comType == "Serial5") {
+                await mcpObj.connectSerialF5(config.serialPort, {baudRate: Number(config.baud), parity: config.parity}); 
+            }
         }
         for (let param of params){
-
-            resp = await mcpObj.readPLCDev(accessRoute, param);
+            resp = await mcpObj.readPLCDev(this.accessRoute, param);
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
             await new Promise(resolve => setTimeout(resolve, 50));
         }
-//        await mcpObj.close();
         return values;
     }
+
     // LinkObject形式へのデータ変換。Mitsubishi仕様にオーバーライドする。
     toLinkObjectValue(value) {
         let type = typeof value;

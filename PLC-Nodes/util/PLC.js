@@ -122,7 +122,7 @@ class PLC {
         });
 
         //PLCCom nodeのデータ追加メソッドを呼ぶ
-        plcCom.emit("addLinkData", linkObj);
+        if (plcCom) plcCom.emit("addLinkData", linkObj);
     }
 
     // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして送出する関数
@@ -133,7 +133,6 @@ class PLC {
 
         const config = this.config;
         const plcCom = this.plcCom;
-        const RED = this.RED;
         const node = this.node;
 
         // 自身のobjectKeyでなかったら何もしない。
@@ -142,6 +141,13 @@ class PLC {
         // linkObjを取得
         let linkObj = this.linkObj;
 
+        // 通信Nodeが存在しない場合
+        if (!plcCom) {
+            node.error("comNode not found");
+            node.status({fill:"yellow",shape:"ring",text:"runtime.comNode"});
+            return;
+        }
+
         // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
         // 自身のNodeIDをセット。
         let ownNodeId = this.node.id;
@@ -149,7 +155,7 @@ class PLC {
         let eMsg = obj.value;
         if (eMsg !== "ok" && eMsg !== "" ) {
             node.error(eMsg);
-            node.status({fill:"red",shape:"ring",text:"comunication error!!"});
+            node.status({fill:"red",shape:"ring",text:"runtime.comError!!"});
             return;
         }
 

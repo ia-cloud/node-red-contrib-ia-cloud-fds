@@ -43,6 +43,7 @@
         "ready": "Ready",
         "preparing": "データ準備中...",
         "sent": "データ送出",
-        "jsonerror": "設定JSONデータが不正です。"
+        "comNode": "通信Nodeが無効です。",
+        "comError": "通信エラー!!"
     }
 }

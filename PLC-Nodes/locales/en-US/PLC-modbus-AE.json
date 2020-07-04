@@ -41,6 +41,7 @@
         "ready": "Ready",
         "preparing": "preparing",
         "sent": "data sent",
-        "jsonerror": "invalid json data."
+        "comNode": "comNode not found",
+        "comError": "communication error!!"
     }
 }

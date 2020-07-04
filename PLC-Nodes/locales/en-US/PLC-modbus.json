@@ -49,6 +49,8 @@
         "badFilePath": "bad file path",
         "ready": "Ready",
         "preparing": "preparing",
-        "sent": "data sent"
+        "sent": "data sent",
+        "comNode": "comNode not found",
+        "comError": "communication error!!"
     }
 }

@@ -33,23 +33,27 @@ class ModbusCom extends PLCCom {
         let values = [];
         let resp;
 
-        let TCPOptions = {port: Number(config.TCPport)};
-        let serialOptions = {baudRate: config.baud, parity: config.parity};
-
-        if (config.comType == "TCP") {
-            if (!mcpObj.isOpen) {
-                await mbObj.connectTCP(config.IPAdd, TCPOptions)
+        if (!mbObj.isOpen) {
+            if (config.comType == "TCP") {
+                await mbObj.connectTCP(config.IPAdd, {port: Number(config.TCPport)})
                 .then(mbObj.setID(Number(config.unitID)));
-            }      
-        }
-        else if (config.comType == "RTU") {
-            if (!mcpObj.isOpen) {
-                await mbObj.connectRTU(config.serialPort, serialOptions);
             }
-        }
-        else if (config.comType == "ASCII") {
-            if (!mcpObj.isOpen) {
-                await mbObj.connectAsciiSerial(config.serialPort, serialOptions);
+            else {
+                let stopB;
+                (config.parity === "none") ? stopB = 2: stopB = 1;
+                let portConfig = {
+                    baudRate: Number(config.baud),
+                    dataBits: 8,
+                    parity: config.parity,
+                    stopBits: stopB
+                };
+                if (config.comType == "RTU") {
+                    await mbObj.connectRTUBuffered(config.serialPort, portConfig);
+                }
+                if (config.comType == "ASCII") {
+                    portConfig.dataBits = 7;
+                    await mbObj.connectAsciiSerial(config.serialPort, portConfig);
+                }
             }
         }
         for (let param of params){
@@ -130,8 +134,7 @@ module.exports = function(RED) {
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
-            if (mbObj._port.isOpen) mbObj.close().then(done());
-            else done();
+            mbObj.close(done());
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録
