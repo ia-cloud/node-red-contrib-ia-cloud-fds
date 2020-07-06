@@ -36,7 +36,6 @@ module.exports = function (RED) {
     this.AnEObject.objectName = config.objectName;
     this.AnEObject.objectKey = config.objectKey;
     this.AnEObject.objectDescription = config.objectDescription;
-    this.AnEObject.ObjectContent.contentType = config.contentType;
     this.AnEObject.ObjectContent.contentData = [];
     for (let i = 0, len = config.aeItems.length; i < len; i++) {
       this.AnEObject.ObjectContent.contentData.push(Object.assign({}, config.aeItems[i]));

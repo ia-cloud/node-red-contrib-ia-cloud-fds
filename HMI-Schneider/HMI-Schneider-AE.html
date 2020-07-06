@@ -54,7 +54,7 @@
         <label style="margin-right: 10px;" for="node-input-storeInterval">
           <span data-i18n="editor.period"></span>
         </label>
-        <input type="number" id="node-input-storeInterval" min="1" step="1" style="display: inline-block; width: auto;">
+        <input type="number" id="node-input-storeInterval" min="1" step="1" max="60" style="display: inline-block; width: auto;">
       </div>
       <div class="form-row">
         <label style="margin-right: 10px;" for="node-input-objectName">
@@ -80,12 +80,6 @@
     <!-- tab aeItem-property starts -->
     <div id="tab-aeItem-property" class="tab-pane active">
       <!-- aeItem propertyの設定 -->
-      <div class="form-row">
-        <label for="node-input-contentType"><i class="fa fa-tag"></i>
-          <span data-i18n="editor.contentType"></span>
-        </label>
-        <input type="text" id="node-input-contentType" value="Alarm&Event">
-      </div>
       <div class="form-row node-input-aeItemcontainer-row">
         <ol id="node-input-aeItemcontainer"></ol>
       </div>
@@ -118,7 +112,6 @@
       objectKey: {value:""},
       objectDescription: {value:""},
       // aeItems property
-      contentType: {value:"Alarm&Event", required: true},
       aeItems: {value:[{}]},
       // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
       configReady: {value: "", required: true}
@@ -236,8 +229,6 @@
       
       // objectKeyはある？
       if (!$("#node-input-objectKey").val()) configReady = "";
-      // contentTypeはある？
-      if (!$("#node-input-contentType").val()) configReady = "";
       // データ設定が一つはある？
       if (!node.aeItems.length) configReady = "";
 
