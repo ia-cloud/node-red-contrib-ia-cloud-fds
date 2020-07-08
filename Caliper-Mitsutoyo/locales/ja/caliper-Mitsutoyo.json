@@ -1,0 +1,21 @@
+{
+    "editor": {
+        "name": "名前",
+        "tab": {
+          "object-settings": "オブジェクトの設定",
+          "data-settings": "データの設定"
+        },
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "contentType": "データ構造Type",
+        "dName": "データ名称",
+        "dNameHldr": "必須:名称を入力"
+    },
+    "runtime": {
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "sent": "データ送出"
+    }
+}

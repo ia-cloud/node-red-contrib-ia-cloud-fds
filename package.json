@@ -58,7 +58,8 @@
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "tmp-ctrl-omron": "tmp-ctrl-omron/tmp-ctrl-omron.js",
       "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js",
-      "ia-cloud-serialport": "ia-cloud-serialport/ia-cloud-serialport.js"
+      "ia-cloud-serialport": "ia-cloud-serialport/ia-cloud-serialport.js",
+      "caliper-Mitsutoyo": "Caliper-Mitsutoyo/caliper-Mitsutoyo.js"
     }
   },
   "repository": {

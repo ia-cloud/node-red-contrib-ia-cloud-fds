@@ -1,0 +1,250 @@
+<!--
+    Copyright JS Foundation and other contributors, http://js.foundation
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.   
+-->
+
+<script type="text/html" data-template-name="caliper-Mitsutoyo">
+
+    <div id="name-block">
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name">
+        </div>
+        <hr>
+    </div>
+    <!-- Tab, ownself -->
+    <div id="ui-tabs">
+        <ul>
+            <li >
+                <a href="#tab-object-property">
+                    <span data-i18n="editor.tab.object-settings" ></span></a>
+            </li>
+            <li>
+                <a href="#tab-dItem-property">
+                    <span data-i18n="editor.tab.data-settings" ></span></a>
+            </li>
+        </ul>
+
+        <!-- tab-object-property starts -->
+        <div id="tab-object-property" class="tab-pane">
+            <!-- object propertyの設定 -->
+            <div class="form-group" style="margin-left: 20px; margin-top:8px";>
+                <div class="form-row">
+                    <label style="margin-right: 10px;" for="node-input-objectName">
+                        <span data-i18n="editor.objectname"></span></label>
+                    <input type="text" style="width: 300px" id="node-input-objectName">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                    <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+                </div>
+                <div class="form-row">
+                    <label style="margin-right: 10px;"
+                        for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                    <input type="text" style="width: 300px" id="node-input-objectDescription">
+                </div>
+            </div>
+        </div>
+        <!-- tab-object-property ends -->
+
+        <!-- tab-dItem-property starts -->
+        <div id="tab-dItem-property">
+            <!-- data Item propertyの設定 -->
+            <div class="form-row" style="margin-top:8px;">
+                <label for="node-input-contentType" style="width: 120px; margin-left: 10px">
+                    <span data-i18n="editor.contentType"></span></label>
+                <input type="text" id="node-input-contentType" value="iaCloudObject" disabled="disabled">
+            </div>
+            <div class="form-row node-input-container-row">
+                <ol id="node-input-container">
+                </ol>
+            </div>
+        </div>  
+        <!-- tab-dItem-property ends -->      
+    </div>
+
+</script>
+
+
+<script type="text/x-red" data-help-name="caliper-Mitsutoyo">
+    <p>preparing ia-cloud objects for store to CCS</p>
+
+<h3>Inputs</h3>
+<dl class="message-properties">
+  TBD
+</dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+
+<h3>Details</h3>
+  <dl class="message-properties">
+  TBD
+  </dl>
+</script>
+
+<script type="text/javascript">
+
+var NodeConfig = {
+
+
+    category: 'iaCloud',
+    color: "rgb(231, 180, 100)",
+
+    defaults: {
+        // node properties
+        name: {value: ""},
+        // object properties
+        objectName: {value:""},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+
+        dataParams: {value: [""], required: true}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "ia-cloud.png",  //アイコンはTBD
+
+    label: function () {
+        return this.name||this._("Mitsutoyo-Caliper");
+    },
+    labelStyle: function () {
+        return this.name?"node_label_italic":"";
+    },
+
+    oneditprepare: function () {
+
+        const node = this;
+        const lbldName = node._("editor.dName");
+        const lbldNameHolder = node._("editor.dNameHldr");
+
+                // editableList item のhtml要素
+        // 1行目のデバイスタイプとアドレス、論理入力項目
+        const paraForm =`
+            <label style="text-align: right; margin-right: 10px;">${lbldName}</label>
+            <input required="required" class="dataName"" placeholder="${lbldNameHolder}" type="text"
+                style="width:150px; display:inline-block; text-align:left; margin-right:20px;">
+        `;
+
+        // Tab要素を設定（Jquery UI を使用）
+        $("#ui-tabs").tabs({active: 1});
+
+        // Define editableList.
+        $('#node-input-container').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm).appendTo(div1);
+
+                // データItemのデバイスタイプのsellect要素のoptionを追加する関数
+                
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("dataName")) dItem = {dataName: ""};
+
+                // dataItem parameters
+                div1.find(".dataName").val(dItem.dataName);
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-container').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
+        });
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataParams.length; i++) {
+            $("#node-input-container").editableList('addItem',node.dataParams[i]);
+        }  
+
+         // シリアルポートルックアップが押されたら
+         $("#node-lookup-serial").click(function() {
+            $("#node-lookup-serial").addClass('disabled');
+            $.getJSON('serialPorts',function(data) {
+                $("#node-lookup-serial").removeClass('disabled');
+                var ports = data || [];
+                $("#node-input-serialPort").autocomplete({
+                    source:ports,
+                    minLength:0,
+                    close: function( event, ui ) {
+                        $("#node-input-serialPort").autocomplete( "destroy" );
+                    }
+                }).autocomplete("search","");
+            });
+        });
+    },
+
+    oneditsave: function () {
+        const node = this;
+        let items = $("#node-input-container").editableList('items');
+
+        // データ設定を作成
+        node.dataParams = [];
+        items.each(function(i, elm){
+            let item = {
+                // Fixed DataItem property
+                dataName: elm.find(".dataName").val(),
+            }
+            node.dataParams.push(item);
+        });
+    },
+
+    oneditresize: function (size) {
+        // エディタがリサイズされたら
+        let height = size.height;
+
+        // Tab以外の部分の高さを引く
+        height -= $("#name-block").outerHeight(true);
+
+        // dataItemプロパティTab内の、editableList以外の行の高さを引く
+        let rows = $("#tab-dItem-property>div:not(.node-input-container-row)");
+        for (let i=0; i<rows.length; i++) {
+            height -= $(rows[i]).outerHeight(true);
+        }
+        // タブの部分の高さ（大体）
+        height -= 50;
+
+        // editableListのマージンを引く
+        const editorRow = $("#tab-dItem-property>div.node-input-container-row");
+        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+        $("#node-input-container").editableList('height',height);
+
+    },
+}
+
+    // NodeをNode-REDへ登録
+    RED.nodes.registerType('caliper-Mitsutoyo', NodeConfig);
+
+
+</script>
