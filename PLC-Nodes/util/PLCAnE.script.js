@@ -85,7 +85,7 @@ var PLCAENodeConfig = {
         const lblAnECode = node._("editor.AnECode");
         const lblAnEDesc = node._("editor.AnEDescription");
 
-                // editableList item のhtml要素
+        // editableList item のhtml要素
         // 1行目のデバイスタイプとアドレス、論理入力項目
         const paraForm1 =`
             <select class="deviceType" 

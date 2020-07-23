@@ -165,7 +165,7 @@ class PLC {
         let contentData = [];
 
         msg.dataObject.objectKey = config.objectKey;
-        msg.dataObject.timeStamp = moment().format();
+        msg.dataObject.timestamp = moment().format();
         msg.dataObject.objectType = "iaCloudObject";
         msg.dataObject.objectDescription = config.objectDescription;
         msg.dataObject.objectContent.contentType = config.contentType;
