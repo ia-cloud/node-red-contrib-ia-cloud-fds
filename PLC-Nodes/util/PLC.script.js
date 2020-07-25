@@ -35,7 +35,6 @@ var PLCNodeConfig = {
         // object properties
         storeInterval: {value:"300"},
         storeAsync: {value: false},
-        objectName: {value:""},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
 
@@ -129,17 +128,17 @@ var PLCNodeConfig = {
             <div class="bitFm">
                 <span style="display:inline-block; width:30px"> </span>
                 <select class="bit-deviceType" 
-                    style="width:60px; display:inline-block; text-align:right; padding-right:5px;"">
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;"">
                     <!-- <option selected="selected" value="Coil">Coil</option>
                     <option value="IS">IS</option> -->
                 </select>
                 <input required="required" class="bit-add" placeholder=${lblAdd} type="number" min="0" 
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:50px; 
-                    display:inline-block; text-align:right; margin-left:10px;">${lblBitnum}</span></label>
+                    display:inline-block; text-align:right;">${lblBitnum}</span></label>
                 <input required="required" type="number"  min="1" class="bit-num" data-i18n="[placeholder]editor.bitNum"
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
-                <select class="bit-logic" style="width:70px; display:inline-block; text-align:right;">
+                <select class="bit-logic" style="width:80px; display:inline-block; text-align:right;">
                     <option selected="selected" value= "pos">${lblPos}</span></option>
                     <option value= "neg">${lblNeg}</span></option>
                 </select>
@@ -156,13 +155,13 @@ var PLCNodeConfig = {
                         style="width:80px; display:inline-block; text-align:right; padding-right:5px;"
                         class="number-add" placeholder=${lblAdd}>
                     <select class="number-type" 
-                        style="width:70px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">
+                        style="width:80px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">
                         <option selected="selected" value="1w">1word</option>
                         <option value="2w-b">2wb</option>
                         <option value="2w-l">2wl</option>
                     </select>
                     <select class="number-encode" 
-                        style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                        style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                         <option selected="selected" value="unsigned">${lblUsign}</span></option>
                         <option value="signed">${lblSign}</span></option>
                         <option value="BCD">${lblBCD}</span></option>
@@ -183,17 +182,17 @@ var PLCNodeConfig = {
             <div class="stringFm hidden" style="margin-top:8px;">
                 <span style="display:inline-block; width:30px"> </span>
                 <select class="string-deviceType" 
-                    style="width:60px; display:inline-block; text-align:right; padding-right:5px;"> 
+                    style="width:55px; display:inline-block; text-align:right; padding-right:5px;"> 
                     <!-- <option selected="selected" value="IR">IR</option>
                     <option value="HR">HR</option> -->
                 </select>
                 <input required="required" type="number"  min="0" class="string-add" placeholder=${lblAdd}
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
-                <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblWnum}</span></label>
+                <label style="width:50px; display:inline-block; text-align:right;">${lblWnum}</span></label>
                 <input type="number" min="1" class="string-num" placeholder=${lblWnum}
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
                 <select class="string-encode"
-                    style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                     <option value="sJIS">${lblSjis}</span></option>
                     <option selected="selected" value="utf-8">${lblUTF8}</span></option>
                     <option value="EUC">${lblEUC}</span></option>
@@ -207,18 +206,18 @@ var PLCNodeConfig = {
                     <option value="HR">HR</option> -->
                 </select>
                 <input required="required" type="number" min="0" class="numList-add" placeholder=${lblAdd}
-                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
-                <label style="width:40px; display:inline-block; text-align:right;">${lblWnum}</span></label>
+                    style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+                <label style="width:30px; display:inline-block; text-align:right;">${lblWnum}</span></label>
                 <input required="required" type="number" min="1" class="numList-num" placeholder=${lblWnum}
-                    style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:50px; display:inline-block; text-align:right;">
                 <select class="numList-type" 
-                    style="width:55px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:65px; display:inline-block; text-align:right;">
                     <option selected="selected" value="1w">1w</option>
                     <option value="2w-b">2wb</option>
                     <option value="2w-l">2wl</option>
                 </select>
                 <select class="numList-encode"
-                    style="width:60px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:65px; display:inline-block; text-align:right;">
                     <option selected="selected" value="unsigned">${lblUsign}</span></option>
                     <option value="signed">${lblSign}</span></option>
                     <option value="BCD">${lblBCD}</option>

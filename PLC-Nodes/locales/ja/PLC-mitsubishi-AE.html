@@ -10,14 +10,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<script type="text/html" data-help-name="PLC-Modbus-AE">
+<script type="text/html" data-help-name="PLC-Mitsubishi-AE">
     <!-- ここにNode機能の概要を、50文字以内で記述-->
-    <p>ModbusPLCのアラーム＆イベントノード</p>
+    <p>三菱シーケンサのアラーム＆イベントノード</p>
 
     <h3>プロパティ項目</h3>
     <dl class="message-properties">
-        <dt>通信ノード<span class="property-type">Modbus通信設定ノード</span></dt>
-        <dd>Modbus通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dt>通信ノード<span class="property-type">三菱MC通信設定ノード</span></dt>
+        <dd>三菱MC通信に使用する通信設定ノードの選択・新規作成</dd>
         <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>定期収集周期<span class="property-type">数値</span></dt>
@@ -38,11 +38,9 @@
                 <dt>項目番号<span class="property-type">数値（自動）</span></dt>
                 <dd>アラーム項目の番号。自動で生成される</dd>
                 <dt>デバイス<span class="property-type">選択</span></dt>
-                <dd>アラーム＆イベント情報も元となるPLCデバイス。Modbus通信のファンクションコード</dd>
-                <dd>FC1: コイル（coil）</dd>
-                <dd>FC2: 入力ステータス（IS）</dd>
-                <dd>FC3: 保持レジスタ（HR）</dd>
-                <dd>FC4: 入力レジスタ（IR）</dd>
+                <dd>アラーム＆イベント情報も元となるPLCデバイス。</dd>
+                <dd>X, Y, M, SM, D, W のいずれかを選択できる</dd>
+                <dd>D, W のワードデバイスを選択した場合、０:false、0以外:true とする</dd>
                 <dt>論理<span class="property-type">選択</span></dt>
                 <dd>対象データがtrue(1)の時、アラーム発生（正論理）</dd> 
                 <dd>対象データがfalse(0)の時、アラーム発生（負論理）</dd> 
@@ -70,13 +68,13 @@
         <dt>request <span class="property-type">string</span></dt>
         <dd>ia-cloudリクエスト内容。入力メッセージとして受けたものと同じ。</dd>
         <dt>dataObject <span class="property-type">object</span></dt>
-        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがったアラーム＆イベントデータ。</dd>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがったアラーム＆イベント。</dd>
     </dl>
 
     <h3>詳細説明</h3>
-    <p>Modbus通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode</p>
+    <p>三菱シーケンサMC通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode</p>
     <p>Alarm&EventのcontentTypeを持つia-cloudオブジェクトは、アラーム＆イベント発生時、復帰時、発生中、復帰済みに対し</p>
     <p>"set", "reset", "on", "off"のアラーム＆イベントの状態とそのA&Eコード、A&Eの説明を含むオブジェクトです。</p>
-    <p>設定Nodeとして、Modbus-comを使用する。</p>
+    <p>設定Nodeとして、Mitsubishi-comを使用する。</p>
 
 </script>

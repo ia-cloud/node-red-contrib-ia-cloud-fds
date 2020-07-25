@@ -10,14 +10,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<script type="text/html" data-help-name="PLC-Modbus">
+<script type="text/html" data-help-name="PLC-Mitsubishi">
     <!-- ここにNode機能の概要を、50文字以内で記述-->
-    <p>ModbusPLCのデータ収集ノード</p>
+    <p>三菱シーケンサ のデータ収集ノード</p>
 
     <h3>プロパティ項目</h3>
     <dl class="message-properties">
-        <dt>通信ノード<span class="property-type">Modbus通信設定ノード</span></dt>
-        <dd>Modbus通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dt>通信ノード<span class="property-type">三菱MC通信設定ノード</span></dt>
+        <dd>三菱MC通信に使用する通信設定ノードの選択・新規作成</dd>
         <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>定期収集周期<span class="property-type">数値</span></dt>
@@ -32,7 +32,7 @@
         <dt>データ項目の設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>データ構造<span class="property-type">文字列</span></dt>
-            <dd>ModbusPLCのデータ構造。ユーザ定義の組合せ定義しても良いが、デフォルトはModbusPLC</dd>
+            <dd>三菱シーケンサ のデータ構造。ユーザ定義の組合せ定義しても良いが、デフォルトはMitsubishiPLC</dd>
             <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
             <dl class="message-properties" style="margin-left: 8px">
                 <dt>項目番号<span class="property-type">数値（自動）</span></dt>
@@ -41,14 +41,14 @@
                 <dt>ビット: ビットデータを取得しtrue/falseを出力する。</dt>
                 <dl>
                     <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
-                    <dd>デバイス: ビットデータを取得するPLCのデバイス種別と先頭アドレス。コイル/ISのいずれかとそのアドレス</dd>
+                    <dd>デバイス: ビットデータを取得するPLCのデバイス種別と先頭アドレス。X,Y,M,L,SMのいずれかとそのアドレス</dd>
                     <dd>ビット数: ビットデータを取得するビット数。単独の場合はtrue/false、複数指定の時はtrue/falseの配列を出力する</dd>
                     <dd>論理: ビットデータを取得しtrue/falseを出力するの論理。正/負論理</dd>
                 </dl>
                 <dt>数値: PLCのワードデバイスを読み数値データを出力する</dt>
                 <dl>
                     <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
-                    <dd>デバイス: ワードデータを取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>デバイス: ワードデータを取得するPLCのデバイス種別と先頭アドレス。D,Wのいずれかとそのアドレス</dd>
                     <dd>ワード数: 取得する数値データのワード型。１ワード(1W)/ダブルワード(2Wl)/ダブルワード(2Wb)の選択</dd>
                     <dd>符号: データを解釈する際の型。符号無し、２の補数、BCDの選択</dd>
                     <dd>ゼロ・倍率: データを解釈する際のオフセットとゲイン。</dd>
@@ -57,14 +57,14 @@
                 <dt>文字列: PLCのワードデバイスを読み文字列を出力する</dt>
                 <dl>
                     <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
-                    <dd>デバイス: 文字列を取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>デバイス: 文字列を取得するPLCのデバイス種別と先頭アドレス。D,Wのいずれかとそのアドレス</dd>
                     <dd>ワード数: 文字列を取得するPLCデバイスのワード数。文字列の文字数ではなく元データのワード数</dd>
                     <dd>文字コード: 文字列を解釈する文字コード。シフトJIS/EUC-JP/UTF-8の選択</dd>
                 </dl>
                 <dt>数値列: PLCのワードデバイスを読み数値列を出力する</dt>
                 <dl>
                     <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
-                    <dd>デバイス: 数値列を取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>デバイス: 数値列を取得するPLCのデバイス種別と先頭アドレス。D,Wのいずれかとそのアドレス</dd>
                     <dd>ワード数: 数値列を取得するPLCデバイスのワード数。</dd>
                     <dd>文字コード: 文字列を解釈する文字コード。シフトJIS/EUC-JP/UTF-8の選択</dd>
                 </dl>
@@ -92,7 +92,7 @@
     </dl>
 
     <h3>詳細説明</h3>
-    <p>Modbus通信機器の持つビットデータ・ワードデータを読み出しia-cloudオブジェクトを生成するNode</p>
-    <p>設定Nodeとして、Modbus-comを使用する。</p>
+    <p>三菱シーケンサのMC通信機器の持つビットデータ・ワードデータを読み出しia-cloudオブジェクトを生成するNode</p>
+    <p>設定Nodeとして、Mitsubishi-comを使用する。</p>
 
 </script>

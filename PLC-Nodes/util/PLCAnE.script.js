@@ -35,7 +35,6 @@ var PLCAENodeConfig = {
         // object properties
         storeInterval: {value:"300"},
         storeAsync: {value: true, required: true},
-        objectName: {value:""},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
 
@@ -89,13 +88,13 @@ var PLCAENodeConfig = {
         // 1行目のデバイスタイプとアドレス、論理入力項目
         const paraForm1 =`
             <select class="deviceType" 
-                style="width:60px; display:inline-block; text-align:right;">
+                style="width:80px; display:inline-block; text-align:right;">
                 <!-- <option selected="selected" value="Coil">Coil</option>
                 <option value="IS">IS</option> -->
             </select>
             <input required="required" class="address" placeholder="${lblAdd}" type="number" min="0" 
                 style="width:80px; display:inline-block; text-align:right; margin-right:20px;">
-            <select class="logic" style="width:70px; display:inline-block; text-align:right;">
+            <select class="logic" style="width:90px; display:inline-block; text-align:right;">
                 <option selected="selected" value= "pos" label="${lblPos}"></option>
                 <option value= "neg" label="${lblNeg}"></option>
             </select>
@@ -105,7 +104,7 @@ var PLCAENodeConfig = {
             <div class="bitFm">
                 <span style="display:inline-block; width:30px"> </span>
                 <input class="AnECode" placeholder="${lblAnECode}" type="text"
-                    style="width:80px; display:inline-block; text-align:left; margin-right:20px;">
+                    style="width:90px; display:inline-block; text-align:left; margin-right:20px;">
                 <input type="text" class="AnEDesc" placeholder="${lblAnEDesc}"
                     style="width:200px; display:inline-block; text-align:left;">
             </div>
