@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "palletLabel": "スムージング",
+        "defaultName": "スムージング",
+        "name": "ノード名称",
+        "smoothingList": "移動平均設定リスト",
+        "objkey": "オブジェクトキー",
+        "dName": "データ名称",
+        "range": "平均範囲",
+        "num": "個",
+        "sec": "秒",
+        "initTime": "クリア時間"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}

@@ -63,6 +63,7 @@
       "URD Current Sensor": "urd/urd-obj.js",
       "urd-ac-1ch": "urd/urd-ac-1ch-node.js",
       "urd-ac-3ch": "urd/urd-ac-3ch-node.js"
+      "edge-delay": "functions/edge-delay.js"
     }
   },
   "repository": {

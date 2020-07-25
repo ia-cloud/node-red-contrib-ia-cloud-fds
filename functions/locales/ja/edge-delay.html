@@ -1,0 +1,62 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="change-detect">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>true/falseデータが変化したときだけ、遅延付きでデータ出力する</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>設定リスト<span class="property-type">ルールリスト</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>変化検出する対象オブジェクトのオブジェクトキー。空欄の場合、全てのオブジェクトのデータが対象となります</dd>
+            <dt>データ名称<span class="property-type">文字列</span></dt>
+            <dd>変化検出する対象データ項目のデータ名称。空欄の場合、全てのデータ名称が対象となります</dd>
+            <dt>ON遅延<span class="property-type">数値</span></dt>
+            <dd>trueへの変化検出の継続回数。この回数trueが継続した場合、trueと認識する</dd>
+            <dd>設定回数以内にfalseとなった場合はリセットされる</dd>
+            <dd>空欄の場合は、即時</dd>
+            <dt>OFF遅延<span class="property-type">数値</span></dt>
+            <dd>falseへの変化検出の継続回数。この回数falseが継続した場合、falseと認識する</dd>
+            <dd>設定回数以内にtrueとなった場合はリセットされる</dd>
+            <dd>空欄の場合は、即時</dd>
+        </dl>
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"のみ有効</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject構造のオブジェクト。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目の設定したがって、変化時のみ出力されます</dd>
+        <dd>変化検出のの対象とならなかったiaCloudオブジェクトは、入力メッセージのまま出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力メッセージのiaCloudオブジェクトの論理値の変化を検出し、変化時のみそのオブジェクトを出力します。</p>
+    <p>各データ項目を個別に、あるいは全て同一に変化検出できます</p>
+    <p>true/falseデータが設定回数継続した場合、変化と認識します</p>    
+    <p>変化検出の対象とならなかったiaCloudオブジェクトは、入力メッセージのまま出力されます。</p>
+
+</script>

@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "palletLabel": "ノイズ除去",
+        "defaultName": "ノイズ除去",
+        "name": "ノード名称",
+        "condetionList": "突然変異条件リスト",
+        "objkey": "オブジェクトキー",
+        "dName": "データ名称",
+        "displace": "変移量",
+        "interval": "間隔",
+        "sec": "秒以内"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません",
+        "nomatch": "データが全て除去されました"
+    }
+}

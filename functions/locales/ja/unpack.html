@@ -1,0 +1,54 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="unpack">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>ia-cloud contentData から指定したdataNamenoデータを出力。</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>論理出力を、数値（1/0）に変換<span class="property-type">チェック</span></dt>
+        <dd>論理データ（true/false）を数値（1/0）に変換して出力する。結果をdashboardのchartに繋ぐ際に使用</dd>
+        <dt>抽出条件リスト<span class="property-type">リスト</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ名称<span class="property-type">文字列</span></dt>
+            <dd>抽出するデータ名称。データ名称（dataName）か共通名称（commonName）のどちらかに合致すれば抽出される。</dd>
+            <dt>出力先ポート番号<span class="property-type">数値（自動）</span></dt>
+            <dd>抽出されたdataValueが出力されるポート番号。エントリーの順番で自動に付与される。左端のハンドルで順番を変更することが可能。</dd>
+            <dt>出力名称<span class="property-type">文字列</span></dt>
+            <dd>抽出されたdataValueと同時に出力されるデータの名称（ラベル）</dd>
+            <dd>ダッシュボードのチャート類のラベルに使用される</dd>
+        </dl>
+        <dt>ノード名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload<span class="property-type">iaCloud contentData object</span></dt>
+        <dd>ia-cloud Web API で規定された、オブジェクト配列contentData</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">iaCloud dataValue</span></dt>
+        <dd>設定されたプロパティに従い、Nodeの指定された出力ポートにcontentDataから取り出されたdataValueを出力する。</dd>
+        <dt>topic <span class="property-type">iaCloud dataValue</span></dt>
+        <dd>出力名称プロパティの値がここに出力される。dashboardのline chartのデータ名に使用される</dd>
+        <dt>label<span class="property-type">iaCloud dataValue</span></dt>
+        <dd>出力名称プロパティの値がここに出力される。dashboardのbare chartのデータ名に使用される</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>contentDataから、dataNameを指定したdataValueを取り出し、指定した出力ポートへ出力する。</p>
+    <p>複数のdataNameを指定し、複数の出力ポートへ振り分けることができる。</p>
+
+</script>

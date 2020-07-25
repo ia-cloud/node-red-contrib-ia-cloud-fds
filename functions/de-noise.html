@@ -1,0 +1,198 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/html" data-template-name="de-noise">
+
+    <div id="list-property">
+        <div class="form-row">
+            <label style="width:200px; margin-left:8px"><span data-i18n="editor.condetionList"></span></label>
+        </div>
+        <!-- param propertyの設定 -->
+        <div class="form-row node-input-list-container-row">
+            <ol id="node-input-list-container">
+            </ol>
+        </div>
+    </div>  
+
+    <div id="name-block">
+        <div > <hr> </div>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name">
+        </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('de-noise',{
+        category: 'iaCloud',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+            params: {value:[{}]},
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.defaultName");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.palletLabel") || "de-noise data";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblobjkey = node._("editor.objkey");
+            const lbldName = node._("editor.dName");
+            const lbldisp = node._("editor.displace");
+            const lblsec = node._("editor.sec");
+            const lblinterval = node._("editor.interval");
+
+            // editableList item のhtml要素
+            // 1行目のobjectKey
+            const paraForm1 =`
+            <input class="objectKey"" placeholder="${lblobjkey}" type="text"
+                    style="width:130px; display:inline-block; text-align:left;">
+                <label style="width:80px; text-align: right;">${lbldName}</label>
+                <input class="dataName"" placeholder="${lbldName}" type="text"
+                    style="width:120px; display:inline-block; text-align:left;">
+            `;
+            // 2行目のparameter
+            const paraForm2 =`
+                <div class= "form-row">
+                    <span style="display:inline-block; width:30px"></span>
+                    <label style="width:50px; text-align: right;">${lbldisp}</label>
+                    <input type="number" class="disp" required="required"
+                    step="any" style="width:80px; margin-left:10px; display:inline-block; text-align:right;">
+                    </label>
+                    <label style="width:50px; margin-left:10px; text-align:right;">${lblinterval}</label>
+                    <input type="number" class="interval" required="required"
+                        step="0.1" min="0" max="300" style="width:80px; margin-left:10px; display:inline-block; text-align:right;">
+                    <label style="width:50px; text-align: left;">
+                        <span style="font-weight: bold">${lblsec}</span>
+                    </label>
+                </div>
+            `;
+
+            // Define editableList.
+            $("#node-input-list-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 360,
+                
+                addItem: function(container,index,param) {
+
+                    let div1 = $('<div></div>').appendTo(container);
+                    let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                    $('<span></span>',{class:"index", 
+                        style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                        .text((index + 1) + " :")
+                        .appendTo(div1);
+                    $(paraForm1).appendTo(div1);
+
+                    // 2nd row of parameter list
+                    $(paraForm2).appendTo(div2);
+
+                    // 追加ボタンが押されたら、paramは 空{} で呼ばれます。
+                    if(!param.hasOwnProperty("objectKey")) {
+                        param = {objectKey: ""}
+                    };
+                    // restore parameters
+                    div1.find(".objectKey").val(param.objectKey);
+                    div1.find(".dataName").val(param.dataName);
+                    div2.find(".disp").val(param.disp);
+                    div2.find(".interval").val(param.interval);
+
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-list-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.params.length;i++) {
+                var param = node.params[i];
+                $("#node-input-list-container").editableList('addItem',param);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-list-container").editableList('items');
+            // paramデータ設定を作成
+            node.params = [];
+            items.each(function(i, elm){
+                let param = {
+                    // reatore parameters
+                    objectKey: elm.find(".objectKey").val(),
+                    dataName: elm.find(".dataName").val(),
+                    disp: Number(elm.find(".disp").val()),
+                    interval: Number(elm.find(".interval").val())
+                }
+                node.params.push(param);
+
+                // required properties are not empty
+                if (!param.disp || !param.interval)
+                    configReady = "";
+            });
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // node name block height
+            height -= $("#name-block").outerHeight(true);
+
+            // editableList以外の行の高さを引く
+            let rows = $("#list-property>*:not(.node-input-list-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#list-property>div.node-input-list-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-list-container").editableList('height',height);
+        }
+    });
+
+</script>

@@ -1,0 +1,32 @@
+{
+    "editor": {
+        "palletLabel": "データ評価",
+        "defaultName": "データ評価",
+        "name": "ノード名称",
+        "action": "判定後の動作",
+        "bool": "論理出力への変更",
+        "indiv": "個別データ項目を削除",
+        "whole": "オブジェクトを出力しない",
+        "ruleList": "評価条件リスト",
+        "objkey": "オブジェクトキー",
+        "dataName": "データ名称",
+        "equal": "等しい",
+        "notequal": "不等",
+        "range": "範囲内",
+        "notrange": "範囲外",
+        "equalValue": "照合する値",
+        "Hlimit": "上限値",
+        "Llimit": "下限値",
+        "equallbl": "データ値 = ",
+        "notequallbl": "データ値 <> ",
+        "rangelbl": " < データ値 < ",
+        "rangelblL": "データ値 < ",
+        "rangelblH": " < データ値"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません",
+        "nomatch": "出力がありません"
+    }
+}

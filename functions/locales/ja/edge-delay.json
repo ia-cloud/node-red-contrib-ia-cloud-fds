@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "palletLabel": "変化と遅延",
+        "defaultName": "変化と遅延",
+        "name": "ノード名称",
+        "condetionList": "検出条件リスト",
+        "objkey": "オブジェクトキー",
+        "dName": "データ名称",
+        "ondelay": "ON遅延",
+        "offdelay": "OFF遅延",
+        "num": "回"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません",
+        "nomatch": "変化がありません"
+    }
+}

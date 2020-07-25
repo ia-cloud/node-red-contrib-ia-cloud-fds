@@ -1,0 +1,188 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/html" data-template-name="unpack">
+    <div id = "property-form">
+        <div class="form-row">
+            <label for="node-input-bool10" style="width:auto"><span data-i18n="editor.bool10"></span></label>
+            <input type="checkbox" id="node-input-bool10" style="display: inline-block; width: auto;margin-left:5px;">
+        </div>
+        <div class="row">
+            <label><span data-i18n="editor.rules"></span></label>
+        </div>
+        <div class="form-row node-input-rule-container-row">
+            <ol id="node-input-rule-container"></ol>
+        </div>
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="editor.name"></span></label>
+            <input type="text" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+         <!-- 隠しのNodeプロパティ -->
+        <div class="form-row hide">
+            <input type="text" id="node-input-configReady">
+            <input type="number" id="node-input-outputs"/>
+        </div>
+
+    </div>
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('unpack',{
+        category: 'iaCloud',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+            dataName: {value:""},
+            bool10: {value:false},
+            rules: {value:[{dataName:""}]},
+            outputs: {value:1},
+            configReady: {value:"ready", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        outputLabels: function(index) {
+            return this.rules[index].dataName;
+        },
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.defaultName");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.palletLabel") || "data unpack";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblObjKey = node._("editor.objKey");
+            const lbldName = node._("editor.dataName");
+            const lbldataLabel = node._("editor.dataLabel");
+            const lbldataLabelPH = node._("editor.dataLabelPH");
+
+            // editableList item のhtml要素
+            const paraForm1 =`
+                <input class="objectKey"" placeholder="${lblObjKey}" type="text"
+                    style="width:130px; display:inline-block; text-align:left;">
+                <label style="width:80px; text-align: right;">${lbldName}</label>
+                <input required="required" class="dataName"" placeholder="${lbldName}" type="text"
+                    style="width:120px; display:inline-block; text-align:left;">
+            `;
+
+            // 2行目のparameter
+            const paraForm2 =`
+                <div class= "form-row">
+                    <label style="width:100px; text-align: left;">${lbldataLabel}</label>
+                    <input type="text" class="dataLabel" placeholder="${lbldataLabelPH}"
+                       style="width:130px; display:inline-block; text-align:left;">
+                </div>
+            `;
+
+            $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 180,
+                
+                addItem: function(container,i,rule) {
+
+                    // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
+                    if(!rule.hasOwnProperty("dataName")) {
+                        rule = {dataName:""}
+                    };
+                    let row1 = $('<div></div>',{style:"margin-top: 6px;"}).appendTo(container);
+                    $(paraForm1).appendTo(row1);
+                    let outputspan = $('<span/>',{style:"float: right; margin-top: 6px;"}).appendTo(row1);
+                    outputspan.append(' &#8594; <span class="node-input-rule-index">'+(i+1)+'</span> ');
+
+                    let row2 = $('<div></div>',{style:"margin-top: 6px;"}).appendTo(container);
+                    $(paraForm2).appendTo(row2);
+
+                    // dataItem parameters
+                    row1.find(".dataName").val(rule.dataName);
+                    row1.find(".objectKey").val(rule.objectKey);
+                    row2.find(".dataLabel").val(rule.dataLabel);
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".node-input-rule-index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-rule-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".node-input-rule-index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.rules.length;i++) {
+                var rule = node.rules[i];
+                $("#node-input-rule-container").editableList('addItem',rule);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-rule-container").editableList('items');
+            // ruleデータ設定を作成
+            node.rules = [];
+            items.each(function(i, elm){
+                let item = {
+                    objectKey: elm.find(".objectKey").val(),
+                    dataName: elm.find(".dataName").val(),
+                    dataLabel: elm.find(".dataLabel").val(),
+                }
+                // dataName is not null
+                if (!item.dataName) configReady = "";
+                node.rules.push(item);
+            });
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+            // sets output port number
+            $("#node-input-outputs").val(node.rules.length);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // editableList以外の行の高さを引く
+            let rows = $("#property-form>*:not(.node-input-rule-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#property-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
+            
+            // height 360 を最大とする。
+            if (height > 360) height = 360;
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-rule-container").editableList('height',height);
+        }
+    });
+
+</script>

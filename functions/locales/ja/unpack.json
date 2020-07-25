@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "palletLabel": "データ抽出",
+        "objKey": "オブジェクトKey",
+        "defaultName": "抽出",
+        "name": "ノード名称",
+        "rules": "取り出しリスト",
+        "dataName": "データ名称",
+        "dataLabel": "出力ラベル",
+        "dataLabelPH": "空欄時データ名称",
+        "bool10": "論理データを 1/0 で出力"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "nomatch": "全ての条件不成立",
+        "norule": "ルールがありません"
+    }
+}
