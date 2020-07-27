@@ -55,7 +55,7 @@ var PLCNodeConfig = {
                 string: {deviceType:"HR", address:0, encode:"utf-8", number:1}, 
                 numList: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", number:1}
             };           */
-        defaultDataItem: {value:{}},
+//        defaultDataItem: {value:{}},
 
         // DataItem設定リストのデバイスsellect要素のoptionを追加するDOM要素
         /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
@@ -67,7 +67,7 @@ var PLCNodeConfig = {
                 string: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}],
                 numList: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}]
             }            */
-        deviceTypeDef: {value:{},}
+//        deviceTypeDef: {value:{},}
     },
 
 
@@ -128,15 +128,15 @@ var PLCNodeConfig = {
             <div class="bitFm">
                 <span style="display:inline-block; width:30px"> </span>
                 <select class="bit-deviceType" 
-                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;"">
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                     <!-- <option selected="selected" value="Coil">Coil</option>
                     <option value="IS">IS</option> -->
                 </select>
-                <input required="required" class="bit-add" placeholder=${lblAdd} type="number" min="0" 
-                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <input required="required" class="bit-add" placeholder=${lblAdd} value="0" type="number"
+                    min="0" style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:50px; 
                     display:inline-block; text-align:right;">${lblBitnum}</span></label>
-                <input required="required" type="number"  min="1" class="bit-num" data-i18n="[placeholder]editor.bitNum"
+                <input required="required" value="1" type="number"  min="1" class="bit-num" data-i18n="[placeholder]editor.bitNum"
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
                 <select class="bit-logic" style="width:80px; display:inline-block; text-align:right;">
                     <option selected="selected" value= "pos">${lblPos}</span></option>
@@ -151,7 +151,7 @@ var PLCNodeConfig = {
                         <!-- <option selected="selected" value="IR">IR</option>
                         <option value="HR">HR</option> -->
                     </select>
-                    <input required="required" type="number" min="0"
+                    <input required="required" value="0" type="number" min="0"
                         style="width:80px; display:inline-block; text-align:right; padding-right:5px;"
                         class="number-add" placeholder=${lblAdd}>
                     <select class="number-type" 
@@ -170,10 +170,10 @@ var PLCNodeConfig = {
                 <div style="margin-top:8px;">
                     <span style="display:inline-block; width:30px"> </span>
                     <label style="width:50px; display:inline-block; text-align:right;">${lblOff}</span></label>
-                    <input type="number" step="any" class="number-offset" placeholder=${lblOff}
+                    <input value="0" type="number" step="any" class="number-offset" placeholder=${lblOff}
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px;">                     
                     <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblGain}</span></label>
-                    <input type="number" step="any" class="number-gain" placeholder=${lblGain}
+                    <input value="1" type="number" step="any" class="number-gain" placeholder=${lblGain}
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
                     <input type="text" class="number-unit" placeholder=${lblUnit}
                         style="width:50px; display:inline-block; text-align:right; padding-right:5px;margin-left:20px;">              
@@ -186,10 +186,10 @@ var PLCNodeConfig = {
                     <!-- <option selected="selected" value="IR">IR</option>
                     <option value="HR">HR</option> -->
                 </select>
-                <input required="required" type="number"  min="0" class="string-add" placeholder=${lblAdd}
+                <input required="required" value="0" type="number"  min="0" class="string-add" placeholder=${lblAdd}
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:50px; display:inline-block; text-align:right;">${lblWnum}</span></label>
-                <input type="number" min="1" class="string-num" placeholder=${lblWnum}
+                <input value="1" type="number" min="1" class="string-num" placeholder=${lblWnum}
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
                 <select class="string-encode"
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
@@ -205,10 +205,10 @@ var PLCNodeConfig = {
                     <!-- <option selected="selected" value="IR">IR</option>
                     <option value="HR">HR</option> -->
                 </select>
-                <input required="required" type="number" min="0" class="numList-add" placeholder=${lblAdd}
+                <input required="required" value="0" type="number" min="0" class="numList-add" placeholder=${lblAdd}
                     style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:30px; display:inline-block; text-align:right;">${lblWnum}</span></label>
-                <input required="required" type="number" min="1" class="numList-num" placeholder=${lblWnum}
+                <input required="required" value="1" type="number" min="1" class="numList-num" placeholder=${lblWnum}
                     style="width:50px; display:inline-block; text-align:right;">
                 <select class="numList-type" 
                     style="width:65px; display:inline-block; text-align:right;">
@@ -250,65 +250,65 @@ var PLCNodeConfig = {
 
                 // データItemのデバイスタイプのsellect要素のoptionを追加する
                 // optionのDOMオブジェクトは、利用する個別のPLCNodeのhtmlファイルのjavscriptで定義すること。
-                for (let key in node.deviceTypeDef) {
-                    if (!key) break;
-                    let selField = "";
-                    let ops = node.deviceTypeDef[key];
-                    let len = ops.length;
-                    switch (key){
-                        case "bit":
-                            selField = div2.find(".bit-deviceType");
-                            break;
-                        case "number":
-                            selField = div2.find(".number-deviceType");
-                            break;
-                        case "string":
-                            selField = div2.find(".string-deviceType");
-                            break;
-                        case "numList":
-                            selField = div2.find(".numList-deviceType");
-                            break;
-                    }
-                    if (!selField) break;
-                    for (var i=0; i<len; i++) {
-                        selField.append($("<option></option>").val(ops[i].value).text(node._(ops[i].text)));
+                div2.find(".bit-deviceType").append($("#bitDeviceDef>option").clone());
+                div2.find(".number-deviceType").append($("#numberDeviceDef>option").clone());
+                div2.find(".string-deviceType").append($("#stringDeviceDef>option").clone());
+                div2.find(".numList-deviceType").append($("#numListDeviceDef>option").clone());
+                                           
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("itemType")) {
+
+                    dItem.itemType = $("#defaultDataItem").data("itemtype");
+                    dItem.dataName = $("#defaultDataItem").data("dataname");
+                    dItem[dItem.itemType]={
+                        deviceType: $("#defaultBit").data("devicetype"),
+                        address: $("#defaultBit").data("address"),
+                        number: $("#defaultBit").data("number"),
+                        logic: $("#defaultBit").data("logic")
                     }
                 }
-                
-                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
-                if(!dItem.hasOwnProperty("itemType")) dItem = node.defaultDataItem;
-
                 let ip = dItem.itemType;
                 if  (!(ip === "number" || ip === "string" || ip === "numList" 
                     || ip === "bit" )) return;
                 
+                // set back dataItem properties on row1
                 div1.find(".itemType").val(dItem.itemType);
                 div1.find(".dataName").val(dItem.dataName);
-
-                // bit type parameters
-                div2.find(".bit-deviceType").val(dItem.bit.deviceType);
-                div2.find(".bit-add").val(dItem.bit.address);
-                div2.find(".bit-num").val(dItem.bit.number);
-                div2.find(".bit-logic").val(dItem.bit.logic);
-                // number type parameters
-                div2.find(".number-deviceType").val(dItem.number.deviceType);
-                div2.find(".number-add").val(dItem.number.address);
-                div2.find(".number-type").val(dItem.number.type);
-                div2.find(".number-encode").val(dItem.number.encode);
-                div2.find(".number-offset").val(dItem.number.offset);
-                div2.find(".number-gain").val(dItem.number.gain);
-                div2.find(".number-unit").val(dItem.number.unit);
-                // string type parameters
-                div2.find(".string-deviceType").val(dItem.string.deviceType);
-                div2.find(".string-add").val(dItem.string.address);
-                div2.find(".string-num").val(dItem.string.number);
-                div2.find(".string-encode").val(dItem.string.encode);
-                // numberList type parameters
-                div2.find(".numList-deviceType").val(dItem.numList.deviceType);
-                div2.find(".numList-add").val(dItem.numList.address);
-                div2.find(".numList-num").val(dItem.numList.number);
-                div2.find(".numList-type").val(dItem.numList.type);
-                div2.find(".numList-encode").val(dItem.numList.encode);
+                // set back dataItem properties on row2
+                switch(dItem.itemType) {
+                    case "bit":
+                        // bit type parameters
+                        div2.find(".bit-deviceType").val(dItem.bit.deviceType);
+                        div2.find(".bit-add").val(dItem.bit.address);
+                        div2.find(".bit-num").val(dItem.bit.number);
+                        div2.find(".bit-logic").val(dItem.bit.logic);
+                        break;
+                    case "number":
+                        // number type parameters
+                        div2.find(".number-deviceType").val(dItem.number.deviceType);
+                        div2.find(".number-add").val(dItem.number.address);
+                        div2.find(".number-type").val(dItem.number.type);
+                        div2.find(".number-encode").val(dItem.number.encode);
+                        div2.find(".number-offset").val(dItem.number.offset);
+                        div2.find(".number-gain").val(dItem.number.gain);
+                        div2.find(".number-unit").val(dItem.number.unit);
+                        break;
+                    case "string":
+                        // string type parameters
+                        div2.find(".string-deviceType").val(dItem.string.deviceType);
+                        div2.find(".string-add").val(dItem.string.address);
+                        div2.find(".string-num").val(dItem.string.number);
+                        div2.find(".string-encode").val(dItem.string.encode);
+                        break;
+                    case "numList":
+                        // numberList type parameters
+                        div2.find(".numList-deviceType").val(dItem.numList.deviceType);
+                        div2.find(".numList-add").val(dItem.numList.address);
+                        div2.find(".numList-num").val(dItem.numList.number);
+                        div2.find(".numList-type").val(dItem.numList.type);
+                        div2.find(".numList-encode").val(dItem.numList.encode);
+                        break;
+                }
 
                 // データタイプが変更されたら呼ばれるコールバック関数を登録
                 div1.find(".itemType").change(function(){
@@ -379,56 +379,58 @@ var PLCNodeConfig = {
         items.each(function(i, elm){
             let item = {
                 itemType: elm.find(".itemType").val(),
-                dataName: elm.find(".dataName").val(),
-                bit: {          // bit type parameter
-                    deviceType: elm.find(".bit-deviceType").val(),
-                    address: parseInt(elm.find(".bit-add").val()),
-                    number: parseInt(elm.find(".bit-num").val()),
-                    logic: elm.find(".bit-logic").val(),
-                },
-                number: {       // number type parameters
-                    deviceType: elm.find(".number-deviceType").val(),
-                    address: parseInt(elm.find(".number-add").val()),
-                    type: elm.find(".number-type").val(),
-                    encode: elm.find(".number-encode").val(),
-                    offset: Number(elm.find(".number-offset").val()),
-                    gain: Number(elm.find(".number-gain").val()),
-                    unit: elm.find(".number-unit").val(),
-                },
-                string: {       // string type parameters
-                    deviceType: elm.find(".string-deviceType").val(),
-                    address: parseInt(elm.find(".string-add").val()),
-                    number: parseInt(elm.find(".string-num").val()),
-                    encode: elm.find(".string-encode").val(),
-                },
-                numList: {      // numberList type parameters
-                    deviceType: elm.find(".numList-deviceType").val(),
-                    address: parseInt(elm.find(".numList-add").val()),
-                    number: parseInt(elm.find(".numList-num").val()),
-                    type: elm.find(".numList-type").val(),
-                    encode: elm.find(".numList-encode").val(),
-                }
-            }
+                dataName: elm.find(".dataName").val()
+            };
             // 必須propertyが揃っているか？
             if (!item.dataName) configReady = "";
-            switch(item.itemType) {
+
+            switch (item.itemType) {
                 case "bit":
+                    item.bit = {          // bit type parameter
+                        deviceType: elm.find(".bit-deviceType").val(),
+                        address: parseInt(elm.find(".bit-add").val()),
+                        number: parseInt(elm.find(".bit-num").val()),
+                        logic: elm.find(".bit-logic").val(),
+                    };
                     if (!Number.isInteger(item.bit.address)) configReady = "";
                     break;
                 case "number":
+                    item.number = {       // number type parameters
+                        deviceType: elm.find(".number-deviceType").val(),
+                        address: parseInt(elm.find(".number-add").val()),
+                        type: elm.find(".number-type").val(),
+                        encode: elm.find(".number-encode").val(),
+                        offset: Number(elm.find(".number-offset").val()),
+                        gain: Number(elm.find(".number-gain").val()),
+                        unit: elm.find(".number-unit").val(),
+                    };
                     if (!Number.isInteger(item.number.address)) configReady = "";
                     if (!Number.isInteger(item.number.offset)) configReady = "";
                     if (!Number.isInteger(item.number.gain)) configReady = "";
                     break;
                 case "string":
+                    item.string = {       // string type parameters
+                        deviceType: elm.find(".string-deviceType").val(),
+                        address: parseInt(elm.find(".string-add").val()),
+                        number: parseInt(elm.find(".string-num").val()),
+                        encode: elm.find(".string-encode").val(),
+                    };
                     if (!Number.isInteger(item.string.address)) configReady = "";
                     if (!Number.isInteger(item.string.number)) configReady = "";
                     break;
                 case "numList":
+                    item.numList = {      // numberList type parameters
+                        deviceType: elm.find(".numList-deviceType").val(),
+                        address: parseInt(elm.find(".numList-add").val()),
+                        number: parseInt(elm.find(".numList-num").val()),
+                        type: elm.find(".numList-type").val(),
+                        encode: elm.find(".numList-encode").val(),
+                    }
                     if (!Number.isInteger(item.numList.address)) configReady = "";
                     if (!Number.isInteger(item.numList.number)) configReady = "";
                     break;
             }
+            // dataItemをプロパティリストにプッシュ
             node.dataItems.push(item);
         });
         // objectKeyはある？

@@ -79,26 +79,36 @@
         </div>
         <!-- tab-dItem-property ends -->
     </div>
+
+    <!-- PLC-modbus properties -->
+    <div style="display:none" id="deviceTypeDef">
+        <!-- PLC-modbus device setect options -->
+        <div id="bitDeviceDef" >
+            <option selected="selected" value="Coil"><span data-i18n="editor.dev-Coil"></span></option>
+            <option value="IS"><span data-i18n="editor.dev-IS"></span></option>
+            <option value="HR"><span data-i18n="editor.dev-HR"></span></option>
+            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+        </div>
+        <div id="numberDeviceDef" >
+            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
+            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+        </div>
+        <div id="stringDeviceDef" >
+            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
+            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+        </div>
+        <div id="numListDeviceDef" >
+            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
+            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+        </div>
+    </div>
+    <!-- PLC-modbus new dataItem defaults -->
+    <div style="display:none" id="defaultDataItem" data-itemType="bit" data-dataName=""></div>
+    <div style="display:none" id="defaultBit" data-devicetype="Coil"
+                data-address="0" data-number="1" data-logic="pos" ></div>
+
 </script>
 
-<script type="text/x-red" data-help-name="PLC-Modbus">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-  TBD
-</dl>
-
-<h3>Outputs</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-
-<h3>Details</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-</script>
 
 <script type="text/javascript">
 
@@ -115,27 +125,6 @@
         dflts.comNode = {value: "", type: "Modbus-com", required: true};
         dflts.contentType = {value: "ModbusPLC"};
 
-        // DataItem設定リストのデバイスsellect要素のoptionを定義
-        dflts.deviceTypeDef = {value: 
-            {
-                bit: [{value:"Coil", text:"editor.dev-Coil"},{value:"IS", text:"editor.dev-IS"},
-                        {value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"},],
-                number: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}],
-                string: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}],
-                numList: [{value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"}]
-            }
-        };
-        //  デフォルトのPLCデータ項目を定義
-        dflts.defaultDataItem = {value: 
-            {
-                itemType:"bit",
-                dataName:"",
-                bit: {deviceType:"Coil", address:0, number:1, logic:"pos"},
-                number: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
-                string: {deviceType:"HR", address:0,  number:1, encode:"utf-8"}, 
-                numList: {deviceType:"HR", address:0, number:1, type:"1w", encode:"unsigned"}
-            }
-        };
         // デフォルトプロパティを付け替え
         cfg.defaults = dflts;
 

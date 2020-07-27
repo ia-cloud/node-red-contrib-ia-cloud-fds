@@ -1,21 +1,22 @@
-# Modbus通信機器関連ノード
+# PLC通信機器関連ノード
 
-## PLC-modbus、PLC-modbus-AE
-## Modbus-com
+## PLC-modbus、PLC-modbus-AE、PLC-mitsubishi、PLC-Mitsubishi-AE
+## Modbus-com、Mitsubishi-com
 
 ## 機能概要
-これら一連のノードは、Modbus通信を備えた各種の計測制御機器と通信を行い、それらの機器が保持するデータを読み出して、ia-cloud Center Server（CCS）へ格納するオブジェクトを生成して出力メッセージとして送出する。
+これら一連のノードは、Modbus通信や三菱MCプロトコール通信を備えた各種の計測制御機器と通信を行い、それらの機器が保持するデータを読み出して、ia-cloud Center Server（CCS）へ格納するオブジェクトを生成して出力メッセージとして送出する。  
+以下に、Modbus通信PLCを例にPLC Nodeと通信Nodeの、相互のメソッドコールとイベントリスナー登録・イベント発生の関連を示す。
 
-![構成図](構成図.png)
+![構成図](diagram.png)
 
-#### PLC-Modbus：  
-Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。  
-PLC-Modbus NodeのcontentDataを設定する設定Node。ビット列、数値、文字列、数値列の自由な組み合わせを設定可能。
-#### PLC-Modbus-AE：  
-Modbus通信機器の持つビットデータを読み出し、アラーム＆イベント情報を持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。  
-PLC-Modbus-AE NodeのcontentDataを設定する設定Node。contentType="Alarm&Event"のcontentDataを設定できる。
-#### Modbus-com：  
-登録されたlinkObj（デバイスアドレスとデータ値等を保持する）から、Modbus通信のデバイスアドレステーブルを作成し、定期的にModbus通信機器と通信を実行、データを取得してlinkObjを更新する設定Node。
+#### PLC-Modbus, PLC-Mitsubishi  
+PLCの持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。  
+PLC-Modbus NodeのcontentDataを設定する設定Node。ビット列、数値、文字列、数値列の自由な組み合わせでcontentDataを構成する設定が可能。
+#### PLC-Modbus-AE, PLC-Mitsubishi-AE
+PLCの持つビットデータを読み出し、アラーム＆イベント情報を持つia-cloudオブジェクトを生成するNode。
+複数のcontentType="Alarm&Event"を持つcontentDataを設定できる。
+#### Modbus-com, Mitsubishi-com
+登録されたlinkObj（デバイスアドレスとデータ値等を保持する）から、Modbus通信のデバイスアドレステーブルを作成し、定期的にPLCとの通信を実行、データを取得してlinkObjを更新する設定Node。取得データに変化のあった場合に、登録されたchangeイベントを発行しリスナーを起動する。
 
 ### Node間のI/Fで使用されるオブジェクト　　
 
@@ -23,29 +24,21 @@ PLC-Modbus-AE NodeのcontentDataを設定する設定Node。contentType="Alarm&E
 PLC-Modbus、PLC-Modbus-AEの設定情報を保持するオブジェクト。
 ```
 {
-  "targetNodeName": "{設定データが対象とする nodeの名称}",
-  "comment": "{設定データに関する説明}",
-  "dataObjects":    // Node-RED UIで設定されるときは配列要素は1つだけ。
-    [{
-      objectName: "bit系データ",
-      objectKey: "com.atbridge-cnsltg.node-RED.test1",
-      objectType: "iaCloudObject",
-      objectDescription: "modbusのビット系データ",
-      options:{storeInterval: 60, storeAsync: true},   // オブジェクトのオプション
-      ObjectContent: {
-        contentType: "PLC-bit",
-        contentData: [{
-        dataName: "装置I稼働",
-        options: {                        //DataItemオプション
-          itemType: "bit",
-          deviceType: "Coil",
-          source:123,
-          number: 1,
-          logic: "pos"
-        }
-      },   ........  ]  // 一つ以上のデータアイテム
-    }
-  },  ........  ]       // UIの場合は一つのia-cloudオブジェクト、設定ファイルの場合は一つ以上のia-cloudオブジェクト
+  objectKey: "ユニークなオブジェクトキー",
+  objectType: "iaCloudObject",        // 固定
+  objectDescription: "オブジェクトの説明",
+  storeInterval: 60,
+  storeAsync: true,   // オブジェクトのオプション
+  dataItems: [{
+    dataName: "データ名称",
+                          //DataItemオプション
+      itemType: "bit",
+      deviceType: "Coil",
+      source:123,
+      number: 1,
+      logic: "pos"
+
+  }
 }
 ```
 ia-cloudオブジェクトの設定オプション
