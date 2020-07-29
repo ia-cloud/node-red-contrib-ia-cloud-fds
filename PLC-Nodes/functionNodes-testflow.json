@@ -1,0 +1,678 @@
+[
+    {
+        "id": "5bdaaa57.2ad014",
+        "type": "tab",
+        "label": "フロー 1",
+        "disabled": true,
+        "info": ""
+    },
+    {
+        "id": "5e8175b5.d7cb7c",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 910,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "704af953.bc3a28",
+        "type": "unpack",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "dataName": "",
+        "bool10": true,
+        "rules": [
+            {
+                "objectKey": "testData",
+                "dataName": "１分リセット",
+                "dataLabel": "スムース1"
+            },
+            {
+                "objectKey": "testData",
+                "dataName": "１０分リセット",
+                "dataLabel": "スムース10"
+            }
+        ],
+        "outputs": 2,
+        "configReady": "ready",
+        "x": 730,
+        "y": 420,
+        "wires": [
+            [
+                "5e8175b5.d7cb7c",
+                "6ea123c6.a7e64c"
+            ],
+            [
+                "6ea123c6.a7e64c"
+            ]
+        ]
+    },
+    {
+        "id": "52781aa6.dd9fe4",
+        "type": "PLC-Mitsubishi",
+        "z": "5bdaaa57.2ad014",
+        "name": "PLC-Mitsubishi",
+        "comNode": "1d891e67.6ce682",
+        "contentType": "MitsubishiPLC",
+        "storeInterval": "10",
+        "storeAsync": false,
+        "objectKey": "testData",
+        "objectDescription": "",
+        "configReady": "ready",
+        "dataItems": [
+            {
+                "itemType": "number",
+                "dataName": "１分リセット",
+                "bit": {
+                    "deviceType": "M",
+                    "address": 0,
+                    "number": 1,
+                    "logic": "pos"
+                },
+                "number": {
+                    "deviceType": "D",
+                    "address": 102,
+                    "type": "2w-l",
+                    "encode": "unsigned",
+                    "offset": 0,
+                    "gain": 1,
+                    "unit": ""
+                },
+                "string": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "encode": "utf-8"
+                },
+                "numList": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "type": "1w",
+                    "encode": "unsigned"
+                }
+            },
+            {
+                "itemType": "number",
+                "dataName": "１０分リセット",
+                "bit": {
+                    "deviceType": "M",
+                    "address": 0,
+                    "number": 1,
+                    "logic": "pos"
+                },
+                "number": {
+                    "deviceType": "D",
+                    "address": 104,
+                    "type": "2w-l",
+                    "encode": "unsigned",
+                    "offset": 0,
+                    "gain": 1,
+                    "unit": ""
+                },
+                "string": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "encode": "utf-8"
+                },
+                "numList": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "type": "1w",
+                    "encode": "unsigned"
+                }
+            },
+            {
+                "itemType": "number",
+                "dataName": "１時間リセット",
+                "bit": {
+                    "deviceType": "M",
+                    "address": 0,
+                    "number": 1,
+                    "logic": "pos"
+                },
+                "number": {
+                    "deviceType": "D",
+                    "address": 106,
+                    "type": "2w-l",
+                    "encode": "unsigned",
+                    "offset": 0,
+                    "gain": 1,
+                    "unit": ""
+                },
+                "string": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "encode": "utf-8"
+                },
+                "numList": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "type": "1w",
+                    "encode": "unsigned"
+                }
+            },
+            {
+                "itemType": "number",
+                "dataName": "１日リセット",
+                "bit": {
+                    "deviceType": "M",
+                    "address": 0,
+                    "number": 1,
+                    "logic": "pos"
+                },
+                "number": {
+                    "deviceType": "D",
+                    "address": 108,
+                    "type": "2w-l",
+                    "encode": "unsigned",
+                    "offset": 0,
+                    "gain": 1,
+                    "unit": ""
+                },
+                "string": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "encode": "utf-8"
+                },
+                "numList": {
+                    "deviceType": "D",
+                    "address": 0,
+                    "number": 1,
+                    "type": "1w",
+                    "encode": "unsigned"
+                }
+            }
+        ],
+        "deviceTypeDef": {
+            "bit": [
+                {
+                    "value": "X",
+                    "text": "editor.dev-X"
+                },
+                {
+                    "value": "Y",
+                    "text": "editor.dev-Y"
+                },
+                {
+                    "value": "M",
+                    "text": "editor.dev-M"
+                },
+                {
+                    "value": "L",
+                    "text": "editor.dev-L"
+                }
+            ],
+            "number": [
+                {
+                    "value": "D",
+                    "text": "editor.dev-D"
+                },
+                {
+                    "value": "W",
+                    "text": "editor.dev-W"
+                }
+            ],
+            "string": [
+                {
+                    "value": "D",
+                    "text": "editor.dev-D"
+                },
+                {
+                    "value": "W",
+                    "text": "editor.dev-W"
+                }
+            ],
+            "numList": [
+                {
+                    "value": "D",
+                    "text": "editor.dev-D"
+                },
+                {
+                    "value": "W",
+                    "text": "editor.dev-W"
+                }
+            ]
+        },
+        "defaultDataItem": {
+            "itemType": "bit",
+            "dataName": "",
+            "bit": {
+                "deviceType": "M",
+                "address": 0,
+                "number": 1,
+                "logic": "pos"
+            },
+            "number": {
+                "deviceType": "D",
+                "address": 0,
+                "type": "1w",
+                "encode": "unsigned",
+                "offset": 0,
+                "gain": 1,
+                "unit": ""
+            },
+            "string": {
+                "deviceType": "D",
+                "address": 0,
+                "number": 1,
+                "encode": "utf-8"
+            },
+            "numList": {
+                "deviceType": "D",
+                "address": 0,
+                "number": 1,
+                "type": "1w",
+                "encode": "unsigned"
+            }
+        },
+        "x": 100,
+        "y": 280,
+        "wires": [
+            [
+                "fad544b7.85e5c8",
+                "ea596659.5c6708",
+                "3f0424fe.5b423c",
+                "1733e5fd.69465a"
+            ]
+        ]
+    },
+    {
+        "id": "fad544b7.85e5c8",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 170,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "ea596659.5c6708",
+        "type": "evaluation",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "actionType": "bool",
+        "rules": [
+            {
+                "objectKey": "testData",
+                "dataName": "１分リセット",
+                "mode": "range",
+                "equal": "",
+                "notequal": "",
+                "rangeLo": "",
+                "rangeHi": "45",
+                "notrangeLo": "",
+                "notrangeHi": ""
+            },
+            {
+                "objectKey": "",
+                "dataName": "１０分リセット",
+                "mode": "range",
+                "equal": "",
+                "notequal": "",
+                "rangeLo": "300",
+                "rangeHi": "",
+                "notrangeLo": "",
+                "notrangeHi": ""
+            }
+        ],
+        "configReady": "ready",
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "7ce5061f.1f79c8",
+                "8c619e1e.a7ac7",
+                "bd7191a6.d567f"
+            ]
+        ]
+    },
+    {
+        "id": "7ce5061f.1f79c8",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 430,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "1733e5fd.69465a",
+        "type": "smoothing",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "params": [
+            {
+                "objectKey": "testData",
+                "dataName": "１分リセット",
+                "range": "4",
+                "initTime": "20"
+            },
+            {
+                "objectKey": "testData",
+                "dataName": "１０分リセット",
+                "range": "20",
+                "initTime": "0"
+            }
+        ],
+        "configReady": "ready",
+        "x": 500,
+        "y": 560,
+        "wires": [
+            [
+                "d7eaba04.7de068"
+            ]
+        ]
+    },
+    {
+        "id": "d7eaba04.7de068",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 550,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "3f0424fe.5b423c",
+        "type": "de-noise",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "params": [
+            {
+                "objectKey": "testData",
+                "dataName": "",
+                "disp": "20",
+                "interval": "20"
+            }
+        ],
+        "configReady": "ready",
+        "x": 490,
+        "y": 700,
+        "wires": [
+            [
+                "ccf5d83b.3106d8"
+            ]
+        ]
+    },
+    {
+        "id": "ccf5d83b.3106d8",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 550,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "8c619e1e.a7ac7",
+        "type": "change-detect",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "params": [
+            {
+                "objectKey": "",
+                "dataName": "１分リセット",
+                "ondelay": 1,
+                "offdelay": 1
+            },
+            {
+                "objectKey": "",
+                "dataName": "１０分リセット",
+                "ondelay": 10,
+                "offdelay": 20
+            }
+        ],
+        "configReady": "ready",
+        "x": 530,
+        "y": 420,
+        "wires": [
+            [
+                "537dc86a.866118",
+                "704af953.bc3a28"
+            ]
+        ]
+    },
+    {
+        "id": "537dc86a.866118",
+        "type": "debug",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 610,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f9d96d08.f2218",
+        "type": "ui_chart",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "group": "2c94127e.15ee4e",
+        "order": 0,
+        "width": "24",
+        "height": "6",
+        "label": "chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "step",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#fc0303",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 850,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "983ebaa0.4b70e8",
+        "type": "inject",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 420,
+        "y": 60,
+        "wires": [
+            [
+                "79cb3af.fd3d6c4"
+            ]
+        ]
+    },
+    {
+        "id": "79cb3af.fd3d6c4",
+        "type": "function",
+        "z": "5bdaaa57.2ad014",
+        "name": "グラフクリア",
+        "func": "msg.payload = [];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 740,
+        "y": 60,
+        "wires": [
+            [
+                "f9d96d08.f2218",
+                "6ea123c6.a7e64c"
+            ]
+        ]
+    },
+    {
+        "id": "bd7191a6.d567f",
+        "type": "unpack",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "dataName": "",
+        "bool10": true,
+        "rules": [
+            {
+                "objectKey": "testData",
+                "dataName": "１分リセット",
+                "dataLabel": "元データ1"
+            },
+            {
+                "objectKey": "",
+                "dataName": "１０分リセット",
+                "dataLabel": "元データ10"
+            }
+        ],
+        "outputs": 2,
+        "configReady": "ready",
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "f9d96d08.f2218"
+            ],
+            [
+                "f9d96d08.f2218"
+            ]
+        ]
+    },
+    {
+        "id": "6ea123c6.a7e64c",
+        "type": "ui_chart",
+        "z": "5bdaaa57.2ad014",
+        "name": "",
+        "group": "2c94127e.15ee4e",
+        "order": 1,
+        "width": "24",
+        "height": "4",
+        "label": "chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "step",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#f20707",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 890,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1d891e67.6ce682",
+        "type": "Mitsubishi-com",
+        "z": "",
+        "name": "三菱PLC",
+        "refreshCycle": "5",
+        "maxDataNum": "64",
+        "noBlank": false,
+        "comType": "TCP",
+        "TCPPort": "1025",
+        "IPAdd": "192.168.1.30",
+        "serialPort": "",
+        "baud": "115200",
+        "parity": "even",
+        "accessRoute": "",
+        "requiredSet": "ready"
+    },
+    {
+        "id": "2c94127e.15ee4e",
+        "type": "ui_group",
+        "z": "",
+        "name": "ファンクションNodeテスト",
+        "tab": "98b09384.d3233",
+        "order": 1,
+        "disp": true,
+        "width": "24",
+        "collapse": false
+    },
+    {
+        "id": "98b09384.d3233",
+        "type": "ui_tab",
+        "z": "",
+        "name": "タブ１",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

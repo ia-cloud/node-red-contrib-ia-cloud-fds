@@ -1,8 +1,19 @@
-# Modbus機器データオブジェクトノード
+# PLCデータノード
 
-## PLC-Modbus
-Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。  
-設定Nodeとして、Modbus-comを使用する。
+## PLC-Modbus、PLC-Mitsubishi, PLC-Modbus-AE、PLC-Mitsubishi-AE
+Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。
+Bitデータ、数値データ、文字列データ、数値列データの自由な組合せオブジェクトを生成する、  
+* PLC-Modbus
+* PLC-Mitsubishi  
+の二つのNodeと、PLCのBitデバイスの状態から、ia-cloudアラーム＆イベントオブジェクトを生成する
+* PLC-Modbus-AE
+* PLC-Mitsubishi-AE  
+のふたつのNodeがある。
+
+いずれのNodeも、設定NodeとしてModbus-comあるいは、Mitsubisi-comを使用する。   
+またこれらのNodeは、UI画面やNodeの内部処理が非常に似通っていることから、UI画面移管しては 
+
+構成図
 
 ## 入力メッセージ
 ia-cloudオブジェクトを送出するタイミングを指示するメッセージ
