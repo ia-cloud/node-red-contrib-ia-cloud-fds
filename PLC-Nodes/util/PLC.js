@@ -35,9 +35,10 @@ class PLC {
         // Nodeのconfigパラメータから、dataItemオブジェクトを生成
         let dataItems = config.dataItems;
 
-        const minCycle = 10; // 最小収集周期を10秒に設定
+        const minCycle = 1; // 最小収集周期を10秒に設定
         // 定期収集のためのカウンターをセット
-        let timeCount = config.storeInterval;
+        let storeInterval = parseInt(config.storeInterval);
+        let timeCount = storeInterval;
 
         // Nodeステータスを、preparingにする。
         node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
@@ -48,20 +49,23 @@ class PLC {
         // Nodeステータスを　Readyに
         node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
-        this.intervalId = setInterval(function(){
-            // 設定された格納周期で,PLCCom Nodeからデータを取得し、ia-cloudオブジェクトを
-            // 生成しメッセージで送出
-            // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
-            // オブジェクト生成、メッセージ出力を行う。
-            if(config.storeInterval != "0") {
+        if (storeInterval !== 0) {
+            this.intervalId = setInterval(function(){
+                // 設定された格納周期で,PLCCom Nodeからデータを取得し、ia-cloudオブジェクトを
+                // 生成しメッセージで送出
+                // 複数の周期でオブジェクトの格納をするため、1秒周期でカウントし、カウントアップしたら、
+                // オブジェクト生成、メッセージ出力を行う。
+
                 // 収集周期前であれば何もせず
                 timeCount = timeCount - minCycle;  
                 if (timeCount > 0) return;
+                
                 // 収集周期がきた。収集周期を再設定。
-                timeCount = config.storeInterval;
+                timeCount = storeInterval;
                 plcnd.iaCloudObjectSend(config.objectKey);
-            }
-        }, (minCycle * 1000));
+                
+            }, (minCycle * 1000));
+        }
     }
 
     makelinkObject(dataItems) {

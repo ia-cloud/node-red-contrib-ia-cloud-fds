@@ -33,7 +33,7 @@ var PLCNodeConfig = {
         contentType: {value: "", required: true},
 
         // object properties
-        storeInterval: {value:"300"},
+        storeInterval: {value:"10"},
         storeAsync: {value: false},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
@@ -44,30 +44,6 @@ var PLCNodeConfig = {
         // dataItems property（editableListで使用する。）
         dataItems : {value: [{},]},
 
-        // defaultのdataItem定義（editableListで追加ボタンが押された時のdataItem）
-        /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
-        [Example]
-            PLCNodeConfig.defaults.defaultDataItem.value = {
-                itemType:"bit",
-                dataName:"",
-                bit: {deviceType:"Coil", address:0, number:1, logic:"pos"},
-                number: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", offset:0, gain:1, unit:""}, 
-                string: {deviceType:"HR", address:0, encode:"utf-8", number:1}, 
-                numList: {deviceType:"HR", address:0, type:"1w", encode:"unsigned", number:1}
-            };           */
-//        defaultDataItem: {value:{}},
-
-        // DataItem設定リストのデバイスsellect要素のoptionを追加するDOM要素
-        /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
-        [Example]
-            PLCNodeConfig.defaults.deviceTypeDef.value = {
-                bit: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
-                        {value:"HR", text:"HR"},{value:"IR", text:"IR"},],
-                number: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}],
-                string: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}],
-                numList: [{value:"HR", text:"HR"},{value:"IR", text:"IR"}]
-            }            */
-//        deviceTypeDef: {value:{},}
     },
 
 

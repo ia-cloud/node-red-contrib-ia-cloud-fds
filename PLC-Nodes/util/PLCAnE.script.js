@@ -33,7 +33,7 @@ var PLCAENodeConfig = {
         contentType: {value: "Alarm&Event", required: true},
 
         // object properties
-        storeInterval: {value:"300"},
+        storeInterval: {value:"0"},
         storeAsync: {value: true, required: true},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
