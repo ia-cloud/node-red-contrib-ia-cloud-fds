@@ -16,7 +16,7 @@ linkObjには、通信で取得すべきPLC機器のデバイス種別、デバ�
 
 Modbus-Com と　Mitsubishi-Comを構成するモジュール構造を下図に示す。
 
-![構成図](xxx-Com_diagram.png)
+![構成図](com-nodes_diagram.png)
 
 Modbus-Com と　Mitsubishi-Comの両設定Nodeは、機能的にほぼ同じであるので、UI画面のスクリプト共通部分は、  
 * PLC-Com.script.js  
