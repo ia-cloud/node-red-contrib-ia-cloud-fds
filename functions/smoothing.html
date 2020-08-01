@@ -170,8 +170,7 @@
                 node.params.push(param);
 
                 // required properties are not empty
-                if (!param.objectKey || !param.range || !param.initTime)
-                    configReady = "";
+                if (!param.range || !param.initTime) configReady = "";
             });
             // 設定完了フラグをセット
             $("#node-input-configReady").val(configReady);
