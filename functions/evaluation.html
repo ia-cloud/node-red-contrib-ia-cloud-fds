@@ -233,13 +233,6 @@
                 },
             });
 
-            $("#node-input-newObject").change(function() {
-                if ($("#node-input-newObject").prop("checked")) 
-                    $("#new-object-prop").show();
-                else
-                    $("#new-object-prop").hide();
-            });
-
             for (var i=0;i<node.rules.length;i++) {
                 var rule = node.rules[i];
                 $("#node-input-rule-container").editableList('addItem',rule);
@@ -277,9 +270,6 @@
                 if (rule.mode === "notrange" && (!rule.notrangeLo && !rule.notrangeHi)) configReady = "";
             });
 
-            // when new object, check objectKey exists
-            if ($("#node-input-newObject").prop("checked")
-                    && !$("#node-input-objectKey").val()) configReady = "";
             // 設定完了フラグをセット
             $("#node-input-configReady").val(configReady);
         },

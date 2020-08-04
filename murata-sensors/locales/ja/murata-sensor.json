@@ -1,0 +1,58 @@
+{
+    "editor": {
+        "tab": {
+            "object-settings": "オブジェクトの設定",
+            "data-settings": "データ項目の設定"
+        },
+        "palletLabel": "村田振動センサ",
+        "defaultName": "村田振動センサ",
+        "name": "ノード名称",
+        "murataCom": "村田GW通信",
+        "UIConf": "エディタで設定",
+        "fileConf": "設定ファイルを利用",
+        "selectFile": "ファイルを選択",
+        "fileName": "ファイル名",
+        "fileContent": "設定ファイルの内容",
+        "period": "計測周期",
+        "15s": "15秒",
+        "30s": "30秒",
+        "1m": "1分",
+        "5m": "5分",
+        "10m": "10分",
+        "15m": "15分",
+        "30m": "30分",
+        "1h": "1時間",
+        "2h": "２時間",
+        "6h": "６時間",
+        "12h": "12時間",
+        "24h": "24時間",
+        "objectKey": "オブジェクトキー",
+        "objectKeyholder": "固有のキー",
+        "objectDescription": "オブジェクトの説明",
+        "contentType": "データ構造",
+        "enableFFT": "FFT分析を有効にする",
+        "dataName": "データ名称",
+        "rms": "実効値",
+        "sharpness": "尖り度",
+        "bttry": "電池電圧",
+        "temp": "温度",
+        "rssi": "電波強度",
+        "freq1": "周波数1",
+        "acce1": "加速度1",
+        "freq2": "周波数2",
+        "acce2": "加速度2",
+        "freq3": "周波数3",
+        "acce3": "加速度3",
+        "freq4": "周波数4",
+        "acce4": "加速度4",
+        "freq5": "周波数5",
+        "acce5": "加速度5",
+        "autoConf": "設定自動更新をする"
+
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}
