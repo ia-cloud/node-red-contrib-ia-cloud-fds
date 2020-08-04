@@ -21,19 +21,19 @@
         <dd>村田S/Sゲートウエイ通信に使用する通信設定ノードの選択・新規作成</dd>
         <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
-            <dt>定期収集周期<span class="property-type">数値</span></dt>
-            <dd>アラーム＆イベントを定期的に収集する場合の周期（秒）</dd>
-            <dt>発生・復帰通知<span class="property-type">チェック（固定）</span></dt>
-            <dd>アラーム＆イベントが発生・復帰時にデータを送出する設定</dd>
+            <dt>計測周期<span class="property-type">数値</span></dt>
+            <dd>振動データをを定期的に収集する場合の周期（秒）</dd>
             <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
-            <dd>アラーム＆イベントオブジェクトに付与するユニークなキー文字列</dd>
+            <dd>村田センサのオブジェクトに付与するユニークなキー文字列</dd>
             <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
-            <dd>アラーム＆イベントオブジェクトのわかりやすい説明</dd>
+            <dd>村田センサオブジェクトのわかりやすい説明</dd>
         </dl>
         <dt>データ項目の設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>データ構造<span class="property-type">文字列</span></dt>
             <dd>センサデータのデータ構造。デフォルトは、iaCloudData</dd>
+            <dt>FFT有無<span class="property-type">選択</span></dt>
+            <dd>FFT分析の有効・無効の設定</dd>
             <dt>データ名称<span class="property-type">文字列</span></dt>
             <dd>データに付与する名称。デフォルトでは、センサのデータ項目名を使用する</dd>
             <dd>センサのデータ項目名は、以下の通り</dd>
@@ -47,10 +47,6 @@
             <dd>センサモジュールの電池電圧</dd>
             <dt>電波強度</dt>
             <dd>無線通信の電波強度</dd>
-            <dt>単位<span class="property-type">選択</span></dt>
-            <dd>データの単位。デフォルトでは、規定の単位が設定される</dd> 
-            <dt>FFT有無<span class="property-type">選択</span></dt>
-            <dd>FFT分析の有効・無効の設定</dd>
             <dt>FFT有効時の設定<span class="property-type"></span></dt>
             <dl class="message-properties" style="margin-left: 8px">
                 <dt>データ名称<span class="property-type">文字列</span></dt>
@@ -60,14 +56,11 @@
                 <dd>FFT分析の結果の振幅スペクトラムにおける最大ピーク加速度の周波数から、５番目までのピーク加速度の周波数</dd>
                 <dt>ピーク加速度1〜5 </dt>
                 <dd>FFT分析の結果の振幅スペクトラムにおける最大ピーク加速度から、５番目までのピーク加速度</dd>
-                <dt>単位<span class="property-type">選択</span></dt>
-                <dd>データの単位。デフォルトでは、規定の単位が設定される</dd> 
             </dl>
         </dl>
     </dl>
     <h3>入力メーッセージ</h3>
-        <p>無し</p>
-
+        <p>msr.configObjectsに更新された設定情報が入力されると、その新しい設定に従ってデータの収集を開始する。</p>
     <h3>出力メッセージ</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">string | object</span></dt>
