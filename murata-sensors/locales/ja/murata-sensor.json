@@ -26,6 +26,8 @@
         "6h": "６時間",
         "12h": "12時間",
         "24h": "24時間",
+        "sensorId": "センサID",
+        "sensorIdholder": "村田センサのID",
         "objectKey": "オブジェクトキー",
         "objectKeyholder": "固有のキー",
         "objectDescription": "オブジェクトの説明",

@@ -80,6 +80,12 @@
                 </div>
                 <div class="form-row">
                     <label 
+                        for="node-input-sensorId" style="width:150px;"><span data-i18n="editor.sensorId"></span></label>
+                    <input class="form-control" type="text" style="width: 300px" required="required"
+                      id="node-input-sensorId" data-i18n="[placeholder]editor.sensorIdholder">
+                </div>
+                <div class="form-row">
+                    <label 
                         for="node-input-objectDescription" style="width:150px;"><span data-i18n="editor.objectDescription"></span></label>
                     <input type="text" style="width: 300px" id="node-input-objectDescription">
                 </div>
@@ -139,6 +145,7 @@
             storeInterval: {value: "1h"},
             objectKey: {value:""},
             objectDescription:{value: ""},
+            sensorId:{value: ""},
             murataCom: {value:"", type:"murata-com", required: true},
             autoConf: {value: false},
             enableFFT: {value:false},
@@ -312,8 +319,9 @@ console.log("koko");
                 items.each(function(i, elm){
                     node.itemList[elm.find(".dItem")] =  elm.find(".dataName").val();
                 });
-                // objectKey is required
+                // objectKey & sesorId are required
                 if (!$("#node-input-objectKey").val()) configReady = "";
+                if (!$("#node-input-sensorId").val()) configReady = "";
             // file configration
             } else{
                 // configration JSON is required

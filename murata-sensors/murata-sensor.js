@@ -28,6 +28,7 @@ module.exports = function(RED) {
             nodeID: node.id,
             links: [{
                 objectKey: "",
+                sensorId: "",
                 inteval: "1h",
                 enableFFT: true,
                 rms: value,
@@ -53,6 +54,7 @@ module.exports = function(RED) {
         configObjects.forEach(function(objItem, idx) {
             let linkData = {};
             linkData.objectKey = objItem.objectKey;
+            linkData.sensorId = objItem.sensorId;
             linkData.interval = objItem.interval;
             linkData.enableFFT = objItem.enableFFT;
 
@@ -94,6 +96,7 @@ module.exports = function(RED) {
             configObjects[0].objectName = config.objectName;
             configObjects[0].objectKey = config.objectKey;
             configObjects[0].objectDescription = config.objectDescription;
+            configObjects[0].sensorId = config.sensorId;
             configObjects[0].storeInterval = config.storeInterval;
             configObjects[0].enableFFT = config.enableFFT;
             configObjects[0].contentType = config.contentType;
