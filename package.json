@@ -55,8 +55,6 @@
       "enocean-sensor-watty-temperature": "EnOcean/sensor-watty-temperature-node.js",
       "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
       "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
-      "HMI-Schneider-dItems": "HMI-Schneider/HMI-Schneider-dItems.js",
-      "HMI-Schneider-AnE": "HMI-Schneider/HMI-Schneider-AnE.js",
       "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
       "gp2iac": "gp2iac/gp2iac.js",
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",

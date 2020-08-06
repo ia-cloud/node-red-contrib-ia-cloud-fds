@@ -11,94 +11,90 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="HMI-Schneider-AE">
+<script type="text/html" data-template-name="HMI-Schneider-AE">
+  <div class="form-row">
+    <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+    <input type="text" class="form-control" id="node-input-name">
+  </div>
+  
+  <!-- HMI Schneider node（設定Node）の選択-->
+  <div class="form-row">
+    <label for="node-input-HmiSchneiderCom" style= "vertical-align: middle;">
+      <span data-i18n="editor.hmiSchneiderNode"></span><span style="color: #ff0000;">*</span>
+    </label>
+    <input type="text" style="width: 300px" id="node-input-HmiSchneiderCom">
+  </div>
+  
+  <!-- 隠しのNodeプロパティ -->
+  <div class="form-row hide">
+    <input type="text" id="node-input-configReady">
+  </div>
+  
+  <!-- Tab, ownself -->
+  <div class="red-ui-tabs" id="ui-tabs">
+    <ul>
+      <li class="red-ui-tab" style="width: 50%;">
+        <a href="#tab-object-property" class="nav-link red-ui-tab-label" data-toggle="tab">
+          <span data-i18n="editor.tab.object-settings" ></span>
+        </a>
+      </li>
+      <li class="red-ui-tab active" style="width: 50%;">
+        <a href="#tab-aeItem-property" class="nav-link red-ui-tab-label" data-toggle="tab">
+          <span data-i18n="editor.tab.data-settings" ></span>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-    <div class="form-row">
-        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-        <input type="text" class="form-control" id="node-input-name">
+  <!-- Tab contents -->
+  <div class="tab-content">
+    <!-- tab-object-property starts -->
+    <div id="tab-object-property" class="tab-pane">
+      <div class="form-row">
+        <label style="margin-right: 10px;" for="node-input-storeInterval">
+          <span data-i18n="editor.period"></span>
+        </label>
+        <input type="number" id="node-input-storeInterval" min="1" step="1" max="60" style="display: inline-block; width: auto;">
+      </div>
+      <div class="form-row">
+        <label style="margin-right: 10px;" for="node-input-objectName">
+          <span data-i18n="editor.objectname"></span>
+        </label>
+        <input type="text" style="width: 300px" id="node-input-objectName">
+      </div>
+      <div class="form-row">
+        <label style="margin-right: 10px;" for="node-input-objectKey">
+          <span data-i18n="editor.objectKey"></span>
+          <span style="color: #ff0000;">*</span>
+        </label>
+        <input required="required" class="form-control" type="text" style="width: 300px" id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+      </div>
+      <div class="form-row">
+        <label style="margin-right: 10px;" for="node-input-objectdescription">
+          <span data-i18n="editor.objectDescription"></span>
+        </label>
+        <input type="text" style="width: 300px" id="node-input-objectDescription">
+      </div>
     </div>
-
-<hr>
-    <div class="form-row">
-      <input type="text" style="display: none;" id="node-input-confsel" valie="propertySet">
-      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="node-input-configSel1"
-            value="propertySet" checked="checked">
-      <label style="width: 40%;" for="node-input-configSel1"><span data-i18n="editor.UIconfig"></label>
-      <input type="radio" style="display: inline-block; width: auto; vertical-align: top;"
-            name="configSel" id="node-input-configSel2" value="fileSet">
-      <label style="width: 40%;" for="node-input-configSel2"><span data-i18n="editor.fileconfig"></label>
+    
+    <!-- tab aeItem-property starts -->
+    <div id="tab-aeItem-property" class="tab-pane active">
+      <!-- aeItem propertyの設定 -->
+      <div class="form-row node-input-aeItemcontainer-row">
+        <ol id="node-input-aeItemcontainer"></ol>
+      </div>
     </div>
-<br>
-    <div class="row" style="margin-left: 20px;" id="node-row-fileSet">
-        <label><span data-i18n="editor.filename"></span><span style="color: #ff0000;">*</span></label>
-        <input id="node-input-configfile" type="text" style="width: 400px;" data-i18n="[placeholder]editor.confFileholder">
-    </div>
-
-    <!-- object propertyの設定 -->
-    <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
-        <div class="form-row">
-            <label style="margin-right: 10px;" for="node-input-storeInterval">
-                <span data-i18n="editor.period"></span></label>
-            <input type="number" min="1" step="1" style="display: inline-block; width: auto;" id="node-input-storeInterval">
-        </div>
-        <div class="form-row">
-            <label style="margin-right: 10px;" for="node-input-objectName">
-                <span data-i18n="editor.objectname"></span></label>
-            <input type="text" style="width: 300px" id="node-input-objectName">
-        </div>
-        <div class="form-row">
-            <label style="margin-right: 10px;"
-                for="node-input-objectKey"><span data-i18n="editor.objectKey"></span>
-                <span style="color: #ff0000;">*</span></label>
-            <input class="form-control" type="text" style="width: 300px"
-             id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholderholder">
-        </div>
-        <div class="form-row">
-            <label style="margin-right: 10px;"
-                for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-            <input type="text" style="width: 300px" id="node-input-objectDescription">
-        </div>
-
-        <!-- contentData Item の設定ーA&E情報Nodeの選択 -->
-        <div class="form-row" id="node-row-AnE">
-            <label style="margin-right: 10px; vertical-align: middle;"
-                for="node-input-AnE"><span data-i18n="editor.AEItems"></span>
-                <span style="color: #ff0000;">*</span>
-              </label>
-            <input type="text" style="width: 300px" id="node-input-AnE">
-        </div>
-    </div>
-<hr>
-    <!-- HMI Schneider node（設定Node）の選択-->
-    <div class="form-row">
-        <label for="node-input-HmiSchneiderCom" style= "vertical-align: middle;">
-            <span data-i18n="editor.hmiSchneiderNode"></span><span style="color: #ff0000;">*</span></label>
-        <input type="text" style="width: 300px" id="node-input-HmiSchneiderCom">
-    </div>
-    <div class="form-row hide">
-        <input type="text" style="width: 300px" id="node-input-objectConfig">
-    </div>
-
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="HMI-Schneider-AE">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-  TBD
-</dl>
-
-<h3>Outputs</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-
-<h3>Details</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
+  <p>preparing ia-cloud objects for store to CCS</p>
+  <h3>Inputs</h3>
+  <dl class="message-properties">TBD</dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">TBD</dl>
+  <h3>Details</h3>
+  <dl class="message-properties">TBD</dl>
 </script>
 
 <script type="text/javascript">
@@ -107,53 +103,161 @@
     category: 'iaCloud',
     color:"rgb(231, 180, 100)",
     defaults: {
-        name: {value:"HMISchneiderAE"},
-        confsel: {value:"propertySet"},
-        configfile: {value:"", required: false},
-        storeInterval: {value:"5"},
-        objectName: {value:""},
-        objectKey: {value:""},
-        objectDescription: {value:""},
-        AnE: {value:"", type:"HMI-Schneider-AnE", required: true},
-        HmiSchneiderCom: {value:"", type:"HMI-Schneider-com", required: true},
-        objectConfig: {value: "", required: true}
+      // node properties
+      name: {value:"HMISchneiderAE"},
+      HmiSchneiderCom: {value:"", type:"HMI-Schneider-com", required: true},
+      // object properties
+      storeInterval: {value:"5"},
+      objectName: {value:""},
+      objectKey: {value:""},
+      objectDescription: {value:""},
+      // aeItems property
+      aeItems: {value:[{}]},
+      // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+      configReady: {value: "", required: true}
     },
     inputs:1,
     outputs:1,
     icon: "ia-cloud.png",  //アイコンはTBD
     label: function() {
-        return this.name||this._("Plc-object");
+      return this.name||this._("Plc-object");
     },
     labelStyle: function() {
-        return this.name?"node_label_italic":"";
+      return this.name?"node_label_italic":"";
     },
+
     oneditprepare: function() {
-      $('input[name="configSel"]:radio').change(function() {
-            if ($("#node-input-configSel1").is(":checked")) {
-                $("#node-row-propertySet").show();
-                $("#node-row-fileSet").hide();
-                $('#node-input-confsel').val("propertySet");
-            } else {
-                $("#node-row-fileSet").show();
-                $("#node-row-propertySet").hide();
-                $('#node-input-confsel').val("fileSet");
-            }
+      const node = this;
+      // Locale strings
+      const labelVarName = node._("editor.varName");
+      const labelAECode = node._("editor.AECode");
+      const labelAEDescription = node._("editor.AEDescription");
+      
+      // editableList item のhtml要素
+      const itemVar =`
+        <label style="width:80px; display:inline-block; text-align:left;">${labelVarName}</label>
+        <input required="required" type="text" style="display:inline-block; text-align:left; width:150px;" class="varName" placeholder="${labelVarName}">
+      `;
+      const itemCode =`
+        <span style="display:inline-block; width:30px"> </span>
+        <label style="width:80px; display:inline-block; text-align:left;">${labelAECode}</label>
+        <input required="required" type="text" style="display:inline-block; text-align:left; width:150px;" class="code" placeholder="${labelAECode}">
+      `;
+      const itemDescription =`
+        <span style="display:inline-block; width:30px"> </span>
+        <label style="width:80px; display:inline-block; text-align:left;">${labelAEDescription}</label>
+        <textarea style="width: 250px" class="description" rows="2" placeholder="${labelAEDescription}"></textarea>
+      `;
+      
+      // Define editableList.
+      $('#node-input-aeItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+        removable: true,
+        sortable: true,
+        height: 400,
+        
+        // Process when click add button.
+        addItem: function(container, index, aeItem) {
+          let div1 = $('<div></div>').appendTo(container);
+          let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+          let div3 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+          // 追加ボタンが押されたら、aeItemは 空{} で呼ばれます。
+          if(!Object.keys(aeItem).length) {
+            aeItem = {
+              varName:"",
+              code:"",
+              description:""
+            };
+          };
+          
+          $('<span></span>', {class:"index", style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+            .text((index + 1) + " :")
+            .appendTo(div1);
+          $(itemVar).appendTo(div1);
+          $(itemCode).appendTo(div2);
+          $(itemDescription).appendTo(div3);
+          
+          div1.find(".varName").val(aeItem.varName);
+          div2.find(".code").val(aeItem.code);
+          div3.find(".description").val(aeItem.description);
+        },
+        
+        // リストの順番が変わったら呼ばれる。
+        sortItems: function(items) {
+          items.each(function(i, elm){
+            // 番号を降り直し
+            elm.find(".index").text((i + 1) + ":");
+          });
+        },
+        
+        // リストの項目が削除されたら呼ばれる。
+        removeItem: function(aeItem){
+          let items = $('#node-input-aeItemcontainer').editableList("items");
+          items.each(function(i, elm){
+            // 番号を降り直し
+            elm.find(".index").text((i + 1) + ":");
+          });
+        }
       });
-      if($("#node-input-confsel").val() == "propertySet"){
-        $('#node-input-configSel1').prop('checked', true);
-      } else {
-        $('#node-input-configSel2').prop('checked', true);
+
+      // Nodeの設定パラメータを取り出し、editableListに登録
+      for (let i=0; i<node.aeItems.length; i++) {
+        $("#node-input-aeItemcontainer").editableList('addItem',node.aeItems[i]);
       }
-      $('input[name="configSel"]:radio').change();
     },
 
     oneditsave: function() {
-      var objectConfig = "ready";
-      if ($("#node-input-confsel").val() == "propertySet") {
-        if (!$("#node-input-objectKey").val()) objectConfig = "";
+      const node = this;
+      let configReady = "ready";
+      let items = $("#node-input-aeItemcontainer").editableList('items');
+
+      // データ設定を作成
+      node.aeItems = [];
+      
+      items.each(function(i, elm){
+        let item = {
+          varName: elm.find(".varName").val(),
+          code: elm.find(".code").val(),
+          description: elm.find(".description").val()
+          }
+        
+        // 必須propertyが揃っているか？
+        if (!item.varName) configReady = "";
+        
+        node.aeItems.push(item);
+      });
+      
+      // objectKeyはある？
+      if (!$("#node-input-objectKey").val()) configReady = "";
+      // データ設定が一つはある？
+      if (!node.aeItems.length) configReady = "";
+
+      // 設定完了フラグをセット
+      $("#node-input-configReady").val(configReady);
+    },
+
+    oneditresize: function(size) {
+      // エディタがリサイズされたら
+      let height = size.height;
+      // Tab以外の部分の高さを引く
+      let rows = $("#dialog-form>div:not(.tab-content");
+      for (let i=0; i<rows.length; i++) {
+        // 非表示要素は省く
+        if ($(rows[i]).is(":visible")) height -= $(rows[i]).outerHeight(true);
       }
-      if (($("node-input-confsel").val() == "fileSet") && !$("#node-input-configfile").val()) objectConfig = "";
-      $("#node-input-objectConfig").val(objectConfig);
+      // aeItemプロパティTab内の、editableList以外の行の高さを引く
+      rows = $("#tab-aeItem-property>div:not(.node-input-aeItemcontainer-row)");
+      for (let i=0; i<rows.length; i++) {
+        height -= $(rows[i]).outerHeight(true);
+      }
+      // editableListのマージンを引く
+      const editorRow = $("#tab-aeItem-property>div.node-input-aeItemcontainer-row");
+      height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+      
+      height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
+      
+      // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+      $("#node-input-aeItemcontainer").editableList('height',height);
     }
   });
 

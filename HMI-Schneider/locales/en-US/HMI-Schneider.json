@@ -1,19 +1,24 @@
 {
     "editor": {
         "name": "node name",
-        "UIconfig": "conf. by UI",
-        "fileconfig": "conf. by file",
-        "filename": "configration file path",
-        "period": "notification period",
+        "hmiSchneiderNode": "communication node",
+        "tab": {
+          "object-settings": "object configuration",
+          "data-settings": "dataitem configuration"
+        },
+
+        "period": "notification period(sec)",
         "objectname": "object name",
         "objectKey": "object key",
         "objectKeyholder": "required: unique key",
         "objectDescription": "object description",
-        "dataItems": "data items",
-        "hmiSchneiderNode": "Schneider HMI com. node"
+        
+        "contentType": "content type",
+        "dataName": "data name",
+        "unit": "unit",
+        "varName": "variable name"
     },
     "runtime": {
-        "badFilePath": "bad file path",
         "ready": "Ready",
         "preparing": "preparing",
         "sent": "data sent",
