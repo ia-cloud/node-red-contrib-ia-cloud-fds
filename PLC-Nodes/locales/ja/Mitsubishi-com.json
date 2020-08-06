@@ -1,0 +1,27 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "cycle": "通信周期",
+        "maxDataNum": "連続読出数",
+        "noBlank": "連続読出限定",
+        "comType": "通信種別",
+        "TCPPort": "ポート番号",
+        "netAddress": "Netアドレス",
+        "serialPort": "ポート",
+        "baud": "ボーレート",
+        "parity": "パリティ",
+        "TCP": "TCP",
+        "Serial4": "シリアル形式4",
+        "Serial5": "シリアル形式5",
+        "odd": "奇数",
+        "even": "偶数",
+        "none": "無し",
+        "accessRoute": "アクセス経路",
+        "accessRouteExp": "通常は空欄のまま",
+        "tip-accessRoute": "ネットワーク上の他局PLCにアクセスする場合、その経路を記述する。通常は空欄。（例）4E：nn:pp:mmm:SS　4C：ss:nn:pp:mmmm:SS　3C：ss:nn:pp:SS　各文字は[0-9、A-F]",
+        "tip-serial": "ストップビット: 1、チェックサム: 有効、で固定です。"
+    },
+    "runtime": {
+
+    }
+}

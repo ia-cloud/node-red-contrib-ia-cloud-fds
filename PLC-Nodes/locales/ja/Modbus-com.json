@@ -1,0 +1,26 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "cycle": "通信周期",
+        "maxDataNum": "連続読出数",
+        "noBlank": "連続読出限定",
+        "comType": "通信種別",
+        "TCPPort": "ポート番号",
+        "netAddress": "Netアドレス",
+        "unitID": "ユニットID",
+        "serialPort": "ポート",
+        "serialAddress": "アドレス",
+        "baud": "ボーレート",
+        "parity": "パリティ",
+        "ModbusTCP": "ModbusTCP",
+        "ModbusRTU": "ModbusRTU",
+        "ModbusASCII": "ModbusASCII",
+        "odd": "奇数",
+        "even": "偶数",
+        "none": "無し",
+        "tip-serial": "ストップビット: 1、チェックサム: 有効、で固定です。"
+    },
+    "runtime": {
+
+    }
+}

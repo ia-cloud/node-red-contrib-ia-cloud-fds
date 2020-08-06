@@ -32,8 +32,8 @@
         "evt2": "イベント2",
         "evt3": "イベント3",
         "evt4": "イベント4",
-        "AECode": "A&Eコード",
-        "AEDescription": "A&Eの説明",
+        "AnECode": "A&Eコード",
+        "AnEDescription": "A&Eの説明",
         "AnE": "AnE対象"
     },
     "runtime": {

@@ -1,0 +1,80 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="PLC-Mitsubishi-AE">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>三菱シーケンサのアラーム＆イベントノード</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>通信ノード<span class="property-type">三菱MC通信設定ノード</span></dt>
+        <dd>三菱MC通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>アラーム＆イベントを定期的に収集する場合の周期（秒）</dd>
+            <dt>発生・復帰通知<span class="property-type">チェック（固定）</span></dt>
+            <dd>アラーム＆イベントが発生・復帰時にデータを送出する設定。常にチェック済み</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>アラーム＆イベントオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>アラーム＆イベントオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>アラーム項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列（固定）</span></dt>
+            <dd>アラーム＆イベントデータ構造（Alarm&Event）固定</dd>
+            <dt>設定リスト<span class="property-type">アラーム項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>アラーム項目の番号。自動で生成される</dd>
+                <dt>デバイス<span class="property-type">選択</span></dt>
+                <dd>アラーム＆イベント情報も元となるPLCデバイス。</dd>
+                <dd>X, Y, M, SM, D, W のいずれかを選択できる</dd>
+                <dd>D, W のワードデバイスを選択した場合、０:false、0以外:true とする</dd>
+                <dt>論理<span class="property-type">選択</span></dt>
+                <dd>対象データがtrue(1)の時、アラーム発生（正論理）</dd> 
+                <dd>対象データがfalse(0)の時、アラーム発生（負論理）</dd> 
+                <dt>A＆Eコード<span class="property-type">文字列</span></dt>
+                <dd>アラームコード。個々のアラーム＆イベントに付与する任意のコード</dd>
+                <dt>A＆Eの説明<span class="property-type">文字列</span></dt>
+                <dd>個々のアラーム＆イベントの任意の説明</dd>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>iia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがったアラーム＆イベント。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>三菱シーケンサMC通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode</p>
+    <p>Alarm&EventのcontentTypeを持つia-cloudオブジェクトは、アラーム＆イベント発生時、復帰時、発生中、復帰済みに対し</p>
+    <p>"set", "reset", "on", "off"のアラーム＆イベントの状態とそのA&Eコード、A&Eの説明を含むオブジェクトです。</p>
+    <p>設定Nodeとして、Mitsubishi-comを使用する。</p>
+
+</script>

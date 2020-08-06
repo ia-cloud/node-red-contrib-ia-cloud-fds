@@ -1,0 +1,47 @@
+{
+    "editor": {
+        "name": "名前",
+        "ui-config": "ここで設定",
+        "fileConfig": "設定ファイル",
+        "tab": {
+          "file-settings": "設定ファイル読込",
+          "object-settings": "オブジェクトの設定",
+          "data-settings": "データの設定"
+        },
+        "filename": "設定ファイルを選択してください",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "contentType": "データ構造Type",
+        "itemNumber": "項目番号",
+        "bit": "bit型",
+        "number": "数値型",
+        "string": "文字列型",
+        "numList": "数値列型",
+        "del": "削除",
+        "add": "追加",
+        "dname": "データ名称",
+        "address": "アドレス",
+        "bitNum": "ビット数",
+        "pos": "正論理",
+        "neg": "負論理",
+        "AnECode": "A&Eコード",
+        "AnEDescription": "A&Eの説明",
+        "modbusNode": "通信ノード",
+        "dev-Coil": "コイル",
+        "dev-IS": "IS",
+        "dev-HR": "HR",
+        "dev-IR": "IR"
+    },
+    "runtime": {
+        "badFilePath": "ファイルが見つかりません。",
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "sent": "データ送出",
+        "comNode": "通信Nodeが無効です。",
+        "comError": "通信エラー!!"
+    }
+}
