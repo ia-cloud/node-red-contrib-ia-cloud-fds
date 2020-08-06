@@ -105,7 +105,7 @@ class PLCCom {
 
     //作成したリンクオブジェクトに基づき、PLC通信を実施し、リンクオブジェクトの各Valueを更新する
     // 外部メソッド。this を固定するためアロー関数で記述
-    CyclicRead = (RED) => {return new Promise(resolve => {
+    CyclicRead(RED) {return new Promise(resolve => {
 
         let comObj = this.comObj;    
         let linkObj = this.linkObj;
