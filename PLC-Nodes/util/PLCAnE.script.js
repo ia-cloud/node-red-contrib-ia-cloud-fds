@@ -44,24 +44,6 @@ var PLCAENodeConfig = {
         // dataItems property（editableListで使用する。
         dataItems: {value: [{}],},
 
-        // defaultのdataItem定義（editableListで追加ボタンが押された時のdataItem）
-        /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
-        [Example]
-            PLCNodeConfig.defaults.defaultDataItem.value = {
-                itemType:"bit",
-                commonName:"",
-                AnE: {deviceType:"Coil", address:0, logic:"pos", AnECode:"", AnEDesc:""},
-        };           */
-        defaultDataItem: {value:{}},
-
-            // DataItem設定リストのデバイスsellect要素のoptionを追加するDOM要素
-            /* 利用する個別のPLCNodeの.htmlファイルのjavscriptでオーバライドする
-            [Example]
-                PLCNodeConfig.defaults.deviceTypeDef.value = {
-                    AnE: [{value:"Coil", text:"Coil"},{value:"IS", text:"IS"},
-                            {value:"HR", text:"HR"},{value:"IR", text:"IR"},],
-        }            */
-        deviceTypeDef: {value:{},}
     },
     inputs: 1,
     outputs: 1,
@@ -133,27 +115,21 @@ var PLCAENodeConfig = {
                 // アラームコード・アラーム文字列の編集要素を追加
                 $(paraForm2).appendTo(div2);
 
-                // データItemのデバイスタイプのsellect要素のoptionを追加する関数
-                // この関数は、利用する個別のPLC　Nodeのhtmlファイルのjavscriptで定義すること
-                for (let key in node.deviceTypeDef) {
-                    if (!key) break;
-                    let selField = "";
-                    let ops = node.deviceTypeDef[key];
-                    let len = ops.length;
-                    switch (key){
-                        case "AnE":
-                            selField = div1.find(".deviceType");
-                            break;
-                        default:
-                            break;
-                    }
-                    if (!selField) break;
-                    for (var i=0; i<len; i++) {
-                        selField.append($("<option></option>").val(ops[i].value).text(node._(ops[i].text)));
+                // データItemのデバイスタイプのsellect要素のoptionを追加する
+                // optionのDOMオブジェクトは、利用する個別のPLCNodeのhtmlファイルのjavscriptで定義すること。
+                div1.find(".deviceType").append($("#deviceDef>option").clone());
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("itemType")) {
+                    let itemType = $("#defaultDataItem").data("itemtype");
+                    dItem[itemType]={
+                        deviceType: $("#defaultAnE").data("devicetype"),
+                        address: $("#defaultAnE").data("address"),
+                        logic: $("#defaultAnE").data("logic"),
+                        AnECode: $("#defaultAnE").data("anecode"),
+                        AnEDesc: $("#defaultAnE").data("anedesc")
                     }
                 }
-                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
-                if(!dItem.hasOwnProperty("itemType")) dItem = node.defaultDataItem;
 
                 // AnE parameters
                 div1.find(".deviceType").val(dItem.AnE.deviceType);

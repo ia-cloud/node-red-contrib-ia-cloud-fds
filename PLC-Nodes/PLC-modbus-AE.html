@@ -86,26 +86,22 @@
         <!-- tab-AnE-property ends -->      
     </div>
 
-</script>
+    <!-- PLC-modbus-AE device type definition -->
+    <div style="display:none" id="deviceTypeDef">
+        <!-- PLC-modbus device-AE setect options -->
+        <div id="deviceDef" >
+            <option selected="selected" value="Coil" data-i18n="[text]editor.dev-Coil"></option>
+            <option value="IS" data-i18n="[text]editor.dev-IS"></option>
+            <option value="HR" data-i18n="[text]editor.dev-HR"></option>
+            <option value="IR" data-i18n="[text]editor.dev-IR"></option>
+        </div>
+    </div>
+    <!-- PLC-modbus-AE new dataItem defaults -->
+    <!-- jQuery's data attribute can't be upper case, must be lower case-->
+    <div style="display:none" id="defaultDataItem" data-itemtype="AnE"></div>
+    <div style="display:none" id="defaultAnE" data-devicetype="Coil"
+        data-address="0" data-logic="pos" data-anecode="" data-anedesc=""></div>
 
-
-<script type="text/x-red" data-help-name="PLC-Modbus-AE">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-  TBD
-</dl>
-
-<h3>Outputs</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-
-<h3>Details</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
 </script>
 
 <script type="text/javascript">
@@ -123,22 +119,6 @@
         dflts.comNode = {value: "", type: "Modbus-com", required: true};
         dflts.contentType = {value: "Alarm&Event"};
 
-        // DataItem設定リストのデバイスsellect要素のoptionを定義
-        dflts.deviceTypeDef = {value:
-            {
-            AnE: [{value:"Coil", text:"editor.dev-Coil"},{value:"IS", text:"editor.dev-IS"},
-                    {value:"HR", text:"editor.dev-HR"},{value:"IR", text:"editor.dev-IR"},]
-            }
-        };
-
-        //  デフォルトのPLCデータ項目を定義
-        dflts.defaultDataItem = {value:
-            {
-                itemType:"AnE",
-                commonName:"Alarm&Event",
-                AnE: {deviceType:"Coil", address:0 , logic:"pos", AnECode:"", AnEDesc:""}
-            }
-        };
         // デフォルトプロパティを付け替え
         cfg.defaults = dflts;
 

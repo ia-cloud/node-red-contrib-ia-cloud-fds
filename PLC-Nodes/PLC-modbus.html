@@ -80,30 +80,31 @@
         <!-- tab-dItem-property ends -->
     </div>
 
-    <!-- PLC-modbus properties -->
+    <!-- PLC-modbus device type definition -->
     <div style="display:none" id="deviceTypeDef">
         <!-- PLC-modbus device setect options -->
         <div id="bitDeviceDef" >
-            <option selected="selected" value="Coil"><span data-i18n="editor.dev-Coil"></span></option>
-            <option value="IS"><span data-i18n="editor.dev-IS"></span></option>
-            <option value="HR"><span data-i18n="editor.dev-HR"></span></option>
-            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+            <option selected="selected" value="Coil" data-i18n="[text]editor.dev-Coil"></option>
+            <option value="IS" data-i18n="[text]editor.dev-IS"></option>
+            <option value="HR" data-i18n="[text]editor.dev-HR"></option>
+            <option value="IR" data-i18n="[text]editor.dev-IR"></option>
         </div>
         <div id="numberDeviceDef" >
-            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
-            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+            <option selected="selected" value="HR" data-i18n="[text]editor.dev-HR"></option>
+            <option value="IR" data-i18n="[text]editor.dev-IR"></option>
         </div>
         <div id="stringDeviceDef" >
-            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
-            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+            <option selected="selected" value="HR" data-i18n="[text]editor.dev-HR"></option>
+            <option value="IR" data-i18n="[text]editor.dev-IR"></option>
         </div>
         <div id="numListDeviceDef" >
-            <option selected="selected" value="HR"><span data-i18n="editor.dev-HR"></span></option>
-            <option value="IR"><span data-i18n="editor.dev-IR"></span></option>
+            <option selected="selected" value="HR" data-i18n="[text]editor.dev-HR"></option>
+            <option value="IR" data-i18n="[text]editor.dev-IR"></option>
         </div>
     </div>
     <!-- PLC-modbus new dataItem defaults -->
-    <div style="display:none" id="defaultDataItem" data-itemType="bit" data-dataName=""></div>
+    <!-- jQuery's data attribute can't be upper case, must be lower case-->
+    <div style="display:none" id="defaultDataItem" data-itemtype="bit" data-dataname=""></div>
     <div style="display:none" id="defaultBit" data-devicetype="Coil"
                 data-address="0" data-number="1" data-logic="pos" ></div>
 

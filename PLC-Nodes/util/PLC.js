@@ -305,8 +305,9 @@ class PLC {
         node.status({fill:"green", shape:"dot", text:"runtime.sent"});
     }
     // 周期実行を停止する外部メソッド
-    close = () => {
+
+    close() {
         clearInterval(this.intervalId);
-    }
+    }    
 }
 module.exports = PLC;

@@ -35,6 +35,8 @@
         "dev-Y": "Y",
         "dev-M": "M",
         "dev-SM": "SM",
+        "dev-L": "L",
+        "dev-B": "B",
         "dev-D": "D",
         "dev-W": "W"
     },

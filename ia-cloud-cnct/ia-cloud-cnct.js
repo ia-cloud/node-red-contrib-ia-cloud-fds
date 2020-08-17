@@ -13,46 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+"use strict";
 
 module.exports = function(RED) {
-    "use strict";
-    var request = require("request");
-    var moment = require("moment");
 
-
-
+    var connection = require("./util/ia-cloud-connection.js");
 
     function iaCloudCnct(config) {
-        // ia-cloud CCSへのhttpsリクエストの内部関数を定義
-        function iaCloudRequest(opts, callback){
-            request(opts, function(err, res, body) {
-                var resbody = null;
-                if(err){
-                    if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
-                        node.error(RED._("runtime.no-response"));
-                    }else{
-                        node.error(err);
-                    }
-                    node.status({fill:"red", shape:"ring", text:"runtime.no-response"});
-                }else{
-                    // レスポンスは受けた
-                    if (res.statusCode != 200){
-                        // レスポンスコードが 200 OK ではない
-                        node.status({fill:"yellow", shape:"ring", text:"runtime.bad-response"});
-                        info.serviceID = "";
-                        info.status = "disconnected";
-                        node.error(err);
-                        node.error(res.statusCode);
-                    } else {
-                        // Convert the JSON body to the object
-                        try { var resbody = JSON.parse(body); }
-                        catch(e) { node.warn(RED._("runtime.json-error")); }
-                    }
-                }
-                callback(resbody);
-            });
-        }
-
         RED.nodes.createNode(this,config);
 
         var node = this;
@@ -63,32 +30,25 @@ module.exports = function(RED) {
             status: "disconnected",
             serviceID: "",
             url: ccsConnectionConfigNode.url,
-            userID: ccsConnectionConfigNode.credentials.userId,
+        //    userID: ccsConnectionConfigNode.credentials.userId,
             FDSKey: config.FDSKey,
             FDSType: "iaCloudFDS",
             cnctTs:"",
             lastReqTs: "",
             comment: config.comment,
             cnctRetryInterval: config.cnctRetryInterval * 60 * 1000,
-            tappingInterval: config.tappingInterval * 60 * 60 * 1000
+            tappingInterval: config.tappingInterval * 60 * 60 * 1000,
+            proxy: null,
+            reqTimeout: 12000
         };
 
         var gContext = this.context().global;
         gContext.set("cnctInfo", info);
 
-        // httpリクエストのoptionを設定
-        var opts = {};
-        opts.url = info.url;
-
-        opts.auth = {
+        let auth = {
             user: ccsConnectionConfigNode.credentials.userId,
             pass: ccsConnectionConfigNode.credentials.password,
         };
-        opts.method = "POST";
-        opts.headers = {};
-        opts.headers["Content-Type"] =  "application/json";
-        opts.encoding = null;  // Force NodeJs to return a Buffer (instead of a string)
-        opts.maxRedirects = 21;
 
         // proxy設定を取得
         var prox;
@@ -102,24 +62,27 @@ module.exports = function(RED) {
 
         if (noprox) {
             for (var i in noprox) {
-                if (opts.url.indexOf(noprox[i]) !== -1) { noproxy=true; }
+                if (info.url.indexOf(noprox[i]) !== -1) { noproxy=true; }
             }
         }
         if (prox && !noproxy) {
             var match = prox.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
             if (match) {
-                opts.proxy = prox;
+                info.proxy = prox;
             } else {
                 node.warn("Bad proxy url: "+ prox);
-                opts.proxy = null;
+                info.proxy = null;
             }
         }
 
         // このタイムアウトの設定の詳細を調査する必要あり
         if (RED.settings.httpRequestTimeout) {
-          opts.reqTimeout = parseInt(RED.settings.httpRequestTimeout) || 120000;
+            info.reqTimeout = parseInt(RED.settings.httpRequestTimeout) || 120000;
         }
-        else { opts.reqTimeout = 120000; }
+        else { info.reqTimeout = 120000; }
+
+
+        const iaC = new iaCloudConnnection(info);
 
         //connect request を送出（接続状態にないときは最大cnctRetryIntervalで繰り返し）
 
@@ -128,47 +91,26 @@ module.exports = function(RED) {
         (function cnctTry() {
 
             //非接続状態なら接続トライ
-            if (info.serviceID == "") {
+            if (info.serviceID === "") {
 
-              // node status をconnecting に
-              node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
-              // connect リクエストのリクエストボディ
-              var reqbody = {
-                request: "connect",
-                userID: info.userID,
-                FDSKey: info.FDSKey,
-                FDSType: "iaCloudFDS",
-                timeStamp: moment().format(),
-                comment: info.comment
-              };
-              opts.body = JSON.stringify(reqbody);
+                // node status をconnecting に
+                node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
 
-              // nodeの出力メッセージ（CCS接続状態）
-              var msg = {};
-
-              iaCloudRequest(opts, function(body) {
-                  // 下位層のエラー、ここでは何もしない
-                  if (body == null) return;
-
-                  if (body.userID == reqbody.userID &&
-                    body.FDSKey == reqbody.FDSKey && body.FDSType == reqbody.FDSType ) {
-
-                    // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-                    info.serviceID = body.serviceID;
-                    info.status = "connected";
-                    info.cnctTs = moment().format();
-                    node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-                    msg.payload = body;
-                  }
-                  else{
-                    info.serviceID = "";
-                    info.status = "disconnected";
-                    node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
-                    msg.payload = "Invalid JSON Message";
-                  }
-                  gContext.set("cnctInfo", info);
-                  node.send(msg);
-              });
+                // nodeの出力メッセージ（CCS接続状態）
+                var msg = {};
+                (async () => {
+                    // connect リクエスト
+                    try {
+                        let res = await iaC.connect(auth);
+                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+                        msg.payload = res;
+                    } catch (error) {
+                        node.status({fill:"yellow", shape:"ring", text:error.message});
+                        msg.payload = error.message;
+                    } finally {
+                        node.send(msg);
+                    }
+                })();
             }
             //retryの設定。倍々で間隔を伸ばし最大はcnctRetryInterval、
             if (info.cnctRetryInterval != 0) {
@@ -187,126 +129,69 @@ module.exports = function(RED) {
                 // node status をconnecting に
                 node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
                 info.status = "requesting";
-
-                // getStatus リクエストのリクエストボディ
-                var reqbody = {
-                  request: "getStatus",
-                  serviceID: info.serviceID,
-                  timeStamp: moment().format(),
-                  comment: config.comment
-                };
-                opts.body = JSON.stringify(reqbody);
-
-                // nodeの出力メッセージ（CCS接続状態）
-                var msg = {};
-                iaCloudRequest(opts, function(body) {
-                    // 下位層のエラー、ここでは何もしない
-                    if (body == null){
-                       info.status = "connected";
-                       return;
+                (async () => {
+                    // getStatus リクエスト
+                    try {
+                        let res = await iaC.getStatus(auth);
+                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+                        msg.payload = res;
+                    } catch (error) {
+                        node.status({fill:"yellow", shape:"ring", text:error.message});
+                        msg.payload = error.message;
+                    } finally {
+                        node.send(msg);
                     }
-                    if (body.oldServiceID == reqbody.serviceID && body.FDSKey == info.FDSKey ) {
-
-                      // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-                      info.serviceID = body.newServiceID;
-                      info.status = "connected";
-                      node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-                      msg.payload = body;
-                    }
-                    else{
-                      info.serviceID = "";
-                      info.status = "disconnected";
-                      node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
-                      msg.payload = "Invalid JSON Message";
-                    }
-                      info.lastReqTs = moment().format();
-                      gContext.set("cnctInfo", info);
-                      node.send(msg);
-                });
+                })();
             }, info.tappingInterval) ;
         }
+
         this.on("input",function(msg) {
 
-          //非接続状態の時は、何もしない。
-          if (info.serviceID == "") return;
+            //非接続状態の時は、何もしない。
+            if (info.serviceID == "") return;
             
-          if (msg.request == "store"
-              || msg.request == "retrieve" || msg.request == "convey"){
+            if (msg.request == "store"
+                || msg.request == "retrieve" || msg.request == "convey"){
 
-              // node status をReqesting に
-              node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
-              info.status = "requesting";
-
-              // リクエストのリクエストボディ
-              var reqbody = {
-                  request: msg.request,
-                  serviceID: info.serviceID,
-                  dataObject: msg.dataObject
-              }
-              opts.body = JSON.stringify(reqbody);
-
-              iaCloudRequest(opts, function(body) {
-                  // 下位層のエラー、ここでは何もしない
-                  if (body == null){
-                     info.status = "connected";
-                     return;
-                  }
-                  if (body.serviceID == reqbody.serviceID && body.status.toLowerCase() == "ok" ) {
-
-                      // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
-                      info.serviceID = body.newServiceID;
-                      info.status = "connected";
-                      node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
-                      msg.payload = body;
-                  }
-                  else{
-                      info.serviceID = "";
-                      info.status = "disconnected";
-                      node.status({fill:"yellow", shape:"ring", text:"runtime.json-error"});
-                      msg.payload = "Invalid JSON Message";
-                  }
-                  info.lastReqTs = moment().format();
-                  gContext.set("cnctInfo", info);
-                  node.send(msg);
-              });
-          }
-          else {
-              //requestが   "store" "retrieve" "convey" 以外
-              node.status({fill:"yellow", shape:"ring", text:"Invalid ia-cloud request"});
-              msg.payload = "Invalid ia-cloud request";
-              node.send(msg);
-          };
+                // node status をReqesting に
+                node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
+                info.status = "requesting";
+                (async () => {
+                    // リクエスト
+                    try {
+                        let res;
+                        if (msg.request === "store") res = await iaC.store(auth);
+                        if (msg.request === "retrieve") res = await iaC.retrieve(auth);
+                        if (msg.request === "convey") res = await iaC.convey(auth);
+                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+                        msg.payload = res;
+                    } catch (error) {
+                        node.status({fill:"yellow", shape:"ring", text:error.message});
+                        msg.payload = error.message;
+                    } finally {
+                        node.send(msg);
+                    }
+                })();
+            }
         });
 
         this.on("close",function(done) {
+            (async () => {
+                // terminate request
+                try {
+                    let res = await iaC.terminate(auth);
+                    node.status({fill:"green", shape:"dot", text:"runtime.connected"});
 
-            //terminateリクエストのリクエストボディ
-            var reqbody = {
-                request: "terminate",
-                serviceID: info.serviceID,
-            }
-            opts.body = JSON.stringify(reqbody);
+                } catch (error) {
+                    node.status({fill:"yellow", shape:"ring", text:error.message});
 
-            iaCloudRequest(opts, function(body) {
-                // 下位層のエラー
-                if (body == null) {
-                  node.status({fill:"red", shape:"ring", text:"runtime.error"});
+                } finally {
+                    done();
                 }
-                else {
-                  if (body.FDSKey == info.FDSKey && body.serviceID == reqbody.serviceID ) {
-                      node.status({fill:"green", shape:"dot", text:"runtime.disconnected"});
-                  }
-                  else{
-                      node.log("someting wrong with  terminating ia-cloud-cnct node");
-                  }
-                }
-                info.serviceID = "";
-                info.status = "disconnected";
-                setTimeout(done, 3000);
-            });
+            })();
         });
     }
-
+    
     RED.nodes.registerType("ia-cloud-cnct",iaCloudCnct,{
         credentials: {
             userID: {type:"text"},

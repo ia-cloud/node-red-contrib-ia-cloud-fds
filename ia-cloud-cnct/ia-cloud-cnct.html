@@ -11,7 +11,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="ia-cloud-cnct">
+<script type="text/html" data-template-name="ia-cloud-cnct">
 
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
@@ -19,7 +19,7 @@
     </div>
     <!-- CCS connection config -->
     <div class="form-row">
-        <label for="node-input-ccsConnectionConfig"><i class="fa fa-link"></i> <span data-i18n="editor.ccs-connection-config" /></label>
+        <label for="node-input-ccsConnectionConfig"><i class="fa fa-link"></i> <span data-i18n="editor.ccs-connection-config"></label>
         <input type="text" id="node-input-ccsConnectionConfig" data-i18n="[placeholder]editor.ccs-connection-config">
     </div>
     <div class="form-row">
@@ -49,40 +49,6 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="ia-cloud-cnct">
-    <p>Provides APIs for an ia-cloud CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-    <dt>request <span class="property-type">string</span></dt>
-    <dd>An ia-cloud Web API <code>request</code> supposed to be sent to a CCS. It has to be one of "store", "retrieve" and "convey".</dd>
-    <dt>dataObject<span class="property-type">object</span></dt>
-    <dd> </dd>
-</dl>
-
-<h3>Outputs</h3>
-<dl class="message-properties">
-    <dt>payload <span class="property-type">string | object</span></dt>
-    <dd>
-        The body of the response. The node can be configured to return the body
-        as a string, attempt to parse it as a JSON string or leave it as a
-        binary buffer.
-    </dd>
-    <dt>statusCode <span class="property-type">number</span></dt>
-    <dd>The status code of the response, or the error code if the request could not be completed.</dd>
-</dl>
-
-<h3>Details</h3>
-<p>The set of url,id and password is supposed tobe provided from a ia-cloud CCS service provider. </p>
-
-<h4>Proxy</h4>
-<p>If running behind a proxy, the standard <code>http_proxy=...</code> environment
-variable should be set and Node-RED restarted.</p>
-
-<h4>Do not use multiple nodes with same FDSKey.</h4>
-<p>When multiple ia-cloud connection nodes used, FDSKey has to be unique. </p>
-
-
 </script>
 
 <script type="text/javascript">
@@ -92,7 +58,7 @@ variable should be set and Node-RED restarted.</p>
         color:"rgb(231, 180, 100)",
         align: "right",
         defaults: {
-            ccsConnectionConfig: { value: '', required: true },
+            ccsConnectionConfig: { value: '', type: "ia-cloud-ccs-connection-config", required: true },
             name: {value:"ia-cloud-cnct"},
             FDSKey: {value:"", required: true},
             comment:{value:""},

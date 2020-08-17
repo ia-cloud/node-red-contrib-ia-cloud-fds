@@ -18,8 +18,9 @@
 const path = require("path");
 const fs = require("fs");
 const serialp = require("serialport");
-const MCProtocol = require("./util/mc-protocol/mc-protocol");
+
 const PLCCom = require('./util/PLC-Com');
+const MCProtocol = require("./util/mc-protocol/mc-protocol");
 
 const KINDS_OF_DEV = ["error", "SM", "SD", "X", "Y", "M", "L", "F", "V", "B", "D", "W", "TN", "CN"];
 const COMMUNICATION_TIMEOUT = 5000;

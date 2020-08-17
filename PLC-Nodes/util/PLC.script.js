@@ -90,19 +90,19 @@ var PLCNodeConfig = {
         const itemTypefm =`
             <select style="display:inline-block; width:80px;"
                 class="itemType">
-                <option selected="selected" value="bit">${lblBit}</span></option>
-                <option value="number">${lblNum}</span></option>
-                <option value="string">${lblStr}</span></option>
+                <option selected="selected" value="bit">${lblBit}</option>
+                <option value="number">${lblNum}</option>
+                <option value="string">${lblStr}</option>
                 <option value="numList">${lblNuml}</option>
             </select>
-            <label style="width:90px; display:inline-block; text-align:right;">${lblDname}</span></label>
+            <label style="width:90px; display:inline-block; text-align:right;">${lblDname}</label>
             <input required="required" type="text" style="display:inline-block; width:150px; text-align:left;"
                 class="dataName" placeholder=${lblDname}>
         `;
         // 2行目以降のプロパティ設定。データタイプ毎に4種類あり、必要に応じてshow(),hide()する。
         const paraForm =`
             <div class="bitFm">
-                <span style="display:inline-block; width:30px"> </span>
+                <span style="display:inline-block; width:30px"> </span>                
                 <select class="bit-deviceType" 
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                     <!-- <option selected="selected" value="Coil">Coil</option>
@@ -111,12 +111,12 @@ var PLCNodeConfig = {
                 <input required="required" class="bit-add" placeholder=${lblAdd} value="0" type="number"
                     min="0" style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:50px; 
-                    display:inline-block; text-align:right;">${lblBitnum}</span></label>
+                    display:inline-block; text-align:right;">${lblBitnum}</label>
                 <input required="required" value="1" type="number"  min="1" class="bit-num" data-i18n="[placeholder]editor.bitNum"
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
                 <select class="bit-logic" style="width:80px; display:inline-block; text-align:right;">
-                    <option selected="selected" value= "pos">${lblPos}</span></option>
-                    <option value= "neg">${lblNeg}</span></option>
+                    <option selected="selected" value= "pos">${lblPos}</option>
+                    <option value= "neg">${lblNeg}</option>
                 </select>
             </div>
             <div class="numberFm hidden">
@@ -138,17 +138,17 @@ var PLCNodeConfig = {
                     </select>
                     <select class="number-encode" 
                         style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
-                        <option selected="selected" value="unsigned">${lblUsign}</span></option>
-                        <option value="signed">${lblSign}</span></option>
-                        <option value="BCD">${lblBCD}</span></option>
+                        <option selected="selected" value="unsigned">${lblUsign}</option>
+                        <option value="signed">${lblSign}</option>
+                        <option value="BCD">${lblBCD}</option>
                     </select>
                 </div>
                 <div style="margin-top:8px;">
                     <span style="display:inline-block; width:30px"> </span>
-                    <label style="width:50px; display:inline-block; text-align:right;">${lblOff}</span></label>
+                    <label style="width:50px; display:inline-block; text-align:right;">${lblOff}</label>
                     <input value="0" type="number" step="any" class="number-offset" placeholder=${lblOff}
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px;">                     
-                    <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblGain}</span></label>
+                    <label style="width:50px; display:inline-block; text-align:right; margin-left:10px;">${lblGain}</label>
                     <input value="1" type="number" step="any" class="number-gain" placeholder=${lblGain}
                         style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
                     <input type="text" class="number-unit" placeholder=${lblUnit}
@@ -164,14 +164,14 @@ var PLCNodeConfig = {
                 </select>
                 <input required="required" value="0" type="number"  min="0" class="string-add" placeholder=${lblAdd}
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
-                <label style="width:50px; display:inline-block; text-align:right;">${lblWnum}</span></label>
+                <label style="width:50px; display:inline-block; text-align:right;">${lblWnum}</label>
                 <input value="1" type="number" min="1" class="string-num" placeholder=${lblWnum}
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
                 <select class="string-encode"
                     style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
-                    <option value="sJIS">${lblSjis}</span></option>
-                    <option selected="selected" value="utf-8">${lblUTF8}</span></option>
-                    <option value="EUC">${lblEUC}</span></option>
+                    <option value="sJIS">${lblSjis}</option>
+                    <option selected="selected" value="utf-8">${lblUTF8}</option>
+                    <option value="EUC">${lblEUC}</option>
                 </select>
             </div>
             <div class="numListFm hidden" style="margin-top:8px;">
@@ -183,7 +183,7 @@ var PLCNodeConfig = {
                 </select>
                 <input required="required" value="0" type="number" min="0" class="numList-add" placeholder=${lblAdd}
                     style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
-                <label style="width:30px; display:inline-block; text-align:right;">${lblWnum}</span></label>
+                <label style="width:30px; display:inline-block; text-align:right;">${lblWnum}</label>
                 <input required="required" value="1" type="number" min="1" class="numList-num" placeholder=${lblWnum}
                     style="width:50px; display:inline-block; text-align:right;">
                 <select class="numList-type" 
@@ -194,8 +194,8 @@ var PLCNodeConfig = {
                 </select>
                 <select class="numList-encode"
                     style="width:65px; display:inline-block; text-align:right;">
-                    <option selected="selected" value="unsigned">${lblUsign}</span></option>
-                    <option value="signed">${lblSign}</span></option>
+                    <option selected="selected" value="unsigned">${lblUsign}</option>
+                    <option value="signed">${lblSign}</option>
                     <option value="BCD">${lblBCD}</option>
                 </select>
             </div>

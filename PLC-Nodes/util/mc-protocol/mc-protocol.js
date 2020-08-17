@@ -17,7 +17,7 @@
 "use strict";
 
 // Modbus-serialモジュールを導入
-const ModbusRTU = require("modbus-serial").default;
+const ModbusRTU = require("modbus-serial");
 const InterByteTimeout = require('@serialport/parser-inter-byte-timeout');
 const Delimiter = require('@serialport/parser-delimiter');
 
@@ -61,21 +61,21 @@ const BAD_ACCESSROUTE_MESSAGE = "Bad access route";
 const BAD_ACCESSROUTE_ERRNO = "Bad access route";
 
 
-var PortNotOpenError = function() {
+var MCPortNotOpenError = function() {
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
     this.message = PORT_NOT_OPEN_MESSAGE;
     this.errno = PORT_NOT_OPEN_ERRNO;
 };
 
-var BadAccessRouteError = function() {
+var MCBadAccessRouteError = function() {
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
     this.message = BAD_ACCESSROUTE_MESSAGE;
     this.errno = BAD_ACCESSROUTE_ERRNO;
 };
 
-var TransactionTimedOutError = function() {
+var MCTransactionTimedOutError = function() {
     this.name = this.constructor.name;
     this.message = TRANSACTION_TIMED_OUT_MESSAGE;
     this.errno = TRANSACTION_TIMED_OUT_ERRNO;
@@ -88,7 +88,7 @@ var TransactionTimedOutError = function() {
  * @param {SerialPort} port the serial port to use.
  */
 
-class MCProtocol extends ModbusRTU {
+class MCProtocol extends ModbusRTU.default {
     constructor(port){
         super(port);
     };
