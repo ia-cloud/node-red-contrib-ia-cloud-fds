@@ -17,7 +17,7 @@
         <div class="form-row">
             <label for="node-config-input-name"><i class="fa fa-tag"></i>
                 <span data-i18n="editor.name"></span></label>
-            <input type="text" id="node-config-input-name" value="modbusCom" >
+            <input type="text" id="node-config-input-name" value="mitsubishiCom" >
         </div>
         <input type="hidden" id="node-config-input-requiredSet">
         <div class="form-row">
@@ -87,25 +87,6 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="Mitsubishi-com">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
-
-<h3>Outputs</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
-
-<h3>Details</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
-</script>
-
 <script type="text/javascript">
 
     // NodeをNode-REDへ登録
@@ -128,7 +109,7 @@
             requiredSet: {value: "", required:true},
         },
         label: function () {
-            return this.name||this._("Modbus-com");
+            return this.name||this._("Mitsubsh-com");
         },
 
         oneditprepare: function() {
@@ -171,7 +152,7 @@
             var comType = $("#node-config-input-comType").val();
             var requiredSet = "ready";
 
-            $("#modbus-com-block").find("input[type='text']").each(function(idx, obj){
+            $("#PLCCom-com-block").find("input[type='text']").each(function(idx, obj){
                 switch($(obj).attr("id")) {
                     case "node-config-input-IPAdd":
                     case "node-config-input-TCPPort":
