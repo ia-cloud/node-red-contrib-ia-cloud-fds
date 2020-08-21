@@ -64,12 +64,17 @@ module.exports = function(RED) {
                 dataValue: 999.99,      // dummy data value
                 nuit: "mm"
             }
+            let msg = {};
             // push dataItem to dataItem array
             if (bashCount === 1 && itemCount < length) {
                 dataItem.dataName = dataParams[itemCount].dataName;
                 dataItem.dataValue = data;
                 dataItems.push(dataItem);
                 itemCount++; 
+                // Send dataItem to message.payload
+                msg.payload = dataItem;
+                node.send(msg);
+                node.status({fill:"green", shape:"dot", text: dataItem.dataName});
             // bash button twice for message out         
             } else if (bashCount === 2){
                 bashCount = 0;
@@ -80,6 +85,10 @@ module.exports = function(RED) {
                 bashCount = 0;
                 itemCount = 0;
                 dataItems = [];
+                // Send dataItem to message.payload
+                msg.payload = dataItems;
+                node.send(msg);
+                node.status({fill:"green", shape:"ring", text: "runtime.reset"});
             }
             bashCount = 0;
         }
@@ -94,7 +103,7 @@ module.exports = function(RED) {
             let msg = {request:"store", dataObject:{objectContent:{}}};
     
             msg.dataObject.objectKey = config.objectKey;
-            msg.dataObject.timeStamp = moment().format();
+            msg.dataObject.timestamp = moment().format();
             msg.dataObject.objectType = "iaCloudObject";
             msg.dataObject.objectDescription = config.objectDescription;
             msg.dataObject.objectContent.contentType = config.contentType;
@@ -133,16 +142,4 @@ module.exports = function(RED) {
     };
 
     RED.nodes.registerType("caliper-Mitsutoyo",caliperMtoyo);
-
-    RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
-        serialp.list().then(
-            ports => {
-                const a = ports.map(p => p.path);
-                res.json(a);
-            },
-            err => {
-                res.json([RED._("serial.errors.list")]);
-            }
-        )
-    });
 }

@@ -10,25 +10,54 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<script type="text/x-red" data-help-name="PLC-Modbus-AE">
-    <p>Modbus機器アラーム＆イベントオブジェクトノード</p>
+<script type="text/html" data-help-name="caliper-Mitsutoyo">
+    <p>ミツトヨ製ノギスノード</p>
+
+<h3>プロパティ項目</h3>
+<dl class="message-properties">
+    <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+    <dl class="message-properties" style="margin-left: 8px">
+        <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+        <dd>アラーム＆イベントオブジェクトに付与するユニークなキー文字列</dd>
+        <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+        <dd>アラーム＆イベントオブジェクトのわかりやすい説明</dd>
+    </dl>
+    <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+    <dl class="message-properties" style="margin-left: 8px">
+        <dt>測定項目リスト<span class="property-type">データ項目リスト</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+            <dd>データ項目の番号。自動で生成される</dd>
+            <dt>データ名称<span class="property-type">文字列</span></dt>
+            <dd>各測定データに付与する名称。測定箇所の数だけ必要</dd>
+        </dl>
+    </dl>
+    <dt>名前<span class="property-type">文字列</span></dt>
+    <dd>個別のNodeに付与する名前</dd>
+</dl>
 
 <h3>入力メーッセージ</h3>
 <dl class="message-properties">
     <dt>msg.payload<span class="property-type">string</span></dt>
-    <dd>iia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    <dd>msrg.payloadの値が"send"の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    <dd>msrg.payloadの値が"reset"の時、その時点での測定データを削除し、最初からの入力待ちとなる。</dd>
 </dl>
 
 <h3>出力メッセージ</h3>
 <dl class="message-properties">
     <dt>msg.request<span class="property-type">string</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
-    <dt>msg.dataObject<span class="property-type">number</span></dt>
+    <dt>msg.dataObject<span class="property-type">オブジェクト</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
+    <dt>msg.payload<span class="property-type">オブジェクト</span></dt>
+    <dd>計測ボタンが押された測定項目のデータ</dd>
 </dl>
 
 <h3>詳細説明</h3>
-<p>Modbus通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
-設定Nodeとして、Modbus-comを使用する。</p>
+<p>ミツトヨ製デジタルノギスの有線USBケーブルに対応したデータ入力ノード。</p>
+<p>計測ボタンを押す度に、設定された計測項目に順次データが格納され、ボタンを2回連続で押下すると、
+    一連の計測データがia-cloudオブジェクトとして送出される。</p>
+<p>設定されたデータ名称の数以上、計測ボタンが押されれも超過分は無効。データ名称の数に達する前に、計測ボタンが2回連続で押されると、計測されたところまでのデータを送出。</p>
+<p>計測ボタンを3回連続で押下すると、全ての計測項目のデータが削除され、最初からの入力となる。</p>
 
 </script>

@@ -11,11 +11,14 @@
         "objectDescription": "objectの説明",
         "contentType": "データ構造Type",
         "dName": "データ名称",
-        "dNameHldr": "必須:名称を入力"
+        "dNameHldr": "必須:名称を入力",
+        "palletLabel": "ミツトヨノギス",
+        "defaultName": "ミツトヨノギス"
     },
     "runtime": {
-        "ready": "Ready",
+        "ready": "測定待ち",
         "preparing": "データ準備中...",
-        "sent": "データ送出"
+        "sent": "データ送出",
+        "reset": "データリセット"
     }
 }
