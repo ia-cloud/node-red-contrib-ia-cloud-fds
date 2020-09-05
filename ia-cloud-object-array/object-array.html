@@ -12,13 +12,9 @@
 -->
 
 
-<script type="text/x-red" data-template-name="object-array">
+<script type="text/html" data-template-name="object-array">
 
-    <div class="form-row">
-        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-        <input type="text" class="form-control" id="node-input-name">
-    </div>
-      
+
     <!-- objectArrayの設定 -->
     <div class="form-row">
         <label for="node-input-interval">
@@ -26,13 +22,12 @@
         <input type="number" id="node-input-interval" min="0" step="10"
             value="300" style="display: inline-block; width: auto;">
         <label for="node-input-length" style="margin-left: 20px;">
-            <span data-i18n="editor.lengthc"></span></label>
+            <span data-i18n="editor.length"></span></label>
         <input type="number" id="node-input-length" min="1" step="1" max="100"
             value="30" style="display: inline-block; width: auto;" >
     </div>
     <div class="form-row">
-        <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span>
-            <span style="color: #ff0000;">*</span></label>
+        <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
         <input class="form-control" type="text" style="width: 300px"
         id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
     </div>
@@ -41,34 +36,21 @@
             for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
         <input type="text" style="width: 300px" id="node-input-objectDescription">
     </div>
-</script>
-
-<script type="text/x-red" data-help-name="object-array">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-  TBD
-</dl>
-
-<h3>Outputs</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-
-<h3>Details</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
+    <hr>
+    <div class="form-row">
+        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+        <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+    </div>
+      
 </script>
 
 <script type="text/javascript">
 
   RED.nodes.registerType('object-array',{
-    category: 'iaCloud',
+    category: 'iaCloud services',
     color:"rgb(231, 180, 100)",
     defaults: {
-        name: {value:"object-array"},
+        name: {value:""},
         interval: { value: 10, required: true},
         length: { value: 30, required: true},
         objectKey: { value: '', required: true},
@@ -77,8 +59,11 @@
     inputs:1,
     outputs:1,
     icon: "ia-cloud.png",
+    paletteLabel: function() {
+            return this._("editor.palletLabel") || "iaCloud Object array";
+        },
     label: function() {
-        return this.name||this._("Plc-object");
+        return this.name||this._("editor.palletLabel");
     },
     labelStyle: function() {
         return this.name?"node_label_italic":"";

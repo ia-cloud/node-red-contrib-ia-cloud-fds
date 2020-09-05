@@ -11,7 +11,7 @@
   limitations under the License.
 -->
 
-<script type="text/x-red" data-template-name="tmp-ctrl-omron-AE">
+<script type="text/html" data-template-name="tmp-ctrl-omron-AE">
 
     <div class="form-row">
         <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
@@ -39,11 +39,11 @@
         <ul>
           <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
             class="nav-link red-ui-tab-label" data-toggle="tab">
-            <span data-i18n="editor.tab.object-config" /></a>
+            <span data-i18n="editor.tab.object-config"></a>
           </li>
           <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
             class="nav-link red-ui-tab-label" data-toggle="tab">
-            <span data-i18n="editor.tab.AnE-config" /></a>
+            <span data-i18n="editor.tab.AnE-config"></a>
           </li>
         </ul>
       </div>
@@ -141,32 +141,13 @@
 
 </script>
 
-<script type="text/x-red" data-help-name="tmp-ctrl-omron-AE">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-<dl class="message-properties">
-  TBD
-</dl>
-
-<h3>Outputs</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-
-<h3>Details</h3>
-  <dl class="message-properties">
-  TBD
-  </dl>
-</script>
-
 <script type="text/javascript">
 
   RED.nodes.registerType('tmp-ctrl-omron-AE',{
-    category: 'iaCloud',
+    category: 'iaCloud devices',
     color:"rgb(231, 180, 100)",
     defaults: {
-        name: {value:"tmp-ctrl-omron-AE"},
+        name: {value:""},
         confsel: {value:"ui-config", required: true},
         configJson: {value:"", required: true},
         ModbusCom: {value:"", type:"Modbus-com", required: true},
@@ -176,10 +157,13 @@
     outputs:1,
     icon: "ia-cloud.png",  //アイコンはTBD
     label: function() {
-        return this.name||this._("Plc-object");
+        return this.name || this._("editor.paletteLabel");
     },
     labelStyle: function() {
         return this.name?"node_label_italic":"";
+    },
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "tmp-ctrl-omron-A&E";
     },
     oneditprepare: function() {
 

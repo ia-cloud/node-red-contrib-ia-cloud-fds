@@ -14,20 +14,16 @@
 <script type="text/html" data-template-name="caliper-Mitsutoyo">
 
     <!-- Tab, ownself -->
-    <div id="ui-tabs">
-        <ul>
-            <li >
-                <a href="#tab-object-property">
-                    <span data-i18n="editor.tab.object-settings" ></span></a>
-            </li>
-            <li>
-                <a href="#tab-dItem-property">
-                    <span data-i18n="editor.tab.data-settings" ></span></a>
-            </li>
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
         </ul>
+    </div>
 
-        <!-- tab-object-property starts -->
-        <div id="tab-object-property" class="tab-pane">
+    <!-- Tab contents -->
+    <div id="caliper-tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <div id="tab-object-properties" class="tab-pane">
             <!-- object propertyの設定 -->
             <div class="form-group" style="margin-left: 20px; margin-top:8px";>
                 <div class="form-row">
@@ -39,33 +35,33 @@
                 <div class="form-row">
                     <label style="margin-right: 10px;"
                         for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-                    <input type="text" style="width: 300px" id="node-input-objectDescription">
+                    <input type="text" style="width: 300px" id="node-input-objectDescription" data-i18n="[placeholder]editor.objectDescription">
                 </div>
             </div>
         </div>
-        <!-- tab-object-property ends -->
+        <!-- tab-object-properties ends -->
 
-        <!-- tab-dItem-property starts -->
-        <div id="tab-dItem-property">
+        <!-- tab-dataItem-properties starts -->
+        <div id="tab-dataItem-properties">
             <!-- data Item propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
                 <label for="node-input-contentType" style="width: 120px; margin-left: 10px">
                     <span data-i18n="editor.contentType"></span></label>
-                <input type="text" id="node-input-contentType" value="iaCloudObject" disabled="disabled">
+                <input type="text" id="node-input-contentType" disabled="disabled">
             </div>
             <div class="form-row node-input-container-row">
                 <ol id="node-input-container">
                 </ol>
             </div>
         </div>  
-        <!-- tab-dItem-property ends -->      
+        <!-- tab-dataItem-properties ends -->      
     </div>
-    <hr>
     <!-- node name block -->
     <div id="name-block">
+        <hr>
         <div class="form-row">
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
         </div>
     </div>
 
@@ -76,7 +72,7 @@
 var NodeConfig = {
 
 
-    category: 'iaCloud',
+    category: 'iaCloud devices',
     color: "rgb(231, 180, 100)",
 
     defaults: {
@@ -86,7 +82,7 @@ var NodeConfig = {
         objectName: {value:""},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
-
+        contentType: {value: "iaCloudData", required: true},
         dataParams: {value: [""], required: true}
     },
     inputs: 1,
@@ -94,19 +90,16 @@ var NodeConfig = {
     icon: "ia-cloud.png",  //アイコンはTBD
 
     label: function () {
-        return this.name||this._("editor.defaultName");
+        return this.name||this._("editor.paletteLabel");
     },
     labelStyle: function () {
         return this.name?"node_label_italic":"";
     },
     paletteLabel: function() {
-        return this._("editor.palletLabel") || "data evaluation";
+        return this._("editor.paletteLabel") || "Mitsutoyo caliper";
     },
     oneditprepare: function () {
         const node = this;
-
-        // default Node name 
-        if ($("#node-input-name")) $("#node-input-name").val(node._("editor.defaultName"));
 
         const lbldName = node._("editor.dName");
         const lbldNameHolder = node._("editor.dNameHldr");
@@ -119,8 +112,23 @@ var NodeConfig = {
                 style="width:150px; display:inline-block; text-align:left; margin-right:20px;">
         `;
 
-        // Tab要素を設定（Jquery UI を使用）
-        $("#ui-tabs").tabs({active: 1});
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#caliper-tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
 
         // Define editableList.
         $('#node-input-container').css('min-height', '150px').css('min-width', '450px').editableList({
@@ -200,26 +208,30 @@ var NodeConfig = {
     },
 
     oneditresize: function (size) {
-        // エディタがリサイズされたら
-        let height = size.height;
 
-        // Tab以外の部分の高さを引く
-        height -= $("#name-block").outerHeight(true);
+        // Is the editableList tab visible ?
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
 
-        // dataItemプロパティTab内の、editableList以外の行の高さを引く
-        let rows = $("#tab-dItem-property>div:not(.node-input-container-row)");
-        for (let i=0; i<rows.length; i++) {
-            height -= $(rows[i]).outerHeight(true);
+            // Tab以外の部分の高さを引く
+            height -= $("#name-block").outerHeight(true);
+
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 50;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-container").editableList('height',height);
         }
-        // タブの部分の高さ（大体）
-        height -= 50;
-
-        // editableListのマージンを引く
-        const editorRow = $("#tab-dItem-property>div.node-input-container-row");
-        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-
-        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
-        $("#node-input-container").editableList('height',height);
 
     },
 }

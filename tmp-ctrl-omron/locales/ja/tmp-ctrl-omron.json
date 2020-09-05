@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "ノード名称",
+        "paletteLabel": "オムロン温調計",
         "ui-config": "ここで設定",
         "fileConfig": "設定ファイル",
         "tab": {

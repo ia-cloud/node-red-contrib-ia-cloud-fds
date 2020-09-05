@@ -1,6 +1,6 @@
 {
     "editor": {
-        "name": "名前",
+        "name": "ノード名称",
         "tab": {
           "object-settings": "オブジェクトの設定",
           "data-settings": "データの設定"
@@ -12,8 +12,7 @@
         "contentType": "データ構造Type",
         "dName": "データ名称",
         "dNameHldr": "必須:名称を入力",
-        "palletLabel": "ミツトヨノギス",
-        "defaultName": "ミツトヨノギス"
+        "paletteLabel": "ミツトヨノギス"
     },
     "runtime": {
         "ready": "測定待ち",

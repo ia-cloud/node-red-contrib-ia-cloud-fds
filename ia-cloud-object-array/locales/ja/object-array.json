@@ -1,8 +1,9 @@
 {
     "editor": {
-        "name": "名前",
-        "period": "定期収集周期",
-        "async": "非同期収集有り",
+        "palletLabel": "オブジェクトアレー",
+        "name": "ノード名称",
+        "period": "まとめ送出周期",
+        "length": "まとめ送出数",
         "objectname": "object名称",
         "objectKey": "objectキー",
         "objectKeyholder": "必須: 固有のキー",
