@@ -1,0 +1,104 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/html" data-template-name="ia-cloud-cnct2">
+
+    <!-- CCS connection config -->
+    <div class="form-row">
+        <label for="node-input-ccsConnectionConfig"><i class="fa fa-link"></i> <span data-i18n="editor.ccs-connection-config"></label>
+        <input type="text" id="node-input-ccsConnectionConfig" data-i18n="[placeholder]editor.ccs-connection-config">
+    </div>
+    <div class="form-row">
+        <label for="node-input-FDSKey"> <span data-i18n="editor.FDSKey"></span></label>
+        <input type="text" id="node-input-FDSKey">
+    </div>
+    <div class="form-row">
+        <label for="node-input-comment"> <span data-i18n="editor.comment"></span></label>
+        <input type="text" id="node-input-comment">
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-details" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-details" style="width: 70%;"><span data-i18n="editor.details"></span></label>
+        <div style="margin-left: 20px" class="node-input-details-row hide">
+            <div class="form-row">
+                <label for="node-input-cnctRetryInterval"><span data-i18n="editor.cnctRetryInterval"></span></label>
+                <input type="number" min="0" id="node-input-cnctRetryInterval">
+            </div>
+            <div class="form-tips" id="tip-cnctRetryInterval"><span data-i18n="editor.tip-cnctRetryInterval"></span></div>
+            <div class="form-row">
+                <label for="node-input-tappingInterval"><span data-i18n="editor.tappingInterval"></span></label>
+                <input type="number"  min="0" id="node-input-tappingInterval">
+            </div>
+            <div class="form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-tappingInterval"></span></div>
+        </div>
+    </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="editor.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]editor.name">
+    </div>
+
+</script>
+
+</script>
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('ia-cloud-cnct2',{
+        category: 'iaCloud services',
+        color:"rgb(231, 180, 100)",
+        align: "right",
+        defaults: {
+            ccsConnectionConfig: { value: '', type: "ia-cloud-ccs-connection-config", required: true },
+            name: {value:""},
+            FDSKey: {value:"", required: true},
+            comment:{value:""},
+            cnctRetryInterval:{value:60, validate: RED.validators.number()},
+            tappingInterval:{value:24, validate: RED.validators.number()}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "ia-cloud CCS";
+        },
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+
+        oneditprepare: function() {
+            $("#node-input-details").change(function() {
+                if ($(this).is(":checked")) {
+                    $(".node-input-details-row").show();
+                } else {
+                    $(".node-input-details-row").hide();
+                    $('#node-input-cnctRetryInterval').val(60);
+                    $('#node-input-tappingInterval').val(24);
+                }
+            });
+            if ($('#node-input-cnctRetryInterval').val() != 60
+                || $('#node-input-tappingInterval').val() != 24)
+            {
+                $('#node-input-details').prop('checked', true);
+            } else {
+                $('#node-input-details').prop('checked', false);
+            }
+            $("#node-input-details").change();
+
+        }
+    });
+
+</script>
