@@ -1,6 +1,7 @@
 {
     "editor": {
-        "name": "名前",
+        "name": "ノード名称",
+        "paletteLabel": "三菱シーケンサA&E",
         "ui-config": "ここで設定",
         "fileConfig": "設定ファイル",
         "tab": {

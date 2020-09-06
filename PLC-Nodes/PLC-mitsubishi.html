@@ -13,12 +13,7 @@
 
 <script type="text/html" data-template-name="PLC-Mitsubishi">
 
-    <div id="PLC-name-block">
-        <div class="form-row">
-            <label for="node-input-name" >
-                <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
-        </div>
+    <div id="PLC-com-block">
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
         <div class="form-row">
@@ -27,21 +22,18 @@
             </label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
-        <hr>
     </div>
+
     <!-- Tab, ownself -->
-    <div id="ui-tabs">
-        <ul>
-            <li>
-                <a href="#tab-object-property"><span data-i18n="editor.tab.object-settings"></span></a>
-            </li>
-            <li>
-                <a href="#tab-dItem-property"><span data-i18n="editor.tab.data-settings"></span></a>
-            </li>
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
         </ul>
-        
-        <!-- tab-object-property starts -->
-        <div id="tab-object-property">
+    </div>
+    <!-- Tab contents -->
+    <div id="plc-tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties start -->
+        <div id="tab-object-properties" style="display:none">
             <!-- object propertyの設定 -->
             <div class="form-group" style="margin-left: 20px; margin-top:8px;">
                 <div class="form-row">
@@ -64,10 +56,10 @@
                 </div>
             </div>
         </div>
-        <!-- tab-object-property ends -->
+        <!-- tab-object-properties end -->
 
-        <!-- tab-dItem-property starts -->
-        <div id="tab-dItem-property">
+        <!-- tab-dItem-properties start -->
+        <div id="tab-dataItem-properties" style="display:none">
             <!-- dataItem propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
                 <label for="node-input-contentType"><i class="fa fa-tag"></i><span data-i18n="editor.contentType"></span></label>
@@ -78,7 +70,17 @@
                 </ol>
             </div>
         </div>
-        <!-- tab-dItem-property ends -->
+        <!-- tab-dItem-properties end -->
+    </div>
+    <!-- tabs end -->
+
+    <div id="PLC-name-block">
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name" >
+                <i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name">
+        </div>
     </div>
 
     <!-- PLC-mitsubishi device type definition  -->
@@ -125,7 +127,6 @@
         let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value:"PLC-Mitsubishi"};
         dflts.comNode = {value: "", type: "Mitsubishi-com", required: true};
         dflts.contentType = {value: "MitsubishiPLC"};
 

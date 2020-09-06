@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "名前",
+        "paletteLabel": "モドバスPLC A&E",
         "ui-config": "ここで設定",
         "fileConfig": "設定ファイル",
         "tab": {

@@ -17,7 +17,7 @@
 var PLCAENodeConfig = {
 
 
-    category: 'iaCloud',
+    category: 'iaCloud devices',
     color: "rgb(231, 180, 100)",
 
     defaults: {
@@ -49,8 +49,11 @@ var PLCAENodeConfig = {
     outputs: 1,
     icon: "ia-cloud.png",  //アイコンはTBD
 
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "PLC-Mitsubishi-AnE";
+    },
     label: function () {
-        return this.name||this._("PlcData-object");
+        return this.name||this._("editor.paletteLabel");
     },
     labelStyle: function () {
         return this.name?"node_label_italic":"";
@@ -92,8 +95,23 @@ var PLCAENodeConfig = {
             </div>
         `;
  
-        // Tab要素を設定（Jquery UI を使用）
-        $("#ui-tabs").tabs({active: 1});
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#plc-tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-AnE-properties',
+            label: this._('editor.tab.data-settings'),
+        });
 
         // Define editableList.
         $('#node-input-AnEcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
@@ -171,8 +189,8 @@ var PLCAENodeConfig = {
         items.each(function(i, elm){
             let item = {
                 // Fixed DataItem property
-                itemType: node.defaultDataItem.itemType,
-                commonName: node.defaultDataItem.commonName,
+                itemType: $("#defaultDataItem").data("itemtype"),
+                commonName: $("#defaultDataItem").data("commonname"),
                 // Set A&E propertise back
                 AnE: {          
                     deviceType: elm.find(".deviceType").val(),
@@ -198,26 +216,30 @@ var PLCAENodeConfig = {
     },
 
     oneditresize: function (size) {
-        // エディタがリサイズされたら
-        let height = size.height;
 
-        // Tab以外の部分の高さを引く
-        height -= $("#PLC-name-block").outerHeight(true);
+        if ($("#tab-AnE-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
 
-        // dataItemプロパティTab内の、editableList以外の行の高さを引く
-        let rows = $("#tab-AnE-property>div:not(.node-input-AnEcontainer-row)");
-        for (let i=0; i<rows.length; i++) {
-            height -= $(rows[i]).outerHeight(true);
+            // Tab以外の部分の高さを引く
+            height -= $("#PLC-com-block").outerHeight(true);
+            height -= $("#PLC-name-block").outerHeight(true);
+
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-AnE-properties>div:not(.node-input-AnEcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 50;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-AnE-properties>div.node-input-AnEcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+    
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-AnEcontainer").editableList('height',height);
         }
-        // タブの部分の高さ（大体）
-        height -= 50;
-
-        // editableListのマージンを引く
-        const editorRow = $("#tab-AnE-property>div.node-input-AnEcontainer-row");
-        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-  
-        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
-        $("#node-input-AnEcontainer").editableList('height',height);
 
     },
 }

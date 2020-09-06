@@ -14,11 +14,7 @@
 <script type="text/html" data-template-name="Mitsubishi-com">
 
     <div id="PLCCom-main-block">
-        <div class="form-row">
-            <label for="node-config-input-name"><i class="fa fa-tag"></i>
-                <span data-i18n="editor.name"></span></label>
-            <input type="text" id="node-config-input-name" value="mitsubishiCom" >
-        </div>
+
         <input type="hidden" id="node-config-input-requiredSet">
         <div class="form-row">
             <label for="node-config-input-refreshCycle"><span data-i18n="editor.cycle"></span></label>
@@ -85,6 +81,12 @@
         <label for="node-config-input-accessRoute"><span data-i18n="editor.accessRoute"></span></label>
         <input type="text" style="width: 200px" id="node-config-input-accessRoute" data-i18n="[placeholder]editor.accessRouteExp">
     </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i>
+            <span data-i18n="editor.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]editor.name">
+    </div>
 </script>
 
 <script type="text/javascript">
@@ -109,7 +111,7 @@
             requiredSet: {value: "", required:true},
         },
         label: function () {
-            return this.name||this._("Mitsubsh-com");
+            return this.name||this._("editor.label");
         },
 
         oneditprepare: function() {

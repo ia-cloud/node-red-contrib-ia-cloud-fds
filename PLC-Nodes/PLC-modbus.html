@@ -13,11 +13,7 @@
 
 <script type="text/html" data-template-name="PLC-Modbus">
 
-    <div id="PLC-name-block">
-        <div class="form-row">
-            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
-        </div>
+    <div id="PLC-com-block">
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
         <!-- modbus node（設定Node）の選択-->
@@ -26,21 +22,17 @@
                 <span data-i18n="editor.comNode"></span></label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
-        <hr>
     </div>
     <!-- Tab, ownself -->
-    <div id="ui-tabs">
-        <ul>
-            <li>
-                <a href="#tab-object-property"><span data-i18n="editor.tab.object-settings"></span></a>
-            </li>
-            <li>
-                <a href="#tab-dItem-property"><span data-i18n="editor.tab.data-settings"></span></a>
-            </li>
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
         </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="plc-tabs-content" style="min-height:250px;">
         
-        <!-- tab-object-property starts -->
-        <div id="tab-object-property">
+        <!-- tab-object-properties starts -->
+        <div id="tab-object-properties">
             <!-- object propertyの設定 -->
             <div class="form-group" style="margin-left: 20px; margin-top:8px;">
                 <div class="form-row">
@@ -63,10 +55,10 @@
                 </div>
             </div>
         </div>
-        <!-- tab-object-property ends -->
+        <!-- tab-object-properties ends -->
 
-        <!-- tab-dItem-property starts -->
-        <div id="tab-dItem-property">
+        <!-- tab-dataItem-properties starts -->
+        <div id="tab-dataItem-properties">
             <!-- dataItem propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
                 <label for="node-input-contentType"><i class="fa fa-tag"></i><span data-i18n="editor.contentType"></span></label>
@@ -77,9 +69,15 @@
                 </ol>
             </div>
         </div>
-        <!-- tab-dItem-property ends -->
+        <!-- tab-dataItem-properties ends -->
     </div>
-
+    <div id="PLC-name-block">
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name">
+        </div>
+    </div>
     <!-- PLC-modbus device type definition -->
     <div style="display:none" id="deviceTypeDef">
         <!-- PLC-modbus device setect options -->
@@ -122,7 +120,6 @@
         let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value: "PLC-Modbus"}; 
         dflts.comNode = {value: "", type: "Modbus-com", required: true};
         dflts.contentType = {value: "ModbusPLC"};
 

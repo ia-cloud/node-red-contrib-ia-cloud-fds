@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "ノード名称",
+        "label": "モドバス通信",
         "cycle": "通信周期",
         "maxDataNum": "連続読出数",
         "noBlank": "連続読出限定",

@@ -13,11 +13,7 @@
 
 <script type="text/html" data-template-name="PLC-Mitsubishi-AE">
 
-    <div id="PLC-name-block">
-        <div class="form-row">
-            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
-        </div>
+    <div id="PLC-com-block">
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
         <!-- modbus node（設定Node）の選択-->
@@ -26,23 +22,17 @@
                 <span data-i18n="editor.modbusNode"></label>
             <input type="text" style="width: 300px" id="node-input-comNode">
         </div>
-        <hr>
     </div>
     <!-- Tab, ownself -->
-    <div id="ui-tabs">
-        <ul>
-            <li >
-                <a href="#tab-object-property">
-                    <span data-i18n="editor.tab.object-settings" ></span></a>
-            </li>
-            <li>
-                <a href="#tab-AnE-property">
-                    <span data-i18n="editor.tab.data-settings" ></span></a>
-            </li>
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
         </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="plc-tabs-content" style="min-height:250px;">
 
-        <!-- tab-object-property starts -->
-        <div id="tab-object-property" class="tab-pane">
+        <!-- tab-object-properties starts -->
+        <div id="tab-object-properties" class="tab-pane">
             <!-- object propertyの設定 -->
             <div class="form-group" style="margin-left: 20px; margin-top:8px";>
                 <div class="form-row">
@@ -68,10 +58,10 @@
                 </div>
             </div>
         </div>
-        <!-- tab-object-property ends -->
+        <!-- tab-object-properties ends -->
 
-        <!-- tab-AnE-property starts -->
-        <div id="tab-AnE-property">
+        <!-- tab-AnE-properties starts -->
+        <div id="tab-AnE-properties">
             <!-- A&E Item propertyの設定 -->
             <div class="form-row" style="margin-top:8px;">
                 <label for="node-input-contentType">
@@ -83,8 +73,17 @@
                 </ol>
             </div>
         </div>  
-        <!-- tab-AnE-property ends -->      
+        <!-- tab-AnE-properties ends -->      
     </div>
+
+    <div id="PLC-name-block">
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+    </div>
+
     <!-- PLC-mitsubishi-AE device type definition -->
     <div style="display:none" id="deviceTypeDef">
         <!-- PLC-mitsubishi-AE device setect options -->
@@ -101,7 +100,7 @@
     </div>
     <!-- PLC-mitsubishi-AE new dataItem defaults -->
     <!-- jQuery's data attribute can't be upper case, must be lower case-->
-    <div style="display:none" id="defaultDataItem" data-itemtype="AnE"></div>
+    <div style="display:none" id="defaultDataItem" data-itemtype="AnE" data-commonname="Alarm&Event"></div>
     <div style="display:none" id="defaultAnE" data-devicetype="M"
         data-address="0" data-logic="pos" data-anecode="" data-anedesc=""></div>
 
@@ -118,7 +117,6 @@
         let dflts = Object.assign({},cfg.defaults);
 
         // Nodeプロパティーのデフォルト設定を上書き
-        dflts.name = {value: "PLC-Mitsubishi-AE"}; 
         dflts.comNode = {value: "", type: "Mitsubishi-com", required: true};
         dflts.contentType = {value: "Alarm&Event"};
 

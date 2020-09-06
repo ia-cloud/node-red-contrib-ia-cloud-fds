@@ -16,7 +16,7 @@
 
 var PLCNodeConfig = {
 
-    category:'iaCloud',
+    category:'iaCloud devices',
     color: "rgb(231, 180, 100)",
     
     defaults: {
@@ -51,11 +51,12 @@ var PLCNodeConfig = {
     outputs: 1,
     icon: "ia-cloud.png",  //アイコンはTBD
 
-
-    label: function () {
-        return this.name||this._("PlcData-object");
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "PLC-Mitsubishi";
     },
-
+    label: function () {
+        return this.name || this._("editor.paletteLabel");
+    },
     labelStyle: function () {
         return this.name?"node_label_italic":"";
     },
@@ -201,8 +202,23 @@ var PLCNodeConfig = {
             </div>
         `;
 
-        // Tab要素を設定（Jquery UI を使用）
-        $("#ui-tabs").tabs({active: 1});
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#plc-tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
 
         // Define editableList.
         $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
@@ -420,26 +436,28 @@ var PLCNodeConfig = {
     },
 
     oneditresize: function (size) {
-        // エディタがリサイズされたら
-        let height = size.height;
-        // Tab以外の部分の高さを引く
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
 
-        height -= $("#PLC-name-block").outerHeight(true);
+            // Tab以外の部分の高さを引く
+            height -= $("#PLC-com-block").outerHeight(true);
+            height -= $("#PLC-name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 50;
 
-        // dataItemプロパティTab内の、editableList以外の行の高さを引く
-        let rows = $("#tab-dItem-property>div:not(.node-input-dItemcontainer-row)");
-        for (let i=0; i<rows.length; i++) {
-            height -= $(rows[i]).outerHeight(true);
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
         }
-        // タブの部分の高さ（大体）
-        height -= 50;
-
-        // editableListのマージンを引く
-        const editorRow = $("#tab-dItem-property>div.node-input-dItemcontainer-row");
-        height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-        
-        // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
-        $("#node-input-dItemcontainer").editableList('height',height);
     }
 };
 

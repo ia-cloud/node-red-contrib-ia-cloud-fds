@@ -14,11 +14,7 @@
 <script type="text/html" data-template-name="Modbus-com">
 
     <div id="PLCCom-main-block">
-        <div class="form-row">
-            <label for="node-config-input-name"><i class="fa fa-tag"></i>
-                <span data-i18n="editor.name"></span></label>
-            <input type="text" id="node-config-input-name" value="modbusCom" >
-        </div>
+
         <input type="hidden" id="node-config-input-requiredSet">
         <div class="form-row">
             <label for="node-config-input-refreshCycle"><span data-i18n="editor.cycle"></span></label>
@@ -86,26 +82,12 @@
             </select>
         </div>
     </div>
+    <hr>
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i>
+            <span data-i18n="editor.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]editor.name">
     </div>
-</script>
-
-<script type="text/x-red" data-help-name="Modbus-com">
-    <p>preparing ia-cloud objects for store to CCS</p>
-
-<h3>Inputs</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
-
-<h3>Outputs</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
-
-<h3>Details</h3>
-    <dl class="message-properties">
-        TBD
-    </dl>
 </script>
 
 <script type="text/javascript">
@@ -135,7 +117,7 @@
 
 
         label: function () {
-            return this.name||this._("Modbus-com");
+            return this.name||this._("editor.label");
         },
 
         oneditprepare: function() {

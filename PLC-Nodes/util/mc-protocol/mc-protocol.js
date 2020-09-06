@@ -275,7 +275,7 @@ class MCProtocol extends ModbusRTU.default {
                 function(){
                     transaction._timeoutFired = true;
                     if (transaction.next) {
-                        transaction.next(new TransactionTimedOutError());
+                        transaction.next(new MCTransactionTimedOutError());
                     }
                 }, this._timeout
             );
