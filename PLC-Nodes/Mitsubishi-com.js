@@ -58,7 +58,7 @@ class MitsubishiCom extends PLCCom {
         for (let param of params){
             resp = await mcpObj.readPLCDev(this.accessRoute, param);
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
         return values;
     }
