@@ -28,7 +28,7 @@
         <div > <hr> </div>
         <div class="form-row">
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
         </div>
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
@@ -41,7 +41,7 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('change-detect',{
-        category: 'iaCloud',
+        category: 'iaCloud functions',
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
@@ -54,13 +54,13 @@
         outputs:1,
         icon: "ia-cloud.png",
         label: function() {
-            return this.name||this._("editor.defaultName");
+            return this.name||this._("editor.paletteLabel");
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.palletLabel") || "change-detect data";
+            return this._("editor.paletteLabel") || "change-detect data";
         },
         oneditprepare: function() {
             var node = this;

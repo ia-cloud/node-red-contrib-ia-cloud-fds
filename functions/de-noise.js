@@ -58,9 +58,11 @@ module.exports = function(RED) {
                 objBuffer.push(buffObj);
             }
 
-            if (moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= param.interval) {
-                buffObj.preTimestamp = msg.dataObject.timestamp;
-                return;
+            if (typeof param.interval === "number" && param.interval !== 0){
+                if (moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= param.interval) {
+                    buffObj.preTimestamp = msg.dataObject.timestamp;
+                    return;
+                }
             }
 
             let dataItems = msg.dataObject.objectContent.contentData.concat();
@@ -85,8 +87,10 @@ module.exports = function(RED) {
 
                 // displacement from the previous data
                 let disp = Math.abs(dataItems[i].dataValue - item.preValue);
+
                 // store dataValue as a previous data
                 item.preValue = dataItems[i].dataValue;
+
                 // check the displacement
                 if (disp > param.disp) dataItems[i] = {};
             }

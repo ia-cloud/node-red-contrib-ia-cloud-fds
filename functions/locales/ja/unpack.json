@@ -1,8 +1,7 @@
 {
     "editor": {
-        "palletLabel": "データ抽出",
+        "paletteLabel": "データ抽出",
         "objKey": "オブジェクトKey",
-        "defaultName": "抽出",
         "name": "ノード名称",
         "rules": "取り出しリスト",
         "dataName": "データ名称",

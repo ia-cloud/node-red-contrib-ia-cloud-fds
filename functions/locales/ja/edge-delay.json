@@ -1,7 +1,6 @@
 {
     "editor": {
-        "palletLabel": "変化と遅延",
-        "defaultName": "変化と遅延",
+        "paletteLabel": "変化と遅延",
         "name": "ノード名称",
         "condetionList": "検出条件リスト",
         "objkey": "オブジェクトキー",

@@ -1,7 +1,6 @@
 {
     "editor": {
-        "palletLabel": "データ評価",
-        "defaultName": "データ評価",
+        "paletteLabel": "データ評価",
         "name": "ノード名称",
         "action": "判定後の動作",
         "bool": "論理出力への変更",

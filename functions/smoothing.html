@@ -28,7 +28,7 @@
         <div > <hr> </div>
         <div class="form-row">
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
+            <input type="text" class="form-control" id="node-input-name"  data-i18n="[placeholder]editor.name">
         </div>
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
@@ -41,7 +41,7 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('smoothing',{
-        category: 'iaCloud',
+        category: 'iaCloud functions',
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
@@ -54,13 +54,13 @@
         outputs:1,
         icon: "ia-cloud.png",
         label: function() {
-            return this.name||this._("editor.defaultName");
+            return this.name||this._("editor.paletteLabel");
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.palletLabel") || "data smoothing";
+            return this._("editor.paletteLabel") || "data smoothing";
         },
         oneditprepare: function() {
             var node = this;
@@ -93,7 +93,7 @@
                     </label>
                     <label style="width:80px; margin-left:10px; text-align:right;">${lblinitTime}</label>
                     <input type="number" class="initTime" required="required"
-                        step="1" min="0" max="300" style="width:50px; margin-left:10px; display:inline-block; text-align:right;">
+                        step="1" min="0" max="300" style="width:60px; margin-left:10px; display:inline-block; text-align:right;">
                     <label style="width:20px; text-align: left;">
                         <span style="font-weight: bold">${lblsec}</span>
                     </label>
@@ -170,7 +170,8 @@
                 node.params.push(param);
 
                 // required properties are not empty
-                if (!param.range || !param.initTime) configReady = "";
+                if (!(typeof param.range === "number") 
+                        || !(param.initTime >= 0 && param.initTime <= 300)) configReady = "";
             });
             // 設定完了フラグをセット
             $("#node-input-configReady").val(configReady);

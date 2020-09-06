@@ -42,7 +42,7 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('unpack',{
-        category: 'iaCloud',
+        category: 'iaCloud functions',
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
@@ -56,17 +56,17 @@
         inputs:1,
         outputs:1,
         outputLabels: function(index) {
-            return this.rules[index].dataName;
+            return this.rules[index].dataLabel || this.rules[index].dataName;
         },
         icon: "ia-cloud.png",
         label: function() {
-            return this.name||this._("editor.defaultName");
+            return this.name||this._("editor.paletteLabel");
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.palletLabel") || "data unpack";
+            return this._("editor.paletteLabel") || "data unpack";
         },
         oneditprepare: function() {
             var node = this;
@@ -178,7 +178,7 @@
             height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
             
             // height 360 を最大とする。
-            if (height > 360) height = 360;
+            // if (height > 360) height = 360;
 
             // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
             $("#node-input-rule-container").editableList('height',height);

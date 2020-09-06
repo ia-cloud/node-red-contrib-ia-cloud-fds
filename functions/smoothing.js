@@ -59,15 +59,19 @@ module.exports = function(RED) {
             }
 
             let contentData = msg.dataObject.objectContent.contentData;
-
+            let range, initTime, value;
             for (let dItem of contentData) {
                 
+                value = Number(dItem.dataValue);
                 // dataName or commonName dose match para's ?
                 let param = prms.find(pr => { return (pr.dataName === ""
                     || dItem.dataName === pr.dataName
                     || dItem.commonName === pr.dataName)
                 });
                 if (!param) continue;
+
+                range = parseInt(param.range);
+                initTime = parseInt(param.initTime);
 
                 let item = buffObj.cDataArray.find(elm => {
                     return elm.dataName === dItem.dataName
@@ -77,7 +81,7 @@ module.exports = function(RED) {
                 if (!item) {
                     item = {
                         dataName: dItem.dataName,
-                        dataValueBuff: new Array(parseInt(param.range)),
+                        dataValueBuff: new Array(range),
                         sum: 0,
                         pointer: 0,
                         dNum: 1
@@ -86,9 +90,8 @@ module.exports = function(RED) {
                     buffObj.cDataArray.push(item);
                 }
 
-                if (parseInt(param.initTime) !== 0 &&
-                    moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp
-                     >= parseInt(param.initTime)) {
+                if (initTime !== 0 &&
+                    moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= initTime) {
                     item.sum = 0;
                     item.dataValueBuff.fill(0);
                     item.pointer = 0;
@@ -96,18 +99,18 @@ module.exports = function(RED) {
                 }
 
                 // subtracts the oldest and adds the new one
-                item.sum = item.sum - item.dataValueBuff[item.pointer] + dItem.dataValue;
+                item.sum = item.sum - item.dataValueBuff[item.pointer] + value;
 
                 // store newest data to th buffer
-                item.dataValueBuff[item.pointer] = dItem.dataValue;
+                item.dataValueBuff[item.pointer] = value;
+
                 // culcurate moving ave. and set it to the dataValue
                 dItem.dataValue = item.sum / item.dNum;
-
                 // update pointers
                 item.pointer++;
                 item.dNum++;
-                if (item.pointer >= param.range) item.pointer = 0;
-                if (item.dNum >= param.range) item.dNum = param.range;
+                if (item.pointer >= range) item.pointer = 0;
+                if (item.dNum >= range) item.dNum = range;
             }
             // store timestamp for initializing buffer interval
             buffObj.preTimestamp = moment(msg.dataObject.timestamp).unix();

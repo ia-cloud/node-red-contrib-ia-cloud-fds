@@ -1,7 +1,6 @@
 {
     "editor": {
-        "palletLabel": "スムージング",
-        "defaultName": "スムージング",
+        "paletteLabel": "スムージング",
         "name": "ノード名称",
         "smoothingList": "移動平均設定リスト",
         "objkey": "オブジェクトキー",

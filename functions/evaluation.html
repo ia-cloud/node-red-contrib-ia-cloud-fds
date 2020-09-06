@@ -39,7 +39,7 @@
         <div > <hr> </div>
         <div class="form-row">
             <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-            <input type="text" class="form-control" id="node-input-name">
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
         </div>
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
@@ -52,7 +52,7 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('evaluation',{
-        category: 'iaCloud',
+        category: 'iaCloud functions',
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
@@ -66,13 +66,13 @@
         outputs:1,
         icon: "ia-cloud.png",
         label: function() {
-            return this.name||this._("editor.defaultName");
+            return this.name||this._("editor.paletteLabel");
         },
         labelStyle: function() {
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.palletLabel") || "data evaluation";
+            return this._("editor.paletteLabel") || "data evaluation";
         },
         oneditprepare: function() {
             var node = this;
@@ -147,7 +147,7 @@
                     </label>
                     <input type="text" class="notrangeLo" placeholder="${lblLlimit}"
                         style="width:70px; display:inline-block; text-align:left;">
-                    <span style="font-weight: bold"> & </span>
+                    <span style="font-weight: bold"> or </span>
                     <input type="text" class="notrangeHi" placeholder="${lblHlimit}"
                         style="width:70px; display:inline-block; text-align:left;">
                     <label style="width:70px; text-align: right; margin-right: 10px;">
@@ -253,12 +253,12 @@
                     dataName: elm.find(".dataName").val(),
                     actionType: elm.find(".actionType").val(),
                     mode: elm.find(".mode").val(),
-                    equal: Number(elm.find(".equal").val()),
-                    notequal: Number(elm.find(".notequal").val()),
-                    rangeLo: Number(elm.find(".rangeLo").val()),
-                    rangeHi: Number(elm.find(".rangeHi").val()),
-                    notrangeLo: Number(elm.find(".notrangeLo").val()),
-                    notrangeHi: Number(elm.find(".notrangeHi").val())
+                    equal: elm.find(".equal").val(),
+                    notequal: elm.find(".notequal").val(),
+                    rangeLo: (Number(elm.find(".rangeLo").val()) !== NaN)? elm.find(".rangeLo").val(): "",
+                    rangeHi: (Number(elm.find(".rangeHi").val()) !== NaN)? elm.find(".rangeHi").val(): "",
+                    notrangeLo: (Number(elm.find(".notrangeLo").val()) !== NaN)? elm.find(".notrangeLo").val(): "",
+                    notrangeHi: (Number(elm.find(".notrangeHi").val()) !== NaN)? elm.find(".notrangeHi").val(): "",
                 }
                 node.rules.push(rule);
 

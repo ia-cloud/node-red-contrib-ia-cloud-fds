@@ -1,7 +1,6 @@
 {
     "editor": {
-        "palletLabel": "ノイズ除去",
-        "defaultName": "ノイズ除去",
+        "paletteLabel": "ノイズ除去",
         "name": "ノード名称",
         "condetionList": "突然変異条件リスト",
         "objkey": "オブジェクトキー",

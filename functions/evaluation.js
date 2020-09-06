@@ -60,15 +60,21 @@ module.exports = function(RED) {
                 let result = false;
                 if (dataItem.hasOwnProperty("dataValue")) {
                     let dataValue = dataItem.dataValue;
-                    if (typeof dataValue === "boolean" || typeof dataValue === "number" || typeof dataVaule === "string" ) {
-                        switch (rule.mode) {
-                            case "equal":
+                    switch (rule.mode) {
+                        case "equal":
+                            if (typeof dataValue === "boolean" || typeof dataValue === "number" 
+                                || typeof dataVaule === "string" )
+                                // check equality, (not identity)
                                 result = (dataValue == rule.equal)? true: false;
-                                break;
-                            case "notequal":
+                            break;
+                        case "notequal":
+                            if (typeof dataValue === "boolean" || typeof dataValue === "number" 
+                                || typeof dataVaule === "string" )
+                                // check inequality, (not nonidentity)
                                 result = (dataValue != rule.equal)? true: false;
-                                break;
-                            case "range":
+                            break;
+                        case "range":
+                            if (typeof dataValue === "number" || typeof dataVaule === "string" ) {
                                 if (rule.rangeLo !== "" && rule.rangeHi !== "") {
                                     if (rule.rangeLo < dataValue && dataValue < rule.rangeHi) result = true;
                                 } else if (rule.rangeLo === "") {
@@ -77,19 +83,21 @@ module.exports = function(RED) {
                                 else if (rule.rangeHi === "") {
                                     if (rule.rangeLo < dataValue) result = true;
                                 }
-                                break;
-                            case "notrange":
+                            }
+                            break;
+                        case "notrange":
+                            if (typeof dataValue === "number" || typeof dataVaule === "string" ) {
                                 if (rule.notrangeLo !== "" && rule.notrangeHi !== "") {
-                                    if (dataValue < rule.notrangeLo && rule.notrangeHi < dataValue) result = true;
+                                    if (dataValue < rule.notrangeLo || rule.notrangeHi < dataValue) result = true;
                                 } else if (rule.notrangeLo === "") {
                                     if (dataValue > rule.notrangeHi) result = true;
                                 }
                                 else if (rule.notrangeHi === "") {
                                     if (rule.notrangeLo > dataValue) result = true;
                                 }
-                                break;
-                            default:
-                        }
+                            }
+                            break;
+                        default:
                     }
                 }
                 // if yes, convert to boolean dataValue
