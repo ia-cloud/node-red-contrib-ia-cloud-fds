@@ -68,3 +68,4 @@ ia-cloud-cnct/参考/ステートマシン図.xml
 ia-cloud-cnct/参考/標準のhttprequest.html
 .vscode/settings.json
 PLC-Modbus/ia-cloud-fds.code-workspace
+package-lock.json

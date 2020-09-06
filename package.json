@@ -20,7 +20,8 @@
     "@serialport/parser-inter-byte-timeout": "^9.0.0",
     "@serialport/parser-delimiter": "^9.0.0",
     "websocket": "^1.0.30",
-    "ws": "^7.1.2"
+    "ws": "^7.1.2",
+    "got": "^11.5.2"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
@@ -35,6 +36,7 @@
   "node-red": {
     "nodes": {
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
+      "ia-cloud-cnct2": "ia-cloud-cnct/ia-cloud-cnct2.js",
       "object-array": "ia-cloud-object-array/object-array.js",
       "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
@@ -56,7 +58,6 @@
       "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
       "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",
       "HMI-Schneider-com": "HMI-Schneider/HMI-Schneider-com.js",
-      "gp2iac": "gp2iac/gp2iac.js",
       "ia-cloud-change": "ia-cloud-change/ia-cloud-change.js",
       "tmp-ctrl-omron": "tmp-ctrl-omron/tmp-ctrl-omron.js",
       "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js",
@@ -70,8 +71,7 @@
       "evaluation": "functions/evaluation.js",
       "smoothing": "functions/smoothing.js",
       "de-noise": "functions/de-noise.js",
-      "edge-delay": "functions/edge-delay.js",
-      "murata-sensor": "murata-sensors/murata-sensor.js"
+      "edge-delay": "functions/edge-delay.js"
     }
   },
   "repository": {
