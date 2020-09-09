@@ -99,7 +99,7 @@ module.exports = function(RED) {
                             item.coseqOn = 1;
                         } else {
                             item.coseqOn++;
-                            dataItems[i] = {};      // nochange no dataItem
+                            dataItems[i] = {};      // not countup yet
                         }
                     } 
                     // off edge
@@ -110,12 +110,16 @@ module.exports = function(RED) {
                             item.coseqOff = 1;
                         } else {
                             item.coseqOff++;
-                            dataItems[i] = {};      // nochange no dataItem
+                            dataItems[i] = {};      // not countup yet
                         }
                     } 
                 }
                 // nochange no dataItem
-                else dataItems[i] = {};
+                else {
+                    dataItems[i] = {};
+                    item.coseqOff = 1;
+                    item.coseqOn = 1;
+                }
             }
 
             // get "dataItem == {}" filtered
