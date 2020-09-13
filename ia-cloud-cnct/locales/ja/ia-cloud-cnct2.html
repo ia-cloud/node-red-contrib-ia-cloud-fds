@@ -1,0 +1,65 @@
+<!--
+  Copyright JS Foundation and other contributors, http://js.foundation
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/html" data-help-name="ia-cloud-cnct2">
+<p>ia-cloud CCS接続ノード</p>
+
+<h3>プロパティ項目</h3>
+<dl class="message-properties">
+    <dt>接続先CCS<span class="property-type">CCS接続先ノード</span></dt>
+    <dd>ia-cloud接続ノード（ia-cloud-cnct）設定したia-cloud CCS接続先</dd>
+    <dt>データソースのユニークキー<span class="property-type">文字列</span></dt>
+    <dd>ia-cloud接続ノード（ia-cloud-cnct）で設定したこの機器のユニークキー</dd>
+    <dt>詳細設定有効<span class="property-type">チェック</span></dt>
+    <dd>ia-cloudへの接続に関する詳細設定</dd>
+    <dt>詳細設定内容</dt>
+    <dl class="message-properties" style="margin-left: 8px">
+        <dt>CCS接続リトライ間隔<span class="property-type">数値</span></dt>
+        <dd>CCSへの接続要求がエラーとなった場合のリトライ間隔</dd>
+        <dt>接続確認間隔<span class="property-type">数値</span></dt>
+        <dd>CCSに対して接続確認を行う間隔</dd>
+    </dl>
+    <dt>ノード名前<span class="property-type">文字列</span></dt>
+    <dd>個別のNodeに付与する名前</dd>
+</dl>
+
+<h3>入力メーッセージ</h3>
+<dl class="message-properties">
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud Web API で定められている、CCSへ送出する<code>request</code>の内容。 "store"、 "retrieve" あるいは "convey"のいずれかでなければならない。</dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>CCSへ<code>request</code>と共に送出する<code>dataObject</code><span class="property-type">object</span></dd>
+</dl>
+
+<h3>出力メッセージ</h3>
+<dl class="message-properties">
+    <dt>payload <span class="property-type">string | object</span></dt>
+    <dd>CCSから受け取ったレスポンス。エラーが発生した場合は、エラーコメント。</dd>
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud CCSへ送出したレクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>ia-cloud CCSへ送出したdataObject。入力メッセージとして受けたものと同じ。</dd>
+</dl>
+
+<h3>詳細説明</h3>
+<p>指定されたia-cloudの　Cloud Center Server(CCS) への接続を保持し、入力メッセージに記述されたリクエストとデータオブジェクトを送出する。</p>
+<h4>詳細設定</h4>
+<p>CCSへの接続ができない場合は、自動でリトライを行う。最大のリトライ間隔を設定できる。</p>
+<p>入力メッセージがない場合でも、CCSへの接続確認を自動で実施する。接続確認間隔を設定できる。</p>
+
+<h4>Proxy</h4>
+<p>Proxyサーバを利用する場合、OSの環境線数<code>http_proxy=...</code> で設定してください。Node-REDの再起動が必要です。</p>
+
+<h4>データソースのユニークキー</h4>
+<p>複数のia-cloud-cnctノードを「同時に使用できますが、FDSKey（デーラソースのユニークキー）は重複させないこと。 </p>
+
+</script>

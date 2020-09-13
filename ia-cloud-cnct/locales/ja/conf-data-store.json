@@ -1,0 +1,12 @@
+{
+    "editor": {
+        "fileName": "ファイル名を入力",
+        "fileContent": "設定ファイルの内容がここに表示されます。",
+        "name": "ノード名称",
+        "palletLabel": "設定情報アップロード",
+        "FDSKey": "格納する設定情報のFDSKey"
+    },
+    "runtime": {
+        "uploaded": "設定情報を出力"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "editor": {
+        "ccs-connection-config": "接続先CCS",
+        "FDSKey": "データソースのユニークキー",
+        "interval": "更新確認間隔",
+        "time": "時間",
+        "name": "ノード名称",
+        "palletLabel": "設定自動更新",
+        "rules": "設定情報の出力先",
+        "configName": "設定情報名称",
+        "configNamePH": "設定情報名称（必須）",
+        "outputPort": "出力ポート"
+    },
+    "runtime": {
+        "noUpdate": "更新情報なし",
+        "updated": "設定情報更新",
+        "requesting": "要求中...",
+        "waiting": "待機中"
+    }
+}
