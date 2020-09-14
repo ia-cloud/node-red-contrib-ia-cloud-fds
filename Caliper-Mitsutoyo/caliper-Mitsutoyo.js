@@ -74,7 +74,7 @@ module.exports = function(RED) {
                 // Send dataItem to message.payload
                 msg.payload = dataItem;
                 node.send(msg);
-                node.status({fill:"green", shape:"dot", text: dataItem.dataName});
+                node.status({fill:"green", shape:"dot", text: dataItem.dataName + ": " + data.toFixed(2)});
             // bash button twice for message out         
             } else if (bashCount === 2){
                 bashCount = 0;
