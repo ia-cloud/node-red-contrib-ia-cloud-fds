@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "名前",
+        "paletteLabel": "シュナイダー表示器",
         "hmiSchneiderNode": "通信ノード",
         "tab": {
           "object-settings": "オブジェクトの設定",
