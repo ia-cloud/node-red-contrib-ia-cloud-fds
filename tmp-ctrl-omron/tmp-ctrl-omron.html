@@ -1,140 +1,101 @@
 
 <script type="text/html" data-template-name="tmp-ctrl-omron">
 
+    <div id="com-block">
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+        <!-- modbus node（設定Node）の選択-->
+        <div class="form-row">
+            <label for="node-input-ModbusCom" style= "vertical-align: middle;">
+                <span data-i18n="editor.modbusNode"></span></label>
+            <input type="text" style="width: 300px" id="node-input-ModbusCom">
+        </div>
+        <hr>
+    </div>
+    <!-- Tab, ownself -->
     <div class="form-row">
-        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-        <input type="text" class="form-control" id="node-input-name">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
     </div>
-    <!-- modbus node（設定Node）の選択-->
-    <div class="form-row">
-        <label for="node-input-ModbusCom" style= "vertical-align: middle;">
-            <span data-i18n="editor.modbusNode"></span><span style="color: #ff0000;">*</span></label>
-        <input type="text" style="width: 300px" id="node-input-ModbusCom">
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+
+            <div class="form-row">
+                <label for="node-input-storeInterval">
+                    <span data-i18n="editor.period"></span></label>
+                <input type="number" id="node-input-storeInterval" min="0" step="1"
+                    value="300" style="display: inline-block; width: auto;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
+                    <span data-i18n="editor.async"></span></label>
+                <input type="checkbox" checked="checked" id="node-input-storeAsync"
+                    style="display: inline-block; width: auto;" >
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label 
+                    for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
+            </div>
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <!-- dataItemの設定 -->
+            <div class="form-row">
+                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
+                <input type="text" style="width: 300px" id="node-input-contentType">
+            </div>
+
+            <div class="node-input-dItemcontainer-row">
+                <ol id="node-input-dItemcontainer">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
     </div>
+    <!-- tab ends -->
 
-    <!-- 隠しのNodeプロパティ -->
-    <div class="form-row hide">
-        <input type="text" id="node-input-configReady">
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+          <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+          <input type="text" class="form-control" id="node-input-name">
+        </div>
     </div>
-    <div class="form-row hide">
-        <input type="text" id="node-input-configJson">
-    </div>
-
-
-  <!-- Tab, ownself -->
-  <div class="red-ui-tabs" id="ui-tabs">
-    <ul>
-      <li class="red-ui-tab active" style="width: 50%;"><a href="#tab1"
-        class="nav-link red-ui-tab-label" data-toggle="tab">
-        <span data-i18n="editor.tab.object-config"></a>
-      </li>
-      <li class="red-ui-tab" style="width: 50%;"><a href="#tab2"
-        class="nav-link red-ui-tab-label" data-toggle="tab">
-        <span data-i18n="editor.tab.data-config"></a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Tab contents -->
-  <div class="tab-content">
-
-    <!-- tab1 starts for dataObject-->
-    <div id="tab1" class="tab-pane active">
-      <!-- objectの設定 -->
-      <div class="form-group">
-          <div class="form-row">
-              <label for="storeInterval">
-                  <span data-i18n="editor.period"></span></label>
-              <input type="number" id="storeInterval" min="0" step="10"
-                  value="300" style="display: inline-block; width: auto;">
-              <label for="storeAsync" style="margin-left: 20px;">
-                  <span data-i18n="editor.async"></span></label>
-              <input type="checkbox" checked="checked" id="storeAsync"
-                  style="display: inline-block; width: auto;" >
-          </div>
-          <div class="form-row">
-              <label for="objectName">
-                  <span data-i18n="editor.objectname"></span></label>
-              <input type="text" style="width: 300px" id="objectName">
-          </div>
-          <div class="form-row">
-              <label 
-                  for="objectKey"><span data-i18n="editor.objectKey"></span>
-                  <span style="color: #ff0000;">*</span></label>
-              <input class="form-control" type="text" style="width: 300px"
-                id="objectKey" data-i18n="[placeholder]editor.objectKeyholder">
-          </div>
-          <div class="form-row">
-              <label 
-                  for="objectdescription"><span data-i18n="editor.objectDescription"></span></label>
-              <input type="text" style="width: 300px" id="objectDescription">
-          </div>
-      </div>
-    </div>
-    <!-- tab1 ends -->
-
-    <!-- tab2 starts for alarmObject-->
-    <div id="tab2" class="tab-pane">
-      <!-- dataItemの設定 -->
-      <div class="form-row">
-        <label for="contentType"><span data-i18n="editor.contentType"></span></label>
-        <input type="text" style="width: 300px" id="contentType" value="tmp-ctrl">
-      </div>
-      <div id="blocks">
-          <div class="form-block" id="dItem_block[0]">
-              <div class="form-row" id="ｄItem_del[0]" >
-                <span style="border-bottom:solid 2px;"><span data-i18n="editor.itemNumber"></span></span>
-                <input type="text" id="dItem[0]" style="width: 30px;" value="1"
-                    disabled="disabled">
-                <input type="button" id="del_btn[0]" data-i18n="[value]editor.del"
-                style="margin-left: 30px; width: 70px; display: none;">
-              </div>
-              <div class="form-row">
-                <label><span data-i18n="editor.dItem"></span><span style="color: #ff0000;">*</span></label>
-                <select style="width: 150px" id="dataSelect[0]">
-                    <option selected="selected" value="pv" data-i18n="editor.pv"></option>
-                    <option value="sv" data-i18n="editor.sv"></option>
-                    <option value="pro" data-i18n="editor.pro"></option>
-                    <option value="int" data-i18n="editor.int"></option>
-                    <option value="dir" data-i18n="editor.dir"></option>
-                    <option value="run" data-i18n="editor.run"></option>
-                    <option value="am" data-i18n="editor.am"></option>
-                    <option value="at" data-i18n="editor.at"></option>
-                </select>
-              </div>
-
-              <div class="form-row">
-                  <div class="form-inline" style="vertical-align: middle;" >
-                      <label><span data-i18n="editor.dname"></span></label>
-                      <input type="text" style="width: 150px;" id="dName[0]" data-i18n="[value]editor.pv">
-                      <label style="margin-left: 20px; width: 50px;"><span data-i18n="editor.unit"></span></label>
-                      <input type="text" style="width: 40px;" id="unit[0]">
-                  </div>
-              </div>
-          </div>
-      </div>
-      <!-- Addボタン -->
-      <div class="form-block">
-        <input type="button" id="form_add" data-i18n="[value]editor.add">
-      </div>
-      <br>
-    </div>
-    <!-- tab2 ends -->
-  </div>
-
 </script>
 
 <script type="text/javascript">
 
-  RED.nodes.registerType('tmp-ctrl-omron',{
+RED.nodes.registerType('tmp-ctrl-omron',{
+
     category: 'iaCloud devices',
     color:"rgb(231, 180, 100)",
     defaults: {
         name: {value:""},
-        confsel: {value:"ui-config", required: true},
-        configJson: {value:"", required: true},
+
         ModbusCom: {value:"", type:"Modbus-com", required: true},
-        configReady: {value: "", required: true}
+        contentType: {value: "iaCloudData", required: true},
+
+        // object properties
+        storeInterval: {value:"60"},
+        storeAsync: {value: false},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
+
+        // dataItems property（editableListで使用する。）
+        dataItems : {value: [{},]},
     },
     inputs:1,
     outputs:1,
@@ -149,167 +110,198 @@
         return this._("editor.paletteLabel") || "tmp-ctrl-omron";
     },
     oneditprepare: function() {
+        let node = this;
 
-        // データItemの数を保持する変数
-        var frm_cnt = 0;
+        const lbldName = node._("editor.dname");
+        const lblunit = node._("editor.unit");
+        const lblitem = node._("editor.item");
+        const lblpv = node._("editor.pv");
+        const lblsv = node._("editor.sv");
+        const lblpro = node._("editor.pro");
+        const lblint = node._("editor.int");
+        const lbldir = node._("editor.dir");
+        const lblrun = node._("editor.run");
+        const lblam = node._("editor.am");
+        const lblat = node._("editor.at");
 
-        // 設定データを取り出して、各formに展開する。
-        if ($("#node-input-configJson").val()) {
+        // editableList item のhtml要素
+        // 1行目のデータタイプとデータ名称
+        const paraForm1 =`
+            <label style="display:inline-block; width:100px">${lblitem}</span></label>
+            <select style="display:inline-block; width: 150px" class="dataSelect">
+                <option selected="selected" value="pv">${lblpv}</option>
+                <option value="sv">${lblsv}</option>
+                <option value="pro">${lblpro}</option>
+                <option value="int">${lblint}</option>
+                <option value="dir">${lbldir}</option>
+                <option value="run">${lblrun}</option>
+                <option value="am">${lblam}</option>
+                <option value="at">${lblat}</option>
+            </select>
+        `;
+        const paraForm2 =`
+            <span style="display:inline-block; width:30px"> </span>   
+            <label style="display:inline-block; width: 100px;">${lbldName}</label>
+            <input type="text" required="required" style="display:inline-block; width: 150px;" class="dName">
+            <label style="display:inline-block; margin-left: 20px; width: 50px;">${lblunit}</label>
+            <input type="text" style="display:inline-block; width: 40px;" class="unit">  
+        `;
 
-          try{ var conf = JSON.parse($("#node-input-configJson").val());}
-          catch(e){ conf = null; }
-        }
-        //設定データがあったら
-        if(conf) {
-          $("#storeInterval").val(conf[0].options.storeInterval);
-          $("#storeAsync").prop("checked", conf[0].options.storeAsync);
-          $("#objectName").val(conf[0].objectName);
-          $("#objectKey").val(conf[0].objectKey);
-          $("#objectDescription").val(conf[0].objectDescription);
-
-          $("contentType").val(conf[0].ObjectContent.contentType);
-          var dItems = conf[0].ObjectContent.contentData;
-
-          //フォームを一つ保存
-          var original = $('#dItem_block\\[0\\]');
-
-          //一旦フォームオブジェクトをすべて削除
-          $(".form-block[id^='dItem_block']")
-              .each(function(index, formObj) {$(formObj).remove();});
-
-          dItems.forEach(function(value, idx){
-              original
-              .clone()
-              .hide()
-              .appendTo("#blocks")
-              .attr('id', 'dItem_block[' + idx + ']') // クローンのid属性を変更。
-              .end() // 一度適用する
-              .find('div, input, select, label').each(function(index, obj) {
-                if ($(obj).attr('id') != null) {
-                  if($(obj).attr("id").substr(0,5) == "dItem"){
-                      $(obj).val("" + (idx + 1));
-                  }
-                  $(obj).attr({
-                    id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-                  });
-                }
-                if ($(obj).attr('for') != null) {
-                  $(obj).attr({
-                      for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + idx + ']')
-                  });
-                }
-              });
-              $("#dName\\[" + idx + "\\]").val(value.dataName);
-              $("#unit\\[" + idx + "\\]").val(value.unit);
-              $("#dataSelect\\[" + idx + "\\]").val(value.options.source);
-              if (value.options.source == "pv" || value.options.source == "sv") 
-                  $("#unit\\[" + idx + "\\]").prop("disabled", false);
-              else $("#unit\\[" + idx + "\\]").prop("disabled", true);
-              var block = $('#dItem_block\\[' + idx + '\\]');
-              if (idx != 0) block.find('input[id^="del_btn"]').show();
-              block.slideDown('slow');
-              frm_cnt = idx;
-          });
-        }
-
-        //追加ボタンが押されたら
-        $("#form_add").off("click");
-        $("#form_add").on("click", function() {
-          var original = $('#dItem_block\\[' + frm_cnt + '\\]');
-          frm_cnt++;
-          original
-          .clone()
-          .hide()
-          .insertAfter(original)
-          .attr('id', 'dItem_block[' + frm_cnt + ']'); // クローンのid属性を変更。
-          var clone = $('#dItem_block\\[' + frm_cnt + '\\]');
-          clone.find('div, input, select, label').each(function(idx, obj) {
-            if ($(obj).attr('id') != null) {
-              if($(obj).attr("id").substr(0,5) == "dItem"){
-                  $(obj).val("" + (frm_cnt + 1));
-              }
-              $(obj).attr({
-                id: $(obj).attr('id').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-              });
-            }
-            if ($(obj).attr('for') != null) {
-              $(obj).attr({
-                for: $(obj).attr('for').replace(/\[[0-9]+\]$/, '[' + frm_cnt + ']')
-              });
-            }
-          });
-          clone.find('input[id^="del_btn"]').show();
-          clone.find('select[id^="dataSelect"]').val(original.find('select[id^="dataSelect"]').val());
-          clone.slideDown('fast');
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
         });
 
-        //削除ボタンが押されたら
-        $("#blocks").off('click', 'input[id^="del_btn"]');
-        $("#blocks").on('click', 'input[id^="del_btn"]', function() {
-          var removeObj = $(this).parents(".form-block");
-          removeObj.fadeOut('fast', function() {
-            removeObj.remove();
-            // 番号振り直し
-            frm_cnt = 0;
-            $(".form-block[id^='dItem_block']").each(function(index, formObj) {
-              if ($(formObj).attr('id') != 'dItem_block[0]') {
-                frm_cnt++;
-                $(formObj)
-                  .attr('id', 'dItem_block[' + frm_cnt + ']') // id属性を変更。
-                  .find('div, input, select, label').each(function(idx, obj) {
-                   if ($(obj).attr('id') != null) {
-                      if($(obj).attr("id").substr(0,5) == "dItem"){
-                            $(obj).val("" + (frm_cnt + 1));
-                      }
-                      $(obj).attr({
-                        id: $(obj).attr('id').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                      });
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+                let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm1).appendTo(div1);
+
+                // second row of the list
+                $(paraForm2).appendTo(div2);
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("dataName")) {
+                    dItem.dataName = "";
+                    dItem.item = "pv",
+                    dItem.unit = ""
+                }
+
+                // set back dataItem properties on row1
+                div1.find(".dataSelect").val(dItem.item);
+                div2.find(".dName").val(dItem.dataName);
+                div2.find(".unit").val(dItem.unit);
+
+                // データタイプが変更されたら呼ばれるコールバック関数を登録
+                div1.find(".dataSelect").change(function(){
+                    let type = $(this).val();
+                    let name;
+                    // set dataItem default name。
+                    switch(type) {
+                        case "pv": name = lblpv;
+                            break;
+                        case "sv": name = lblsv;
+                            break;
+                        case "pro": name = lblpro;
+                            break;
+                        case "int": name = lblint;
+                            break;
+                        case "dir": name = lbldir;
+                            break;
+                        case "run": name = lblrun;
+                            break;
+                        case "am": name = lblam;
+                            break;
+                        case "at": name = lblat;
+                            break;
                     }
-                    if ($(obj).attr('for') != null) {
-                      $(obj).attr({
-                        for: $(obj).attr('for').replace(/\[[0-9]+\]$/,'['+frm_cnt+']')
-                      });
-                    }
-                  });
-              }
-            });
-          });
+                    div2.find(".dName").val(name);
+                });
+                div1.find(".dataSelect").change();
+
+
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
         });
+
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataItems.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+        }  
+
     },
 
     oneditsave: function() {
-      var configReady = "ready";
-      if (!$("#objectKey").val()) configReady = "";
-      // データ設定を作成
-      var dItems = [];
-      $(".form-block[id^='dItem_block']").each(function(idx, obj){
-          var item ={options:{}};
-          item.dataName = $("#dName\\[" + idx + "\\]").val();
-          if (!item.dataName) configReady = "";
-          item.unit = $("#unit\\[" + idx + "\\]").val();
-          item.options.source = $("#dataSelect\\[" + idx + "\\]").val();
-          if (!item.options.source) configReady = "";
+        let node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+        // データ設定を作成
+        node.dataItems = [];
 
-          dItems[idx]=item;
-      });
-      // オブジェクト設定を追加
-      var cfgobj = [{ObjectContent:{}, options:{}}];
-      cfgobj[0].ObjectContent.contentType = $("#contentType").val();
-      cfgobj[0].ObjectContent.contentData = dItems;
-      cfgobj[0].objectKey = $("#objectKey").val();
-      cfgobj[0].objectDescription = $("#objectDescription").val();
-      cfgobj[0].objectName = $("#objectName").val();
-      cfgobj[0].options.storeInterval = $("#storeInterval").val();
-      cfgobj[0].options.storeAsync = $("#storeAsync").is(":checked");
-      $("#node-input-configReady").val(configReady);
-      //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-      try {$("#node-input-configJson").val(JSON.stringify(cfgobj));}
-      catch(e) {$("#node-input-configJson").val("");}
+        items.each(function(i, elm){
+            let item = {
+                item: elm.find(".dataSelect").val(),
+                dataName: elm.find(".dName").val(),
+                unit: elm.find(".unit").val()
+            };
+            // 必須propertyが揃っているか？
+            if (!item.dataName) configReady = "";
 
-      // 設定完了フラグをセット
-      $("#node-input-configReady").val(configReady);
+            // dataItemをプロパティリストにプッシュ
+            node.dataItems.push(item);
+        });
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.dataItems[0]) configReady = "";
+        // 設定完了フラグをセット
+        $("#node-input-configReady").val(configReady);
+    },
 
+    oneditresize: function (size) {
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // Tab以外の部分の高さを引く
+            height -= $("#com-block").outerHeight(true);
+            height -= $("#name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 80;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
+        }
     }
-  });
+});
 
 </script>

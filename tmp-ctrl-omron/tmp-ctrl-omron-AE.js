@@ -1,92 +1,94 @@
+"use strict";
+var moment = require("moment");
 
+// オムロン温調計ModbsアドレスMap
+const OMRON_MAP = {
+  hh: { device: "HR", dataAdd: 0x2406, mask: 0x0002 },
+  ad: { device: "HR", dataAdd: 0x2406, mask: 0x0004 },
+  hs: { device: "HR", dataAdd: 0x2406,mask: 0x0008 },
+  se: { device: "HR", dataAdd: 0x2406, mask: 0x0040 },
+  ct1: { device: "HR", dataAdd: 0x2406, mask: 0x0400 },
+  ct2: { device: "HR", dataAdd: 0x2406, mask: 0x0800 },
+  alm1: { device: "HR", dataAdd: 0x2406, mask: 0x1000 },
+  alm2: { device: "HR", dataAdd: 0x2406, mask: 0x2000 },
+  alm3: { device: "HR", dataAdd: 0x2406, mask: 0x4000 },
+  evt1: { device: "HR", dataAdd: 0x2407, mask: 0x0001 },
+  evt2: { device: "HR", dataAdd: 0x2407, mask: 0x0002 },
+  evt3: { device: "HR", dataAdd: 0x2407, mask: 0x0004 },
+  evt4: { device: "HR", dataAdd: 0x2407, mask: 0x0008 }
+}
 module.exports = function(RED) {
-    "use strict";
-    var request = require("request");
-    var moment = require("moment");
-
-    const iconv = require("iconv-lite");
 
     function omronTempCtlrAE(config) {
 
         RED.nodes.createNode(this,config);
 
-        // オムロン温調計ModbsアドレスMap
-        const OMRON_MAP = {
-          hh: { device: "HR", dataAdd: 0x2406, mask: 0x0002 },
-          ad: { device: "HR", dataAdd: 0x2406, mask: 0x0004 },
-          hs: { device: "HR", dataAdd: 0x2406,mask: 0x0008 },
-          se: { device: "HR", dataAdd: 0x2406, mask: 0x0040 },
-          ct1: { device: "HR", dataAdd: 0x2406, mask: 0x0400 },
-          ct2: { device: "HR", dataAdd: 0x2406, mask: 0x0800 },
-          alm1: { device: "HR", dataAdd: 0x2406, mask: 0x1000 },
-          alm2: { device: "HR", dataAdd: 0x2406, mask: 0x2000 },
-          alm3: { device: "HR", dataAdd: 0x2406, mask: 0x4000 },
-          evt1: { device: "HR", dataAdd: 0x2407, mask: 0x0001 },
-          evt2: { device: "HR", dataAdd: 0x2407, mask: 0x0002 },
-          evt3: { device: "HR", dataAdd: 0x2407, mask: 0x0004 },
-          evt4: { device: "HR", dataAdd: 0x2407, mask: 0x0008 }
-        }
         var node = this;
-        var dataObjects = [{}];
-        var storeObj;
-        var mbCom = RED.nodes.getNode(config.ModbusCom);
-        var minCycle = 10; // 最小収集周期を10秒に設定
+        let items = config.dataItems;
+        let myObjKey = config.objectKey;
+        let nodeId = node.id;
+        let linkObj = {};
+
+        const mbCom = RED.nodes.getNode(config.ModbusCom);
+        // 通信Nodeが存在しない場合
+        if (!mbCom) {
+            node.error("comNode not found");
+            node.status({fill:"yellow",shape:"ring",text:"runtime.comNode"});
+            return;
+        }
+        const minCycle = 10; // 最小収集周期を10秒に設定
         // Nodeステータスを、preparingにする。
         node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
-        // 設定ObjectsをconfigJsonプロパティからパース
-        try{
-          dataObjects = JSON.parse(config.configJson);
-        } catch(e) {
-          //エラーの場合は、nodeステータスを変更。
-          node.status({fill:"red",shape:"ring",text:"runtime.badFilePath"});
-          node.error(RED._("runtime.badFilePath"), config.configObjects);
-          dataObjects = null;
-        }
 
-        // configObjから通信するPLCデバイス情報を取り出し、ModbusCom Nodeに追加
-        if (dataObjects) {
-            var linkObj = {Coil:[], IS:[], IR:[], HR:[]};
-            dataObjects.forEach(function(objItem, idx) {
-              var objectKey = objItem.objectKey;
-              var nodeId = (objItem.options.storeAsync)? node.id: "";
-              // 定期収集のためのカウンターをセット
-              objItem.options.timeCount = objItem.options.storeInterval;
+        // linkObj structure
+        //   {error:[], Coil:[], IS:[], IR:[], HR:[]};
 
-              objItem.ObjectContent.contentData.forEach(function(dataItem, index) {
-                var source = dataItem.options.source;
-                var device = OMRON_MAP[source].device;
-                var dataAdd = OMRON_MAP[source].dataAdd;
-                var linkData = {address: "", value: "", preValue: "", nodeId: null, objectKey: ""};
-                linkData.address = dataAdd;
-                linkData.nodeId = nodeId;
-                linkData.objectKey = objectKey;
-                linkObj[device].push(linkData);
-              });
-            });
-            //modbusCom nodeのデータ追加メソッドを呼ぶ
-            mbCom.emit("addLinkData", linkObj);
+        // エラーリンクデータを登録
+        linkObj.error = [{address: 0, value: "", preValue: "", 
+                        nodeId: nodeId, objectKey: myObjKey}];
+        // 非同期収集無しの場合、自身のNodeIDをリセット。               
+        let nId = (config.storeAsync)? nodeId: "";
 
-            // Nodeステータスを　Readyに
-            node.status({fill:"green", shape:"dot", text:"runtime.ready"});
+        let source, device, dataAdd, linkData;
 
-            var sendObjectId = setInterval(function(){
-              // 設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを
-              // 生成しメッセージで送出
-              // 複数の周期でオブジェクトの格納をするため、10秒周期でカウントし、カウントアップしたら、
-              // オブジェクト生成、メッセージ出力を行う。
+        // dataItemを一つづつ取り出し、ModbuslinkDataを設定
+        items.forEach(function(dataItem, index) {
+            source = dataItem.AnE;
+            device = OMRON_MAP[source].device;
 
-              dataObjects.forEach(function(objItem, idx) {
-                if(objItem.options.storeInterval != "0") {
-                  // 収集周期前であれば何もせず
-                  objItem.options.timeCount = objItem.options.timeCount - minCycle;
-                  if (objItem.options.timeCount > 0) return;
-                  // 収集周期がきた。収集周期を再設定。
-                  objItem.options.timeCount = objItem.options.storeInterval;
-                  iaCloudObjectSend(objItem.objectKey);
-                }
-              });
-            }, (minCycle * 1000));
-        }
+            // このデバイスタイプが初めてなら追加
+            if (!linkObj[device]) linkObj[device] = [];
+
+            dataAdd = OMRON_MAP[source].dataAdd;
+            linkData = {value: "", preValue: ""};
+            linkData.address = dataAdd;
+            linkData.nodeId = nId;
+            linkData.objectKey = myObjKey;
+            linkObj[device].push(linkData);
+        });
+
+        //modbusCom nodeのデータ追加メソッドを呼ぶ
+        mbCom.emit("addLinkData", linkObj);
+
+        // Nodeステータスを　Readyに
+        node.status({fill:"green", shape:"dot", text:"runtime.ready"});
+
+        // 定期収集のためのカウンターをセット
+        let timeCount = config.storeInterval;
+
+        let sendObjectId = setInterval(function(){
+            // 設定された格納周期で,ModbusCom Nodeからデータを取得し、ia-cloudオブジェクトを
+            // 生成しメッセージで送出
+            if(config.storeInterval != "0") {
+                // 収集周期前であれば何もせず
+                timeCount = timeCount - minCycle;
+                if (timeCount > 0) return;
+                // 収集周期がきた。収集周期を再設定。
+                timeCount = config.storeInterval;
+                iaCloudObjectSend(myObjKey);
+            }
+        }, (minCycle * 1000));
+
 
         this.on("changeListener",function(objectKeys) {
             //登録したlinkObに変化があったら呼ばれる。
@@ -99,53 +101,69 @@ module.exports = function(RED) {
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして送出する関数
         var iaCloudObjectSend = function(objectKey) {
 
-          node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
+            // 自身のobjectKeyでなかったら何もしない。
+            if(objectKey !== myObjKey) return;
 
-          var msg = {request:"store", dataObject:{ObjectContent:{}}};
-          var contentData = [];
+            // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
+            // 自身のNodeIDをセット。
 
-          var iaObject = dataObjects.find(function(objItem, idx) {
-            return (objItem.objectKey == objectKey);
-          });
-          msg.dataObject.objectKey = objectKey;
-          msg.dataObject.timeStamp = moment().format();
-          msg.dataObject.objectType = "iaCloudObject";
-          msg.dataObject.objectDescription = iaObject.objectDescription;
-          msg.dataObject.ObjectContent.contentType = iaObject.ObjectContent.contentType;
+            let obj = linkObj.error.find(lnkError => lnkError.nodeId === nodeId);
+            let eMsg = obj.value;
+            if (eMsg !== "ok" && eMsg !== "" ) {
+                node.error(eMsg);
+                node.status({fill:"red",shape:"ring",text:"runtime.comError!!"});
+                return;
+            }
 
-          iaObject.ObjectContent.contentData.forEach(function(dataItem, index) {
-              // 対象のデータアイテムのシャローコピーを作成
-              var dItem = Object.assign( {}, dataItem);
-              var source = dItem.options.source;
-              delete dItem.options;
+            node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
 
-              var device = OMRON_MAP[source].device;
-              var dataAdd = OMRON_MAP[source].dataAdd;
-              var mask = OMRON_MAP[source].mask;
-              dItem.dataValue.AnEStatus = "";
+            let msg = {request:"store", dataObject:{objectContent:{}}};
+            let contentData = [];
 
+            msg.dataObject.objectKey = myObjKey;
+            msg.dataObject.timeStamp = moment().format();
+            msg.dataObject.objectType = "iaCloudObject";
+            msg.dataObject.objectDescription = config.objectDescription;
+            msg.dataObject.objectContent.contentType = config.contentType;
 
-             // 対応するlinkDataを探し、0x表現の下4桁を取り出し、マスクしてBooleanに変換
-              var lvalue = linkObj[device].find(function(lData){
-                return (lData.address == Number(dataAdd));});
-              var value = !!(parseInt(lvalue.value.slice(-4), 16) & mask);
-              var preValue = !!(parseInt(lvalue.preValue.slice(-4), 16) & mask);
+            let source, device, dataAdd, mask;
+            config.dataItems.forEach(function(dataItem, index) {
 
-              if (value) {dItem.dataValue.AnEStatus = (preValue)? "on": "set";}
-              else {dItem.dataValue.AnEStatus = (!preValue)? "off": "reset";}
+                source = dataItem.AnE;
+                device = OMRON_MAP[source].device;
+                dataAdd = OMRON_MAP[source].dataAdd;
+                mask = OMRON_MAP[source].mask;
+                let dItem = {
+                    commonName: "alarm&Event",
+                    dataValue: {
+                        AnECode: dataItem.AnECode,
+                        AnEDescription: dataItem.AnEDesc
+                    }
+                }
+                dItem.dataValue.AnEStatus = "";
 
-              contentData.push(dItem);
-          });
-          msg.dataObject.ObjectContent.contentData = contentData;
-          msg.payload = RED._("runtime.sent");
-          node.send(msg);
-          node.status({fill:"green", shape:"dot", text:"runtime.sent"});
+                // 対応するlinkDataを探し、0x表現の下4桁を取り出し、マスクしてBooleanに変換
+                let lvalue = linkObj[device].find(function(lData){
+                  return (lData.address == Number(dataAdd));});
+                let value = !!(parseInt(lvalue.value.slice(-4), 16) & mask);
+                let preValue = !!(parseInt(lvalue.preValue.slice(-4), 16) & mask);
+
+                if (value) {dItem.dataValue.AnEStatus = (preValue)? "on": "set";}
+                else {dItem.dataValue.AnEStatus = (!preValue)? "off": "reset";}
+
+                contentData.push(dItem);
+            });
+            msg.dataObject.objectContent.contentData = contentData;
+            msg.payload = contentData;
+            node.send(msg);
+            node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }
+
         this.on("input",function(msg) {
-          //何もしない
+            if (msg.payload) iaCloudObjectSend(myObjKey);
         });
         this.on("close",function() {
-          clearInterval(sendObjectId);
+            clearInterval(sendObjectId);
         });
     }
 
