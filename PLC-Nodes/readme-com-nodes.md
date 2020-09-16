@@ -58,20 +58,31 @@ PLC通信Nodeは、毎周期のPLC通信実施後、その通信結果に基づ�
 また、受信したデータに変化があった場合は、そのLinkObjを登録したNodeのChangeListnerイベントを発行し通知する。  
 LinkObjのエントリーは、各PLC機種に依存しする。下記は、Modebus とPLC三菱シーケンサの例である。  
 使用しないPLCメモリデバイスのエントリーは存在しなくてもかまわない。
-```
-{Coil:[linkData,], IS:[linkData], IR:[linkData,], HR:[linkData,]}
+通信ステータスを取得するため、linkObjにerrorのエントリーが必ず存在する。
 
-{M:[linkData,], X:[linkData], Y:[linkData,], L:[linkData,], SM:[linkData,], D:[linkData,], W:[linkData,]}
+```
+{error:[errorData], Coil:[linkData,], IS:[linkData], IR:[linkData,], HR:[linkData,]}
+
+{error:[errorData],M:[linkData,], X:[linkData], Y:[linkData,], L:[linkData,], SM:[linkData,], D:[linkData,], W:[linkData,]}
 ```
 リンクデータ(linkData)  
 複数のNodeやia-cloudオブジェクトから参照されるデバイスアドレスは、linkDataも複数存在する。
-。  
 
 ```
 {
     address: 0,       // Modbusデバイスアドレス
     value: "",        // 通信で取得された値(bitデバイス："0"/"1"、ワードデバイス："0xoooo"16ビットのHex表現文字列)
     preValue: "",     // 1回前の取得データ
+    nodeId: null,     // このリンクデータを利用するNodeのID
+    objectKey: ""     // このリンクデータを利用するia-cloudオブジェクトのobjectKey
+}
+```
+エラーステータスのリンクデータ(linkData)   
+```
+{
+    address: 0,       // 未使用
+    value: "",        // 通信のエラーステータス（"ok"ないしは、errorオブジェクトのメッセージ）
+    preValue: "",     // 1回前の通信のエラーステータス
     nodeId: null,     // このリンクデータを利用するNodeのID
     objectKey: ""     // このリンクデータを利用するia-cloudオブジェクトのobjectKey
 }

@@ -216,7 +216,7 @@ var PLCAENodeConfig = {
                 height -= $(rows[i]).outerHeight(true);
             }
             // タブの部分の高さ（大体）
-            height -= 50;
+            height -= 80;
 
             // editableListのマージンを引く
             const editorRow = $("#tab-AnE-properties>div.node-input-AnEcontainer-row");

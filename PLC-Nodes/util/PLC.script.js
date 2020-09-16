@@ -18,7 +18,7 @@ var PLCNodeConfig = {
         contentType: {value: "", required: true},
 
         // object properties
-        storeInterval: {value:"10"},
+        storeInterval: {value:"60"},
         storeAsync: {value: false},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
@@ -434,7 +434,7 @@ var PLCNodeConfig = {
                 height -= $(rows[i]).outerHeight(true);
             }
             // タブの部分の高さ（大体）
-            height -= 50;
+            height -= 80;
 
             // editableListのマージンを引く
             const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
