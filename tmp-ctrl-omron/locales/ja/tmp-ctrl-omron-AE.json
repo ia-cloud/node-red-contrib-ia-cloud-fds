@@ -2,17 +2,22 @@
     "editor": {
         "name": "ノード名称",
         "paletteLabel": "オムロン温調計A＆E",
+        "ui-config": "ここで設定",
+        "fileConfig": "設定ファイル",
         "tab": {
           "object-settings": "オブジェクト設定",
           "data-settings": "警報・イベント設定"
         },
+        "filename": "設定ファイル名を入力してください",
         "period": "定期収集周期",
         "async": "非同期収集有り",
+        "objectname": "object名称",
         "objectKey": "objectキー",
         "objectKeyholder": "必須: 固有のキー",
         "objectDescription": "objectの説明",
         "modbusNode": "通信ノード",
         "contentType": "データ構造型",
+        "itemNumber": "項目番号",
         "del": "削除",
         "add": "追加",
         "hh": "H電流値ホールド",

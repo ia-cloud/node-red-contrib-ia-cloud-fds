@@ -1,22 +1,60 @@
 
-<script type="text/x-red" data-help-name="PLC-Modbus">
-    <p>Modbus機器データオブジェクトノード</p>
+<script type="text/html" data-help-name="tmp-ctrl-omron">
+    <p>Omron 温度調節系データ収集ノード</p>
 
-<h3>入力メーッセージ</h3>
-<dl class="message-properties">
-    <dd>なし</dd>
-</dl>
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>通信ノード<span class="property-type">Modbus通信設定ノード</span></dt>
+        <dd>Modbus通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dd>Modbus通信ノードはその通信方式として、ModbusTCP/ModbusRTU/ModbusASCIIを選択できるが、形E5□DはModbusRTUのみ利用できるので注意</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>PLCデータを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>PLCデータに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>PLCデータ項目に付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>PLCデータ項目のわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列</span></dt>
+            <dd>温調計データのデータ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
+            <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データ項目<span class="property-type">選択</span></dt>
+                <dt>温調計の持つ読み取り可能なデータ項目のリストが示されるので選択する</dt>
+               
+                <dd>データ名称: データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+                <dd>単位: データ項目に付与する単位</dd>  
+            </dl>
+        </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    </dl>
 
-<h3>出力メッセージ</h3>
-<dl class="message-properties">
-    <dt>msg.request<span class="property-type">string</span></dt>
-    <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
-    <dt>msg.dataObject<span class="property-type">number</span></dt>
-    <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
-</dl>
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
 
-<h3>詳細説明</h3>
-<p>Modbus通信機器の持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
-設定Nodeとして、Modbus-com、Modbus-dataItemsを使用する。</p>
-
+    <h3>詳細説明</h3>
+    <p>Omron 温度調節計のデータを収集するノード</p>
+    <p>本Nodeは、オムロン製の温度調節計 形E5□D の内部データを、RS485Modbus通信を利用して収集しia-cloudオブジェクトとして出力メッセージに出力するNodeである。</p>
 </script>
