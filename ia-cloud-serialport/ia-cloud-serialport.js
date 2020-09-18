@@ -287,8 +287,14 @@ module.exports = function(RED) {
         }());
 
     RED.httpAdmin.get('/serialports', RED.auth.needsPermission('serial.read'), function(req, res) {
-        serialp.list(function (err, ports) {
-            res.json(ports);
-        });
+        serialp.list()
+            .then(function(data) {
+                // data = [{"path":"COM3","manufacturer":"FTDI","serialNumber":"FT2L5LDF","pnpId":"FTDIBUS\\VID_0403+PID_6001+FT2L5LDFA\\0000","vendorId":"0403","productId":"6001"}]
+                res.json(data.map(d => d.path));
+            })
+            .catch(function(err) {
+                console.error(err);
+                // res.json([RED._('serial.errors.list')]);
+            });
     });
 }
