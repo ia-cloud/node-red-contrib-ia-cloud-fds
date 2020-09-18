@@ -176,12 +176,8 @@
                 $("#node-config-lookup-serial").addClass('disabled');
                 $.getJSON('serialports',function(data) {
                     $("#node-config-lookup-serial").removeClass('disabled');
-                    var ports = [];
-                    $.each(data, function(i, port) {
-                        ports.push(port.comName);
-                    });
                     $("#node-config-input-serialport").autocomplete({
-                        source:ports,
+                        source:data,
                         minLength:0,
                         close: function( event, ui ) {
                             $("#node-config-input-serialport").autocomplete( "destroy" );
