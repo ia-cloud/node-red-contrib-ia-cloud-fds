@@ -286,7 +286,7 @@ module.exports = function(RED) {
             }
         }());
 
-    RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
+    RED.httpAdmin.get('/serialports', RED.auth.needsPermission('serial.read'), function(req, res) {
         serialp.list(function (err, ports) {
             res.json(ports);
         });
