@@ -8,6 +8,7 @@
     },
     "enoceanDataItem": {
         "label": {
+            "paletteLabel": "EnOceanセンサー",
             "coreStaffTemp": "CoreStaff温湿度センサー", 
             "enoceanCom": "EnOcean通信オブジェクト",
             "fileContentHere": "現在の設定ファイルの中身がここに表示されます",

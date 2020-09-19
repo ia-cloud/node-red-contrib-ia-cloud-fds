@@ -84,15 +84,21 @@ module.exports = function (RED) {
             }
         }
         // EnOcean-com nodeのデータ追加メソッドを呼ぶ
-        enCom.addLinkData(linkObj);
+        enCom.emit("addLinkData", linkObj);
+
         node.status({ fill: 'green', shape: 'dot', text: 'status.ready' });
 
         // EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
+        this.on("linkDatachangeListener", function (element){
+            // 引数に [objectKey, radio_data] を受け取る
+            iaCloudObjectSend(element);
+        });
+/*
         this.linkDatachangeListener = function (element) {
             // 引数に [objectKey, radio_data] を受け取る
             iaCloudObjectSend(element);
         };
-
+*/
         var iaCloudObjectSend = function (element) {
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
@@ -129,6 +135,7 @@ module.exports = function (RED) {
                 });
 
                 msg.dataObject.objectContent.contentData = contentData;
+                msg.payload = contentData;
                 node.debug(JSON.stringify(msg.dataObject));
                 node.send(msg);
                 // node.status({fill:'green', shape:'dot', text:'runtime.sent'});

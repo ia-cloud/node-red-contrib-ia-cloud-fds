@@ -1,5 +1,5 @@
 <!-- EnOcean-object Node の記述 -->
-<script type="text/x-red" data-template-name="EnOcean-obj">
+<script type="text/html" data-template-name="EnOcean-obj">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
@@ -95,7 +95,7 @@
 
 <script type="text/javascript">
 RED.nodes.registerType('EnOcean-obj', {
-    category: 'iaCloud',
+    category: 'iaCloud devices',
     defaults: {
         name: { name: '' },
         confsel: { value: 'propertySet' },
@@ -173,20 +173,23 @@ RED.nodes.registerType('EnOcean-obj', {
         if (this.name) {
             return this.name;
         } else if (this.sensor_kind === 'watty') {
-            return 'Watty Temperature Sensor';
+            return this._("enoceanDataItem.label.wattyTemp");
         } else if (this.sensor_kind === 'core_staff') {
-            return 'Core-Staff Temperature Sensor';
+            return this._("enoceanDataItem.label.coreStaffTemp");
         } else if (this.sensor_kind === 'itec') {
-            return 'ITEC CT Sensor';
+            return this._("enoceanDataItem.label.itecAC");
         } else if (this.sensor_kind === 'optex_rocker') {
-            return 'OPTEX Rocker Sensor';   
+            return this._("enoceanDataItem.label.optexRocker");   
         } else if (this.sensor_kind === 'optex_occupancy') {
-            return 'OPTEX Occupancy Sensor';
+            return this._("enoceanDataItem.label.optexOccupancy");
         }
-        return 'EnOcean obj';
+        return 'EnOcean sensor';
     },
     labelStyle: function () {
         return this.name ? 'node_label_italic' : '';
+    },
+    paletteLabel: function() {
+        return this._("enoceanDataItem.label.paletteLabel") || "EnOcean sensor";
     },
     oneditprepare: function () {
         debugger;

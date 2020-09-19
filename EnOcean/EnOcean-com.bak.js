@@ -1,8 +1,3 @@
-const SerialPort = require("serialport");
-const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
-                                parity none, stopbit 1, databit 8 are serialport defaults */
-const INTERBYTETIMEOUT = 100;   // set inter byte timeout 100ms
-
 module.exports = function (RED) {
     'use strict';
 
@@ -177,20 +172,21 @@ module.exports = function (RED) {
     };
 
     // EnOcean-com node function definition
-    function EnOceanComNode(config) {
-        RED.nodes.createNode(this, config);
-
-        this.port = new SerialPort(config.serialPort, {baudRate: BAUDRATE});
-        const InterByteTimeout = require('@serialport/parser-inter-byte-timeout')
-        this.parser = this.port.pipe(new InterByteTimeout({interval: INTERBYTETIMEOUT}))
+    function EnOceanComNode(n) {
+        RED.nodes.createNode(this, n);
+        this.serial = n.serial;
+        this.serialConfig = RED.nodes.getNode(this.serial);
+        this.serialPool = this.serialConfig.serialpool;
         var node = this;
         var linkObj = [];
         var listeners = {};
 
-        if (this.parser) {
-            this.parser.on('data', function (data) {
+        if (this.serialConfig) {
+            node.port = this.serialPool.get(this.serialConfig);
+
+            this.port.on('data', function (msgout) {
                 // TODO msgout.payload can be 32 bytes when 2 sensors send telegram at the same time.
-                const esp = pickupEspPacketAsObject(data);
+                const esp = pickupEspPacketAsObject(msgout.payload);
 
                 if (esp.syncByte !== '55') {
                     node.log(`Invalid syncByte ${esp.syncByte}`);
@@ -202,11 +198,6 @@ module.exports = function (RED) {
                 }
                 if (esp.header.packetType !== '0a') {
                     node.log(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
-                    return;
-                }
-                // check phantom telegram
-                if (data.length > esp.header.dataLengthAsInt + 9) {
-                    node.log(`consecutive (sub)telegrams might be recieved, the length is ${data.length}`);
                     return;
                 }
 
@@ -248,7 +239,7 @@ module.exports = function (RED) {
                     if (nodeId) {
                         var EnObjNode = RED.nodes.getNode(nodeId);
                         node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
-                        if (EnObjNode) EnObjNode.emit("linkDatachangeListener", listeners[nodeId]);
+                        if (EnObjNode) EnObjNode.linkDatachangeListener(listeners[nodeId]);
                     }
                 });
                 listeners = {}; // 通知先をクリアする
@@ -278,24 +269,17 @@ module.exports = function (RED) {
             }
         };
 
-        this.on("addLinkData", function (lObj){
-            // linkObjに新たなリンクデータを追加
-            Array.prototype.push.apply(linkObj, lObj);
-            node.log(`lObj = ${JSON.stringify(lObj)}`);
-            node.log(`linkObj = ${JSON.stringify(linkObj)}`);
-
-        });
-/*
         EnOceanComNode.prototype.addLinkData = function (lObj) {
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj, lObj);
             node.log(`lObj = ${JSON.stringify(lObj)}`);
             node.log(`linkObj = ${JSON.stringify(linkObj)}`);
         };
-*/
+
         this.on('close', function (done) {
-            if (this.port) {
-                this.port.close(done);
+            if (this.serialConfig) {
+                // TODO: serialPoolをSerialPortノードから取得するように変更する
+                this.serialPool.close(this.serialConfig.serialport, done);
             } else {
                 done();
             }

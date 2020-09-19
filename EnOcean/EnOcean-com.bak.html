@@ -1,0 +1,42 @@
+<script type="text/x-red" data-template-name="EnOcean-com">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row node-config-input-serial">
+        <label for="node-config-input-serial"><i class="fa fa-random"></i> <span data-i18n="serial.label.serialport"></span></label>
+        <input type="text" id="node-config-input-serial">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="EnOcean-com" charset="utf-8">
+    <p>シリアルポートからEnOceanデータを読み込み各センサーのデータを内部に保存します</p>
+    <p>このノードを使うにはUSBポートにEnOceanドングルを差し込む必要があります。</p>
+    <p>このノードは各種のEnOcean通信をサポートしたセンサデバイスからEnOcean通信を受信し各センサIDごとのESP電文を設定ノードであるenOceanLinkObjに格納します</p>
+    <p>受信するデータは下記のいずれかを指定可能 <ul>
+    <li>区切り文字を待つ(デフォルトは \n)。区切り文字は16進表記(0x0d)の指定も可。</li>
+    <li>最初の文字を受信してからミリ秒単位のタイムアウトを待つ。</li>
+    <li>一定サイズのバッファを満たすまで待つ。</li></ul></p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('EnOcean-com',{
+        category: 'config',
+        defaults: {
+            name: {name:"EnOcean-com"},
+            serial: {type:"ia-cloud-serialport",required:true}
+        },
+        label: function() {
+            var serialNode = RED.nodes.node(this.serial);
+            return this.name||(serialNode?serialNode.label().split(":")[0]:this._("serial.label.serial"));
+        },
+        oneditprepare: function() {
+            var node_name = $("#node-config-input-name").val();
+            if ( node_name == "" ) {
+                $("#node-config-input-name").val("EnOcean-com");
+            }
+        },
+        oneditsave: function() {
+        }
+    });
+</script>

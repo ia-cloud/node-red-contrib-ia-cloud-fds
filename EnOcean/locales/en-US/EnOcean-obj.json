@@ -8,6 +8,7 @@
     },
     "enoceanDataItem": {
         "label": {
+            "paletteLabel": "EnOcean sensor",
             "coreStaffTemp": "CoreStaff Temp sensor",
             "enoceanCom": "EnOcean communication object",
             "fileContentHere": "The content of file will be shown here.",
