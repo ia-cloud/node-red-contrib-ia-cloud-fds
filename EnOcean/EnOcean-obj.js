@@ -21,7 +21,7 @@ module.exports = function (RED) {
         var node = this;
         var enCom = RED.nodes.getNode(this.enoceancom);
         if (enCom == null) {
-            node.log('[ERROR] EnOcean-com node is not specified. [object = ' + enCom + ']');
+            node.warn('[ERROR] EnOcean-com node is not specified. [object = ' + enCom + ']');
             node.status({ fill: 'red', shape: 'ring', text: 'status.noEnOceanCom' });
             return false;
         }
@@ -35,8 +35,8 @@ module.exports = function (RED) {
             try {
                 // EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8')).EnObjects;
                 EnObjects = JSON.parse(config.configdata);
-                node.log('EnObjects = ' + EnObjects);
-                node.log('The number of EnObjects = ' + EnObjects.length);
+                node.error('EnObjects = ' + EnObjects);
+                node.error('The number of EnObjects = ' + EnObjects.length);
             } catch (e) {
                 // エラーの場合は、nodeステータスを変更。
                 // node.status({fill:'red',shape:'ring',text:'runtime.badFilePath'});
@@ -56,12 +56,12 @@ module.exports = function (RED) {
             // }
             var SensorNode = RED.nodes.getNode(sensor_obj);
             if (SensorNode == null) {
-                node.log('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
+                node.warn('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
                 node.status({ fill: 'red', shape: 'ring', text: 'status.noSensor' });
                 return false;
             }
-            node.log('SensorNode = ' + JSON.stringify(SensorNode));
-            node.log('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
+            node.trace('SensorNode = ' + JSON.stringify(SensorNode));
+            node.trace('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
 
             EnObjects = [{ options: {}, objectContent: {} }];
             EnObjects[0].options.sensor_id = SensorNode.sensor_id;
@@ -141,7 +141,7 @@ module.exports = function (RED) {
                 // node.status({fill:'green', shape:'dot', text:'runtime.sent'});
                 node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             } else {
-                node.log('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
+                node.warn('!!! 受信したobjectKeyは設定情報の中には含まれません。メッセージ送信はしません。 !!!');
             }
         };
 

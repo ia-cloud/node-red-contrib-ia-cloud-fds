@@ -193,20 +193,20 @@ module.exports = function (RED) {
                 const esp = pickupEspPacketAsObject(data);
 
                 if (esp.syncByte !== '55') {
-                    node.log(`Invalid syncByte ${esp.syncByte}`);
+                    node.error(`Invalid syncByte ${esp.syncByte}`);
                     return;
                 }
                 if (esp.header.dataLengthAsInt <= 6) {
-                    node.log(`Data Length (${esp.header.dataLength}) is less than 6 bytes.`);
+                    node.error(`Data Length (${esp.header.dataLength}) is less than 6 bytes.`);
                     return;
                 }
                 if (esp.header.packetType !== '0a') {
-                    node.log(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
+                    node.error(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
                     return;
                 }
                 // check phantom telegram
                 if (data.length > esp.header.dataLengthAsInt + 9) {
-                    node.log(`consecutive (sub)telegrams might be recieved, the length is ${data.length}`);
+                    node.warn(`consecutive (sub)telegrams might be recieved, the length is ${data.length}`);
                     return;
                 }
 
@@ -215,7 +215,7 @@ module.exports = function (RED) {
                 const computedCrc8hNumber = crc8.compute(espHeaderBuffer);
                 const computedCrc8h = (`00${computedCrc8hNumber.toString(16)}`).slice(-2);
                 if (computedCrc8h !== esp.crc8h) {
-                    node.log(`Failed to header CRC check. header: ${esp.crc8h} computed: ${computedCrc8h}`);
+                    node.warn(`Failed to header CRC check. header: ${esp.crc8h} computed: ${computedCrc8h}`);
                     return;
                 }
 
@@ -224,7 +224,7 @@ module.exports = function (RED) {
                 const computedCrc8dNumber = crc8.compute(espDataBuffer);
                 const computedCrc8d = (`00${computedCrc8dNumber.toString(16)}`).slice(-2);
                 if (computedCrc8d !== esp.crc8d) {
-                    node.log(`Failed to data CRC check. data: ${esp.crc8d} computed: ${computedCrc8d}`);
+                    node.warn(`Failed to data CRC check. data: ${esp.crc8d} computed: ${computedCrc8d}`);
                     return;
                 }
 
@@ -234,7 +234,7 @@ module.exports = function (RED) {
                 if (erp2.originatorId) {
                     node.debug(`Originator ID = ${erp2.originatorId}`);
                 } else {
-                    node.log('Originator-ID is empty.');
+                    node.error('Originator-ID is empty.');
                     return;
                 }
 
@@ -281,8 +281,8 @@ module.exports = function (RED) {
         this.on("addLinkData", function (lObj){
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj, lObj);
-            node.log(`lObj = ${JSON.stringify(lObj)}`);
-            node.log(`linkObj = ${JSON.stringify(linkObj)}`);
+            node.trace(`lObj = ${JSON.stringify(lObj)}`);
+            node.trace(`linkObj = ${JSON.stringify(linkObj)}`);
 
         });
 /*
