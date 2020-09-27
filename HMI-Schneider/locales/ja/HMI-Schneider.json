@@ -7,7 +7,7 @@
           "object-settings": "オブジェクトの設定",
           "data-settings": "データの設定"
         },
-
+        "async": "非同期収集有り",
         "period": "通知周期(秒)",
         "objectname": "object名称",
         "objectKey": "objectキー",
