@@ -5,22 +5,22 @@
     },
     "ObjectContent": {
         "contentData": [{
-            "unitType": "℃",
+            "unit": "℃",
             "dataValue": "0",
             "dataName": "TempData1"
         },
         {
-            "unitType": "℃",
+            "unit": "℃",
             "dataValue": "0",
             "dataName": "TempData2"
         },
         {
-            "unitType": "℃",
+            "unit": "℃",
             "dataValue": "0",
             "dataName": "TempData3"
         },
         {
-            "unitType": "℃",
+            "unit": "℃",
             "dataValue": "0",
             "dataName": "TempData4"
         }],
@@ -37,7 +37,7 @@
     },
     "ObjectContent": {
         "contentData": [{
-            "unitType": "A",
+            "unit": "A",
             "dataValue": "0",
             "dataName": "AC_1"
         }],

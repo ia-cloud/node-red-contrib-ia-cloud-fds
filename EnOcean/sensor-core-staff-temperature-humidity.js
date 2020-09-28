@@ -38,9 +38,9 @@ module.exports = class CoreStaffTemperatureHumidity extends SensorInterface {
             RED.nodes.createNode(this, config);
             this.sensor_id = config.sensor_id;
             // this.dataName0 = config.dataName0;
-            // this.unitType0 = config.unitType0;
+            // this.unit0 = config.unit0;
             // this.dataName1 = config.dataName1;
-            // this.unitType1 = config.unitType1;
+            // this.unit1 = config.unit1;
 
             var node = this;
             var confObj = config.configObject;

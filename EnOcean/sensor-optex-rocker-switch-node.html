@@ -130,9 +130,9 @@
         oneditsave: function() {
             var dItems = [];
             for (var i = 0; i < 5; i++) {
-                var item ={dataValue: "", unitType: "", dataName: ""};
-                //item.unitType = $("#node-config-input-unitType" + String(i)).val();
-                item.unitType = null;
+                var item ={dataValue: "", unit: "", dataName: ""};
+                //item.unit = $("#node-config-input-unit" + String(i)).val();
+                item.unit = null;
                 item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }

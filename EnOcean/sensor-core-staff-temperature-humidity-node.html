@@ -33,7 +33,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType0" style="width: 100px;" value="％">
+                  <input type="text" id="node-config-input-unit0" style="width: 100px;" value="％">
                 </td>
               </tr>
             </table>
@@ -59,7 +59,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType1" style="width: 100px;" value="℃">
+                  <input type="text" id="node-config-input-unit1" style="width: 100px;" value="℃">
                 </td>
               </tr>
             </table>
@@ -79,9 +79,9 @@
             // sensor_kind: {value:"u-rd", required:true},
             sensor_id: {value:"", required:true},
             dataName0: {value:"湿度"},
-            unitType0: {value:"％"},
+            unit0: {value:"％"},
             dataName1: {value:"温度"},
-            unitType1: {value:"℃"},
+            unit1: {value:"℃"},
             configObject: {value:""}
         },
         label: function() {
@@ -92,8 +92,8 @@
         oneditsave: function() {
             var dItems = [];
             for (var i = 0; i < 2; i++) {
-                var item ={dataValue: "", unitType: "", dataName: ""};
-                item.unitType = $("#node-config-input-unitType" + String(i)).val();
+                var item ={dataValue: "", unit: "", dataName: ""};
+                item.unit = $("#node-config-input-unit" + String(i)).val();
                 item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }
