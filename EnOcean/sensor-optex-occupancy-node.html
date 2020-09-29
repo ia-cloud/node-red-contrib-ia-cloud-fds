@@ -32,7 +32,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType0" style="width: 100px;" value="V">
+                  <input type="text" id="node-config-input-unit0" style="width: 100px;" value="V">
                 </td>
               </tr>
             </table>
@@ -58,7 +58,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType1" style="width: 100px;" value="null">
+                  <input type="text" id="node-config-input-unit1" style="width: 100px;" value="null">
                 </td>
               </tr>
             </table>
@@ -77,9 +77,9 @@
             name: {value:"Optex Occupancy Sensor"},
             sensor_id: {value:"", required:true},
             dataName0: {value:"供給電圧"},
-            unitType0: {value:"V"},
+            unit0: {value:"V"},
             dataName1: {value:"在室状態"},
-            unitType1: {value:"null"},
+            unit1: {value:"null"},
             configObject: {value:""}
         },
         label: function() {
@@ -91,12 +91,12 @@
             var dItems = [];
             var unit = "";
             for (var i = 0; i < 2; i++) {
-                var item ={dataValue: "", unitType: "", dataName: ""};
-                unit = $("#node-config-input-unitType" + String(i)).val();
+                var item ={dataValue: "", unit: "", dataName: ""};
+                unit = $("#node-config-input-unit" + String(i)).val();
                 if ( unit.toLowerCase() === "null" ) {
                     unit = null;
                 }
-                item.unitType = unit;
+                item.unit = unit;
                 item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }

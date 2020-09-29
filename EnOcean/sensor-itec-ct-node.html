@@ -33,7 +33,7 @@
                   <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
                 </td>
                 <td>
-                  <input type="text" id="node-config-input-unitType0" style="width: 100px;" value="A">
+                  <input type="text" id="node-config-input-unit0" style="width: 100px;" value="A">
                 </td>
               </tr>
             </table>
@@ -53,7 +53,7 @@
             // sensor_kind: {value:"u-rd", required:true},
             sensor_id: {value:"", required:true},
             dataName0: {value:"電流1"},
-            unitType0: {value:"A"},
+            unit0: {value:"A"},
             configObject: {value:""}
         },
         label: function() {
@@ -64,8 +64,8 @@
         oneditsave: function() {
             var dItems = [];
             for (var i = 0; i < 1; i++) {
-                var item ={dataValue: "", unitType: "", dataName: ""};
-                item.unitType = $("#node-config-input-unitType" + String(i)).val();
+                var item ={dataValue: "", unit: "", dataName: ""};
+                item.unit = $("#node-config-input-unit" + String(i)).val();
                 item.dataName = $("#node-config-input-dataName" + String(i)).val();
                 dItems[i]=item;
             }
