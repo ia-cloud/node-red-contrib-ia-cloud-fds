@@ -1,4 +1,5 @@
 {
+    "paletteLabel": "URD電流センサー",
     "status": {
         "excluded": "送信対象外データ受信",
         "jsonParseError": "JSON読み込みエラー",

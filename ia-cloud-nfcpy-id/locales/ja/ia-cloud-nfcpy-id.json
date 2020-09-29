@@ -1,6 +1,7 @@
 {
   "ia-cloud-nfcpy"  : {
     "label" : {
+      "paletteLabel"  : "RFIDリーダ",
       "waitTime"      : "カード検出間隔",
       "waitTimeUnit"  : "秒",
       "sendTime"      : "データ送信間隔",

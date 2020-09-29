@@ -1,6 +1,6 @@
 <script type="text/javascript">
     RED.nodes.registerType('RFID',{
-        category: 'iaCloud',
+        category: 'iaCloud devices',
         color:"rgb(231, 180, 100)",
         defaults: {
             waitTime: {value:"1", validate:RED.validators.number()},
@@ -15,7 +15,13 @@
         icon: "ia-cloud.png",
         // icon: "ia-cloud2.png",
         label: function() {
-            return this.name||"RFID";
+            return this.name||this._("ia-cloud-nfcpy.label.paletteLabel");
+        },
+        labelStyle: function() {
+          return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("ia-cloud-nfcpy.label.paletteLabel") || "RFID";
         },
         oneditprepare: function(){
           $( "#node-input-waitTime" ).spinner({min:1});

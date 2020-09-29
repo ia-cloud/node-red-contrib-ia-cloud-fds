@@ -98,7 +98,7 @@ limitations under the License.
     const ac1chSensor = ['CTL-10-CLS-WLS30', 'CTL-16-CLS-WLS80', 'CTL-24-CLS-WLS100', 'CTL-36-CLS-WLS300'];
     const ac3chSensor = ['CWD-3-1'];
     RED.nodes.registerType('URD Current Sensor', {
-        category: 'iaCloud',
+        category: 'iaCloud devices',
         defaults: {
             name: { name: '' },
             objectKey: { value: '', required: true },
@@ -132,7 +132,7 @@ limitations under the License.
         inputs: 1,
         outputs: 1,
         icon: 'ia-cloud.png',
-        label() {
+        label:function () {
             if (this.name) return this.name;
             const { sensorType } = this;
             if (ac1chSensor.includes(sensorType)) {
@@ -140,9 +140,14 @@ limitations under the License.
             } if (ac3chSensor.includes(sensorType)) {
                 return 'URD 3ch CT Sensor';
             }
-            return 'URD Current Sensor';
+            return this._("paletteLabel");
         },
-        labelStyle: this.name ? 'node_label_italic' : '',
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("paletteLabel") || "URD Current Sensor";
+        },
         oneditprepare() {
             // センサー種別が変更されたときの処理
             $('#node-input-sensor').change(() => {
