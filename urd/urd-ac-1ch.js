@@ -56,7 +56,7 @@ module.exports = class UrdAC1ch extends SensorInterface {
             return dItem;
         });
 
-        return { contentData, message: '', sendFlg: false };
+        return { contentData, message: '', sendFlg: true };
     }
 
     static nodeRedFunction(RED) {

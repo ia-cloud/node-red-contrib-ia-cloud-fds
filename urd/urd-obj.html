@@ -92,6 +92,15 @@ limitations under the License.
         When it receives data from the sensor, it will generate and output an ia-cloud object.
         objectKey hopes to be a unique key, Since the objectKey is the name that identifies the sensor.
     </p>
+
+    <h3>Recieved data without current value</h3>
+    <p>
+        EnOcean communication stipulates a mechanism to notify information about a sensor (called TI; Teach-In) at startup.
+        And also, when the measured current was less than the sensor's minimum operating current, sensors send TI.
+
+        TI has no current values, so the status of this node becomes "Received data without current value" and send nothing.
+    </p>
+
 </script>
 
 <script type="text/javascript">

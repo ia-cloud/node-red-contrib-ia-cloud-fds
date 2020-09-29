@@ -1,7 +1,7 @@
 {
     "paletteLabel": "URD電流センサー",
     "status": {
-        "excluded": "送信対象外データ受信",
+        "excluded": "測定電流以外のデータを受信",
         "jsonParseError": "JSON読み込みエラー",
         "noUrdCom": "URDセンサー通信オブジェクトが設定されていません",
         "noSensor": "センサー情報が設定されていません",
