@@ -57,10 +57,10 @@ limitations under the License.
 
     <hr>
 
-    <!-- urd-com node setting -->
+    <!-- enoceanCom node setting -->
     <div class="form-row">
-        <label for="node-input-urdCom"><i class="fa fa-random"></i> <span data-i18n="urdDataItem.label.urdCom"></span></label>
-        <input type="text" id="node-input-urdCom">
+        <label for="node-input-enoceanCom"><i class="fa fa-random"></i> <span data-i18n="urdDataItem.label.enoceanCom"></span></label>
+        <input type="text" id="node-input-enoceanCom">
     </div>
     <div class="form-row" hidden>
         <input type="text" style="width: 300px" id="node-input-selectSensor">
@@ -88,7 +88,7 @@ limitations under the License.
     <h3>Details</h3>
     <p>
         Select the sensor type and define the sensor data from the setting Node according to the type.
-        Set the receiving port for sensor data in the URD sensor communication object (urd-com Node).
+        Set the receiving port for sensor data in the EnOcean communication object (EnOcean-com Node).
         When it receives data from the sensor, it will generate and output an ia-cloud object.
         objectKey hopes to be a unique key, Since the objectKey is the name that identifies the sensor.
     </p>
@@ -112,7 +112,7 @@ limitations under the License.
             name: { name: '' },
             objectKey: { value: '', required: true },
             objectDescription: { value: '' },
-            urdCom: { type: 'urd-com', required: true, value: '' },
+            enoceanCom: { type: 'EnOcean-com', required: true, value: '' },
             sensor: { value: 'CTL-10-CLS-WLS30' },
             sensorType: { value: 'AC1ch' },
             ac1chSensor: {

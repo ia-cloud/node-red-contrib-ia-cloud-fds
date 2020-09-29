@@ -23,17 +23,17 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         this.objectKey = config.objectKey;
         this.objectDescription = config.objectDescription;
-        this.urdCom = config.urdCom;
+        this.enoceanCom = config.enoceanCom;
         this.sensorType = config.sensorType;
         this.selectSensor = config.selectSensor;
 
-        const { serialPool } = config.urdCom;
+        const { serialPool } = config.enoceanCom;
 
         const node = this;
-        const urdCom = RED.nodes.getNode(this.urdCom);
-        if (urdCom == null) {
-            node.log(`[ERROR] urd-com node is not specified. [object = ${urdCom}]`);
-            node.status({ fill: 'red', shape: 'ring', text: 'status.noUrdCom' });
+        const enoceanCom = RED.nodes.getNode(this.enoceanCom);
+        if (enoceanCom == null) {
+            node.log(`[ERROR] EnOcean-com node is not specified. [object = ${enoceanCom}]`);
+            node.status({ fill: 'red', shape: 'ring', text: 'status.noEnOceanCom' });
             return false;
         }
         const linkObj = [];
@@ -70,8 +70,8 @@ module.exports = function (RED) {
             });
         }
 
-        // urd-com nodeのデータ追加メソッドを呼ぶ
-        urdCom.addLinkData(linkObj);
+        // enoceanCom nodeのデータ追加メソッドを呼ぶ
+        enoceanCom.emit('addLinkData', linkObj);
         node.status({ fill: 'green', shape: 'dot', text: 'status.ready' });
 
         const iaCloudObjectSend = function (element) {

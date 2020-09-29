@@ -3,14 +3,14 @@
     "status": {
         "excluded": "測定電流以外のデータを受信",
         "jsonParseError": "JSON読み込みエラー",
-        "noUrdCom": "URDセンサー通信オブジェクトが設定されていません",
+        "noEnOceanCom": "EnOcean通信オブジェクトが設定されていません",
         "noSensor": "センサー情報が設定されていません",
         "ready": "受信待機中",
         "received": "データ受信済"
     },
     "urdDataItem": {
         "label": {
-            "urdCom": "URDセンサー通信オブジェクト",
+            "enoceanCom": "EnOcean通信オブジェクト",
             "fileContentHere": "現在の設定ファイルの中身がここに表示されます",
             "filename": "設定ファイル名",
             "objectDesc": "オブジェクトの説明",
