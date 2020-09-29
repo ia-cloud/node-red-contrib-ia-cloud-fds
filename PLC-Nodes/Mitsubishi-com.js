@@ -100,7 +100,7 @@ module.exports = function(RED) {
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
-            mcpObj.close(done());
+            mcpObj.close(done);
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録

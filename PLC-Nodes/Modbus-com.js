@@ -119,7 +119,7 @@ module.exports = function(RED) {
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
-            mbObj.close(done());
+            mbObj.close(done);
         });
 
         // linkObjにlinkDtataを追加するイベントリスナーを登録
