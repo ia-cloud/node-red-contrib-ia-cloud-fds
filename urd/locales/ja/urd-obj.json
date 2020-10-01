@@ -24,8 +24,11 @@
             }
         },
         "sensors": {
-            "AC1ch": "電流センサー (1ch)",
-            "AC3ch": "電流センサー (3ch)"
+            "CTL-10-CLS-WLS30": "CTL-10-CLS-WLS30(1ch)",
+            "CTL-16-CLS-WLS80": "CTL-16-CLS-WLS80(1ch)",
+            "CTL-24-CLS-WLS100": "CTL-24-CLS-WLS100(1ch)",
+            "CTL-36-CLS-WLS300": "CTL-36-CLS-WLS300(1ch)",
+            "CWD-3-1": "CWD-3-1(3ch)"
         }
     }
 }

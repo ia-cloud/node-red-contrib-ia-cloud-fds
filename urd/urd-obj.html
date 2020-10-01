@@ -28,11 +28,11 @@ limitations under the License.
         <div class="form-row">
             <label for="node-input-sensor"><i class="fa fa-eye"></i> <span data-i18n="urdDataItem.label.sensor"></span></label>
             <select type="text" id="node-input-sensor">
-                <option value="CTL-10-CLS-WLS30">CTL-10-CLS-WLS30(1ch)</option>
-                <option value="CTL-16-CLS-WLS80">CTL-16-CLS-WLS80(1ch)</option>
-                <option value="CTL-24-CLS-WLS100">CTL-24-CLS-WLS100(1ch)</option>
-                <option value="CTL-36-CLS-WLS300">CTL-36-CLS-WLS300(1ch)</option>
-                <option value="CWD-3-1">CWD-3-1(3ch)</option>
+                <option value="CTL-10-CLS-WLS30" data-i18n="urdDataItem.sensors.CTL-10-CLS-WLS30"></option>
+                <option value="CTL-16-CLS-WLS80" data-i18n="urdDataItem.sensors.CTL-16-CLS-WLS80"></option>
+                <option value="CTL-24-CLS-WLS100" data-i18n="urdDataItem.sensors.CTL-24-CLS-WLS100"></option>
+                <option value="CTL-36-CLS-WLS300" data-i18n="urdDataItem.sensors.CTL-36-CLS-WLS300"></option>
+                <option value="CWD-3-1" data-i18n="urdDataItem.sensors.CWD-3-1"></option>
             </select>
         </div>
         <div class="form-row">
@@ -142,15 +142,8 @@ limitations under the License.
         outputs: 1,
         icon: 'ia-cloud.png',
         label:function () {
-            if (this.name) return this.name;
-            const { sensorType } = this;
-            if (ac1chSensor.includes(sensorType)) {
-                return 'URD 1ch CT Sensor';
-            } if (ac3chSensor.includes(sensorType)) {
-                return 'URD 3ch CT Sensor';
-            }
-            return this._("paletteLabel");
-        },
+            return this.name || this._(`urdDataItem.sensors.${this.sensor}`);
+        },  
         labelStyle: function() {
             return this.name?"node_label_italic":"";
         },
