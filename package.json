@@ -63,7 +63,6 @@
       "tmp-ctrl-omron-AE": "tmp-ctrl-omron/tmp-ctrl-omron-AE.js",
       "ia-cloud-serialport": "ia-cloud-serialport/ia-cloud-serialport.js",
       "caliper-Mitsutoyo": "Caliper-Mitsutoyo/caliper-Mitsutoyo.js",
-      "urd-com": "urd/urd-com.js",
       "URD Current Sensor": "urd/urd-obj.js",
       "urd-ac-1ch": "urd/urd-ac-1ch-node.js",
       "urd-ac-3ch": "urd/urd-ac-3ch-node.js",
