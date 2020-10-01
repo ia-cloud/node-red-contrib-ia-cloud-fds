@@ -29,13 +29,9 @@
         <label style="margin-right: 10px;" for="node-input-storeInterval">
           <span data-i18n="editor.period"></span>
         </label>
-        <input type="number" id="node-input-storeInterval" min="1" step="1" max="60" style="display: inline-block; width: auto;">
-      </div>
-      <div class="form-row">
-        <label style="margin-right: 10px;" for="node-input-objectName">
-          <span data-i18n="editor.objectname"></span>
-        </label>
-        <input type="text" style="width: 300px" id="node-input-objectName">
+        <input type="number" id="node-input-storeInterval" min="0" step="1" value="0" style="display: inline-block; width: auto;">
+        <label for="node-input-storeAsync" style="margin-left: 20px;"><span data-i18n="editor.async"></span></label>
+        <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;" >
       </div>
       <div class="form-row">
         <label style="margin-right: 10px;" for="node-input-objectKey">
@@ -85,8 +81,8 @@
       name: {value:""},
       HmiSchneiderCom: {value:"", type:"HMI-Schneider-com", required: true},
       // object properties
-      storeInterval: {value:"5"},
-      objectName: {value:""},
+      storeInterval: {value:"0"},
+      storeAsync: {value:true},
       objectKey: {value:""},
       objectDescription: {value:""},
       // aeItems property

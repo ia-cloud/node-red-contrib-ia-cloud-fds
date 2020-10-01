@@ -8,10 +8,18 @@ module.exports = class HmiSchneiderWebSocket {
         this.en_status = { en_none: 0, en_opened: 1, en_authenticated: 2, en_operational: 3 };
         this._status = this.en_status.en_none;
         this._timer_id = null;
+        this._reconnect_id = null;
         this._last_received = null;
         this._cb_onopen = null;
         this._cb_onmessage = null;
         this._cb_onclose = null;
+
+        this._disposed = false;
+    }
+
+    dispose() {
+        this._disposed = true;
+        this.close();
     }
 
     get status() {
@@ -31,6 +39,10 @@ module.exports = class HmiSchneiderWebSocket {
     }
 
     open(url, token) {
+        if (this._disposed) {
+            return;
+        }
+
         var WebSocket = require('websocket').w3cwebsocket;
 
         if (this._ws == null) {
@@ -40,7 +52,6 @@ module.exports = class HmiSchneiderWebSocket {
             if (token != undefined) {
                 this._token = token;
             }
-
 
             // init WebSocket
             this._status = this.en_status.en_none;
@@ -63,6 +74,10 @@ module.exports = class HmiSchneiderWebSocket {
     }
 
     onOpen(event) {
+        if (this._reconnect_id != null) {
+            clearTimeout(this._reconnect_id);
+            this._reconnect_id = null;
+        }
         this._status = this.en_status.en_opened;
         this.update_received_date();
         this._timer_id = setTimeout(this.check_connection.bind(this), 1000);
@@ -88,12 +103,20 @@ module.exports = class HmiSchneiderWebSocket {
 
     onClose(event) {
         this._ws = null;
+
         this._status = this.en_status.en_none;
         if (this._timer_id != null) {
             clearTimeout(this._timer_id);
+            this._timer_id = null;
         }
 
-        setTimeout(this.open.bind(this), 3000);
+        if (this._reconnect_id != null) {
+            clearTimeout(this._reconnect_id);
+            this._reconnect_id = null;
+        }
+        if (!this._disposed) {
+            this._reconnect_id = setTimeout(this.open.bind(this), 5000);
+        }
 
         if (this._cb_onclose != null) {
             this._cb_onclose.call(this);

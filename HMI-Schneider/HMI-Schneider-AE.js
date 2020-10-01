@@ -7,35 +7,35 @@ module.exports = function (RED) {
   function hmiSchneiderAE(config) {
 
     RED.nodes.createNode(this, config);
-
     this.AnEObject = {};
-    this.connected = false;
     this.hmiCom = RED.nodes.getNode(config.HmiSchneiderCom);
 
     // Nodeステータスを、preparingにする。
     this.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
 
     // プロパティを読み込んでオブジェクトを生成
-    this.AnEObject = { ObjectContent: {} };
-    this.AnEObject.storeInterval = config.storeInterval;
-    this.AnEObject.objectName = config.objectName;
-    this.AnEObject.objectKey = config.objectKey;
-    this.AnEObject.objectDescription = config.objectDescription;
-    this.AnEObject.ObjectContent.contentData = [];
-    for (let i = 0, len = config.aeItems.length; i < len; i++) {
-      this.AnEObject.ObjectContent.contentData.push(Object.assign({}, config.aeItems[i]));
-    }
+    this.AnEObject = [{ ObjectContent: {} }];
+    this.AnEObject[0].asyncInterval = config.storeAsync ? 1 : 0;
+    this.AnEObject[0].storeInterval = config.storeInterval;
+    this.AnEObject[0].objectKey = config.objectKey;
+    this.AnEObject[0].objectDescription = config.objectDescription;
+    this.AnEObject[0].ObjectContent.contentData = [];
+    config.aeItems.forEach(function (item) {
+      this.AnEObject[0].ObjectContent.contentData.push(Object.assign({}, item));
+    }, this);
 
     let linkObj = {};
     linkObj.nodeId = this.id;
     linkObj.kind = "alarm";
 
-    this.AnEObject.lastCheck = null;
-
-    this.AnEObject.ObjectContent.contentData.forEach(function (dataItem, index) {
-      dataItem.status = null;
-      dataItem.prev = null;
-      dataItem.message = "";
+    this.AnEObject.forEach(function (obj) {
+      obj.lastIntervalCheck = null;
+      obj.lastValueChangedCheck = null;
+      obj.ObjectContent.contentData.forEach(function (dataItem) {
+        dataItem.status = null;
+        dataItem.prev = null;
+        dataItem.message = "";
+      });
     });
 
     //HmiSchneiderCom nodeのデータ追加メソッドを呼ぶ
@@ -43,10 +43,12 @@ module.exports = function (RED) {
 
     // Nodeステータスを変更
     this.setWebSocketStatus = function () {
-      if (this.connected)
+      if (this.hmiCom.flagOpened) {
         this.status({ fill: "green", shape: "dot", text: "runtime.connected" });
-      else
+      }
+      else {
         this.status({ fill: "red", shape: "dot", text: "runtime.disconnected" });
+      }
     };
     this.setWebSocketStatus();
 
@@ -54,85 +56,71 @@ module.exports = function (RED) {
     });
 
     this.on("alarmUpdated", function (alarms) {
-      this.AnEObject.ObjectContent.contentData.forEach(function (dataItem, index) {
-        for (let i = 0; i < alarms.length; i++) {
-          if (dataItem.varName == alarms[i].variable) {
-            let status = null;
-            if (alarms[i].status == "Return") {
-              status = null;
-            } else {
-              status = alarms[i].type;
+      this.AnEObject.forEach(function (obj) {
+        obj.ObjectContent.contentData.forEach(function (dataItem, index) {
+          for (let i = 0; i < alarms.length; i++) {
+            if (dataItem.varName == alarms[i].variable) {
+              let status = null;
+              if (alarms[i].status == "Return") {
+                status = null;
+              } else {
+                status = alarms[i].type;
+              }
+              dataItem.status = status;
+              dataItem.message = alarms[i].message;
+              break;
             }
-            //if (dataItem.status != status) {
-            //  this.log("alarmUpdated "+alarms[i].variable+ "/" +  alarms[i].status);
-            //}
-            dataItem.status = status;
-            dataItem.message = alarms[i].message;
-            break;
           }
-        }
+        });
       });
-
     });
 
     this.on("statusChanged", function (connected) {
-      this.connected = connected;
+      if (!connected) {
+        //  HMIの接続が切れた場合はエラーとする
+        this.error("HMI is not connected.");
+      }
       this.setWebSocketStatus();
     });
 
     this.haveAlarmsUpdated = function (items) {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].status != items[i].prev) {
-          return true;
-        }
-      }
-      return false;
+      return (items.find(item => item.status != item.prev) != undefined) ? true : false;
     };
 
 
     this.IntervalFunc = function () {
       let current = Date.now();
 
-      if ((this.AnEObject.lastCheck != null) &&
-        (current - (this.AnEObject.lastCheck) < (this.AnEObject.storeInterval * 1000))) {
-        return;
-      }
-      this.AnEObject.lastCheck = current;
-
-      let items = this.AnEObject.ObjectContent.contentData;
-
-      if ((this.haveAlarmsUpdated(items) == false) /*&& (this.connected == false)*/) {
-        return;
-      }
-
-      let dataItems = [];
-      for (let i = 0; i < items.length; i++) {
-
-        let item = {};
-        let status = "";
-        if (items[i].status == null) {
-          status = (items[i].status == items[i].prev) ? "off" : "reset";
-        } else {
-          status = (items[i].status == items[i].prev) ? "on" : "set";
+      this.AnEObject.forEach(function (obj) {
+        //  check interval
+        if (obj.storeInterval > 0) {
+          if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
+            this.iaCloudObjectSend(obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+            obj.lastIntervalCheck = current;
+          }
         }
-        item.AnEStatus = status;
-        item.AnECode = items[i].code;
-        if (!item.AnECode) { item.AnECode = items[i].varName; }
-        item.AnEDescription = items[i].description;
-        if (!item.AnEDescription) { item.AnEDescription = items[i].message; }
-        dataItems.push(item);
+      }, this);
 
-        items[i].prev = items[i].status;
-      }
+      this.AnEObject.forEach(function (obj) {
+        //  check async
+        if (obj.asyncInterval > 0) {
+          if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
+            obj.lastValueChangedCheck = current;
+            if (this.haveAlarmsUpdated(obj.ObjectContent.contentData) == false) {
+              return;
+            }
 
-      this.iaCloudObjectSend(this.AnEObject, dataItems);
+            this.iaCloudObjectSend(obj, true);
+          }
+        }
+      }, this);
     };
 
     this.sendObjectId = setInterval(this.IntervalFunc.bind(this), (1000));
 
 
     // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして早出する関数
-    this.iaCloudObjectSend = function (iaObject, dataItems) {
+    this.iaCloudObjectSend = function (iaObject, valuechanged) {
 
       this.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
 
@@ -145,20 +133,28 @@ module.exports = function (RED) {
       msg.dataObject.objectDescription = iaObject.objectDescription;
       msg.dataObject.ObjectContent.contentType = "Alarm&Event";
 
-      for (let i = 0; i < dataItems.length; i++) {
+      iaObject.ObjectContent.contentData.forEach(function (item) {
+        let status = "";
+        if (item.status == null) {
+          status = (item.status == item.prev) ? "off" : "reset";
+        } else {
+          status = (item.status == item.prev) ? "on" : "set";
+        }
+
         let dItem = {};
-
-        dItem.AnEStatus = dataItems[i].AnEStatus;
-        dItem.AnECode = dataItems[i].AnECode;
-        dItem.AnEDescription = dataItems[i].AnEDescription;
-
+        dItem.AnEStatus = status;
+        dItem.AnECode = item.code;
+        if (!dItem.AnECode) { dItem.AnECode = item.varName; }
+        dItem.AnEDescription = item.description;
+        if (!dItem.AnEDescription) { dItem.AnEDescription = item.message; }
         contentData.push(dItem);
-      }
+
+        if (valuechanged) { item.prev = item.status; }
+      }, this);
 
       msg.dataObject.ObjectContent.contentData = contentData;
       msg.payload = contentData;
 
-      //this.log("send message to iaCloud node : " + JSON.stringify(msg));
       this.send(msg);
       this.status({ fill: "green", shape: "dot", text: "runtime.sent" });
 
@@ -166,11 +162,20 @@ module.exports = function (RED) {
     }
 
     this.on("input", function (msg) {
-      //何もしない
+      if (!this.hmiCom.flagOpened) {
+        //  HMIの接続されていない場合はエラーとする
+        this.error("HMI is not connected.", msg);
+        return;
+      }
+
+      this.AnEObject.forEach(function (obj) {
+        this.iaCloudObjectSend(obj, false);
+      }, this);
     });
+
     this.on("close", function () {
       clearInterval(this.sendObjectId);
-      this.hmiCom.emit("delinkData", this.id);
+      this.hmiCom.emit("delLinkData", this.id);
     });
   }
 

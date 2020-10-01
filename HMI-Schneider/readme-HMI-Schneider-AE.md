@@ -7,7 +7,7 @@ HMI上のアラームの発生・復旧情報を受信し、アラーム＆イ�
 
 ## 入力メッセージ
 
-なし  
+ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。Nodeが保持している現在値を出力します。
 
 ## 出力メッセージ
 
@@ -54,14 +54,14 @@ HMI上のアラームの発生・復旧情報を受信し、アラーム＆イ�
 ## プロパティー
 
 本nodeは以下のプロパティを持つ
-|名称|種別|説明|
-|:--|:-:|:--|
-|名前|string|HMI-Schneider-AE Nodeの名称です。|
-|通信ノード|設定Node|HMIとの通信の設定Nodeです。|
-|通知周期(秒)|number|通知周期です。最小1秒。|
-|object名称|string|ia-cloudオブジェクトの任意の名称です。　|
-|objectキー|string|ia-cloudオブジェクトのobjectKeyとして使われます。|
-|objectの説明|string|ia-cloudオブジェクトのobjectDescriptionとして使われます。|
-|変数名|string|HMIの変数名です。このNodeはこの変数名をキーにしてHMIと通信を行います。|
-|A&Eコード|string|contentDataオブジェクトのAnECodeとして使われます。入力を省略した場合、変数名がA&Eコードとして使用されます。|
-|A&E説明|string|contentDataオブジェクトのAnEDescriptionとして使われます。入力を省略した場合、HMIから取得したメッセージがA&E説明として使用されます。|
+|タブ|名称|種別|説明|
+|:-:|:--|:-:|:--|
+|-|通信ノード|設定Node|HMIとの通信の設定Nodeです。|
+|オブジェクトの設定|定期収集周期|number|定期収集周期を秒単位で指定してください。HMI変数の変化の有無に関わらず、指定周期でデータを出力します。定期収集を行わない場合は0を指定してください。|
+|オブジェクトの設定|非同期収集有り|bool|定期収集とは別に、登録した値のいずれかが変化した場合にデータを出力します。|
+|オブジェクトの設定|objectキー|string|ia-cloudオブジェクトのobjectKeyとして使われます。|
+|オブジェクトの設定|objectの説明|string|ia-cloudオブジェクトのobjectDescriptionとして使われます。|
+|データの設定|変数名|string|HMIの変数名です。このNodeはこの変数名をキーにしてHMIと通信を行います。|
+|データの設定|A&Eコード|string|contentDataオブジェクトのAnECodeとして使われます。入力を省略した場合、変数名がA&Eコードとして使用されます。|
+|データの設定|A&E説明|string|contentDataオブジェクトのAnEDescriptionとして使われます。入力を省略した場合、HMIから取得したメッセージがA&E説明として使用されます。|
+|-|ノード名称|string|HMI-Schneider-AE Nodeの名称です。|
