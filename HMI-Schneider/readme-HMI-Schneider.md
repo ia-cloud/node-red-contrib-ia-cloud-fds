@@ -7,7 +7,7 @@ HMI上の変数の状態変化を受信し、ia-cloudオブジェクトを生成
 
 ## 入力メッセージ
 
-なし  
+ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。Nodeが保持している現在値を出力します。
 
 ## 出力メッセージ
 
@@ -65,15 +65,15 @@ HMI上の変数の状態変化を受信し、ia-cloudオブジェクトを生成
 
 本nodeは以下のプロパティを持ちます
 
-|名称|種別|説明|
-|:--|:-:|:--|
-|名前|string|HMI-Schneider Nodeの名称です。|
-|通信ノード|設定Node|HMIとの通信の設定Nodeです。|
-|通知周期(秒)|number|通知周期です。最小1秒。|
-|object名称|string|ia-cloudオブジェクトの任意の名称です。　|
-|objectキー|string|ia-cloudオブジェクトのobjectKeyとして使われます。|
-|objectの説明|string|ia-cloudオブジェクトのobjectDescriptionとして使われます。|
-|データ構造型|string|コンテントのcontentTypeとして使われます。|
-|データ名称|string|contentDataオブジェクトのdataNameとして使われます。|
-|単位|string|contentDataオブジェクトのunitとして使われます。|
-|変数名|string|HMIの変数名です。このNodeはこの変数名をキーにしてHMIと通信を行います。|
+|タブ|名称|種別|説明|
+|:-:|:--|:-:|:--|
+|-|通信ノード|設定Node|HMIとの通信の設定Nodeです。|
+|オブジェクトの設定|定期収集周期|number|定期収集周期を秒単位で指定してください。HMI変数の変化の有無に関わらず、指定周期でデータを出力します。定期収集を行わない場合は0を指定してください。|
+|オブジェクトの設定|非同期収集有り|bool|定期収集とは別に、登録した値のいずれかが変化した場合にデータを出力します。|
+|オブジェクトの設定|objectキー|string|ia-cloudオブジェクトのobjectKeyとして使われます。|
+|オブジェクトの設定|objectの説明|string|ia-cloudオブジェクトのobjectDescriptionとして使われます。|
+|データの設定|データ構造型|string|コンテントのcontentTypeとして使われます。|
+|データの設定|データ名称|string|contentDataオブジェクトのdataNameとして使われます。|
+|データの設定|単位|string|contentDataオブジェクトのunitとして使われます。|
+|データの設定|変数名|string|HMIの変数名です。このNodeはこの変数名をキーにしてHMIと通信を行います。|
+|-|ノード名称|string|HMI-Schneider Nodeの名称です。|

@@ -4,40 +4,44 @@ module.exports = function (RED) {
   var moment = require("moment");
   var fs = require("fs");
 
+  var HmiConnectionState = { Unknown: 0, Connected: 1, Disconnected: 2 };
+
   function HmiSchneider(config) {
 
     RED.nodes.createNode(this, config);
-    this.dataObject = {};
-    this.connected = false;
+    this.dataObjects = [{}];
+    this.connectionState = HmiConnectionState.Unknown;
     this.hmiCom = RED.nodes.getNode(config.HmiSchneiderCom);
 
     // Nodeステータスを、preparingにする。
     this.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
 
     // プロパティを読み込んでオブジェクトを生成
-    this.dataObject = { ObjectContent: {} };
-    this.dataObject.storeInterval = config.storeInterval;
-    if (config.storeInterval < 1) { this.dataObject.storeInterval = 1; }  //  min 1 sec
-    this.dataObject.objectName = config.objectName;
-    this.dataObject.objectKey = config.objectKey;
-    this.dataObject.objectDescription = config.objectDescription;
-    this.dataObject.ObjectContent.contentType = config.contentType;
-    this.dataObject.ObjectContent.contentData = [];
-    for (let i = 0, len = config.dataItems.length; i < len; i++) {
-      this.dataObject.ObjectContent.contentData.push(Object.assign({}, config.dataItems[i]));
-    }
+    this.dataObjects = [{ ObjectContent: {} }];
+    this.dataObjects[0].asyncInterval = config.storeAsync ? 1 : 0;
+    this.dataObjects[0].storeInterval = config.storeInterval;
+    this.dataObjects[0].objectName = config.objectName;
+    this.dataObjects[0].objectKey = config.objectKey;
+    this.dataObjects[0].objectDescription = config.objectDescription;
+    this.dataObjects[0].ObjectContent.contentType = config.contentType;
+    this.dataObjects[0].ObjectContent.contentData = [];
+    config.dataItems.forEach(function (item) {
+      this.dataObjects[0].ObjectContent.contentData.push(Object.assign({}, item));
+    }, this);
 
     // configObjから通信する変数情報を取り出し、HmiSchneiderCom Nodeに追加
     let linkObj = { Items: [] };
     linkObj.nodeId = this.id;
     linkObj.kind = "variable";
 
-    this.dataObject.lastCheck = null;
-
-    this.dataObject.ObjectContent.contentData.forEach(function (dataItem, index) {
-      linkObj.Items.push(dataItem.varName);
-      dataItem.value = null;
-      dataItem.prev = null;
+    this.dataObjects.forEach(function (obj) {
+      obj.lastIntervalCheck = null;
+      obj.lastValueChangedCheck = null;
+      obj.ObjectContent.contentData.forEach(function (dataItem) {
+        linkObj.Items.push(dataItem.varName);
+        dataItem.value = null;
+        dataItem.prev = null;
+      });
     });
 
     //HmiSchneiderCom nodeのデータ追加メソッドを呼ぶ
@@ -45,7 +49,7 @@ module.exports = function (RED) {
 
     // Nodeステータスを変更
     this.setWebSocketStatus = function () {
-      if (this.connected)
+      if (this.connectionState == HmiConnectionState.Connected)
         this.status({ fill: "green", shape: "dot", text: "runtime.connected" });
       else
         this.status({ fill: "red", shape: "dot", text: "runtime.disconnected" });
@@ -53,17 +57,16 @@ module.exports = function (RED) {
     this.setWebSocketStatus();
 
     this.on("valueUpdated", function (variables) {
-      this.dataObject.ObjectContent.contentData.forEach(function (dataItem, index) {
-        for (let i = 0; i < variables.length; i++) {
-          if (dataItem.varName == variables[i].name) {
-            let value = (variables[i].quality != "good") ? null : variables[i].value;
-            //if (dataItem.value != value) {
-            //  this.log("valueUpdated "+variables[i].name+ "/" +  variables[i].quality + "/" + variables[i].value);
-            //}
-            dataItem.value = value;
-            break;
+      this.dataObjects.forEach(function (obj) {
+        obj.ObjectContent.contentData.forEach(function (dataItem) {
+          for (let i = 0; i < variables.length; i++) {
+            if (dataItem.varName == variables[i].name) {
+              let value = (variables[i].quality != "good") ? null : variables[i].value;
+              dataItem.value = value;
+              break;
+            }
           }
-        }
+        });
       });
     });
 
@@ -71,51 +74,56 @@ module.exports = function (RED) {
     });
 
     this.on("statusChanged", function (connected) {
-      this.connected = connected;
+      if (!connected && (this.connectionState != HmiConnectionState.Disconnected)) {
+        //  HMIの接続が切れた場合はエラーとする
+        this.error("HMI is not connected.");
+      }
+      this.connectionState = connected ? HmiConnectionState.Connected : HmiConnectionState.Disconnected;
       this.setWebSocketStatus();
     });
 
     this.haveVarsUpdated = function (items) {
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].value != items[i].prev) {
-          return true;
-        }
+      if (this.connectionState != HmiConnectionState.Connected) {
+        return false;
       }
-      return false;
+      return (items.find(item => item.value != item.prev) != undefined) ? true : false;
     };
 
     this.IntervalFunc = function () {
       let current = Date.now();
 
-      if ((this.dataObject.lastCheck != null) &&
-        (current - (this.dataObject.lastCheck) < (this.dataObject.storeInterval * 1000))) {
-        return;
-      }
-      this.dataObject.lastCheck = current;
+      this.dataObjects.forEach(function (obj) {
+        //  check interval
+        if (obj.storeInterval > 0) {
+          if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
+            this.iaCloudObjectSend(obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+            obj.lastIntervalCheck = current;
+          }
+        }
+      }, this);
 
-      let items = this.dataObject.ObjectContent.contentData;
+      this.dataObjects.forEach(function (obj) {
+        //  check async
+        if (obj.asyncInterval > 0) {
+          if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
+            obj.lastValueChangedCheck = current;
+            if (this.haveVarsUpdated(obj.ObjectContent.contentData) == false) {
+              return;
+            }
 
-      if (this.haveVarsUpdated(items) == false) {
-        return;
-      }
-
-      let dataItems = [];
-      for (let i = 0; i < items.length; i++) {
-        items[i].prev = items[i].value;
-
-        let item = {};
-        item.name = items[i].dataName;
-        item.value = items[i].value;
-        item.unit = items[i].unit;
-        dataItems.push(item);
-      }
-
-      this.iaCloudObjectSend(this.dataObject, dataItems);
+            this.iaCloudObjectSend(obj, true);
+          }
+        }
+      }, this);
     };
 
     this.sendObjectId = setInterval(this.IntervalFunc.bind(this), (1000));
 
-    this.iaCloudObjectSend = function (iaObject, dataItems) {
+    this.iaCloudObjectSend = function (iaObject, valuechanged) {
+      if (this.connectionState != HmiConnectionState.Connected) {
+        //  HMIが接続されていない場合は何もしない
+        return false;
+      }
 
       this.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
 
@@ -128,17 +136,18 @@ module.exports = function (RED) {
       msg.dataObject.objectDescription = iaObject.objectDescription;
       msg.dataObject.ObjectContent.contentType = iaObject.ObjectContent.contentType;
 
-      for (let i = 0; i < dataItems.length; i++) {
+      iaObject.ObjectContent.contentData.forEach(function (item) {
+        //  update previous value when value changed trigger
+        if (valuechanged) { item.prev = item.value; }
+
         let dItem = {};
-
-        dItem.dataName = dataItems[i].name;
-        dItem.dataValue = dataItems[i].value;
-        if ((dataItems[i].unit != null) && (dataItems[i].unit != "")) {
-          dItem.unit = dataItems[i].unit;
+        dItem.dataName = item.dataName;
+        dItem.dataValue = item.value;
+        if ((item.unit != null) && (item.unit != "")) {
+          dItem.unit = item.unit;
         }
-
         contentData.push(dItem);
-      }
+      });
 
       msg.dataObject.ObjectContent.contentData = contentData;
       msg.payload = contentData;
@@ -148,10 +157,19 @@ module.exports = function (RED) {
       this.status({ fill: "blue", shape: "dot", text: "runtime.sent" });
 
       this.setWebSocketStatus();
+      return true;
     }
 
     this.on("input", function (msg) {
-      //何もしない
+      if (this.connectionState != HmiConnectionState.Connected) {
+        //  HMIの接続されていない場合はエラーとする
+        this.error("HMI is not connected.");
+        return;
+      }
+
+      this.dataObjects.forEach(function (obj) {
+        this.iaCloudObjectSend(obj, false);
+      }, this);
     });
 
     this.on("close", function () {
