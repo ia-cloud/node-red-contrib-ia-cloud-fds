@@ -4,13 +4,10 @@ module.exports = function (RED) {
   var moment = require("moment");
   var fs = require("fs");
 
-  var HmiConnectionState = { Unknown: 0, Connected: 1, Disconnected: 2 };
-
   function HmiSchneider(config) {
 
     RED.nodes.createNode(this, config);
     this.dataObjects = [{}];
-    this.connectionState = HmiConnectionState.Unknown;
     this.hmiCom = RED.nodes.getNode(config.HmiSchneiderCom);
 
     // Nodeステータスを、preparingにする。
@@ -20,7 +17,6 @@ module.exports = function (RED) {
     this.dataObjects = [{ ObjectContent: {} }];
     this.dataObjects[0].asyncInterval = config.storeAsync ? 1 : 0;
     this.dataObjects[0].storeInterval = config.storeInterval;
-    this.dataObjects[0].objectName = config.objectName;
     this.dataObjects[0].objectKey = config.objectKey;
     this.dataObjects[0].objectDescription = config.objectDescription;
     this.dataObjects[0].ObjectContent.contentType = config.contentType;
@@ -49,10 +45,12 @@ module.exports = function (RED) {
 
     // Nodeステータスを変更
     this.setWebSocketStatus = function () {
-      if (this.connectionState == HmiConnectionState.Connected)
+      if (this.hmiCom.flagOpened) {
         this.status({ fill: "green", shape: "dot", text: "runtime.connected" });
-      else
+      }
+      else {
         this.status({ fill: "red", shape: "dot", text: "runtime.disconnected" });
+      }
     };
     this.setWebSocketStatus();
 
@@ -74,16 +72,15 @@ module.exports = function (RED) {
     });
 
     this.on("statusChanged", function (connected) {
-      if (!connected && (this.connectionState != HmiConnectionState.Disconnected)) {
+      if (!connected) {
         //  HMIの接続が切れた場合はエラーとする
         this.error("HMI is not connected.");
       }
-      this.connectionState = connected ? HmiConnectionState.Connected : HmiConnectionState.Disconnected;
       this.setWebSocketStatus();
     });
 
     this.haveVarsUpdated = function (items) {
-      if (this.connectionState != HmiConnectionState.Connected) {
+      if (!this.hmiCom.flagOpened) {
         return false;
       }
       return (items.find(item => item.value != item.prev) != undefined) ? true : false;
@@ -120,7 +117,7 @@ module.exports = function (RED) {
     this.sendObjectId = setInterval(this.IntervalFunc.bind(this), (1000));
 
     this.iaCloudObjectSend = function (iaObject, valuechanged) {
-      if (this.connectionState != HmiConnectionState.Connected) {
+      if (!this.hmiCom.flagOpened) {
         //  HMIが接続されていない場合は何もしない
         return false;
       }
@@ -152,7 +149,6 @@ module.exports = function (RED) {
       msg.dataObject.ObjectContent.contentData = contentData;
       msg.payload = contentData;
 
-      //this.log("send message to iaCloud node : " + JSON.stringify(msg));
       this.send(msg);
       this.status({ fill: "blue", shape: "dot", text: "runtime.sent" });
 
@@ -161,9 +157,9 @@ module.exports = function (RED) {
     }
 
     this.on("input", function (msg) {
-      if (this.connectionState != HmiConnectionState.Connected) {
+      if (!this.hmiCom.flagOpened) {
         //  HMIの接続されていない場合はエラーとする
-        this.error("HMI is not connected.");
+        this.error("HMI is not connected.", msg);
         return;
       }
 
@@ -174,7 +170,7 @@ module.exports = function (RED) {
 
     this.on("close", function () {
       clearInterval(this.sendObjectId);
-      this.hmiCom.emit("delinkData", this.id);
+      this.hmiCom.emit("delLinkData", this.id);
     });
   }
 

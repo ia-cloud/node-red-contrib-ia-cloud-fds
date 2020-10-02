@@ -1,28 +1,29 @@
 {
-    "editor": {
-        "name": "node name",
-        "hmiSchneiderNode": "communication node",
-        "tab": {
-          "object-settings": "object configuration",
-          "data-settings": "dataitem configuration"
-        },
-
-        "period": "notification period(sec)",
-        "objectname": "object name",
-        "objectKey": "object key",
-        "objectKeyholder": "required: unique key",
-        "objectDescription": "object description",
-        
-        "contentType": "content type",
-        "varName": "variable name",
-        "AECode": "A&E code",
-        "AEDescription": "A&E description"
+  "editor": {
+    "name": "node name",
+    "hmiSchneiderNode": "communication node",
+    "tab": {
+      "object-settings": "object configuration",
+      "data-settings": "dataitem configuration"
     },
-    "runtime": {
-        "ready": "Ready",
-        "preparing": "preparing",
-        "sent": "data sent",
-        "connected": "HMI is connected",
-        "disconnected": "HMI is disconnected"
-    }
+
+    "async": "use asynchronous",
+    "period": "scan rate",
+    "objectname": "object name",
+    "objectKey": "object key",
+    "objectKeyholder": "required: unique key",
+    "objectDescription": "object description",
+
+    "contentType": "content type",
+    "varName": "variable name",
+    "AECode": "A&E code",
+    "AEDescription": "A&E description"
+  },
+  "runtime": {
+    "ready": "Ready",
+    "preparing": "preparing",
+    "sent": "data sent",
+    "connected": "HMI is connected",
+    "disconnected": "HMI is disconnected"
+  }
 }
