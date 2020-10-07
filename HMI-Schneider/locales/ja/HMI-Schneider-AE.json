@@ -10,9 +10,9 @@
 
     "async": "非同期収集有り",
     "period": "定期収集周期",
-    "objectKey": "objectキー",
+    "objectKey": "オブジェクトキー",
     "objectKeyholder": "必須: 固有のキー",
-    "objectDescription": "objectの説明",
+    "objectDescription": "オブジェクトの説明",
 
     "contentType": "データ構造型",
     "varName": "変数名",
