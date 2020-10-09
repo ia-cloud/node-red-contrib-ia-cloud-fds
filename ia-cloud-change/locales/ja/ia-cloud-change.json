@@ -1,6 +1,7 @@
 {
   "ia-cloud-fds": {
     "change": {
+      "palette-label": "データ変換",
       "instance-key": "instanceKey",
       "object-description": "objectDescription",
       "object-key": "objectKey",

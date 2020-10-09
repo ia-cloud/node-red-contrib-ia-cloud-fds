@@ -67,8 +67,11 @@
       inputs: 1,
       outputs: 1,
       icon: 'swap.png',
+      paletteLabel() {
+        return this._('ia-cloud-fds.change.palette-label');
+      },
       label() {
-        return this.name || 'ia-cloud-change';
+        return this.name || this._('ia-cloud-fds.change.palette-label');
       },
       oneditprepare() {
         // Labels
