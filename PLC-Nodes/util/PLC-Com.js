@@ -137,8 +137,6 @@ class PLCCom {
                 for (let i = 0; i < num; i++) {
                     this._valueStoreAddListeners(err.message, linkObj.error, listeners);
                 }
-// エラー発生時にポートクローズしないように変更。
-//  if (comObj._port.isOpen) comObj.close();
             })
             // 更新結果に変化があり、変化通知フラグのある項目は、登録されたchangeListenerを呼ぶ
             .finally(() => {

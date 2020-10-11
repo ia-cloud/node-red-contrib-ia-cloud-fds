@@ -99,26 +99,24 @@ module.exports = function(RED) {
         mbObj._timeout = COMMUNICATION_TIMEOUT;
         const mbcom = new ModbusCom(config, mbObj);
 
-        let cycleId;
+        let cycleId, cycleFlag = true;
 
         // 設定周期でのサイクリック通信を実施
         if (config.refreshCycle > 0) {
-//            cycleId = setInterval(mbcom.CyclicRead, config.refreshCycle * 1000, RED);
 
             (function cycle(){
                 mbcom.CyclicRead(RED)
                 .then(() => {
-                    cycleId = setTimeout(cycle, config.refreshCycle * 1000);
-
+                    if (cycleFlag) cycleId = setTimeout(cycle, config.refreshCycle * 1000);
                 });
             }());
-
 
         }
         // クローズ時にサイクリック通信を停止
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
+            cycleFlag = false;
             mbObj.close(done);
         });
 

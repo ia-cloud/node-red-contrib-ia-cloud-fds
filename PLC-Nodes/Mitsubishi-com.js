@@ -82,7 +82,7 @@ module.exports = function(RED) {
         mcpObj._timeout = COMMUNICATION_TIMEOUT;
         const mccom = new MitsubishiCom(config, mcpObj);
 
-        let cycleId;
+        let cycleId, cycleFlag = true;
 
         // 設定周期でのサイクリック通信を実施
         if (config.refreshCycle > 0) {
@@ -90,16 +90,16 @@ module.exports = function(RED) {
             (function cycle(){
                 mccom.CyclicRead(RED)
                 .then(() => {
-                    cycleId = setTimeout(cycle, config.refreshCycle * 1000);
+                    if (cycleFlag) cycleId = setTimeout(cycle, config.refreshCycle * 1000);
                 });
             }());
-
-
+            
         }
         // クローズ時にサイクリック通信を停止し、ポートをクローズ
         // このNodeがクローズされる時は、新たなDeployが行われたとき
         node.on("close",function(done) {
             clearTimeout(cycleId);
+            cycleFlag = false;
             mcpObj.close(done);
         });
 
