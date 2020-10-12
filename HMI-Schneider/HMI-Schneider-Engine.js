@@ -57,6 +57,10 @@ HmiSchneiderEngine.prototype.replaceObjects = function (objects) {
     this.addObjects(objects);
 }
 
+HmiSchneiderEngine.prototype.deleteObjects = function () {
+    this._com.delLinkData(this._owner.id);
+}
+
 HmiSchneiderEngine.prototype.outputMsgs = function (msg) {
     let self = this;
 
@@ -175,7 +179,9 @@ function intervalFuncVar() {
     self._objects.forEach(function (obj) {  //  check interval
         if (obj.storeInterval > 0) {
             if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
-                sendVarMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+                if (this.isconnected()) {   // 接続時のみ
+                    sendVarMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+                }
                 obj.lastIntervalCheck = current;
             }
         }
@@ -195,19 +201,10 @@ function intervalFuncVar() {
 }
 
 function haveVarsUpdated(items) {
-    let self = this;
-    if (!self.isconnected()) {
-        return false;
-    }
     return (items.find(item => item.value != item.prev) != undefined) ? true : false;
 }
 
 function sendVarMessages(obj, valuechanged) {
-    if (!this.isconnected()) {
-        //  HMIが接続されていない場合は何もしない
-        return false;
-    }
-
     let msg = createMsg(obj, true);
     if (valuechanged) { //  update previous value when value changed trigger
         obj.ObjectContent.contentData.forEach(item => { item.prev = item.value; });
@@ -225,7 +222,9 @@ function intervalFuncAlarm() {
     self._objects.forEach(function (obj) { //  check interval
         if (obj.storeInterval > 0) {
             if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
-                sendAlarmMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+                if (this.isconnected()) {   // 接続時のみ
+                    sendAlarmMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
+                }
                 obj.lastIntervalCheck = current;
             }
         }

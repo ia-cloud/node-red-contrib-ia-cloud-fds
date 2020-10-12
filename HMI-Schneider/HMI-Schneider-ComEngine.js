@@ -54,7 +54,7 @@ HmiSchneiderComEngine.prototype.delLinkData = function (nodeId) {
     this._objects = this._objects.filter(obj => obj.nodeId != nodeId);
     if (len != this._objects.length) {
         // モニタ変数の更新
-        this.startmonitor.call(self);
+        startMonitor.call(self);
     }
 }
 
