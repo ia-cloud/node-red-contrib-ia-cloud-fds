@@ -9,7 +9,6 @@
 
     "async": "use asynchronous",
     "period": "scan rate",
-    "objectname": "object name",
     "objectKey": "object key",
     "objectKeyholder": "required: unique key",
     "objectDescription": "object description",

@@ -45,7 +45,7 @@ module.exports = class HmiSchneiderWebSocket {
 
         var WebSocket = require('websocket').w3cwebsocket;
 
-        if (this._ws == null) {
+        if (!this._ws) {
             if (url != undefined) {
                 this._url = url;
             }
@@ -65,7 +65,7 @@ module.exports = class HmiSchneiderWebSocket {
     }
 
     close() {
-        if (this._ws != null) {
+        if (this._ws) {
             this._ws.close();
         }
 
@@ -74,7 +74,7 @@ module.exports = class HmiSchneiderWebSocket {
     }
 
     onOpen(event) {
-        if (this._reconnect_id != null) {
+        if (this._reconnect_id) {
             clearTimeout(this._reconnect_id);
             this._reconnect_id = null;
         }
@@ -105,12 +105,12 @@ module.exports = class HmiSchneiderWebSocket {
         this._ws = null;
 
         this._status = this.en_status.en_none;
-        if (this._timer_id != null) {
+        if (this._timer_id) {
             clearTimeout(this._timer_id);
             this._timer_id = null;
         }
 
-        if (this._reconnect_id != null) {
+        if (this._reconnect_id) {
             clearTimeout(this._reconnect_id);
             this._reconnect_id = null;
         }
@@ -118,7 +118,7 @@ module.exports = class HmiSchneiderWebSocket {
             this._reconnect_id = setTimeout(this.open.bind(this), 5000);
         }
 
-        if (this._cb_onclose != null) {
+        if (this._cb_onclose) {
             this._cb_onclose.call(this);
         }
     }
@@ -148,13 +148,8 @@ module.exports = class HmiSchneiderWebSocket {
     send_monitor_command(command_name, src) {
         var command = {};
         command.command = command_name;
-
-        if (src != null) {
-            var variables = [];
-            for (var i = 0; i < src.length; i++) {
-                variables.push(src[i]);
-            }
-            command.variable = variables;
+        if (src) {
+            command.variable = src ? src.concat() : [];
         }
 
         this._ws.send(JSON.stringify(command));
@@ -164,13 +159,13 @@ module.exports = class HmiSchneiderWebSocket {
         this._ws.send(JSON.stringify({ command: "subscribe", alarm: ["alarm", "error"] }));
 
         this._status = this.en_status.en_operational;
-        if (this._cb_onopen != null) {
+        if (this._cb_onopen) {
             this._cb_onopen.call(this);
         }
     }
 
     get_subscription(jsonObj) {
-        if (this._cb_onmessage != null) {
+        if (this._cb_onmessage) {
             this._cb_onmessage.call(this, jsonObj);
         }
     }
@@ -181,9 +176,8 @@ module.exports = class HmiSchneiderWebSocket {
 
     check_connection() {
         this._timer_id = null;
-        if (this._ws != null) {
-            let now = Date.now();
-            if (now - this._last_received > 10000) {
+        if (this._ws) {
+            if (Date.now() - this._last_received > 10000) {
                 //  HMI will disconnect when there are any communication in 60 secs.
                 //  if 10sec is idle, send ping to HMI
                 this._ws._connection.ping();

@@ -1,22 +1,21 @@
 
-<script type="text/x-red" data-help-name="HMI-Schneider-AE">
-    <p>Schneider HMI機器アラーム＆イベントオブジェクトノード</p>
+<script type="text/html" data-help-name="HMI-Schneider-AE">
+  <p>Schneider HMI機器アラーム＆イベントオブジェクトノード</p>
 
-<h3>入力メーッセージ</h3>
-<dl class="message-properties">
+  <h3>入力メーッセージ</h3>
+  <dl class="message-properties">
     <dd>なし</dd>
-</dl>
+  </dl>
 
-<h3>出力メッセージ</h3>
-<dl class="message-properties">
+  <h3>出力メッセージ</h3>
+  <dl class="message-properties">
     <dt>msg.request<span class="property-type">string</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
     <dt>msg.dataObject<span class="property-type">number</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
-</dl>
+  </dl>
 
-<h3>詳細説明</h3>
-<p>Schneider HMI通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
+  <h3>詳細説明</h3>
+  <p>Schneider HMI通信機器の持つビットデータを読み出し、Alarm&EventのcontentTypeを持つia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
 設定Nodeとして、HMI-Schneider-com、HMI-Schneider-AnEを使用する。</p>
-
 </script>

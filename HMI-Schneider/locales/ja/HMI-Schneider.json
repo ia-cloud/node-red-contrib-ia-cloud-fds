@@ -9,10 +9,9 @@
     },
     "async": "非同期収集有り",
     "period": "定期収集周期",
-    "objectname": "object名称",
-    "objectKey": "objectキー",
+    "objectKey": "オブジェクトキー",
     "objectKeyholder": "必須: 固有のキー",
-    "objectDescription": "objectの説明",
+    "objectDescription": "オブジェクトの説明",
 
     "contentType": "データ構造型",
     "dataName": "データ名称",

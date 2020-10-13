@@ -26,31 +26,30 @@
     <div id="tab-object-property">
 
       <div class="form-row">
-        <label style="margin-right: 10px;" for="node-input-storeInterval">
+        <label style="width:150px;" for="node-input-storeInterval">
           <span data-i18n="editor.period"></span>
         </label>
-        <input type="number" id="node-input-storeInterval" min="0" step="1" value="60" style="display: inline-block; width: auto;">
+        <input type="number" id="node-input-storeInterval" min="0" step="1" value="60" style="display: inline-block; width: 120px;">
         <label for="node-input-storeAsync" style="margin-left: 20px;"><span data-i18n="editor.async"></span></label>
         <input type="checkbox" id="node-input-storeAsync" style="display: inline-block; width: auto;" >
       </div>
       <div class="form-row">
-        <label style="margin-right: 10px;" for="node-input-objectKey">
+        <label style="width:150px;" for="node-input-objectKey">
           <span data-i18n="editor.objectKey"></span>
           <span style="color: #ff0000;">*</span>
         </label>
         <input required="required" class="form-control" type="text" style="width: 300px" id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
       </div>
       <div class="form-row">
-        <label style="margin-right: 10px;" for="node-input-objectdescription">
+        <label style="width:150px;" for="node-input-objectdescription">
           <span data-i18n="editor.objectDescription"></span>
         </label>
-        <input type="text" style="width: 300px" id="node-input-objectDescription">
+        <input type="text" style="width: 300px" id="node-input-objectDescription" data-i18n="[placeholder]editor.objectDescription">
       </div>
     </div>
     
     <!-- tab-dItem-property starts -->
     <div id="tab-dItem-property">
-      <!-- dataItem propertyの設定 -->
       <div class="form-row">
         <label for="node-input-contentType"><i class="fa fa-tag"></i>
           <span data-i18n="editor.contentType"></span>
@@ -68,7 +67,7 @@
   <div class="form-row" id = name-block>
     <hr>
     <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-    <input type="text" class="form-control" id="node-input-name">
+    <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
   </div>
   
 </script>
@@ -85,7 +84,7 @@
       // object properties
       storeInterval: {value:"60"},
       storeAsync: {value:false},
-      objectKey: {value:""},
+      objectKey: {value:"", required: true},
       objectDescription: {value:""},
       // dataItems property
       contentType: {value: "iaCloudData", required: true},

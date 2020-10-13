@@ -1,22 +1,21 @@
 
-<script type="text/x-red" data-help-name="HMI-Schneider">
-    <p>Schneider HMI機器データオブジェクトノード</p>
-
-<h3>入力メーッセージ</h3>
-<dl class="message-properties">
+<script type="text/html" data-help-name="HMI-Schneider">
+  <p>Schneider HMI機器データオブジェクトノード</p>
+  
+  <h3>入力メーッセージ</h3>
+  <dl class="message-properties">
     <dd>なし</dd>
-</dl>
-
-<h3>出力メッセージ</h3>
-<dl class="message-properties">
+  </dl>
+  
+  <h3>出力メッセージ</h3>
+  <dl class="message-properties">
     <dt>msg.request<span class="property-type">string</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
     <dt>msg.dataObject<span class="property-type">number</span></dt>
     <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
-</dl>
-
-<h3>詳細説明</h3>
-<p>Schneider HMIの持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
+  </dl>
+  
+  <h3>詳細説明</h3>
+  <p>Schneider HMIの持つビットデータ・ワードデータを読み出し、ia-cloudオブジェクトを生成するNode。Node-redのUIによる設定のほか、設定ファイルを指定することも可能である。設定ファイルを指定した場合は、複数のia-cloudオブジェクトの設定が可能である。
 設定Nodeとして、HMI-Schneider-com、HMI-Schneider-dataItemsを使用する。</p>
-
 </script>
