@@ -62,7 +62,7 @@ module.exports = class UrdAC3ch extends SensorInterface {
         // collect-data-object config node function definition
         function AC3chSensor(config) {
             RED.nodes.createNode(this, config);
-            this.sensorId = config.sensorId;
+            this.sensor_id = config.sensor_id;
 
             const node = this;
             const confObj = config.configObject;

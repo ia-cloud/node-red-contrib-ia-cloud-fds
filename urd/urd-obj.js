@@ -50,7 +50,7 @@ module.exports = function (RED) {
         node.log(`SensorNode.dItems = ${JSON.stringify(SensorNode.dItems)}`);
 
         const enObjects = [{ options: {}, objectContent: {} }];
-        enObjects[0].options.sensorId = SensorNode.sensorId;
+        enObjects[0].options.sensor_id = SensorNode.sensor_id;
         enObjects[0].options.sensorType = config.sensorType;
         enObjects[0].objectName = 'ObjectName'; // 仮設定
         enObjects[0].objectKey = config.objectKey;
@@ -63,7 +63,7 @@ module.exports = function (RED) {
             // 取り合えず enObjects は要素数1としてコードを書く
             enObjects.forEach((enObj) => {
                 linkObj.push({
-                    sensorId: enObj.options.sensorId,
+                    sensor_id: enObj.options.sensor_id,
                     nodeId: node.id,
                     objectKey: enObj.objectKey,
                 });
@@ -121,10 +121,10 @@ module.exports = function (RED) {
         };
 
         // UrdObjNode.prototype.linkDatachangeListener = function (element) {
-        this.linkDatachangeListener = function (element) {
+        this.on('linkDatachangeListener', (element) => {
             // 引数に [objectKey, radio_data] を受け取る
             iaCloudObjectSend(element);
-        };
+        });
 
         this.on('input', (msg, send, done) => done()); // 処理なし
 

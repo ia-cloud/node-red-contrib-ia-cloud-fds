@@ -21,8 +21,8 @@ limitations under the License.
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
-        <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]serial.placeholder.sensorId">
+        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
+        <input type="text" id="node-config-input-sensor_id" data-i18n="[placeholder]serial.placeholder.sensorId">
     </div>
     <div class="form-row" hidden>
         <input type="text" id="node-config-input-configObject">
@@ -173,7 +173,7 @@ limitations under the License.
         category: 'config',
         defaults: {
             name: { value: 'ac-3ch-Sensor' },
-            sensorId: { value: '', required: true },
+            sensor_id: { value: '', required: true },
             dataName0: { value: '', required: true },
             unit0: { value: '' },
             clampType0: { value: 'WLS50', required: true },
