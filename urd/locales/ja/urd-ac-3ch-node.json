@@ -9,9 +9,7 @@
             "ct": "CT部の選択"
         },
         "input": {
-            "dataName0": "電流1",
-            "dataName1": "電流2",
-            "dataName2": "電流3",
+            "dataNames": "[\"電流1\", \"電流2\", \"電流3\"]",
             "unit": "A"
         },
         "placeholder": {

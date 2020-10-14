@@ -20,11 +20,13 @@ module.exports = class UrdAC1ch extends SensorInterface {
     /**
      * 電流計算およびcontentDataの生成.
      */
-    static process(data, contentDataFormat) {
+    static process(data, contentDataConfig) {
         if (typeof data === 'undefined' || data.length < 4 * 2) {
             // 4Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message: '', sendFlg: false };
         }
+
+        // Decode to decimal value. ex. 'FFF' => 4095
         const dec = parseInt(data, 16);
         // eslint-disable-next-line no-bitwise
         const adVal = (dec >> 8) & 0b1111111111;
@@ -50,11 +52,17 @@ module.exports = class UrdAC1ch extends SensorInterface {
         const I = (adVal * K * E * d) / (2.8 * c);
         const ac = I / 1000;
 
-        const contentData = contentDataFormat.map((dItem) => {
+        // contentDataの生成
+        const contentData = contentDataConfig.slice(0, 1).map((dItem) => {
             // 小数第3位を四捨五入して代入
-            dItem.dataValue = Math.round(ac * 100) / 100;
-            return dItem;
-        });
+            const dataValue = Math.round(ac * 100) / 100;
+
+            return {
+                dataName: dItem.dataName,
+                dataValue,
+                unit: dItem.unit,
+            };
+        }).filter((dItem) => dItem);
 
         return { contentData, message: '', sendFlg: true };
     }
@@ -64,22 +72,12 @@ module.exports = class UrdAC1ch extends SensorInterface {
         function AC1chSensor(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
+            this.configObject = config.configObject;
 
-            const node = this;
-            const confObj = config.configObject;
-            this.dItems = {};
-            if (confObj) {
-                try {
-                    this.dItems = JSON.parse(confObj);
-                } catch (e) {
-                    // nodeのエラーを通知してして終了
-                    node.error('runtime:jsonerror', confObj);
-                }
-            } else {
-                // nodeのエラーを通知してして終了
-                node.error('runtime:jsonerror', confObj);
-            }
+            // const node = this;
+
             this.on('input', (msg, send, done) => done()); // 処理なし
+
             this.on('close', () => {});
         }
         RED.nodes.registerType('URD AC 1ch sensor', AC1chSensor);
