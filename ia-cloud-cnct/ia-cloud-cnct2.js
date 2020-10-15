@@ -4,12 +4,14 @@
 module.exports = function(RED) {
 
     const iaCloudConnection = require("./util/ia-cloud-connection.js");
+    const CNCT_RETRY_INIT = 1 * 60 * 1000;      //リトライ間隔の初期値1分
 
     function iaCloudCnct2(config) {
         RED.nodes.createNode(this,config);
 
         let node = this;
         let cnctRtryId;     // connect retry timer ID
+        let cnctRtryFlag = true;
         let tappTimerId;    // tapping CCS (getStatus()) interval timer ID
         
         // ia-cloud connection config node instance
@@ -77,9 +79,9 @@ module.exports = function(RED) {
 
         //connect request を送出（接続状態にないときは最大cnctRetryIntervalで繰り返し）
 
-        let rInt = 3 * 60 * 1000;   //リトライ間隔の初期値3分
+        let rInt = CNCT_RETRY_INIT;   //リトライ間隔の初期値
         // connectリクエストのトライループ
-        (function cnctTry() {
+        (async function cnctTry() {
 
             //非接続状態なら接続トライ
             if (info.status === "Disconnected") {
@@ -89,26 +91,33 @@ module.exports = function(RED) {
 
                 // nodeの出力メッセージ（CCS接続状態）
                 let msg = {};
-                (async () => {
-                    // connect リクエスト
-                    try {
-                        let res = await iaC.connect(auth);
-                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-                        msg.payload = res;
-                    } catch (error) {
-                        node.status({fill:"yellow", shape:"ring", text:error.message});
-                        msg.payload = error.message;
-                    } finally {
-                        node.send(msg);
-                    }
-                })();
+
+                // connect リクエスト
+                try {
+                    let res = await iaC.connect(auth);
+                    node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+                    msg.payload = res;
+
+                } catch (error) {
+                    node.status({fill:"yellow", shape:"ring", text:error.message});
+                    msg.payload = error.message;
+
+                    //retryの設定。倍々で間隔を伸ばし最大はcnctRetryInterval、
+                    if (info.cnctRetryInterval !== 0) {
+                        rInt *= 2;
+                        rInt = (rInt < info.cnctRetryInterval)? rInt: info.cnctRetryInterval;
+                    }  
+                } finally {
+                    node.send(msg);
+                }
+
+            } else {
+                rInt = CNCT_RETRY_INIT;
             }
-            //retryの設定。倍々で間隔を伸ばし最大はcnctRetryInterval、
-            if (info.cnctRetryInterval !== 0) {
+            // connect retry loop
+            if (info.cnctRetryInterval !== 0 && cnctRtryFlag) 
                 cnctRtryId = setTimeout(cnctTry, rInt);
-                rInt *= 2;
-                rInt = (rInt < info.cnctRetryInterval)? rInt: info.cnctRetryInterval;
-            }
+
         }());
 
         if (info.tappingInterval !== 0) {
@@ -129,7 +138,6 @@ module.exports = function(RED) {
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
-                        msg.payload = error.message;
                     } finally {
                         node.send(msg);
                     }
@@ -176,23 +184,26 @@ module.exports = function(RED) {
             // stop timers for the retry and the tapping
             clearTimeout(cnctRtryId);
             clearInterval(tappTimerId);
+            cnctRtryFlag = false;
 
-            //非接続状態の時は、何もしない。
-            if (info.status === "Disconnected") return;
-            
-            (async () => {
-                // terminate request
-                try {
-                    let res = await iaC.terminate(auth);
-                    node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+            //非接続状態の時は、何もせずdone()
+            if (info.status === "Disconnected") {
+                done();
+            } else {
+                (async () => {
+                    // terminate request
+                    try {
+                        let res = await iaC.terminate(auth);
+                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
 
-                } catch (error) {
-                    node.status({fill:"yellow", shape:"ring", text:error.message});
+                    } catch (error) {
+                        node.status({fill:"yellow", shape:"ring", text:error.message});
 
-                } finally {
-                    done();
-                }
-            })();
+                    } finally {
+                        done();
+                    }
+                })();
+            }
         });
     }
     

@@ -81,7 +81,8 @@ class iaCloudConnection {
                 throw new IaCloudLowerError();
             }
         } catch (err) {
-            if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT') {
+            if(err.code === 'ETIMEDOUT' || err.code === 'ESOCKETTIMEDOUT'
+                                        || err.code === 'ENOTFOUND') {
                 throw new IaCloudLowerError();
             }else{
                 throw err;
