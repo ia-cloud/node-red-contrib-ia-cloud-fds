@@ -186,7 +186,7 @@ limitations under the License.
             configObject: { value: '' },
             range: { value: '[400, 400, 400]' },
         },
-        label() { return this.name || ('ac-1ch-Sensor'); },
+        label() { return this.name || 'ac-3ch-Sensor' },
         oneditprepare() {
             const rangeRegExp = new RegExp('[^,\\d\\.\\-]', 'g');
             const rangeArray = this.range.replace(rangeRegExp, '').split(',');
