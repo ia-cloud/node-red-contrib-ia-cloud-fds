@@ -19,7 +19,7 @@
             "optexOccupancy": "OPTEX occupancy sensor",
             "optexRocker": "OPTEX Rocker SW",
             "selectFile": "Select setting file.",
-            "sensor_kind": "Sensor type",
+            "sensorKind": "Sensor type",
             "wattyTemp": "Watty Temp sensor",
             "setting": {
                 "file": "From file",

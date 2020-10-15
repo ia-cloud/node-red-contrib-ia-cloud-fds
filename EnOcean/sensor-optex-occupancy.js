@@ -48,7 +48,7 @@ module.exports = class OptexOccupancy extends SensorInterface {
         // collect-data-object config node function definition
         function Optex_Occupancy_Sensor(config) {
             RED.nodes.createNode(this, config);
-            this.sensor_id = config.sensor_id;
+            this.sensorId = config.sensorId;
 
             var node = this;
             var confObj = config.configObject;

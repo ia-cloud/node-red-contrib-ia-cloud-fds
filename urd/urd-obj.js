@@ -50,7 +50,7 @@ module.exports = function (RED) {
         node.log(`SensorNode.dItems = ${JSON.stringify(SensorNode.dItems)}`);
 
         const enObjects = [{ options: {}, objectContent: {} }];
-        enObjects[0].options.sensor_id = SensorNode.sensor_id;
+        enObjects[0].options.sensorId = SensorNode.sensorId;
         enObjects[0].options.sensorType = config.sensorType;
         enObjects[0].objectName = 'ObjectName'; // 仮設定
         enObjects[0].objectKey = config.objectKey;
@@ -63,7 +63,7 @@ module.exports = function (RED) {
             // 取り合えず enObjects は要素数1としてコードを書く
             enObjects.forEach((enObj) => {
                 linkObj.push({
-                    sensor_id: enObj.options.sensor_id,
+                    sensorId: enObj.options.sensorId,
                     nodeId: node.id,
                     objectKey: enObj.objectKey,
                 });

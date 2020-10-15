@@ -1,7 +1,7 @@
 [{
     "options": {
-        "sensor_id": "0400f5d8",
-        "sensor_kind": "watty"
+        "sensorId": "0400f5d8",
+        "sensorKind": "watty"
     },
     "ObjectContent": {
         "contentData": [{
@@ -32,8 +32,8 @@
 },
 {
     "options": {
-        "sensor_id": "04009efc",
-        "sensor_kind": "u-rd"
+        "sensorId": "04009efc",
+        "sensorKind": "u-rd"
     },
     "ObjectContent": {
         "contentData": [{

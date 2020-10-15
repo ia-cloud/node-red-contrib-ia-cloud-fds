@@ -260,8 +260,8 @@ module.exports = function (RED) {
         var propagateReceivedValue = function (receivedSensorId, data) {
             // Pick up sensor node that has same sensorId.
             const linkData = linkObj.filter((e) => {
-                if (e.sensor_id === receivedSensorId) return true;
-                return parseInt(e.sensor_id, 16) === parseInt(receivedSensorId, 16);
+                if (e.sensorId === receivedSensorId) return true;
+                return parseInt(e.sensorId, 16) === parseInt(receivedSensorId, 16);
             });
             if (linkData.length === 0) {
                 node.debug(`Sensor ID "${receivedSensorId}" received but there's no node with matched id.`);
