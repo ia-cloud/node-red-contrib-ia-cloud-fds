@@ -32,8 +32,8 @@
     <!-- Object property setting -->
     <div class="form-group" id="node-row-propertySet" style="margin-left: 20px;">
         <div class="form-row">
-            <label for="node-input-sensor_kind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensor_kind"></span></label>
-            <select type="text" id="node-input-sensor_kind">
+            <label for="node-input-sensorKind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensorKind"></span></label>
+            <select type="text" id="node-input-sensorKind">
                 <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
                 <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
                 <option value="itec" data-i18n="enoceanDataItem.sensors.itec"></option>
@@ -104,12 +104,12 @@ RED.nodes.registerType('EnOcean-obj', {
         object_key: { value: '' },
         object_desc: { value: '' },
         enoceancom: { type: 'EnOcean-com', required: true, value: '' },
-        sensor_kind: { value: 'watty' },
+        sensorKind: { value: 'watty' },
         watty_temp_sensor: {
             type: 'Watty_Temp_Sensor',
             value: '',
             validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'watty') {
+                if ($('#node-input-sensorKind').val() === 'watty') {
                     return v !== '';
                 }
                 return true;
@@ -119,7 +119,7 @@ RED.nodes.registerType('EnOcean-obj', {
             type: 'Core_Staff_Sensor',
             value: '',
             validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'core_staff') {
+                if ($('#node-input-sensorKind').val() === 'core_staff') {
                     return v !== '';
                 }
                 return true;
@@ -129,7 +129,7 @@ RED.nodes.registerType('EnOcean-obj', {
             type: 'Itec_CT_Sensor',
             value: '',
             validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'itec') {
+                if ($('#node-input-sensorKind').val() === 'itec') {
                     return v !== '';
                 }
                 return true;
@@ -139,7 +139,7 @@ RED.nodes.registerType('EnOcean-obj', {
             type: 'Optex_Rocker_SW',
             value: '',
             validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'optex_rocker') {
+                if ($('#node-input-sensorKind').val() === 'optex_rocker') {
                     return v !== '';
                 }
                 return true;
@@ -149,7 +149,7 @@ RED.nodes.registerType('EnOcean-obj', {
             type: 'Optex_Occupancy_Sensor',
             value: '',
             validate: function (v) {
-                if ($('#node-input-sensor_kind').val() === 'optex_occupancy') {
+                if ($('#node-input-sensorKind').val() === 'optex_occupancy') {
                     return v !== '';
                 }
                 return true;
@@ -172,15 +172,15 @@ RED.nodes.registerType('EnOcean-obj', {
     label: function () {
         if (this.name) {
             return this.name;
-        } else if (this.sensor_kind === 'watty') {
+        } else if (this.sensorKind === 'watty') {
             return this._("enoceanDataItem.label.wattyTemp");
-        } else if (this.sensor_kind === 'core_staff') {
+        } else if (this.sensorKind === 'core_staff') {
             return this._("enoceanDataItem.label.coreStaffTemp");
-        } else if (this.sensor_kind === 'itec') {
+        } else if (this.sensorKind === 'itec') {
             return this._("enoceanDataItem.label.itecAC");
-        } else if (this.sensor_kind === 'optex_rocker') {
+        } else if (this.sensorKind === 'optex_rocker') {
             return this._("enoceanDataItem.label.optexRocker");   
-        } else if (this.sensor_kind === 'optex_occupancy') {
+        } else if (this.sensorKind === 'optex_occupancy') {
             return this._("enoceanDataItem.label.optexOccupancy");
         }
         return 'EnOcean sensor';
@@ -224,7 +224,7 @@ RED.nodes.registerType('EnOcean-obj', {
         });
 
         // センサー種別が変更されたときの処理
-        $('#node-input-sensor_kind').change(function () {
+        $('#node-input-sensorKind').change(function () {
             const str = $('select option:selected').val();
             // TODO: センサー追加により条件分岐を増やすことのないように工夫する
             if (str === 'watty') {

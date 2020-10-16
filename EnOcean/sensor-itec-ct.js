@@ -36,7 +36,7 @@ module.exports = class itecCT extends SensorInterface {
         // collect-data-object config node function definition
         function Itec_CT_Sensor(config) {
             RED.nodes.createNode(this, config);
-            this.sensor_id = config.sensor_id;
+            this.sensorId = config.sensorId;
             // this.dataName0 = config.dataName0;
             // this.unit0 = config.unit0;
 

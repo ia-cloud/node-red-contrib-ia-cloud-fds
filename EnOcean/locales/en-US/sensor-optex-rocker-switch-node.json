@@ -7,7 +7,7 @@
     "serial": {
         "label": {
             "dataItem": "Data item",
-            "sensor_id": "sensor ID"
+            "sensorId": "sensor ID"
         }
     }
 }
