@@ -102,7 +102,7 @@ function removeWebSocket(pos) {
   let obj = this._wsList[pos];
   this._wsList.splice(pos, 1);
 
-  obj.ws.connected = false;
+  obj.connected = false;
   obj.ws.dispose();
 }
 
@@ -110,7 +110,7 @@ function removeWebSocket(pos) {
 function startMonitor() {
   let self = this;
 
-  this._wsList.filter(obj => obj.ws.connected).forEach(obj => { obj.ws.send_clear_monitor(); });
+  this._wsList.filter(obj => obj.connected).forEach(obj => { obj.ws.send_clear_monitor(); });
 
   //  繋がっていない場合は待つ
   if (!this.isconnected()) { return; }
