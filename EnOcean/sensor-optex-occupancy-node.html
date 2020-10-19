@@ -4,8 +4,8 @@
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
     <div class="form-row">
-        <label for="node-config-input-sensor_id"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensor_id"></span></label>
-        <input type="text" id="node-config-input-sensor_id" data-i18n="serial.label.sensor_id" placeholder="センサーIDを入力します　例) 0500ef1c">
+        <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
+        <input type="text" id="node-config-input-sensorId" data-i18n="serial.label.sensorId" placeholder="センサーIDを入力します　例) 0500ef1c">
     </div>
     <div class="form-row" hidden>
         <input type="text" id="node-config-input-configObject">
@@ -75,7 +75,7 @@
         category: 'config',
         defaults: {
             name: {value:"Optex Occupancy Sensor"},
-            sensor_id: {value:"", required:true},
+            sensorId: {value:"", required:true},
             dataName0: {value:"供給電圧"},
             unit0: {value:"V"},
             dataName1: {value:"在室状態"},

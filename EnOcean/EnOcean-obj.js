@@ -10,7 +10,7 @@ module.exports = function (RED) {
         this.object_key = config.object_key;
         this.object_desc = config.object_desc;
         this.enoceancom = config.enoceancom;
-        this.sensor_kind = config.sensor_kind;
+        this.sensorKind = config.sensorKind;
         // this.enoceandataitem = config.enoceandataitem;
         this.urd_ac_sensor = config.urd_ac_sensor;
         this.watty_temp_sensor = config.watty_temp_sensor;
@@ -49,7 +49,7 @@ module.exports = function (RED) {
             // TODO: センサー種別からオブジェクトをどう取り出すかを検討する
             var sensor_obj = config.selectSensor;
             // var sensor_obj = '';
-            // if ( config.sensor_kind == 'u-rd' ) {
+            // if ( config.sensorKind == 'u-rd' ) {
             //    sensor_obj = config.urd_ac_sensor;
             // } else {
             //    sensor_obj = config.watty_temp_sensor;
@@ -64,8 +64,8 @@ module.exports = function (RED) {
             node.trace('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
 
             EnObjects = [{ options: {}, objectContent: {} }];
-            EnObjects[0].options.sensor_id = SensorNode.sensor_id;
-            EnObjects[0].options.sensor_kind = config.sensor_kind;
+            EnObjects[0].options.sensorId = SensorNode.sensorId;
+            EnObjects[0].options.sensorKind = config.sensorKind;
             EnObjects[0].objectName = 'ObjectName'; // 仮設定
             EnObjects[0].objectKey = config.object_key;
             EnObjects[0].objectDescription = config.object_desc;
@@ -77,7 +77,7 @@ module.exports = function (RED) {
             var len = EnObjects.length;
             for (var i = 0; i < len; i++) {
                 linkData = {};
-                linkData.sensor_id = EnObjects[i].options.sensor_id;
+                linkData.sensorId = EnObjects[i].options.sensorId;
                 linkData.nodeId = node.id;
                 linkData.objectKey = EnObjects[i].objectKey;
                 linkObj.push(linkData);
@@ -120,7 +120,7 @@ module.exports = function (RED) {
                 var options = iaObject.options;
                 node.debug('options = ' + JSON.stringify(options));
                 // 関数を取り出す
-                const sensor = sensors.find((sensor) => sensor.type === options.sensor_kind); // TODO Refactor sensor_kind to sensorType, naming s, ss.
+                const sensor = sensors.find((sensor) => sensor.type === options.sensorKind); // TODO Refactor sensorKind to sensorType, naming s, ss.
                 const sensorValues = sensor ? sensor.process(element[1]) : [];
                 if (sensor) {
                     node.debug(sensor.name + ' value = ' + sensorValues);

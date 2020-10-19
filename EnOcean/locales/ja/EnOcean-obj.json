@@ -19,7 +19,7 @@
             "optexOccupancy": "OPTEX人感センサー",
             "optexRocker": "OPTEXスイッチ",
             "selectFile": "設定ファイル名を選択してください",
-            "sensor_kind": "センサー種別",
+            "sensorKind": "センサー種別",
             "wattyTemp": "Watty温度センサー", 
             "setting": {
                 "file": "設定ファイル",

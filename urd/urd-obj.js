@@ -121,10 +121,10 @@ module.exports = function (RED) {
         };
 
         // UrdObjNode.prototype.linkDatachangeListener = function (element) {
-        this.linkDatachangeListener = function (element) {
+        this.on('linkDatachangeListener', (element) => {
             // 引数に [objectKey, radio_data] を受け取る
             iaCloudObjectSend(element);
-        };
+        });
 
         this.on('input', (msg, send, done) => done()); // 処理なし
 

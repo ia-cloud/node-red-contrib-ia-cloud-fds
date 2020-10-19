@@ -1,10 +1,10 @@
 {
-    "editor": {
-        "name": "ノード名称",
-        "TCPPort": "TCPポート",
-        "netAddress": "Netアドレス"
-    },
-    "runtime": {
-
-    }
+  "editor": {
+    "name": "ノード名称",
+    "TCPPort": "TCPポート",
+    "netAddress": "Netアドレス",
+    "MaxSocket": "最大ソケット数",
+    "details": "詳細設定有効"
+  },
+  "runtime": {}
 }

@@ -1,10 +1,10 @@
 {
-    "editor": {
-        "name": "node name",
-        "TCPPort": "TCP port",
-        "netAddress": "Network add."
-    },
-    "runtime": {
-
-    }
+  "editor": {
+    "name": "node name",
+    "TCPPort": "TCP port",
+    "netAddress": "Network add.",
+    "MaxSocket": "Max number of WebSocket",
+    "details": "use details"
+  },
+  "runtime": {}
 }

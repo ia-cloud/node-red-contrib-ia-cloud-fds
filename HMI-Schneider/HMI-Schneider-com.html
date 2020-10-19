@@ -1,58 +1,66 @@
 
 <script type="text/html" data-template-name="HMI-Schneider-com">
-  <div class="form-group" id="hmi-schneider-com-block">
-    <div class="form-row">
-      <label for="node-config-input-name"><i class="fa fa-tag"></i>
-        <span data-i18n="editor.name"></span></label>
-      <input type="text" id="node-config-input-name">
+  <div class="form-row">
+    <label for="node-config-input-IPAdd"><span data-i18n="editor.netAddress"></span><span style="color: #ff0000;">*</span></label>
+    <input type="text" style="width: 300px" id="node-config-input-IPAdd">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-TCPPort"><span data-i18n="editor.TCPPort"></span><span style="color: #ff0000;">*</span></label>
+    <input type="number" style="width: 300px" id="node-config-input-TCPPort">
+  </div>
+  
+  <div class="form-row">
+    <input type="checkbox" id="node-config-input-details" style="display: inline-block; width: auto; vertical-align: top;">
+    <label for="node-config-input-details" style="width: 70%;"><span data-i18n="editor.details"></span></label>
+    <div style="margin-left: 20px" class="node-config-input-details-row hide">
+      <div class="form-row">
+        <label for="node-config-input-MaxSocket"><span data-i18n="editor.MaxSocket"></span></label>
+        <input type="number" style="width: 300px" min="1" max="5" id="node-config-input-MaxSocket">
+      </div>
     </div>
-    <div class="form-row" hidden>
-        <input type="text" id="node-config-input-requiredSet">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-IPAdd"><span data-i18n="editor.netAddress"></span>
-          <span style="color: #ff0000;">*</span></label>
-        <input type="text" style="width: 300px" id="node-config-input-IPAdd">
-    </div>
-    <div class="form-row">
-        <label for="node-config-input-TCPPort"><span data-i18n="editor.TCPPort"></span>
-          <span style="color: #ff0000;">*</span></label>
-        <input type="text" style="width: 300px" id="node-config-input-TCPPort">
-    </div>
+  </div>
+
+  <hr>
+
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+    <input type="text" id="node-config-input-name">
   </div>
 </script>
 
 <script type="text/javascript">
 
   RED.nodes.registerType('HMI-Schneider-com',{
-      category: 'config',
-      defaults: {
-          name: {value:"SchneiderHMI"},
-          IPAdd:{value:"127.0.0.1" },
-          TCPPort:{value:"8082" },
-          requiredSet: {value: "", required:true},
-      },
-      label: function() {
-          return this.name||this._("HMI-Schneider-com");
-      },
+    category: 'config',
+    defaults: {
+      name: {value:"SchneiderHMI"},
+      IPAdd:{value:"127.0.0.1", required:true },
+      TCPPort:{value:"8082", validate: RED.validators.number(), required:true },
+      MaxSocket:{value:5},
+    },
 
-      oneditprepare: function() {
-      },
-
-      oneditsave: function() {
-        var requiredSet = "ready";
-        $("#hmi-schneider-com-block").find("input[type='text']").each(function(idx, obj){
-          switch($(obj).attr("id")) {
-            case "node-config-input-TCPPort":
-            case "node-config-input-IPAdd":
-              if (!$(obj).val()) requiredSet = "";
-              break;
-            default:
-              break;
-          }
-        });
-      $("#node-config-input-requiredSet").val(requiredSet);
+    label: function() {
+      return this.name||this._("HMI-Schneider-com");
+    },
+    
+    oneditprepare: function() {
+      $("#node-config-input-details").change(function() {
+        if ($(this).is(":checked")) {
+          $(".node-config-input-details-row").show();
+        } else {
+          $(".node-config-input-details-row").hide();
+          $('#node-config-input-MaxSocket').val(5);
+        }
+      });
+      if ((!$('#node-config-input-MaxSocket').val()) || ($('#node-config-input-MaxSocket').val() == 5))
+      {
+        $('#node-config-input-MaxSocket').val(5);
+        $('#node-config-input-details').prop('checked', false);
+      } else {
+        $('#node-config-input-details').prop('checked', true);
       }
+      $("#node-config-input-details").change();
+    }
   });
 
 </script>
