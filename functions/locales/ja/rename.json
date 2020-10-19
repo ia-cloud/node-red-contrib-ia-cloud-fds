@@ -1,0 +1,16 @@
+{
+    "editor": {
+        "paletteLabel": "Key名称変更",
+        "name": "ノード名称",
+        "rules": "変更リスト",
+        "objKey": "オブジェクトKey",
+        "dataName": "データ名称",
+        "orignl": "変更元",
+        "changed": "変更後"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}

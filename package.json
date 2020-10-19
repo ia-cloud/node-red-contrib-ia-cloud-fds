@@ -70,7 +70,8 @@
       "evaluation": "functions/evaluation.js",
       "smoothing": "functions/smoothing.js",
       "de-noise": "functions/de-noise.js",
-      "edge-delay": "functions/edge-delay.js"
+      "edge-delay": "functions/edge-delay.js",
+      "rename": "functions/rename.js"
     }
   },
   "repository": {

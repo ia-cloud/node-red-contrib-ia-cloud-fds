@@ -1,0 +1,41 @@
+
+<script type="text/html" data-help-name="rename">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>ia-cloudオブジェクトのobjectKeyとdataNameを変更する機能Node</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>変更条件リスト<span class="property-type">リスト</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>変更元のオブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>変更する元のオブジェクトキー。空欄は全てのオブジェトキーを持つia-cloudオブジェクトが変更対象</dd>
+            <dt>変更元のデータ名称<span class="property-type">文字列</span></dt>
+            <dd>変更する元のデータ名称。データ名称（dataName）が合致すれば変更される。空欄はデータ名称の変更はしない</dd>
+            <dt>変更後のオブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>変更後のオブジェクトキー。空欄の時はオブジェクトキーを変更しない</dd>
+            <dt>変更後のデータ名称<span class="property-type">文字列</span></dt>
+            <dd>変更後のデータ名称。空欄のときは。データ名称の変更はしない</dd>
+        </dl>
+        <dt>ノード名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg<span class="property-type">iaCloud object</span></dt>
+        <dd>ia-cloud Web API で規定された、ia-cloudオブジェクト</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObjectのオブジェクトキーと各データ項目は設定したがって変更された値となります。</dd>
+        <dd>変更のの対象とならなかったiaCloudオブジェクトは、入力メッセージのまま出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力メッセージのia-cloudオブジェクトの、オブジェクトキーやデータ名称をルールに基づいて変更する機能Node</p>
+</script>
