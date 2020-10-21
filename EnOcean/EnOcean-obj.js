@@ -30,48 +30,35 @@ module.exports = function (RED) {
         var EnObjects = [{}];
         node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
-        if (config.confsel == 'fileSet') {
-            // 設定ファイルの場合、ファイルを読み込んで、オブジェクトに展開
-            try {
-                // EnObjects = JSON.parse(fs.readFileSync(config.configfile,'utf8')).EnObjects;
-                EnObjects = JSON.parse(config.configdata);
-                node.error('EnObjects = ' + EnObjects);
-                node.error('The number of EnObjects = ' + EnObjects.length);
-            } catch (e) {
-                // エラーの場合は、nodeステータスを変更。
-                // node.status({fill:'red',shape:'ring',text:'runtime.badFilePath'});
-                node.status({ fill: 'red', shape: 'ring', text: 'status.jsonParseError' });
-            }
-        } else {
-            // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
-            // var EnDataNode = (RED.nodes.getNode(config.enoceandataitem));
+        // オブジェクトがプロパティで設定されている場合、プロパティを読み込んでオブジェクトを生成
+        // var EnDataNode = (RED.nodes.getNode(config.enoceandataitem));
 
-            // TODO: センサー種別からオブジェクトをどう取り出すかを検討する
-            var sensor_obj = config.selectSensor;
-            // var sensor_obj = '';
-            // if ( config.sensorKind == 'u-rd' ) {
-            //    sensor_obj = config.urd_ac_sensor;
-            // } else {
-            //    sensor_obj = config.watty_temp_sensor;
-            // }
-            var SensorNode = RED.nodes.getNode(sensor_obj);
-            if (SensorNode == null) {
-                node.warn('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
-                node.status({ fill: 'red', shape: 'ring', text: 'status.noSensor' });
-                return false;
-            }
-            node.trace('SensorNode = ' + JSON.stringify(SensorNode));
-            node.trace('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
-
-            EnObjects = [{ options: {}, objectContent: {} }];
-            EnObjects[0].options.sensorId = SensorNode.sensorId;
-            EnObjects[0].options.sensorKind = config.sensorKind;
-            EnObjects[0].objectName = 'ObjectName'; // 仮設定
-            EnObjects[0].objectKey = config.object_key;
-            EnObjects[0].objectDescription = config.object_desc;
-            EnObjects[0].objectContent.contentType = 'iaCloudData';
-            EnObjects[0].objectContent.contentData = SensorNode.dItems;
+        // TODO: センサー種別からオブジェクトをどう取り出すかを検討する
+        var sensor_obj = config.selectSensor;
+        // var sensor_obj = '';
+        // if ( config.sensorKind == 'u-rd' ) {
+        //    sensor_obj = config.urd_ac_sensor;
+        // } else {
+        //    sensor_obj = config.watty_temp_sensor;
+        // }
+        var SensorNode = RED.nodes.getNode(sensor_obj);
+        if (SensorNode == null) {
+            node.warn('[ERROR] Sensor Object is not specified. [object = ' + SensorNode + ']');
+            node.status({ fill: 'red', shape: 'ring', text: 'status.noSensor' });
+            return false;
         }
+        node.trace('SensorNode = ' + JSON.stringify(SensorNode));
+        node.trace('SensorNode.dItems = ' + JSON.stringify(SensorNode.dItems));
+
+        EnObjects = [{ options: {}, objectContent: {} }];
+        EnObjects[0].options.sensorId = SensorNode.sensorId;
+        EnObjects[0].options.sensorKind = config.sensorKind;
+        EnObjects[0].objectName = 'ObjectName'; // 仮設定
+        EnObjects[0].objectKey = config.object_key;
+        EnObjects[0].objectDescription = config.object_desc;
+        EnObjects[0].objectContent.contentType = 'iaCloudData';
+        EnObjects[0].objectContent.contentData = SensorNode.dItems;
+
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
             var len = EnObjects.length;

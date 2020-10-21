@@ -11,20 +11,13 @@
             "paletteLabel": "EnOcean sensor",
             "coreStaffTemp": "CoreStaff Temp sensor",
             "enoceanCom": "EnOcean communication object",
-            "fileContentHere": "The content of file will be shown here.",
-            "filename": "Filename",
             "itecAC": "ITEC AC Sensor",
             "objectDesc": "Object description",
             "objectKey": "Object key",
             "optexOccupancy": "OPTEX occupancy sensor",
             "optexRocker": "OPTEX Rocker SW",
-            "selectFile": "Select setting file.",
             "sensorKind": "Sensor type",
-            "wattyTemp": "Watty Temp sensor",
-            "setting": {
-                "file": "From file",
-                "object": "Object settings"
-            }
+            "wattyTemp": "Watty Temp sensor"
         },
         "sensors": {
             "coreStaff": "Temperature / Humidity (CoreStaff)",
