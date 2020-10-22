@@ -17,43 +17,55 @@
 const SensorInterface = require('./sensors-interface');
 
 module.exports = class UrdAC3ch extends SensorInterface {
+
     /**
      * 電流計算およびcontentDataの生成.
      */
-    static process(serialData, contentDataFormat, range) {
+    static process(serialData, contentDataConfig) {
+        const presetRange = {
+            WLS50: 400,
+            WLS100: 400,
+            WLS250: 400,
+            WLS600: 700,
+        };
+
         let message = '';
-        const contentData = [];
 
         if (typeof serialData === 'undefined' || serialData.length < 5 * 2) {
             // 5Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
-            return { contentData, message, sendFlg: false };
+            return { contentData: [], message, sendFlg: false };
         }
 
         // contentDataの生成
-        contentDataFormat.every((dItem, idx) => {
-            if (idx >= 3) {
-                return false;
-            }
-            const dec = parseInt(serialData.substr(idx * 3, 3), 16);
-            if (Number.isNaN(range[idx])) {
+        const contentData = contentDataConfig.slice(0, 3).map((dItem, index) => {
+            // Decode to decimal value. ex. 'FFF' => 4095
+            const dec = parseInt(serialData.substr(index * 3, 3), 16);
+
+            if (dItem.clampType === 'unconnected') {
                 // センサー未設定としたチャンネルに測定値(最大値以外)がある場合に警告メッセージを追加
-                if (dec !== 4095) {
-                    message += `Ch${idx + 1}:no setting.`;
+                if (dec !== 0xFFF) {
+                    message += `Ch${index + 1}:no setting.`;
                 }
-                return true;
+                return undefined;
             }
+
             // センサー設定を行ったチャンネルが最大値(センサー未装着時のデータ)の場合に警告メッセージを追加し、値を9999.99とする
-            if (dec === 4095) {
-                message += `Ch${idx + 1}:sensor unconnected.`;
-                dItem.dataValue = 9999.99;
+            let dataValue;
+            if (dec === 0xFFF) {
+                message += `Ch${index + 1}:sensor unconnected.`;
+                dataValue = 9999.99;
             } else {
-                const clampRange = (typeof range[idx] === 'number') ? range[idx] : 400;
+                const clampRange = dItem.rangeInput || presetRange[dItem.clampType] || 400;
                 // 倍率計算を行い、小数第3位を四捨五入して代入
-                dItem.dataValue = Math.round((dec * clampRange * 100) / 4095) / 100;
+                dataValue = Math.round((dec * clampRange * 100) / 0xFFF) / 100;
             }
-            contentData.push(dItem);
-            return true;
-        });
+
+            return {
+                dataName: dItem.dataName,
+                dataValue,
+                unit: dItem.unit,
+            };
+        }).filter((dItem) => dItem);
 
         return { contentData, message, sendFlg: true };
     }
@@ -63,25 +75,9 @@ module.exports = class UrdAC3ch extends SensorInterface {
         function AC3chSensor(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
+            this.configObject = config.configObject;
 
-            const node = this;
-            const confObj = config.configObject;
-            this.range = [];
-            this.dItems = {};
-            if (confObj && config.range) {
-                try {
-                    this.dItems = JSON.parse(confObj);
-                    // 3ch sensorに設定された倍率を取得. 文字列を数値配列に変換. センサー未設定の場合はNaNとする
-                    const rangeRegExp = new RegExp('[\\[\\]\\"\'\\s]', 'g');
-                    this.range = (config.range) ? config.range.replace(rangeRegExp, '').split(',').map(Number) : [];
-                } catch (e) {
-                    // nodeのエラーを通知してして終了
-                    node.error('runtime:jsonerror', config);
-                }
-            } else {
-                // nodeのエラーを通知してして終了
-                node.error('runtime:jsonerror', config);
-            }
+            // const node = this;
 
             this.on('input', (msg, send, done) => done()); // 処理なし
 
