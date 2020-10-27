@@ -2,6 +2,25 @@
     "enoceanDataItem": {
         "label": {
             "dataName": "データ名称"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "エネルギースイッチ"
+                },
+                "1": {
+                    "dataName": "スイッチ1"
+                },
+                "2": {
+                    "dataName": "スイッチ2"
+                },
+                "3": {
+                    "dataName": "スイッチ3"
+                },
+                "4": {
+                    "dataName": "スイッチ4"
+                }
+            }
         }
     },
     "serial": {

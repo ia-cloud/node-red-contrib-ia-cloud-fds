@@ -5,6 +5,18 @@
             "object_desc": "Object Description",
             "dataName": "Data Name",
             "unit": "Unit"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "Supply voltage",
+                    "unit": "V"
+                },
+                "1": {
+                    "dataName": "Occupied",
+                    "unit": "null"
+                }
+            }
         }
     },
     "serial": {

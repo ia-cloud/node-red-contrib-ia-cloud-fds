@@ -37,25 +37,8 @@ module.exports = class CoreStaffTemperatureHumidity extends SensorInterface {
         function CoreStaffSensor(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
-            // this.dataName0 = config.dataName0;
-            // this.unit0 = config.unit0;
-            // this.dataName1 = config.dataName1;
-            // this.unit1 = config.unit1;
+            this.configObject = config.configObject;
 
-            const node = this;
-            const confObj = config.configObject;
-            this.dItems = {};
-            if (confObj) {
-                try {
-                    this.dItems = JSON.parse(confObj);
-                } catch (e) {
-                    // nodeのエラーを通知してして終了
-                    node.error('runtime:jsonerror', confObj);
-                }
-            } else {
-                // nodeのエラーを通知してして終了
-                node.error('runtime:jsonerror', confObj);
-            }
             this.on('input', function (msg) {});
             this.on('close', function () {});
         }

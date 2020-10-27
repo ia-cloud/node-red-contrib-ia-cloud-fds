@@ -48,7 +48,7 @@ module.exports = function (RED) {
             return false;
         }
         node.trace(`SensorNode = ${JSON.stringify(SensorNode)}`);
-        node.trace(`SensorNode.dItems = ${JSON.stringify(SensorNode.dItems)}`);
+        node.trace(`SensorNode.configObject = ${JSON.stringify(SensorNode.configObject)}`);
 
         EnObjects = [{ options: {}, objectContent: {} }];
         EnObjects[0].options.sensorId = SensorNode.sensorId;
@@ -57,7 +57,7 @@ module.exports = function (RED) {
         EnObjects[0].objectKey = config.object_key;
         EnObjects[0].objectDescription = config.object_desc;
         EnObjects[0].objectContent.contentType = 'iaCloudData';
-        EnObjects[0].objectContent.contentData = SensorNode.dItems;
+        EnObjects[0].objectContent.contentData = SensorNode.configObject;
 
         if (EnObjects) {
             // 取り合えず EnObjects は要素数1としてコードを書く
