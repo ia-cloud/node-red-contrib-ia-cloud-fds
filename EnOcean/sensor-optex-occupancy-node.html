@@ -71,38 +71,40 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Optex_Occupancy_Sensor',{
+    RED.nodes.registerType('Optex_Occupancy_Sensor', {
         category: 'config',
         defaults: {
-            name: {value:"Optex Occupancy Sensor"},
-            sensorId: {value:"", required:true},
-            dataName0: {value:"供給電圧"},
-            unit0: {value:"V"},
-            dataName1: {value:"在室状態"},
-            unit1: {value:"null"},
-            configObject: {value:""}
+            name: { value: 'Optex Occupancy Sensor' },
+            sensorId: { value: '', required: true },
+            dataName0: { value: '供給電圧' },
+            unit0: { value: 'V' },
+            dataName1: { value: '在室状態' },
+            unit1: { value: 'null' },
+            configObject: { value: '' },
         },
         label: function() {
-            return this.name||("Itec CT Sensor");
+            return this.name || ('Itec CT Sensor');
         },
         oneditprepare: function() {
         },
         oneditsave: function() {
-            var dItems = [];
-            var unit = "";
+            const dItems = [];
+            const unit = '';
             for (var i = 0; i < 2; i++) {
-                var item ={dataValue: "", unit: "", dataName: ""};
-                unit = $("#node-config-input-unit" + String(i)).val();
-                if ( unit.toLowerCase() === "null" ) {
-                    unit = null;
-                }
-                item.unit = unit;
-                item.dataName = $("#node-config-input-dataName" + String(i)).val();
-                dItems[i]=item;
+                const index = String(i);
+                const unit = $(`#node-config-input-unit${index}`).val();
+                dItems[i] = {
+                    dataName: $(`#node-config-input-dataName${index}`).val();,
+                    dataValue: '',
+                    unit: (unit.toLowerCase() === 'null' ? null: unit),
+                };
             }
-            //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
-            catch(e) {$("#node-config-input-configObject").val("")}
+            // フォームの各要素をobjectに記述し、JSON文字列に変換する。
+            try {
+                $('#node-config-input-configObject').val(JSON.stringify(dItems));
+            } catch(e) {
+                $('#node-config-input-configObject').val('');
+            }
         }
     });
 </script>
