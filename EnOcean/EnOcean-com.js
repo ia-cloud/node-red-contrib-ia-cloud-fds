@@ -1,4 +1,4 @@
-const SerialPort = require("serialport");
+const SerialPort = require('serialport');
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
 const INTERBYTETIMEOUT = 100;   // set inter byte timeout 100ms
@@ -9,7 +9,7 @@ module.exports = function (RED) {
     const crc8 = require('crc-full').CRC.default('CRC8');
 
     /**
-     * Pick up "Sync. Byte", "Header" and "CRC8H" from receivedEspData.
+     * Pick up 'Sync. Byte', 'Header' and 'CRC8H' from receivedEspData.
      * @param {Buffer} receivedEspData
      * @returns {object} ESP3 Packet as object.
      */
@@ -248,7 +248,7 @@ module.exports = function (RED) {
                     if (nodeId) {
                         var EnObjNode = RED.nodes.getNode(nodeId);
                         node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
-                        if (EnObjNode) EnObjNode.emit("linkDatachangeListener", listeners[nodeId]);
+                        if (EnObjNode) EnObjNode.emit('linkDatachangeListener', listeners[nodeId]);
                     }
                 });
                 listeners = {}; // 通知先をクリアする
@@ -264,7 +264,7 @@ module.exports = function (RED) {
                 return parseInt(e.sensorId, 16) === parseInt(receivedSensorId, 16);
             });
             if (linkData.length === 0) {
-                node.debug(`Sensor ID "${receivedSensorId}" received but there's no node with matched id.`);
+                node.debug(`Sensor ID '${receivedSensorId}' received but there's no node with matched id.`);
             } else {
                 linkData.forEach(function (e) {
                     e.value = data;
@@ -278,7 +278,7 @@ module.exports = function (RED) {
             }
         };
 
-        this.on("addLinkData", function (lObj){
+        this.on('addLinkData', function (lObj){
             // linkObjに新たなリンクデータを追加
             Array.prototype.push.apply(linkObj, lObj);
             node.trace(`lObj = ${JSON.stringify(lObj)}`);
