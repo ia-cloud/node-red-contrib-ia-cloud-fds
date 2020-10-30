@@ -79,7 +79,7 @@
     "url": "git+ssh://git@github.com/ia-cloud/node-red-contrib-ia-cloud-fds.git"
   },
   "scripts": {
-    "test": "iacloudtest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "homepage": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds#readme"
 }
