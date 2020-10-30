@@ -46,33 +46,36 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Itec_CT_Sensor',{
+    RED.nodes.registerType('Itec_CT_Sensor', {
         category: 'config',
         defaults: {
-            name: {value:"Itec CT Sensor"},
-            // sensorKind: {value:"u-rd", required:true},
-            sensorId: {value:"", required:true},
-            dataName0: {value:"電流1"},
-            unit0: {value:"A"},
-            configObject: {value:""}
+            name: { value: 'Itec CT Sensor' },
+            sensorId: { value: '', required: true },
+            dataName0: { value: '電流1' },
+            unit0: { value: 'A' },
+            configObject: { value: '' },
         },
         label: function() {
-            return this.name||("Itec CT Sensor");
+            return this.name || ('Itec CT Sensor');
         },
         oneditprepare: function() {
         },
         oneditsave: function() {
-            var dItems = [];
+            const dItems = [];
             for (var i = 0; i < 1; i++) {
-                var item ={dataValue: "", unit: "", dataName: ""};
-                item.unit = $("#node-config-input-unit" + String(i)).val();
-                item.dataName = $("#node-config-input-dataName" + String(i)).val();
-                dItems[i]=item;
+                const index = String(i);
+                dItems[i] = {
+                    dataName: $(`#node-config-input-dataName#{index}`).val(),
+                    dataValue: '',
+                    unit: $(`#node-config-input-unit#{index}`).val(),
+                };
             }
             //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
-            catch(e) {$("#node-config-input-configObject").val("")}
+            try {
+                $('#node-config-input-configObject').val(JSON.stringify(dItems));
+            } catch(e) {
+                $('#node-config-input-configObject').val('');
+            }
         }
     });
 </script>
-

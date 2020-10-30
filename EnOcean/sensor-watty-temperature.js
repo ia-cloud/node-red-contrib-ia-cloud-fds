@@ -5,7 +5,7 @@ module.exports = class WattyTemperature extends SensorInterface {
      * 温度計算.
      */
     static process(data) {
-        var ret = [];
+        const ret = [];
         if (data.length < 5 * 2) {
             // 5Byte以上でなければ空リスト返却
             return ret;
@@ -26,8 +26,8 @@ module.exports = class WattyTemperature extends SensorInterface {
         decList.push(dec4);
 
         const tempList = [];
-        for (const ch_val of decList) {
-            const temp = 130.0 - (parseFloat(ch_val) / 1024.0 * 170.0);
+        for (const chVal of decList) {
+            const temp = 130.0 - (parseFloat(chVal) / 1024.0 * 170.0);
             tempList.push(temp);
         }
         return tempList;
@@ -35,29 +35,27 @@ module.exports = class WattyTemperature extends SensorInterface {
 
     static nodeRedFunction(RED) {
         // collect-data-object config node function definition
-        function Watty_Temp_Sensor(config) {
+        function WattyTempSensor(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
-            // this.dataName0 = config.dataName0;
-            // this.unit0 = config.unit0;
 
-            var node = this;
-            var confObj = config.configObject;
+            const node = this;
+            const confObj = config.configObject;
             this.dItems = {};
             if (confObj) {
                 try {
                     this.dItems = JSON.parse(confObj);
                 } catch (e) {
                     // nodeのエラーを通知してして終了
-                    node.error("runtime:jsonerror", confObj);
+                    node.error('runtime:jsonerror', confObj);
                 }
             } else {
                 // nodeのエラーを通知してして終了
-                node.error("runtime:jsonerror", confObj);
+                node.error('runtime:jsonerror', confObj);
             }
-            this.on("input", function (msg) {});
-            this.on("close", function () {});
+            this.on('input', function (msg) {});
+            this.on('close', function () {});
         }
-        RED.nodes.registerType("Watty_Temp_Sensor", Watty_Temp_Sensor);
+        RED.nodes.registerType('Watty_Temp_Sensor', WattyTempSensor);
     }
 };
