@@ -47,7 +47,7 @@ module.exports = function (RED) {
             return false;
         }
         node.log(`SensorNode = ${JSON.stringify(SensorNode)}`);
-        node.log(`SensorNode.dItems = ${JSON.stringify(SensorNode.dItems)}`);
+        node.log(`SensorNode.configObject = ${JSON.stringify(SensorNode.configObject)}`);
 
         const enObjects = [{ options: {}, objectContent: {} }];
         enObjects[0].options.sensorId = SensorNode.sensorId;
