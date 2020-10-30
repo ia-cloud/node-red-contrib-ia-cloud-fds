@@ -5,6 +5,14 @@
             "object_desc": "オブジェクトの説明",
             "dataName": "データ名称",
             "unit": "単位"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "電流1",
+                    "unit": "A"
+                }
+            }
         }
     },
     "serial": {

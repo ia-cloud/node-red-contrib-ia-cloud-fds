@@ -5,6 +5,18 @@
             "object_desc": "オブジェクトの説明",
             "dataName": "データ名称",
             "unit": "単位"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "供給電圧",
+                    "unit": "V"
+                },
+                "1": {
+                    "dataName": "在室状態",
+                    "unit": "null"
+                }
+            }
         }
     },
     "serial": {

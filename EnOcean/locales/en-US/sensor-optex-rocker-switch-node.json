@@ -2,6 +2,25 @@
     "enoceanDataItem": {
         "label": {
             "dataName": "Data Name"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "Energy switch"
+                },
+                "1": {
+                    "dataName": "Switch 1"
+                },
+                "2": {
+                    "dataName": "Switch 2"
+                },
+                "3": {
+                    "dataName": "Switch 3"
+                },
+                "4": {
+                    "dataName": "Switch 4"
+                }
+            }
         }
     },
     "serial": {

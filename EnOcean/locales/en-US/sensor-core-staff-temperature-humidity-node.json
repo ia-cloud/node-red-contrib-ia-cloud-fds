@@ -5,6 +5,18 @@
             "object_desc": "Object Description",
             "dataName": "Data Name",
             "unit": "Unit"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "Humidity",
+                    "unit": "%"
+                },
+                "1": {
+                    "dataName": "Temperature",
+                    "unit": "C"
+                }
+            }
         }
     },
     "serial": {

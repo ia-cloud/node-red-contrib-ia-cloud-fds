@@ -5,6 +5,26 @@
             "object_desc": "Object Description",
             "dataName": "Data Name",
             "unit": "Unit"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "Temperature 1",
+                    "unit": "C"
+                },
+                "1": {
+                    "dataName": "Temperature 2",
+                    "unit": "C"
+                },
+                "2": {
+                    "dataName": "Temperature 3",
+                    "unit": "C"
+                },
+                "3": {
+                    "dataName": "Temperature 4",
+                    "unit": "C"
+                }
+            }
         }
     },
     "serial": {
