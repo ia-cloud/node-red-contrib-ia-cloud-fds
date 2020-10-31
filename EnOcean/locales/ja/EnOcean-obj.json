@@ -11,20 +11,13 @@
             "paletteLabel": "EnOceanセンサー",
             "coreStaffTemp": "CoreStaff温湿度センサー", 
             "enoceanCom": "EnOcean通信オブジェクト",
-            "fileContentHere": "現在の設定ファイルの中身がここに表示されます",
-            "filename": "設定ファイル名",
             "itecAC": "ITEC電流センサー", 
             "objectDesc": "オブジェクトの説明",
             "objectKey": "オブジェクトキー",
             "optexOccupancy": "OPTEX人感センサー",
             "optexRocker": "OPTEXスイッチ",
-            "selectFile": "設定ファイル名を選択してください",
             "sensorKind": "センサー種別",
-            "wattyTemp": "Watty温度センサー", 
-            "setting": {
-                "file": "設定ファイル",
-                "object": "オブジェクト設定"
-            }
+            "wattyTemp": "Watty温度センサー"
         },
         "sensors": {
             "coreStaff": "温湿度センサー (CoreStaff)",

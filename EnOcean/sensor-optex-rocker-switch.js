@@ -54,27 +54,14 @@ module.exports = class OptexRockerSwitch extends SensorInterface {
 
     static nodeRedFunction(RED) {
         // collect-data-object config node function definition
-        function Optex_Rocker_SW(config) {
+        function OptexRockerSW(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
+            this.configObject = config.configObject;
 
-            var node = this;
-            var confObj = config.configObject;
-            this.dItems = {};
-            if (confObj) {
-                try {
-                    this.dItems = JSON.parse(confObj);
-                } catch (e) {
-                    // nodeのエラーを通知してして終了
-                    node.error('runtime:jsonerror', confObj);
-                }
-            } else {
-                // nodeのエラーを通知してして終了
-                node.error('runtime:jsonerror', confObj);
-            }
             this.on('input', function (msg) {});
             this.on('close', function () {});
         }
-        RED.nodes.registerType('Optex_Rocker_SW', Optex_Rocker_SW);
+        RED.nodes.registerType('Optex_Rocker_SW', OptexRockerSW);
     }
 };

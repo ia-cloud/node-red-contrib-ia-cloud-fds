@@ -1,78 +1,106 @@
 <!-- EnOcean-dItems Config Node の記述 -->
 <script type="text/html" data-template-name="Itec_CT_Sensor">
+
+    <!-- Name -->
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
+
+    <!-- Sensor ID -->
     <div class="form-row">
         <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
         <input type="text" id="node-config-input-sensorId" data-i18n="serial.label.sensorId" placeholder="センサーIDを入力します　例) 0500ef1c">
     </div>
-    <div class="form-row" hidden>
-        <input type="text" id="node-config-input-configObject">
+
+    <!-- Title of contentData. -->
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> <span data-i18n="urdDataItem.label.itemNo" /></label>
     </div>
-    <div id="blocks">
-        <div class="form-block">
-            <div class="form-row">
-                <div class="form-inline">
-                    <span style="border-bottom:solid 2px;">データ項目 :</span>
-                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
-                </div>
-            </div>
-            <table>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.dataName"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-dataName0">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label><i class="fa fa-tag"></i> <span data-i18n="enoceanDataItem.label.unit"></span></label>
-                </td>
-                <td>
-                  <input type="text" id="node-config-input-unit0" style="width: 100px;" value="A">
-                </td>
-              </tr>
-            </table>
-        </div>
+    <!-- List of contentData. -->
+    <div>
+        <ol id="content_data">
+            <!-- Insert $rowTemplate -->
+        </ol>
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="Itec_CT_Sensor" charset="utf-8">
+<script type="text/html" data-help-name="Itec_CT_Sensor" charset="utf-8">
     <p>アイテック社のCTセンサー（電流センサー））に関する設定をここで行います。</p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Itec_CT_Sensor',{
+    RED.nodes.registerType('Itec_CT_Sensor', {
         category: 'config',
         defaults: {
-            name: {value:"Itec CT Sensor"},
-            // sensorKind: {value:"u-rd", required:true},
-            sensorId: {value:"", required:true},
-            dataName0: {value:"電流1"},
-            unit0: {value:"A"},
-            configObject: {value:""}
+            name: { value: 'Itec CT Sensor' },
+            sensorId: { value: '', required: true },
+            configObject: { value: '' },
         },
         label: function() {
-            return this.name||("Itec CT Sensor");
+            return this.name || ('Itec CT Sensor');
         },
         oneditprepare: function() {
+            const node = this;
+
+            // Define editableList.
+            $('#content_data').css('min-height', '130px').css('min-width', '400px').editableList({
+                addButton: false,
+                sortable: false,
+                removable: false,
+                // Process when click add button.
+                addItem($row, index, data) {
+                    // Labels
+                    const labelDataName = node._('enoceanDataItem.label.dataName');
+                    const labelUnit = node._('enoceanDataItem.label.unit');
+
+                    const dataName = data.dataName || '';
+                    const unit = data.unit || '';
+
+                    // A row template.
+                    const $rowTemplate = $(`
+                    <div class="row">
+                            <!-- dataName -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelDataName}</label>
+                                <input type="text" class="data-name" value="${dataName}">
+                            </div>
+                            <!-- unit -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelUnit}</label>
+                                <input type="text" class="unit" style="width: 100px;" value="${unit}">
+                            </div>
+                        </div>
+                    `);
+
+                    // Append row.
+                    $rowTemplate.appendTo($row);
+                },
+            });
+
+            // Default values for each row.
+            const defaultRows = [
+                { dataName: node._('enoceanDataItem.input.dataItems.0.dataName'), unit: node._('enoceanDataItem.input.dataItems.0.unit') },
+            ];
+
+            // Stack rows.
+            let configObject;
+            if (typeof this.configObject === 'string') {
+                configObject = defaultRows;
+            } else {
+                configObject = this.configObject || defaultRows;
+            }
+            $('#content_data').editableList('addItems', configObject);
         },
         oneditsave: function() {
-            var dItems = [];
-            for (var i = 0; i < 1; i++) {
-                var item ={dataValue: "", unit: "", dataName: ""};
-                item.unit = $("#node-config-input-unit" + String(i)).val();
-                item.dataName = $("#node-config-input-dataName" + String(i)).val();
-                dItems[i]=item;
-            }
-            //フォームの各要素をobjectに記述し、JSON文字列に変換する。
-            try {$("#node-config-input-configObject").val(JSON.stringify(dItems));}
-            catch(e) {$("#node-config-input-configObject").val("")}
+            const editableItems = $('#content_data').editableList('items');
+
+            this.configObject = Array.from(editableItems).map(($item) => {
+                return {
+                    dataName: $item.find('.data-name').val(),
+                    unit: $item.find('.unit').val(),
+                };
+            });
         }
     });
 </script>
-

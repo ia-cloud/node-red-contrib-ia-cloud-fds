@@ -47,7 +47,7 @@ module.exports = function (RED) {
             return false;
         }
         node.log(`SensorNode = ${JSON.stringify(SensorNode)}`);
-        node.log(`SensorNode.dItems = ${JSON.stringify(SensorNode.dItems)}`);
+        node.log(`SensorNode.configObject = ${JSON.stringify(SensorNode.configObject)}`);
 
         const enObjects = [{ options: {}, objectContent: {} }];
         enObjects[0].options.sensorId = SensorNode.sensorId;
@@ -56,7 +56,7 @@ module.exports = function (RED) {
         enObjects[0].objectKey = config.objectKey;
         enObjects[0].objectDescription = config.objectDescription;
         enObjects[0].objectContent.contentType = 'iaCloudData';
-        enObjects[0].objectContent.contentData = SensorNode.dItems;
+        enObjects[0].objectContent.contentData = SensorNode.configObject;
         enObjects[0].range = SensorNode.range || [];
 
         if (enObjects) {
@@ -86,6 +86,21 @@ module.exports = function (RED) {
             });
 
             if (iaObject) {
+                const { options } = iaObject;
+                node.debug(`options = ${JSON.stringify(options)}`);
+
+                // 関数を取り出す
+                const sensor = sensors.find((s) => s.type === options.sensorType);
+
+                // センサーに対するcontentDataの作成処理. 3ch sensorの場合は引数にrangeを用いる. 送信対象外のデータはsendFlg: falseとする
+                const measuredResult = sensor ? sensor.process(element[1], iaObject.objectContent.contentData) : { contentData: [], message: '', sendFlg: false };
+
+                // 送信対象外のデータは送信処理を行わない
+                if (!measuredResult.sendFlg) {
+                    node.status({ fill: 'green', shape: 'dot', text: 'status.excluded' });
+                    return;
+                }
+
                 msg.dataObject = {
                     objectKey: element[0],
                     timeStamp: moment().format(),
@@ -93,23 +108,12 @@ module.exports = function (RED) {
                     objectDescription: iaObject.objectDescription,
                     objectContent: {
                         contentType: 'iaCloudData',
+                        contentData: measuredResult.contentData,
                     },
                 };
 
-                const { options } = iaObject;
-                node.debug(`options = ${JSON.stringify(options)}`);
-                // 関数を取り出す
-                const sensor = sensors.find((s) => s.type === options.sensorType);
-                // センサーに対するcontentDataの作成処理. 3ch sensorの場合は引数にrangeを用いる. 送信対象外のデータはsendFlg: falseとする
-                const measuredResult = sensor ? sensor.process(element[1], iaObject.objectContent.contentData, iaObject.range) : { contentData: [], message: '', sendFlg: false };
-                // 送信対象外のデータは送信処理を行わない
-                if (!measuredResult.sendFlg) {
-                    node.status({ fill: 'green', shape: 'dot', text: 'status.excluded' });
-                    return;
-                }
-
-                msg.dataObject.objectContent.contentData = measuredResult.contentData;
                 node.send(msg);
+
                 if (measuredResult.message) {
                     node.status({ fill: 'yellow', shape: 'dot', text: measuredResult.message });
                 } else {

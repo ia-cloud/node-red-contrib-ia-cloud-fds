@@ -9,9 +9,7 @@
             "ct": "CT part"
         },
         "input": {
-            "dataName0": "Current1",
-            "dataName1": "Current2",
-            "dataName2": "Current3",
+            "dataNames": "[\"Current1\", \"Current2\", \"Current3\"]",
             "unit": "A"
         },
         "placeholder": {

@@ -16,44 +16,28 @@ limitations under the License.
 
 <!-- urd-ac-1ch-node Config Node の記述 -->
 <script type="text/html" data-template-name="URD AC 1ch sensor">
+
+    <!-- Name -->
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
     </div>
+
+    <!-- Sensor ID -->
     <div class="form-row">
         <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
         <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]serial.placeholder.sensorId">
     </div>
-    <div class="form-row" hidden>
-        <input type="text" id="node-config-input-configObject">
+
+    <!-- Title of contentData. -->
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> <span data-i18n="urdDataItem.label.itemNo" /></label>
     </div>
-    <div id="blocks">
-        <div class="form-block">
-            <div class="form-row">
-                <div class="form-inline">
-                    <span style="border-bottom:solid 2px;" data-i18n="urdDataItem.label.itemNo"></span>
-                    <input type="text" id="dItem" style="width: 30px;" value="1" disabled="disabled">
-                </div>
-            </div>
-            <table>
-                <tr>
-                    <td>
-                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.dataName"></span></label>
-                    </td>
-                    <td>
-                        <input type="text" id="node-config-input-dataName">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label><i class="fa fa-tag"></i> <span data-i18n="urdDataItem.label.unit"></span></label>
-                    </td>
-                    <td>
-                        <input type="text" id="node-config-input-unit" style="width: 100px;" value="A">
-                    </td>
-                </tr>
-            </table>
-        </div>
+    <!-- List of contentData. -->
+    <div>
+        <ol id="content_data">
+            <!-- Insert $rowTemplate -->
+        </ol>
     </div>
 </script>
 
@@ -63,32 +47,98 @@ limitations under the License.
 </script>
 
 <script type="text/javascript">
+
+// To avoids polluting the global namespace.
+(() => {
     RED.nodes.registerType('URD AC 1ch sensor', {
+        // Node-RED node definition.
         category: 'config',
         defaults: {
             name: { value: 'ac-1ch-Sensor' },
             sensorId: { value: '', required: true },
-            dataName: { value: '', required: true },
-            unit: { value: '' },
             configObject: { value: '' },
+            // --------------------
+            dataName: { value: '' }, // DO NOT USE THIS, It's just for backward compatible. Remove this in the future.
+            unit: { value: '' }, // DO NOT USE THIS, It's just for backward compatible. Remove this in the future.
+            // --------------------
         },
         label() { return this.name || ('ac-1ch-Sensor'); },
         oneditprepare() {
-            $('#node-config-input-dataName').val(this.dataName || this._('urdDataItem.input.dataName'));
-            $('#node-config-input-unit').val(this.unit || this._('urdDataItem.input.unit'));
+            const node = this;
+
+            // Define editableList.
+            $('#content_data').css('min-height', '130px').css('min-width', '400px').editableList({
+                addButton: false,
+                sortable: false,
+                removable: false,
+                // Process when click add button.
+                addItem($row, index, data) {
+                    // Labels
+                    const labelDataName = node._('urdDataItem.label.dataName');
+                    const labelUnit = node._('urdDataItem.label.unit');
+
+                    const dataName = data.dataName || '';
+                    const unit = data.unit || '';
+
+                    // A row template.
+                    const $rowTemplate = $(`
+                        <div class="row">
+                            <!-- dataName -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelDataName}</label>
+                                <input type="text" class="data-name" value="${dataName}">
+                            </div>
+                            <!-- unit -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelUnit}</label>
+                                <input type="text" class="unit" style="width: 100px;" value="${unit}">
+                            </div>
+                        </div>
+                    `);
+
+                    // Append row.
+                    $rowTemplate.appendTo($row);
+                },
+            });
+
+            // Default values for each row.
+            const dataNameDefault = node._('urdDataItem.input.dataName');
+            const unitDefault = node._('urdDataItem.input.unit');
+            const defaultRows = [{ dataName: dataNameDefault, unit: unitDefault }];
+
+            // Stack rows.
+            let configObject;
+            if (typeof this.configObject === 'string') {
+                // --------------------
+                // configObject may be old version. This section is for backward compatible. Remove this seciton in the future.
+                debugger;
+                const cf = JSON.parse(this.configObject);
+                configObject = [{ dataName: cf[0].dataName, unit: cf[0].unit }];
+                // --------------------
+            } else {
+                configObject = this.configObject || defaultRows;
+            }
+            // configObject = [ // It's just a test code.
+            //     { dataName: '電流a', unit: 'あ' },
+            // ];
+            $('#content_data').editableList('addItems', configObject);
         },
         oneditsave() {
-            const dItems = [{
-                dataValue: '',
-                unit: $('#node-config-input-unit').val(),
-                dataName: $('#node-config-input-dataName').val(),
-            }];
-            // フォームの各要素をobjectに記述し、JSON文字列に変換する。
-            try {
-                $('#node-config-input-configObject').val(JSON.stringify(dItems));
-            } catch (e) {
-                $('#node-config-input-configObject').val('');
-            }
+            const editableItems = $('#content_data').editableList('items');
+
+            this.configObject = Array.from(editableItems).map(($item) => {
+                return {
+                    dataName: $item.find('.data-name').val(),
+                    unit: $item.find('.unit').val(),
+                };
+            });
+            // --------------------
+            // This section is for backward compatible. Remove this seciton in the future.
+            this.dataName = undefined;
+            this.unit = undefined;
+            // --------------------
         },
     });
+})();
+
 </script>

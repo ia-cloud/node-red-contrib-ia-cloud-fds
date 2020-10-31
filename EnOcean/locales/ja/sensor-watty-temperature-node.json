@@ -5,6 +5,26 @@
             "object_desc": "オブジェクトの説明",
             "dataName": "データ名称",
             "unit": "単位"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "温度1",
+                    "unit": "℃"
+                },
+                "1": {
+                    "dataName": "温度2",
+                    "unit": "℃"
+                },
+                "2": {
+                    "dataName": "温度3",
+                    "unit": "℃"
+                },
+                "3": {
+                    "dataName": "温度4",
+                    "unit": "℃"
+                }
+            }
         }
     },
     "serial": {
