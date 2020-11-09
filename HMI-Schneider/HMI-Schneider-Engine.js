@@ -286,15 +286,17 @@ function createContendData(obj, isvariable) {
             }
         }
         else {
+            dItem.commonName = "Alarm&Event";
+            dItem.dataValue = {};
             if (item.status == null) {
-                dItem.AnEStatus = (item.status == item.prev) ? "off" : "reset";
+                dItem.dataValue.AnEStatus = (item.status == item.prev) ? "off" : "reset";
             } else {
-                dItem.AnEStatus = (item.status == item.prev) ? "on" : "set";
+                dItem.dataValue.AnEStatus = (item.status == item.prev) ? "on" : "set";
             }
-            dItem.AnECode = item.code;
-            if (!dItem.AnECode) { dItem.AnECode = item.varName; }
-            dItem.AnEDescription = item.description;
-            if (!dItem.AnEDescription) { dItem.AnEDescription = item.message; }
+            dItem.dataValue.AnECode = item.code;
+            if (!dItem.dataValue.AnECode) { dItem.dataValue.AnECode = item.varName; }
+            dItem.dataValue.AnEDescription = item.description;
+            if (!dItem.dataValue.AnEDescription) { dItem.dataValue.AnEDescription = item.message; }
         }
         contentData.push(dItem);
     });
