@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "paletteLabel": "Data名称変更",
+        "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
+        "dItem-filter": "対象外データ項目削除",
+        "rules": "変更リスト",
+        "object": "対象のオブジェクト",
+        "objectKey": "オブジェクトKey",
+        "dataName": "データ名称",
+        "change": "名称変更",
+        "right": "-->"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}

@@ -1,6 +1,18 @@
 
-<script type="text/html" data-template-name="rename">
+<script type="text/html" data-template-name="rename-data">
     <div id = "property-form">
+        <div class="form-row">
+            <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.obj-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-objFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
+        <div class="form-row">
+            <label for="node-input-dItemFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.dItem-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-dItemFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
         <div class="row">
             <label><span data-i18n="editor.rules"></span></label>
         </div>
@@ -12,23 +24,26 @@
             <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="editor.name"></span></label>
             <input type="text" id="node-input-name" data-i18n="[placeholder]editor.name">
         </div>
-         <!-- 隠しのNodeプロパティ -->
-        <div class="form-row" hidden>
-            <input type="text" id="node-input-configReady">
-        </div>
-
     </div>
+
+    <!-- 隠しのNodeプロパティ -->
+    <div class="form-row" hidden>
+        <input type="text" id="node-input-configReady">
+    </div>
+
 </script>
 
 
 
 <script type="text/javascript">
 
-    RED.nodes.registerType('rename',{
+    RED.nodes.registerType('rename-data',{
         category: 'iaCloud functions',
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
+            objFilter: {value: true},
+            dItemFilter: {value: true},
             name: {value:""},
             rules: {value:[{dataName:""}]},
             configReady: {value:"", required: true}
@@ -43,33 +58,33 @@
             return this.name?"node_label_italic":"";
         },
         paletteLabel: function() {
-            return this._("editor.paletteLabel") || "ia-cloud rename";
+            return this._("editor.paletteLabel") || "ia-cloud rename-data";
         },
         oneditprepare: function() {
             var node = this;
 
-            const lblObjKey = node._("editor.objKey");
-            const lblorignl = node._("editor.orignl");
+            const lblobjectKey = node._("editor.objectKey");
+            const lblobject = node._("editor.object");
             const lbldName = node._("editor.dataName");
-            const lblchanged = node._("editor.changed");
+            const lblchange = node._("editor.change");
+            const lblright = node._("editor.right");
 
             // editableList item のhtml要素
             const paraForm1 =`
-                <label style="width:80px; text-align: left;">${lblorignl}</label>
-                <input class="orObjKey"" placeholder="${lblObjKey}" type="text"
+                <label style="width:150px; text-align: left;">${lblobject}</label>
+                <input class="objKey" placeholder="${lblobjectKey}" type="text"
                     style="width:130px; display:inline-block; text-align:left;">
-                <input class="orDataName"" placeholder="${lbldName}" type="text"
-                    style="width:150px; display:inline-block; text-align:left;">
             `;
 
             // 2行目のparameter
             const paraForm2 =`
                 <span style="display:inline-block; width:30px"> </span>
-                <label style="width:80px; text-align: left;">${lblchanged}</label>
-                <input class="chObjKey"" placeholder="${lblObjKey}" type="text"
+                <label style="width:80px; text-align: left;">${lblchange}</label>
+                <input class="orDataName"" placeholder="${lbldName}" type="text"
                     style="width:130px; display:inline-block; text-align:left;">
+                <label style="width:50px; text-align: center;">${lblright}</label>    
                 <input class="chDataName"" placeholder="${lbldName}" type="text"
-                    style="width:150px; display:inline-block; text-align:left;">
+                    style="width:130px; display:inline-block; text-align:left;">
             `;
 
             $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
@@ -92,32 +107,23 @@
                     $(paraForm2).appendTo(row2);
 
                     // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
-                    if(!rule.hasOwnProperty("orObjKey")) {
+                    if(!rule.hasOwnProperty("objKey")) {
                         rule = {};
                     };
 
                     // dataItem parameters
-                    row1.find(".orObjKey").val(rule.orObjKey);
-                    row1.find(".orDataName").val(rule.orDataName);
-                    row2.find(".chObjKey").val(rule.chObjKey);
+                    row1.find(".objKey").val(rule.objKey);
+                    row2.find(".orDataName").val(rule.orDataName);
                     row2.find(".chDataName").val(rule.chDataName);
 
-                    row1.find(".orObjKey").change(function () {
-                        if (!row1.find(".orObjKey").val() && !row1.find(".orDataName").val())
-                            row1.find(".orDataName").prop("required", true);
-                        else row1.find(".orDataName").prop("required", false);
-                        if (row1.find(".orObjKey").val()) row2.find(".chObjKey").prop("required", true);
-                        else row2.find(".chObjKey").prop("required", false);
+                    row2.find(".orDataName").change(function () {
+                        if (!row2.find(".orDataName").val()) row2.find(".orDataName").prop("required", true);
                     });
-                    row1.find(".orDataName").change(function () {
-                        if (!row1.find(".orObjKey").val() && !row1.find(".orDataName").val())
-                            row1.find(".orDataName").prop("required", true);
-                        else row1.find(".orDataName").prop("required", false);
-                        if (row1.find(".orDataName").val()) row2.find(".chDataName").prop("required", true);
-                        else row2.find(".chDataName").prop("required", false);
+                    row2.find(".chDataName").change(function () {
+                        if (!row2.find(".chDataName").val()) row2.find(".chDataName").prop("required", true);
                     });
-                    row1.find(".orObjKey").change(); 
-                    row1.find(".orDataName").change();            
+                    row2.find(".orDataName").change();
+                    row2.find(".chDataName").change();
                 },
 
 
@@ -149,24 +155,13 @@
             node.rules = [];
             items.each(function(i, elm){
                 let item = {
-                    orObjKey: elm.find(".orObjKey").val(),
+                    objKey: elm.find(".objKey").val(),
                     orDataName: elm.find(".orDataName").val(),
-                    chObjKey: elm.find(".chObjKey").val(),
                     chDataName: elm.find(".chDataName").val()
                 }
-                // check property combination
-                if (!item.orObjKey && item.orDataName) {
-                    if (item.chObjKey || !item.chDataName) configReady = "";
-                }
-                if (item.orObjKey && item.orDataName) {
-                    if (!item.chObjKey || !item.chDataName) configReady = "";
-                }
-                if (item.orObjKey && !item.orDataName) {
-                    if (!item.chObjKey || item.chDataName) configReady = "";
-                }
-                if (!item.orObjKey && !item.orDataName) {
-                    configReady = "";
-                }
+                // check property
+                if (!item.orDataName || !item.chDataName) configReady = "";
+
                 node.rules.push(item);
             });
             // 設定完了フラグをセット

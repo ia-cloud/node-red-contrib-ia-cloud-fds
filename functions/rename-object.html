@@ -1,0 +1,167 @@
+
+<script type="text/html" data-template-name="rename-object">
+    <div id = "property-form">
+        <div class="form-row">
+            <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.obj-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-objFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
+        <div class="row">
+            <label><span data-i18n="editor.rules"></span></label>
+        </div>
+        <div class="form-row node-input-rule-container-row">
+            <ol id="node-input-rule-container"></ol>
+        </div>
+        <hr>
+        <div class="form-row">
+            <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="editor.name"></span></label>
+            <input type="text" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+        
+    </div>
+    <!-- 隠しのNodeプロパティ -->
+    <div class="form-row" hidden>
+        <input type="text" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('rename-object',{
+        category: 'iaCloud functions',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            objFilter: {value: true},
+            name: {value:""},
+            rules: {value:[{dataName:""}]},
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "ia-cloud rename-object";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblobjectKey = node._("editor.objectKey");
+            const lblchange= node._("editor.change");
+            const lblright = node._("editor.right");
+
+            // editableList item のhtml要素
+            const paraForm1 =`
+                <span style="display:inline-block; width:30px"> </span>
+                <label style="width:80px; text-align: left;">${lblchange}</label>
+                <input class="orObjectKey" placeholder="${lblobjectKey}" type="text"
+                    style="width:130px; display:inline-block; text-align:left;">
+                <label style="width:50px; text-align: center;">${lblright}</label>    
+                <input class="chObjectKey"" placeholder="${lblobjectKey}" type="text"
+                    style="width:130px; display:inline-block; text-align:left;">
+            `;
+
+            $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 180,
+
+                addItem: function(container,i,rule) {
+
+                    let row1 = $('<div></div>').appendTo(container);
+
+                    $('<span></span>',{class:"node-input-rule-index", 
+                        style:"display:inline-block; text-align:left; width:30px; padding-right:5px;"})
+                        .text((i + 1) + " :")
+                        .appendTo(row1);
+                    $(paraForm1).appendTo(row1);
+
+                    // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
+                    if(!rule.hasOwnProperty("orObjectKey")) {
+                        rule = {};
+                    };
+
+                    // dataItem parameters
+                    row1.find(".orObjectKey").val(rule.orObjectKey);
+                    row1.find(".chObjectKey").val(rule.chObjectKey);
+
+                    row1.find(".orObjectKey").change(function () {
+                        if (!row1.find(".orObjectKey").val()) row1.find(".orObjectKey").prop("required", true);
+                    });
+                    row1.find(".orObjectKey").change(); 
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".node-input-rule-index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-rule-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".node-input-rule-index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.rules.length;i++) {
+                var rule = node.rules[i];
+                $("#node-input-rule-container").editableList('addItem',rule);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-rule-container").editableList('items');
+            // ruleデータ設定を作成
+            node.rules = [];
+            items.each(function(i, elm){
+                let item = {
+                    orObjectKey: elm.find(".orObjectKey").val(),
+                    chObjectKey: elm.find(".chObjectKey").val(),
+                }
+                // check property 
+                if (!item.orObjectKey)  configReady = "";
+                node.rules.push(item);
+            });
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // editableList以外の行の高さを引く
+            let rows = $("#property-form>*:not(.node-input-rule-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#property-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            height += 16;   // この意味はわからない。Node-RED core の Change nodeのソースから。
+            
+            // height 360 を最大とする。
+            // if (height > 360) height = 360;
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-rule-container").editableList('height',height);
+        }
+    });
+
+</script>

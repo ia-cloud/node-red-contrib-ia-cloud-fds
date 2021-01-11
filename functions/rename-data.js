@@ -2,10 +2,13 @@
 module.exports = function(RED) {
     "use strict";
 
-    function rename(config) {
+    function renameData(config) {
 
         RED.nodes.createNode(this,config);
         const node = this;
+        const objFilter = config.objFilter;
+        const dItemFilter = config.dItemFilter;
+
         // Nodeのconfigパラメータから、rulesをコピー
         const rules = config.rules;
         // no rule found
@@ -21,30 +24,34 @@ module.exports = function(RED) {
             if (rules.length === 0 || !msg.request === "store" || !msg.dataObject) return;
 
             let rulesOn = rules.filter(rule => {
-                return rule.orObjKey === msg.dataObject.objectKey || rule.orObjKey === "";
+                return rule.objKey === msg.dataObject.objectKey || rule.objKey === "";
             });
-            if (!rulesOn) return;
-            
+            if (!rulesOn.length && objFilter) return;
+
+            if (msg.dataObject.ObjectContent) {
+                msg.dataObject.objectContent = msg.dataObject.ObjectContent;
+                delete msg.dataObject.ObjectContent;
+            };
             let dataItems = msg.dataObject.objectContent.contentData.concat();
 
             for (let rule of rulesOn) {
-                if (rule.orObjKey) msg.dataObject.objectKey = rule.chObjKey;
-                if (!rule.orDataName) continue;
 
-                for (let dataItem of dataItems) {
+                for (let i = 0 ; i < dataItems.length ; i++) {
                     // dataName dose match rule's ?
-                    if (dataItem.dataName === rule.orDataName)
-                        dataItem.dataName = rule.chDataName;
+                    if (dataItems[i].dataName === rule.orDataName) dataItems[i].dataName = rule.chDataName;
+                    else if (dItemFilter) dataItems[i] = undefined;
                 }
             }
 
+            // delete undefined dataItem
+            msg.dataObject.objectContent.contentData 
+                = dataItems.filter(dataItem => { return dataItem;});
+            msg.payload = msg.dataObject.objectContent.contentData;
             // output message to the port
-            msg.dataObject.objectContent.contentData = dataItems;
-            msg.payload = dataItems;
             send(msg);
             node.status({fill:"green", shape:"dot", text:"runtime.output"});
         }); 
     }
 
-    RED.nodes.registerType("rename",rename);
+    RED.nodes.registerType("rename-data",renameData);
 }

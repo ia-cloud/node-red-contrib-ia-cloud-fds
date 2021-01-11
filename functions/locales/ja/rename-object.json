@@ -1,12 +1,12 @@
 {
     "editor": {
-        "paletteLabel": "Key名称変更",
+        "paletteLabel": "オブジェクトKey変更",
         "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
         "rules": "変更リスト",
-        "objKey": "オブジェクトKey",
-        "dataName": "データ名称",
-        "orignl": "変更元",
-        "changed": "変更後"
+        "objectKey": "オブジェクトKey",
+        "change": "Key変更",
+        "right": "-->"
     },
     "runtime": {
         "ready": "入力待ち",
