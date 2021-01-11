@@ -1,7 +1,7 @@
 {
   "editor": {
     "name": "ノード名称",
-    "paletteLabel": "シュナイダー表示器A&E",
+    "paletteLabel": "シュナイダー表示器A＆E",
     "hmiSchneiderNode": "通信ノード",
     "tab": {
       "object-settings": "オブジェクトの設定",
