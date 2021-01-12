@@ -1,6 +1,13 @@
 
 <script type="text/html" data-template-name="de-noise">
 
+    <div class="form-row">
+        <label for="node-input-objFlag" style="margin-left: 20px; width: auto">
+            <span data-i18n="editor.objFlag"></span></label>
+        <input type="checkbox" id="node-input-objFlag"
+            style="display: inline-block; margin-left: 10px; width: auto;" >
+    </div>
+
     <div id="list-property">
         <div class="form-row">
             <label style="width:200px; margin-left:8px"><span data-i18n="editor.condetionList"></span></label>
@@ -34,6 +41,7 @@
         align: "left",
         defaults: {
             name: {value:""},
+            objFlag: {value:false},
             params: {value:[{}]},
             // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
             configReady: {value:"", required: true}
@@ -55,7 +63,10 @@
 
             const lblobjkey = node._("editor.objkey");
             const lbldName = node._("editor.dName");
-            const lbldisp = node._("editor.displace");
+            const lblplusDisp = node._("editor.plusDisp");
+            const lblminusDisp = node._("editor.minusDisp");
+            const lblplusSens = node._("editor.plusSens");
+            const lblminusSens = node._("editor.minusSens");
             const lblsec = node._("editor.sec");
             const lblinterval = node._("editor.interval");
 
@@ -65,21 +76,23 @@
             <input class="objectKey"" placeholder="${lblobjkey}" type="text"
                     style="width:130px; display:inline-block; text-align:left;">
                 <label style="width:80px; text-align: right;">${lbldName}</label>
-                <input class="dataName"" placeholder="${lbldName}" type="text"
+                <input class="dataName" placeholder="${lbldName}" type="text"
                     style="width:120px; display:inline-block; text-align:left;">
             `;
             // 2行目のparameter
             const paraForm2 =`
                 <div class= "form-row">
                     <span style="display:inline-block; width:30px"></span>
-                    <label style="width:50px; text-align: right;">${lbldisp}</label>
-                    <input type="number" class="disp" required="required"
-                    step="any" style="width:80px; margin-left:10px; display:inline-block; text-align:right;">
-                    </label>
-                    <label style="width:50px; margin-left:10px; text-align:right;">${lblinterval}</label>
+                    <label style="width:40px; text-align:left;">${lblplusSens}</label>
+                    <input type="number" class="plusDisp" required="required" placeholder="${lblplusDisp}"
+                    step="any" min="0" style="width:80px; display:inline-block; text-align:right;">
+                    <label style="width:10px;  margin-left:10px; text-align:left;">${lblminusSens}</label>
+                    <input type="number" class="minusDisp" required="required" placeholder="${lblminusDisp}"
+                    step="any" min="0" style="width:80px; display:inline-block; text-align:right;">
+                    <label style="width:40px; text-align:right;">${lblinterval}</label>
                     <input type="number" class="interval" required="required"
-                        step="0.1" min="0" max="300" style="width:80px; margin-left:10px; display:inline-block; text-align:right;">
-                    <label style="width:50px; text-align: left;">
+                        step="0.1" min="0.1" style="width:70px; margin-left:10px; display:inline-block; text-align:right;">
+                    <label style="width:30px; text-align: left;">
                         <span style="font-weight: bold">${lblsec}</span>
                     </label>
                 </div>
@@ -111,15 +124,24 @@
                         param = {
                             objectKey: "",
                             dataName: "",
-                            disp: 0,
+                            plusDisp: 0,
+                            minusDisp: 0,
                             interval: 0
                         }
                     };
                     // restore parameters
                     div1.find(".objectKey").val(param.objectKey);
                     div1.find(".dataName").val(param.dataName);
-                    div2.find(".disp").val(param.disp);
+                    div2.find(".plusDisp").val(param.plusDisp);
+                    div2.find(".minusDisp").val(param.minusDisp);
                     div2.find(".interval").val(param.interval);
+
+                    div2.find(".plusDisp").change(function(){
+                        if (!div2.find(".minusDisp").val()) div2.find(".minusDisp").val(div2.find(".plusDisp").val());
+                    });
+                    div2.find(".minusDisp").change(function(){
+                        if (!div2.find(".plusDisp").val()) div2.find(".plusDisp").val(div2.find(".minusDisp").val());
+                    });
 
                 },
 
@@ -143,7 +165,7 @@
         },
         
         oneditsave: function() {
-
+debugger;
             let node = this;
             let configReady = "ready";
             let items = $("#node-input-list-container").editableList('items');
@@ -154,14 +176,18 @@
                     // reatore parameters
                     objectKey: elm.find(".objectKey").val(),
                     dataName: elm.find(".dataName").val(),
-                    disp: Number(elm.find(".disp").val()),
-                    interval: Number(elm.find(".interval").val())
+                    plusDisp: elm.find(".plusDisp").val(),
+                    minusDisp: elm.find(".minusDisp").val(),
+                    interval: elm.find(".interval").val()
                 }
                 node.params.push(param);
 
                 // required properties are not empty
-                if (!(typeof param.disp === "number") 
-                        || !(param.interval >= 0 && param.interval <= 300)) configReady = "";
+                if (param.plusDisp === "" || param.minusDisp === "" || param.interval === "")
+                    configReady = "";
+                else if (param.plusDisp < 0 || param.minusDisp < 0 || param.interval <= 0)
+                    configReady = "";
+
             });
             // 設定完了フラグをセット
             $("#node-input-configReady").val(configReady);

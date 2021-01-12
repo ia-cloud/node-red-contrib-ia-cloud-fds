@@ -11,6 +11,7 @@ module.exports = function(RED) {
         const node = this;
         // copy config properties
         const params = config.params;
+        const objFlag = config.objFlag;
         let objBuffer = [];
 
         // no rule found
@@ -71,13 +72,18 @@ module.exports = function(RED) {
                 }
 
                 // displacement from the previous data
-                let disp = Math.abs(dataItems[i].dataValue - item.preValue);
-
-                // store dataValue as a previous data
-                item.preValue = dataItems[i].dataValue;
+                let disp = (dataItems[i].dataValue - item.preValue);
 
                 // check the displacement
-                if (disp > param.disp) dataItems[i] = {};
+                if (disp > param.plusDisp || disp < -param.minusDisp) {
+                    dataItems[i] = {};
+                    // invalid whole object?
+                    if (objFlag === true) dataItems.length = 0;
+                }
+                else {
+                    // store dataValue as a previous data
+                    item.preValue = dataItems[i].dataValue;
+                }
             }
             // store timestamp for initializing buffer interval
             buffObj.preTimestamp = moment(msg.dataObject.timestamp).unix();

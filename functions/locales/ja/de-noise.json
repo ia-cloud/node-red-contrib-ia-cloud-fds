@@ -2,17 +2,21 @@
     "editor": {
         "paletteLabel": "ノイズ除去",
         "name": "ノード名称",
-        "condetionList": "突然変異条件リスト",
+        "objFlag": "オブジェクト全体を無効",
+        "condetionList": "突変条件リスト",
         "objkey": "オブジェクトキー",
         "dName": "データ名称",
-        "displace": "変移量",
+        "plusDisp": "＋側変位",
+        "minusDisp": "ー側変位",
+        "plusSens": "+変位",
+        "minusSens": "-",
         "interval": "間隔",
-        "sec": "秒以内"
+        "sec": "秒"
     },
     "runtime": {
         "ready": "入力待ち",
         "output": "データ送出",
         "norule": "ルールがありません",
-        "nomatch": "データが全て除去されました"
+        "nomatch": "データを全て除去"
     }
 }
