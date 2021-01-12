@@ -2,7 +2,8 @@
     "editor": {
         "palletLabel": "オブジェクトアレー",
         "name": "ノード名称",
-        "period": "まとめ送出周期",
+        "period": "まとめ送出間隔",
+        "sec": "秒",
         "length": "まとめ送出数",
         "objectname": "object名称",
         "objectKey": "objectキー",

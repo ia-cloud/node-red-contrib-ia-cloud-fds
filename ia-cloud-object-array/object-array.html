@@ -6,12 +6,14 @@
     <div class="form-row">
         <label for="node-input-interval">
             <span data-i18n="editor.period"></span></label>
-        <input type="number" id="node-input-interval" min="0" step="10"
-            value="300" style="display: inline-block; width: auto;">
-        <label for="node-input-length" style="margin-left: 20px;">
+        <input type="number" id="node-input-interval" min="0" max="86400" step="10"
+            value="300" style="display: inline-block; width: 80px;">
+        <label style="width: 30px;">
+            <span data-i18n="editor.sec"></span></label>
+        <label for="node-input-length">
             <span data-i18n="editor.length"></span></label>
         <input type="number" id="node-input-length" min="1" step="1" max="100"
-            value="30" style="display: inline-block; width: auto;" >
+            value="30" style="display: inline-block; width: 80px;" >
     </div>
     <div class="form-row">
         <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
@@ -41,7 +43,7 @@
         interval: { value: 10, required: true},
         length: { value: 30, required: true},
         objectKey: { value: '', required: true},
-        objectDescription: { value: '', required: true },
+        objectDescription: { value: '' },
     },
     inputs:1,
     outputs:1,
