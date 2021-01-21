@@ -1,6 +1,9 @@
 
 "use strict";
+const { MaxRedirectsError } = require("got");
 const moment = require("moment");
+// buffer size for ave. calculation
+const MAX_BUFFER_SIZE = 1000;
 
 module.exports = function(RED) {
 
@@ -10,9 +13,11 @@ module.exports = function(RED) {
 
         const node = this;
         // copy config properties
+        const objFilter = config.objFilter;
         const params = config.params;
-        let objBuffer = [];
 
+        let objBuffer = [];
+        
         // no rule found
         if (params.length === 0)
             node.status({fill:"yellow", shape:"ring", text:"runtime.norule"});
@@ -27,7 +32,12 @@ module.exports = function(RED) {
             let prms = params.filter(para => {
                 return para.objectKey === msg.dataObject.objectKey || para.objectKey === "";
             });
-            if (!prms) return;
+            // no parameter to do
+            if (!prms.length) {
+                // pass thru non target object ?
+                if (!objFilter) send(msg);
+                return;
+            } 
 
             // object buffer entry exist ?
             let buffObj = objBuffer.find(elm => 
@@ -37,14 +47,14 @@ module.exports = function(RED) {
             if (!buffObj) {
                 buffObj = {
                     objectKey: msg.dataObject.objectKey,
-                    preTimestamp: moment(msg.dataObject.timestamp).unix(),
-                    cDataArray: []
+                    cDataBuffer: []
                 }
                 objBuffer.push(buffObj);
             }
-
+            let currentTime = moment(msg.dataObject.timestamp).unix();
             let contentData = msg.dataObject.objectContent.contentData;
-            let range, initTime, value;
+            let range, rangeDenomi, initTime, initDenomi, value;
+
             for (let dItem of contentData) {
                 
                 value = Number(dItem.dataValue);
@@ -56,9 +66,18 @@ module.exports = function(RED) {
                 if (!param) continue;
 
                 range = parseInt(param.range);
-                initTime = parseInt(param.initTime);
+                rangeDenomi = param.rangeDenomi;
+                if (rangeDenomi === "min") range *= 60; 
+                else if (rangeDenomi === "hour") range *= 60 * 60; 
+                else if (rangeDenomi === "day") range *= 60 * 60 * 24;
 
-                let item = buffObj.cDataArray.find(elm => {
+                initTime = parseInt(param.initTime);
+                initDenomi = param.initDenomi;
+                if (initDenomi === "min") initTime *= 60; 
+                else if (initDenomi === "hour") initTime *= 60 * 60; 
+                else if (initDenomi === "day") initTime *= 60 * 60 * 24;
+
+                let item = buffObj.cDataBuffer.find(elm => {
                     return elm.dataName === dItem.dataName
                 });
 
@@ -66,36 +85,60 @@ module.exports = function(RED) {
                 if (!item) {
                     item = {
                         dataName: dItem.dataName,
-                        dataValueBuff: new Array(range),
+                        start: 0,
+                        current: 0,
                         sum: 0,
-                        pointer: 0,
-                        dNum: 1
+                        timeArray: new Array(MAX_BUFFER_SIZE),
+                        dataValueArray: new Array(MAX_BUFFER_SIZE),
                     }
-                    item.dataValueBuff.fill(0);
-                    buffObj.cDataArray.push(item);
+                    item.timeArray.fill(0);
+                    item.dataValueArray.fill(0);
+                    buffObj.cDataBuffer.push(item);
                 }
 
-                if (initTime !== 0 &&
-                    moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= initTime) {
-                    item.sum = 0;
-                    item.dataValueBuff.fill(0);
-                    item.pointer = 0;
-                    item.dNum = 1;
+                // interval from previous data exceed the limit ?
+                else if (initTime >= 1
+                    && moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= initTime) {
+                    item.start = 0,
+                    item.current = 0,
+                    item.sum = 0,
+                    item.timeArray.fill(0);
+                    item.dataValueArray.fill(0);
                 }
 
-                // subtracts the oldest and adds the new one
-                item.sum = item.sum - item.dataValueBuff[item.pointer] + value;
+                // store newest data to the buffer
+                item.timeArray[item.current] = currentTime;
+                item.dataValueArray[item.current] = value;
 
-                // store newest data to th buffer
-                item.dataValueBuff[item.pointer] = value;
+                // adds the new one
+                item.sum = item.sum + value;
+
+                if (rangeDenomi !== "num") {
+                    // subtracts the older than the range limit
+                    while (item.current !== 0 
+                        && item.timeArray[item.start] <= currentTime - range) {
+                        item.sum = item.sum - item.dataValueArray[item.start];
+                        if (++item.start >= MAX_BUFFER_SIZE) item.start = 0;
+                    }
+                }
+                else {
+                    // subtracts the oldeest
+                    if (item.current - item.start >= range) {
+                        item.sum = item.sum - item.dataValueArray[item.start];
+                        if (++item.start >= MAX_BUFFER_SIZE) item.start = 0;
+                    }
+                }
+                
+                // number of data
+                let num = item.current - item.start + 1;
+                if (num < 0) num += MAX_BUFFER_SIZE;
 
                 // culcurate moving ave. and set it to the dataValue
-                dItem.dataValue = item.sum / item.dNum;
-                // update pointers
-                item.pointer++;
-                item.dNum++;
-                if (item.pointer >= range) item.pointer = 0;
-                if (item.dNum >= range) item.dNum = range;
+                dItem.dataValue = item.sum / num;
+
+                // ++current pointer and over buffer size?
+                if (++item.current > MAX_BUFFER_SIZE) item.current = 0;
+
             }
             // store timestamp for initializing buffer interval
             buffObj.preTimestamp = moment(msg.dataObject.timestamp).unix();
@@ -111,12 +154,18 @@ module.exports = function(RED) {
 
 /*  各データの構造のメモ */
 /*
+const flag = config.flag; // "time" or "num"
+const rangeTime = config.rangTime;
+const rangeNum = config.rangeNum;
+
 let param = {
     objectKey: "",
+    dataName:"",
     range: 123,
-    initTime: 123
+    rangeDenomi: "sec",
+    initTime: 123,
+    initDenomi: "num"
 }
-let params = [param,];
 
 let msg = {
     payload: [dataItems,],
@@ -140,13 +189,13 @@ let msg = {
 }
 let objBuffer = [{
     objectKey: "",
-    preTimestamp: 0,
-    cDataArray: [{
+    cDataBuffer: [
         dataName: "",
-        dataValueBuff: [dataValue,],
-        sum: 0,
-        pointer: 0,
-        dNum: 1
-    },],
+        start: 0,
+        current: 10,
+        sum: 12345,
+        timeArry: [time,],
+        dataValueArray: [dataValue,],
+    ],
 },]
 */

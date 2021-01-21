@@ -2,13 +2,17 @@
     "editor": {
         "paletteLabel": "スムージング",
         "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
         "smoothingList": "移動平均設定リスト",
         "objkey": "オブジェクトキー",
         "dName": "データ名称",
         "range": "平均範囲",
-        "num": "個",
+        "number": "個",
         "sec": "秒",
-        "initTime": "クリア時間"
+        "minute": "分",
+        "hour": "時",
+        "day": "日",
+        "initTime": "初期化"
     },
     "runtime": {
         "ready": "入力待ち",
