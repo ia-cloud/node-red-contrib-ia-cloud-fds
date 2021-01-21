@@ -4,13 +4,13 @@
         <div class="form-row">
             <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
                 <span data-i18n="editor.obj-filter"></span></label>
-            <input type="checkbox" checked="checked" id="node-input-objFilter"
+            <input type="checkbox" id="node-input-objFilter"
                 style="display: inline-block; width: auto;" >
         </div>
         <div class="form-row">
             <label for="node-input-dItemFilter" style="width: auto; margin-right: 20px;">
                 <span data-i18n="editor.dItem-filter"></span></label>
-            <input type="checkbox" checked="checked" id="node-input-dItemFilter"
+            <input type="checkbox" id="node-input-dItemFilter"
                 style="display: inline-block; width: auto;" >
         </div>
         <div class="row">
@@ -42,8 +42,8 @@
         color:"rgb(231, 180, 100)",
         align: "left",
         defaults: {
-            objFilter: {value: true},
-            dItemFilter: {value: true},
+            objFilter: {value: false},
+            dItemFilter: {value: false},
             name: {value:""},
             rules: {value:[{dataName:""}]},
             configReady: {value:"", required: true}
@@ -65,15 +65,19 @@
 
             const lblobjectKey = node._("editor.objectKey");
             const lblobject = node._("editor.object");
+            const lbloreserve = node._("editor.reserve");
             const lbldName = node._("editor.dataName");
             const lblchange = node._("editor.change");
             const lblright = node._("editor.right");
 
             // editableList item のhtml要素
             const paraForm1 =`
-                <label style="width:150px; text-align: left;">${lblobject}</label>
+                <label style="width:80px; text-align: left;">${lblobject}</label>
                 <input class="objKey" placeholder="${lblobjectKey}" type="text"
                     style="width:130px; display:inline-block; text-align:left;">
+                <label style="width:100px; margin-left:30px; text-align:left;">${lbloreserve}</label>
+                <input class="reserve" type="checkbox" checked="checked" 
+                    style="display:inline-block; width:auto;"> 
             `;
 
             // 2行目のparameter
@@ -113,6 +117,7 @@
 
                     // dataItem parameters
                     row1.find(".objKey").val(rule.objKey);
+                    row1.find(".reserve").prop("checked", rule.reserve);
                     row2.find(".orDataName").val(rule.orDataName);
                     row2.find(".chDataName").val(rule.chDataName);
 
@@ -156,6 +161,7 @@
             items.each(function(i, elm){
                 let item = {
                     objKey: elm.find(".objKey").val(),
+                    reserve: elm.find(".reserve").prop("checked"),
                     orDataName: elm.find(".orDataName").val(),
                     chDataName: elm.find(".chDataName").val()
                 }

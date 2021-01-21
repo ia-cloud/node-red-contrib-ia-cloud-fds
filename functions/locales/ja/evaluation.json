@@ -2,6 +2,7 @@
     "editor": {
         "paletteLabel": "データ評価",
         "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
         "action": "判定後の動作",
         "bool": "論理出力への変更",
         "indiv": "個別データ項目を削除",

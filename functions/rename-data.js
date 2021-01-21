@@ -26,26 +26,38 @@ module.exports = function(RED) {
             let rulesOn = rules.filter(rule => {
                 return rule.objKey === msg.dataObject.objectKey || rule.objKey === "";
             });
-            if (!rulesOn.length && objFilter) return;
-
+            // no parameter to do
+            if (!rulesOn.length) {
+                // pass thru non target object ?
+                if (!objFilter) send(msg);
+                return;
+            } 
             if (msg.dataObject.ObjectContent) {
                 msg.dataObject.objectContent = msg.dataObject.ObjectContent;
                 delete msg.dataObject.ObjectContent;
             };
-            let dataItems = msg.dataObject.objectContent.contentData.concat();
+            let contentData = msg.dataObject.objectContent.contentData;
+            let dataItems = [];
+            let dataItem = {};
 
             for (let rule of rulesOn) {
 
-                for (let i = 0 ; i < dataItems.length ; i++) {
+                for (let i = 0 ; i < contentData.length ; i++) {
                     // dataName dose match rule's ?
-                    if (dataItems[i].dataName === rule.orDataName) dataItems[i].dataName = rule.chDataName;
-                    else if (dItemFilter) dataItems[i] = undefined;
+                    if (contentData[i].dataName === rule.orDataName) {
+                        // make copy of oreginal dataItem, if copyFlag on
+                        if (rule.reserve) dataItems.push(contentData[i]);
+                        // make copy of oreginal dataItem and change dataName and push
+                        dataItem = Object.assign({}, contentData[i]);
+                        dataItem.dataName = rule.chDataName;
+                        dataItems.push(dataItem);
+                    }
+                    else if (!dItemFilter) dataItems.push(contentData[i]);
                 }
             }
 
             // delete undefined dataItem
-            msg.dataObject.objectContent.contentData 
-                = dataItems.filter(dataItem => { return dataItem;});
+            msg.dataObject.objectContent.contentData = dataItems;
             msg.payload = msg.dataObject.objectContent.contentData;
             // output message to the port
             send(msg);

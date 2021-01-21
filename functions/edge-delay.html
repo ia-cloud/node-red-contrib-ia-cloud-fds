@@ -3,6 +3,12 @@
 
     <div id="list-property">
         <div class="form-row">
+            <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.obj-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-objFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
+        <div class="form-row">
             <label style="width:200px; margin-left:8px"><span data-i18n="editor.condetionList"></span></label>
         </div>
         <!-- param propertyの設定 -->
@@ -34,6 +40,7 @@
         align: "left",
         defaults: {
             name: {value:""},
+            objFilter: {value:false},
             params: {value:[{}]},
             // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
             configReady: {value:"", required: true}
@@ -150,7 +157,8 @@
                     offdelay: parseInt(elm.find(".offdelay").val())
                 }
                 node.params.push(param);
-
+                // required properties are not empty
+                if (!(param.ondelay >= 1) || !(param.offdelay >= 1)) configReady = "";
             });
             // 設定完了フラグをセット
             $("#node-input-configReady").val(configReady);

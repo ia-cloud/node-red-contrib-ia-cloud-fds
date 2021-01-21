@@ -11,6 +11,7 @@ module.exports = function(RED) {
         const node = this;
         // copy config properties
         const params = config.params;
+        const objFilter = config.objFilter;
         const objFlag = config.objFlag;
         let objBuffer = [];
 
@@ -25,10 +26,17 @@ module.exports = function(RED) {
             // payload not exist,empty or no rule, do nothing
             if (params.length === 0 || msg.request !== "store" || !msg.dataObject) return;
 
-            let param = params.find(para => {
+            let param = params.filter(para => {
                 return para.objectKey === msg.dataObject.objectKey || para.objectKey === "";
             });
-            if (!param) return;
+            // no parameter to do
+            if (!param.length) {
+                // pass thru non target object ?
+                if (!objFilter) {
+                    send(msg);
+                }
+                return;
+            } 
 
             // object buffer entry exist ?
             let buffObj = objBuffer.find(elm => 

@@ -3,6 +3,13 @@
 
     <!-- rule-property starts -->
     <div id="rule-property">
+        <div class="form-row">
+            <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.obj-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-objFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
+
         <div class="form-row" style="margin-top:16px" id="actionType-block">
             <label style="margin-left:10px;"><span data-i18n="editor.action"></span></label>
             <select id="node-input-actionType" style="width:220px; display:inline-block; text-align:left;">
@@ -20,8 +27,7 @@
             </ol>
         </div>
     </div>  
-    <!-- tab-rule-property ends -->  
-    </div>
+
     <!-- tab ends --> 
     <div id="name-block">
         <div > <hr> </div>
@@ -45,6 +51,7 @@
         align: "left",
         defaults: {
             name: {value:""},
+            objFilter: {value: false},
             actionType: {value: "bool"},
             rules: {value:[{}]},
             // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要

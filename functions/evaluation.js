@@ -9,6 +9,7 @@ module.exports = function(RED) {
 
         const node = this;
         // copy config properties
+        const objFilter = config.objFilter;
         const actionType = config.actionType;
         const rules = config.rules;
 
@@ -27,7 +28,12 @@ module.exports = function(RED) {
             let rls = rules.filter(rl => {
                 return rl.objectKey === msg.dataObject.objectKey || rl.objectKey === "";
             });
-            if (!rls) return;
+            // no parameter to do
+            if (!rls.length) {
+                // pass thru non target object ?
+                if (!objFilter) send(msg);
+                return;
+            } 
 
             let dataItems = msg.dataObject.objectContent.contentData.concat();
 

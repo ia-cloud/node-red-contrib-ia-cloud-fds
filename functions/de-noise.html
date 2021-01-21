@@ -2,6 +2,12 @@
 <script type="text/html" data-template-name="de-noise">
 
     <div class="form-row">
+        <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+            <span data-i18n="editor.obj-filter"></span></label>
+        <input type="checkbox" checked="checked" id="node-input-objFilter"
+            style="display: inline-block; width: auto;" >
+    </div>
+    <div class="form-row">
         <label for="node-input-objFlag" style="margin-left: 20px; width: auto">
             <span data-i18n="editor.objFlag"></span></label>
         <input type="checkbox" id="node-input-objFlag"
@@ -41,6 +47,7 @@
         align: "left",
         defaults: {
             name: {value:""},
+            objFilter: {value:false},
             objFlag: {value:false},
             params: {value:[{}]},
             // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
@@ -165,7 +172,6 @@
         },
         
         oneditsave: function() {
-debugger;
             let node = this;
             let configReady = "ready";
             let items = $("#node-input-list-container").editableList('items');

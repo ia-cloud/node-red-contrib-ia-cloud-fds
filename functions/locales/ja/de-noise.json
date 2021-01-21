@@ -2,7 +2,8 @@
     "editor": {
         "paletteLabel": "ノイズ除去",
         "name": "ノード名称",
-        "objFlag": "オブジェクト全体を無効",
+        "obj-filter": "対象外オブジェクト削除",
+        "objFlag": "オブジェクト全体を除去",
         "condetionList": "突変条件リスト",
         "objkey": "オブジェクトキー",
         "dName": "データ名称",
