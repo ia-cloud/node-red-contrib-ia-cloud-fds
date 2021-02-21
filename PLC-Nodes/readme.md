@@ -39,10 +39,20 @@ PLCのデータ項目とアラーム項目の設定情報を保持するオブ�
     }
 }
 ```
-データアイテムの設定オプション(bit列)
+データアイテムの設定オプション(bit)
 ```
  {
     itemType: "bit",      // 取得するデータの種別、bit(ビット列)
+    deviceType: "Coil",   // 取得するビットデータ列のあるデバイス種別（PLC機種依存）
+    address:123,           // 取得するビットデータ列の先頭デバイスアドレス
+    logic: "pos"          // 取得するビットデータの論理（"pos"/"neg"）
+    mode: "opStatus"      // bit状態を出力する形式（opStatus, alarm&event, o/1, on/off, true/false）
+  }
+```
+データアイテムの設定オプション(bit列)
+```
+ {
+    itemType: "bitList",      // 取得するデータの種別、bit(ビット列)
     deviceType: "Coil",   // 取得するビットデータ列のあるデバイス種別（PLC機種依存）
     address:123,           // 取得するビットデータ列の先頭デバイスアドレス
     number: 1,            // 取得するビットデータ列のビット数

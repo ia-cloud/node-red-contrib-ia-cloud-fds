@@ -51,11 +51,18 @@ var PLCNodeConfig = {
 
         // Locale strings
         const lblBit = node._("editor.bit");
+        const lblBitList = node._("editor.bitList");
         const lblNum = node._("editor.number");
         const lblStr = node._("editor.string");
         const lblNuml = node._("editor.numList");
         const lblDname = node._("editor.dname");
         const lblAdd = node._("editor.address");
+        const lblBitform = node._("editor.bitForm");
+        const lblopStatus = node._("editor.opStatus");
+        const lblAnE = node._("editor.AnE");
+        const lblonoff = node._("editor.onoff");
+        const lbl10 = node._("editor.10");
+        const lblbool = node._("editor.bool");
         const lblBitnum = node._("editor.bitNum");
         const lblPos = node._("editor.pos");
         const lblNeg = node._("editor.neg");
@@ -77,6 +84,7 @@ var PLCNodeConfig = {
             <select style="display:inline-block; width:80px;"
                 class="itemType">
                 <option selected="selected" value="bit">${lblBit}</option>
+                <option value="bitList">${lblBitList}</option>
                 <option value="number">${lblNum}</option>
                 <option value="string">${lblStr}</option>
                 <option value="numList">${lblNuml}</option>
@@ -85,7 +93,7 @@ var PLCNodeConfig = {
             <input required="required" type="text" style="display:inline-block; width:150px; text-align:left;"
                 class="dataName" placeholder=${lblDname}>
         `;
-        // 2行目以降のプロパティ設定。データタイプ毎に4種類あり、必要に応じてshow(),hide()する。
+        // 2行目以降のプロパティ設定。データタイプ毎に5種類あり、必要に応じてshow(),hide()する。
         const paraForm =`
             <div class="bitFm">
                 <span style="display:inline-block; width:30px"> </span>                
@@ -95,12 +103,33 @@ var PLCNodeConfig = {
                     <option value="IS">IS</option> -->
                 </select>
                 <input required="required" class="bit-add" placeholder=${lblAdd} value="0" type="number"
+                    min="0" style="width:80px; display:inline-block; text-align:right; margin-right:5px;">
+                <select class="bit-form" style="width:80px; display:inline-block; text-align:right;">
+                    <option selected="selected" value= "opStatus">${lblopStatus}</option>
+                    <option value= "AnE">${lblAnE}</option>
+                    <option value= "onoff">${lblonoff}</option>
+                    <option value= "10">${lbl10}</option>
+                    <option value= "bool">${lblbool}</option>
+                </select>
+                <select class="bit-logic" style="width:80px; display:inline-block; text-align:right;">
+                    <option selected="selected" value= "pos">${lblPos}</option>
+                    <option value= "neg">${lblNeg}</option>
+                </select>
+            </div>
+            <div class="bitListFm">
+                <span style="display:inline-block; width:30px"> </span>                
+                <select class="bitList-deviceType" 
+                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                    <!-- <option selected="selected" value="Coil">Coil</option>
+                    <option value="IS">IS</option> -->
+                </select>
+                <input required="required" class="bitList-add" placeholder=${lblAdd} value="0" type="number"
                     min="0" style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
                 <label style="width:50px; 
                     display:inline-block; text-align:right;">${lblBitnum}</label>
-                <input required="required" value="1" type="number"  min="1" class="bit-num" data-i18n="[placeholder]editor.bitNum"
+                <input required="required" value="1" type="number"  min="1" class="bitList-num" data-i18n="[placeholder]editor.bitNum"
                     style="width:50px; display:inline-block; text-align:right; padding-right:5px;">
-                <select class="bit-logic" style="width:80px; display:inline-block; text-align:right;">
+                <select class="bitList-logic" style="width:80px; display:inline-block; text-align:right;">
                     <option selected="selected" value= "pos">${lblPos}</option>
                     <option value= "neg">${lblNeg}</option>
                 </select>
@@ -228,6 +257,7 @@ var PLCNodeConfig = {
                 // データItemのデバイスタイプのsellect要素のoptionを追加する
                 // optionのDOMオブジェクトは、利用する個別のPLCNodeのhtmlファイルのjavscriptで定義すること。
                 div2.find(".bit-deviceType").append($("#bitDeviceDef>option").clone());
+                div2.find(".bitList-deviceType").append($("#bitListDeviceDef>option").clone());
                 div2.find(".number-deviceType").append($("#numberDeviceDef>option").clone());
                 div2.find(".string-deviceType").append($("#stringDeviceDef>option").clone());
                 div2.find(".numList-deviceType").append($("#numListDeviceDef>option").clone());
@@ -240,13 +270,13 @@ var PLCNodeConfig = {
                     dItem[dItem.itemType]={
                         deviceType: $("#defaultBit").data("devicetype"),
                         address: $("#defaultBit").data("address"),
-                        number: $("#defaultBit").data("number"),
+                        form: $("#defaultBit").data("form"),
                         logic: $("#defaultBit").data("logic")
                     }
                 }
                 let ip = dItem.itemType;
                 if  (!(ip === "number" || ip === "string" || ip === "numList" 
-                    || ip === "bit" )) return;
+                    || ip === "bit" || ip === "bitList" )) return;
                 
                 // set back dataItem properties on row1
                 div1.find(".itemType").val(dItem.itemType);
@@ -257,8 +287,15 @@ var PLCNodeConfig = {
                         // bit type parameters
                         div2.find(".bit-deviceType").val(dItem.bit.deviceType);
                         div2.find(".bit-add").val(dItem.bit.address);
-                        div2.find(".bit-num").val(dItem.bit.number);
+                        div2.find(".bit-form").val(dItem.bit.form);
                         div2.find(".bit-logic").val(dItem.bit.logic);
+                        break;
+                    case "bitList":
+                        // bit type parameters
+                        div2.find(".bitList-deviceType").val(dItem.bitList.deviceType);
+                        div2.find(".bitList-add").val(dItem.bitList.address);
+                        div2.find(".bitList-num").val(dItem.bitList.number);
+                        div2.find(".bitList-logic").val(dItem.bitList.logic);
                         break;
                     case "number":
                         // number type parameters
@@ -294,24 +331,35 @@ var PLCNodeConfig = {
                     switch(type) {
                         case "bit":
                             div2.find(".bitFm").show();
+                            div2.find(".bitListFm").hide();
+                            div2.find(".numberFm").hide();
+                            div2.find(".stringFm").hide();
+                            div2.find(".numListFm").hide();
+                            break; 
+                        case "bitList":
+                            div2.find(".bitFm").hide();
+                            div2.find(".bitListFm").show();
                             div2.find(".numberFm").hide();
                             div2.find(".stringFm").hide();
                             div2.find(".numListFm").hide();
                             break;
                         case "number":
                             div2.find(".bitFm").hide();
+                            div2.find(".bitListFm").hide();
                             div2.find(".numberFm").show();
                             div2.find(".stringFm").hide();
                             div2.find(".numListFm").hide();
                             break;
                         case "string":
                             div2.find(".bitFm").hide();
+                            div2.find(".bitListFm").hide();
                             div2.find(".numberFm").hide();
                             div2.find(".stringFm").show();
                             div2.find(".numListFm").hide();
                             break;
                         case "numList":
                             div2.find(".bitFm").hide();
+                            div2.find(".bitListFm").hide();
                             div2.find(".numberFm").hide();
                             div2.find(".stringFm").hide();
                             div2.find(".numListFm").show();
@@ -366,10 +414,19 @@ var PLCNodeConfig = {
                     item.bit = {          // bit type parameter
                         deviceType: elm.find(".bit-deviceType").val(),
                         address: parseInt(elm.find(".bit-add").val()),
-                        number: parseInt(elm.find(".bit-num").val()),
+                        form: elm.find(".bit-form").val(),
                         logic: elm.find(".bit-logic").val(),
                     };
                     if (!Number.isInteger(item.bit.address)) configReady = "";
+                    break;
+                case "bitList":
+                    item.bitList = {          // bitList type parameter
+                        deviceType: elm.find(".bitList-deviceType").val(),
+                        address: parseInt(elm.find(".bitList-add").val()),
+                        number: parseInt(elm.find(".bitList-num").val()),
+                        logic: elm.find(".bitList-logic").val(),
+                    };
+                    if (!Number.isInteger(item.bitList.address)) configReady = "";
                     break;
                 case "number":
                     item.number = {       // number type parameters

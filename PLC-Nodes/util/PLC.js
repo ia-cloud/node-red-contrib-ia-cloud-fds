@@ -74,6 +74,10 @@ class PLC {
             switch(dataItem.itemType) {
                 case "bit":
                     options = dataItem.bit;
+                    options.number = 1;
+                    break;
+                case "bitList":
+                    options = dataItem.bitList;
                     break;
                 case "number":
                     options = dataItem.number;
@@ -178,10 +182,35 @@ class PLC {
             }
             let options;
             let value, preValue, uValue, lValue;
+            let lData;
 
             switch(dataItem.itemType) {
                 case "bit":
                     options = dataItem.bit;
+
+                    lData = linkObj[options.deviceType].find(function(lData) {
+                        return (lData.address == Number(options.address));
+                    });
+                    value = (Number(lData.value)) ? true: false;
+                    preValue = (Number(lData.preValue)) ? true: false;
+                    if (options.logic === "neg") {
+                        value = !value;
+                        preValue = !preValue;  
+                    }
+                    if (options.form === "onoff") {dItem.dataValue = (value)? "on": "off";}
+                    else if (options.form === "10") {dItem.dataValue = (value)? 1: 0;}
+                    else if (options.form === "opStatus") {
+                        if (value) {dItem.dataValue = (preValue)? "on": "start";}
+                        else {dItem.dataValue = (!preValue)? "off": "stop";}
+                    }
+                    else if (options.form === "AnE") {
+                        if (value) {dItem.dataValue = (preValue)? "on": "set";}
+                        else {dItem.dataValue = (!preValue)? "off": "reset";}
+                    }
+                    else dItem.dataValue = value;
+                    break;
+                case "bitList":
+                    options = dataItem.bitList;
                     dItem.dataValue = [];
                     for (let i = 0, l = options.number; i < l; i++) {
                         value = linkObj[options.deviceType].find(function(lData){
@@ -191,9 +220,6 @@ class PLC {
                         if (options.logic == "neg") value = !value;
                         dItem.dataValue.push(value);
                     };
-                    if (options.number === 1){
-                        dItem.dataValue = (dItem.dataValue[0]) ? true: false;
-                    }
                     break;
                 case "number":
                     options = dataItem.number;
@@ -265,7 +291,7 @@ class PLC {
                     break;
                 case "AnE":
                     options = dataItem.AnE;
-                    let lData = linkObj[options.deviceType].find(function(lData) {
+                    lData = linkObj[options.deviceType].find(function(lData) {
                             return (lData.address == Number(options.address));
                         });
                     value = (Number(lData.value)) ? true: false;

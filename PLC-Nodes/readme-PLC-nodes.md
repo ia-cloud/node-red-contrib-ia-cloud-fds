@@ -89,12 +89,23 @@ msg = {
 |オブジェクトの説明|string| ia-cloudオブジェクトのobjectdescriptionとして使われる。|
   
 **データ項目のの設定**
-  
-***ビット[列]:(PLC-Modbus,PLC-Mitsubushi)***
+
+***ビット:(PLC-Modbus,PLC-Mitsubushi)***
 
 |名称　　　| 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 |データ種別|string |"bit"固定|
+|データ名称|string|オブジェクトのデータitemの名称。 ia-cloudデータモデルのdataNameとして使用される。|
+|デバイス種別|string |データを取得するPLCデバイスの種別。ビットデバイスのPLC機種依存のデバイスコード。<br>Modbus: coil/IS 　三菱：X/Y/M/SM/L など|
+|先頭アドレス|number|データを取得するビット列の先頭PLCデバイスアドレス。|
+|論理|boolean|正論理(1:true,0:false) or 負論理(1:false,0:true)|
+|形式|string|bit状態の出力形式。opStatus, A&E, on/off, 1/0, true/false, のいずれか|
+
+***ビット[列]:(PLC-Modbus,PLC-Mitsubushi)***
+
+|名称　　　| 種別 | 説明 |
+|:----------|:-----:|:--------------------|
+|データ種別|string |"bit列"固定|
 |データ名称|string|オブジェクトのデータitemの名称。 ia-cloudデータモデルのdataNameとして使用される。|
 |デバイス種別|string |データを取得するPLCデバイスの種別。ビットデバイスのPLC機種依存のデバイスコード。<br>Modbus: coil/IS 　三菱：X/Y/M/SM/L など|
 |先頭アドレス|number|データを取得するビット列の先頭PLCデバイスアドレス。|

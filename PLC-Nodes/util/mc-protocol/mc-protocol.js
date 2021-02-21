@@ -50,7 +50,9 @@ const DEV_CODE = {
     "D" : {code: 0xA8, subCmnd: 0x0000, hex: false},
     "W" : {code: 0xB4, subCmnd: 0x0000, hex: true},
     "TN": {code: 0xC2, subCmnd: 0x0000, hex: false},
-    "CN": {code: 0xC5, subCmnd: 0x0000, hex: false}
+    "CN": {code: 0xC5, subCmnd: 0x0000, hex: false},
+    "R": {code: 0xAF, subCmnd: 0x0000, hex: false},
+    "ZR": {code: 0xB0, subCmnd: 0x0000, hex: false}
 };
 const MAX_TRANSACTIONS = 128;
 const MAX_SERIAL_BUFFER_LEN = 1024;
