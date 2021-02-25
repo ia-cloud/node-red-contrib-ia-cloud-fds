@@ -187,7 +187,7 @@ class PLCCom {
                 if (!listeners[nodeId]) listeners[nodeId] = [linkD.objectKey,];
                 // 登録済みのObjectKeyでなかったら、リストに追加
                 else if (listeners[nodeId].indexOf(linkD.objectKey) == -1) {
-                    listeners[nodeId].push(linkData.objectKey);
+                    listeners[nodeId].push(linkD.objectKey);
                 }
             }
         });
