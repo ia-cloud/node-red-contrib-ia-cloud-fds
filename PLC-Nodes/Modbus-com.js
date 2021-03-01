@@ -124,6 +124,11 @@ module.exports = function(RED) {
         node.on("addLinkData", function(lObj) {
             if (Object.keys(lObj).length)  mbcom.addLinkData(lObj);
         });
+
+        // register the event listener that remove linkData of the specific nodeId
+        node.on("removeLinkData", function(nodeId) {
+            if (nodeId)  mbcom.removeLinkData(nodeId);
+        });
     }
 
     RED.nodes.registerType("Modbus-com",modbusCom);

@@ -92,8 +92,7 @@ class PLCCom {
     // 外部メソッド。this を固定するためアロー関数で記述
 
     CyclicRead (RED) {return new Promise(resolve => {
-
-        let comObj = this.comObj;    
+  
         let linkObj = this.linkObj;
         let flagRecon = this.flagRecon;
         let comList = this.comList;
@@ -180,7 +179,7 @@ class PLCCom {
             linkD.value = value;
             let nodeId = linkD.nodeId;
             // 変化通知が登録されていて、前回の値に変化があったら（初回はパス）
-            if(nodeId && linkD.preValue && (linkD.value != linkD.preValue)) {
+            if(linkD.async && linkD.preValue && (linkD.value != linkD.preValue)) {
                 // 要求元のPLC Object Nodeとオブジェクトキーを登録
                 // 重複の無いように
                 // objectKeyリストがからだったら、リストに追加
@@ -206,6 +205,17 @@ class PLCCom {
             // linkObjに新たなリンクデータを追加
             if (!(dev in linkObj)) linkObj[dev] = [];
             Array.prototype.push.apply(linkObj[dev], lObj[dev]);
+        }
+        // linkObjが変更されたので、通信フレーム情報の再構築フラグをon
+        this.flagRecon = true;
+    };
+
+    // remove linkData that has the argument nodeId
+    removeLinkData(nodeId) {
+        let linkObj = this.linkObj;
+        for(let dev of Object.keys(linkObj)) {
+            // make new array which does not have the nodeId
+            linkObj[dev] = linkObj[dev].filter(ldata => ldata.nodeId !== nodeId)
         }
         // linkObjが変更されたので、通信フレーム情報の再構築フラグをon
         this.flagRecon = true;

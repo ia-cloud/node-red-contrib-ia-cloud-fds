@@ -7,7 +7,8 @@ const serialp = require("serialport");
 const PLCCom = require('./util/PLC-Com');
 const MCProtocol = require("./util/mc-protocol/mc-protocol");
 
-const KINDS_OF_DEV = ["error", "SM", "SD", "X", "Y", "M", "L", "F", "V", "B", "D", "W", "TN", "CN"];
+const KINDS_OF_DEV = ["error", "SM", "SD", "X", "Y", "M", "L", "F", "V", "B", 
+                        "D", "W", "TN", "CN", "R","ZR"];
 const COMMUNICATION_TIMEOUT = 5000;
 class MitsubishiCom extends PLCCom {
     constructor(config, MCObject){
@@ -106,6 +107,11 @@ module.exports = function(RED) {
         // linkObjにlinkDtataを追加するイベントリスナーを登録
         node.on("addLinkData", function(lObj) {
             if (Object.keys(lObj).length)  mccom.addLinkData(lObj);
+        });
+
+        // register the event listener that remove linkData of the specific nodeId
+        node.on("removeLinkData", function(nodeId) {
+            if (nodeId)  mccom.removeLinkData(nodeId);
         });
     }
 

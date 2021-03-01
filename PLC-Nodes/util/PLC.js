@@ -62,11 +62,8 @@ class PLC {
         // 非同期収集ありの場合、自身のNodeIDをセット。
         let ownNodeId = this.node.id;
         // エラーリンクデータを登録
-        linkObj.error = [{address: 0, value: "", preValue: "", 
-                        nodeId: ownNodeId, objectKey: config.objectKey}];
-        
-        // 非同期収集無しの場合、自身のNodeIDをリセット。
-        ownNodeId = (config.storeAsync)? ownNodeId: "";
+        linkObj.error = [{address: 0, value: "", preValue: "", nodeId: ownNodeId, 
+                            objectKey: config.objectKey}];
 
         dataItems.forEach(function(dataItem) {
             let options;
@@ -102,13 +99,14 @@ class PLC {
             if (!linkObj[options.deviceType]) linkObj[options.deviceType] = [];
             // 各アドレスのlinkDataを登録
             for (let i = 0, l = num; i < l; i++) {
-                let linkData = {address: 0, value: "", preValue: "", nodeId: null, objectKey: ""};
+                let linkData = {value: "", preValue: ""};
                 linkData.address = Number(options.address) + i;
                 // すでに同じアドレスが登録されていたら中止
                 let x = linkObj[options.deviceType].findIndex(
                     function(ldata) {return ldata.address === linkData.address });
                 if (x >= 0) continue;   
                 linkData.nodeId = ownNodeId;
+                linkData.async = config.storeAsync;                
                 linkData.objectKey = config.objectKey;
                 linkObj[options.deviceType].push(linkData);
             }
