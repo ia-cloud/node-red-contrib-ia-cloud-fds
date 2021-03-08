@@ -24,6 +24,7 @@
                 <option selected="selected" value="TCP" data-i18n="editor.TCP"></span></option>
                 <option value="Serial4" data-i18n="editor.Serial4"></option>
                 <option value="Serial5" data-i18n="editor.Serial5"></option>
+                <option value="PLCSim" data-i18n="editor.PLCSim"></option>
             </select>
         </div>
         <div class="form-group" id="etherConf">
@@ -63,11 +64,13 @@
             </div>
         </div>
     </div>
-    <hr>
-    <div class="form-row form-tips" id="tip-accessRoute"><span data-i18n="editor.tip-accessRoute"></span></div>
-    <div class="form-row">
-        <label for="node-config-input-accessRoute"><span data-i18n="editor.accessRoute"></span></label>
-        <input type="text" style="width: 200px" id="node-config-input-accessRoute" data-i18n="[placeholder]editor.accessRouteExp">
+    <div id="accessRoute" >
+        <hr>
+        <div class="form-row form-tips" id="tip-accessRoute"><span data-i18n="editor.tip-accessRoute"></span></div>
+        <div class="form-row">
+            <label for="node-config-input-accessRoute"><span data-i18n="editor.accessRoute"></span></label>
+            <input type="text" style="width: 200px" id="node-config-input-accessRoute" data-i18n="[placeholder]editor.accessRouteExp">
+        </div>
     </div>
     <hr>
     <div class="form-row">
@@ -113,9 +116,15 @@
                 if (value == "TCP") {
                     $("#etherConf").show();
                     $("#serialConf").hide();
+                    $("#accessRoute").show();
+                } else if (value == "PLCSim") {
+                    $("#etherConf").hide();
+                    $("#serialConf").hide();
+                    $("#accessRoute").hide();
                 } else {
                     $("#etherConf").hide();
                     $("#serialConf").show();
+                    $("#accessRoute").show();
                 }
             });
 
@@ -151,7 +160,8 @@
                     case "node-config-input-serialPort":
                     case "node-config-input-parity":
                     case "node-config-input-baud":
-                        if (!$(obj).val() && (comType !== "TCP")) requiredSet = "";
+                        if (!$(obj).val() && (comType === "Serial4" || comType === "Serial5"))
+                            requiredSet = "";
                         break;
                     default:
                         break;

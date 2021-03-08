@@ -72,7 +72,8 @@
       "de-noise": "functions/de-noise.js",
       "edge-delay": "functions/edge-delay.js",
       "rename-object": "functions/rename-object.js",
-      "rename-data": "functions/rename-data.js"
+      "rename-data": "functions/rename-data.js",
+      "PLC-sim": "PLC-Nodes/PLC-sim.js"
     }
   },
   "repository": {

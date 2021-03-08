@@ -1,0 +1,122 @@
+{
+    "mitsubishi": {
+        "M":{
+            "countupBits16": {
+                "start": 100,
+                "num": 16,
+                "value": [
+                    true, false, true, false, true, false, true, false,
+                    true, false, true, false, true, false, true, false
+                ]
+            }, 
+            "alarmEvent": {
+                "start": 200,
+                "num": 4,
+                "value": [
+                    true, false, true, false
+                ]
+            }
+        },
+        "D": {
+            "countupW":{
+                "start": 100,
+                "num": 4,
+                "value": [100, 200, 300, 400]
+            }, 
+            "countupDW": {
+                "start": 200,
+                "num": 8,
+                "value": [100, 0, 200, 0, 300, 0, 400, 0]
+            }, 
+            "shiftJIS": {
+                "start": 300,
+                "num": 20,
+                "string": "sJISテスト文字列"
+            },
+            "EUCjp": {
+                "start": 320,
+                "num": 20,
+                "string": "EUCテスト文字列"
+            }, 
+            "utf8": {
+                "start": 340,
+                "num": 20,
+                "string": "utf-8テスト文字列"
+            }
+        },
+        "X": {},
+        "Y": {},
+        "L": {},
+        "B": {},
+        "SM": {},
+        "W": {},
+        "Z": {},
+        "ZR": {}
+    },
+    "modbus": {
+        "IS":{
+            "countupBits16": {
+                "start": 100,
+                "num": 16,
+                "value": [
+                    true, false, true, false, true, false, true, false,
+                    true, false, true, false, true, false, true, false
+                ]
+            }, 
+            "alarmEvent": {
+                "start": 200,
+                "num": 4,
+                "value": [
+                    true, false, true, false
+                ]
+            }
+        },
+        "HR": {
+            "countupW":{
+                "start": 100,
+                "num": 4,
+                "value": [100, 200, 300, 400]
+            }, 
+            "countupDW": {
+                "start": 200,
+                "num": 8,
+                "value": [100, 0, 200, 0, 300, 0, 400, 0]
+            }, 
+            "shiftJIS": {
+                "start": 300,
+                "num": 20,
+                "string": "sJISテスト文字列",
+                "value": []
+            },
+            "EUCjp": {
+                "start": 320,
+                "num": 20,
+                "string": "EUCテスト文字列",
+                "value": []
+            }, 
+            "utf8": {
+                "start": 340,
+                "num": 20,
+                "string": "utf-8テスト文字列",
+                "value": []
+            },
+            "omronCtrlPVetc": {
+                "start": "0x2402",
+                "num": 15,
+                "value": [600, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 ]
+            },
+            "omronCtrlPID": {
+                "start": "0x2a00",
+                "num": 3,
+                "value": [80, 233, 40]
+            },
+            "omronCtrlDP4PID": {
+                "start": "0x3309",
+                "num": 1,
+                "value": [0]
+            }
+        },
+        "coil":{},
+        "IR": {}
+    }
+}

@@ -4,10 +4,12 @@ class PLCCom {
     constructor (config, comObject){
 
         this.config = config;
-
         this.comObj = comObject;
         this.linkObj = {};
-        this.addTbl = {};               // PLC通信でアクセスするデバイスのアドレステーブル
+        // PLC通信でアクセスするデバイスのアドレステーブル
+        this.addTbl = {};
+        // globale context for PLC-simulator
+        this.gContext = config.gContext;
 
         // PLC通信で取得したデータに変化があった時にコールするリスナ関数のを持つNodeIDと、
         // そのデータを使用しているオブジェクトキー
@@ -88,6 +90,35 @@ class PLCCom {
         throw new Error("Method 'readItemsFromPLC()' must be implemented.");
     };
 
+    // read test data from globale context
+    PLCSimRead(plc, dev, start, qty) {
+        let PLCSim = this.gContext.get("PLCSimulator");
+        if (!PLCSim) return;
+        let devObj = PLCSim[plc][dev];
+        if (!devObj) return;
+        let devKeys = Object.keys(devObj);
+        let data = [];
+        for (let add = start; add < start + qty; add++) {
+
+            let devKey = devKeys.find(
+                key => {
+                    let st = parseInt(devObj[key].start);
+                    return (add >= st && add < st + devObj[key].num)
+                }
+            );
+            if (devKey) {
+                let devs = devObj[devKey];
+                data.push(devs.value[add - devs.start]);
+            }
+            else if (dev === "coil" || dev === "IS" || 
+                    dev === "X" || dev === "Y" || dev === "M" ||
+                    dev === "L" || dev === "B" || dev === "SM")
+                data.push(false);
+            else data.push(0);
+        } 
+        return {"data": data, "buffer": undefined};
+    };
+
     //作成したリンクオブジェクトに基づき、PLC通信を実施し、リンクオブジェクトの各Valueを更新する
     // 外部メソッド。this を固定するためアロー関数で記述
 
@@ -166,7 +197,7 @@ class PLCCom {
             let links = linkObj[dev].filter(function(elm) {
                 return (elm.address == Number(start) + i);
             });
-            if (!links) return;
+            if (!links.length) continue;
             let value = this.toLinkObjectValue(list[i]);
             this._valueStoreAddListeners(value, links, listeners);
         }

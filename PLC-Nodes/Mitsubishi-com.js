@@ -30,7 +30,7 @@ class MitsubishiCom extends PLCCom {
         let resp;
         let comType = config.comType;
 
-        if (!mcpObj.isOpen) {
+        if (!mcpObj.isOpen && !(config.comType === "PLCSim")) {
             if (comType == "TCP") {
                 await mcpObj.connectTCP(config.IPAdd, {port: Number(config.TCPPort)});
             }
@@ -42,9 +42,13 @@ class MitsubishiCom extends PLCCom {
             }
         }
         for (let param of params){
-            resp = await mcpObj.readPLCDev(this.accessRoute, param);
+            if (config.comType === "PLCSim") {
+                resp = super.PLCSimRead("mitsubishi", param.dev, param.addr, param.qty);
+            } else {
+                resp = await mcpObj.readPLCDev(this.accessRoute, param);
+            }
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
-            await new Promise(resolve => setTimeout(resolve, 100));
+//            await new Promise(resolve => setTimeout(resolve, 100));
         }
         return values;
     }
@@ -80,6 +84,7 @@ module.exports = function(RED) {
 
         const node = this;
         const mcpObj = new MCProtocol();
+        config.gContext = this.context().global;
         mcpObj._timeout = COMMUNICATION_TIMEOUT;
         const mccom = new MitsubishiCom(config, mcpObj);
 

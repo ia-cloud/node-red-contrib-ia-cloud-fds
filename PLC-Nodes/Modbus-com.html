@@ -24,6 +24,7 @@
                 <option selected="selected" value="TCP" data-i18n="editor.ModbusTCP"></span></option>
                 <option value="RTU" data-i18n="editor.ModbusRTU"></option>
                 <option value="ASCII" data-i18n="editor.ModbusASCII"></option>
+                <option value="PLCSim" data-i18n="editor.PLCSim"></option>
             </select>
         </div>
         <div class="form-group" id="etherConf">
@@ -120,7 +121,11 @@
                 if (value == "TCP") {
                     $("#etherConf").show();
                     $("#serialConf").hide();
-                } else {
+                } 
+                else if (value == "PLCSim") {
+                    $("#etherConf").hide();
+                    $("#serialConf").hide();
+                }else {
                     $("#etherConf").hide();
                     $("#serialConf").show();
                 }
@@ -160,7 +165,7 @@
                 case "node-config-input-serialAdd":
                 case "node-config-input-parity":
                 case "node-config-input-baud":
-                    if (!$(obj).val() && (comType !== "TCP")) requiredSet = "";
+                    if (!$(obj).val() && (comType === "RTU" || comType === "ASCII")) requiredSet = "";
                     break;
                 default:
                     break;

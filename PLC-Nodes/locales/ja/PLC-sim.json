@@ -1,0 +1,10 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "paletteLabel": "PLCシミュレータ",
+        "interval": "更新周期"
+    },
+    "runtime": {
+        "ready": "動作中"
+    }
+}

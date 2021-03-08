@@ -10,6 +10,7 @@ const COMMUNICATION_TIMEOUT = 2000;
 class ModbusCom extends PLCCom {
     constructor(config, MBObject){
         super(config, MBObject);
+        this.gContext = config.gContext;
     }
     // PLCCom のreadItemFromPLC()をModbus仕様にオーバーライド
     async readItemsFromPLC(config, params) {
@@ -18,8 +19,8 @@ class ModbusCom extends PLCCom {
         let values = [];
         let resp;
 
-        if (!mbObj.isOpen) {
-            if (config.comType == "TCP") {
+        if (!mbObj.isOpen && !(config.comType === "PLCSim")) {
+            if (config.comType === "TCP") {
                 await mbObj.connectTCP(config.IPAdd, {port: Number(config.TCPport)})
                 .then(mbObj.setID(Number(config.unitID)));
             }
@@ -42,21 +43,25 @@ class ModbusCom extends PLCCom {
             }
         }
         for (let param of params){
-            switch(param.dev){
-                case "Coil": // FC:1
-                    resp = await mbObj.readCoils(param.addr, param.qty);
-                    break;
-                case "IS": // FC:2
-                    resp = await mbObj.readDiscreteInputs(param.addr, param.qty);
-                    break;
-                case "HR": // FC:3
-                    resp = await mbObj.readHoldingRegisters(param.addr, param.qty);
-                    break;
-                case "IR": // FC:4
-                    resp = await mbObj.readInputRegisters(param.addr, param.qty);
-                    break;
-                default:
-                    break;
+            if (config.comType === "PLCSim") {
+                resp = super.PLCSimRead("modbus", param.dev, param.addr, param.qty);
+            } else {
+                switch(param.dev){
+                    case "Coil": // FC:1
+                        resp = await mbObj.readCoils(param.addr, param.qty);
+                        break;
+                    case "IS": // FC:2
+                        resp = await mbObj.readDiscreteInputs(param.addr, param.qty);
+                        break;
+                    case "HR": // FC:3
+                        resp = await mbObj.readHoldingRegisters(param.addr, param.qty);
+                        break;
+                    case "IR": // FC:4
+                        resp = await mbObj.readInputRegisters(param.addr, param.qty);
+                        break;
+                    default:
+                        break;
+                }
             }
             values.push({dev: param.dev, addr: param.addr, qty: param.qty, value: resp.data});
         }
@@ -96,6 +101,7 @@ module.exports = function(RED) {
 
         const node = this;
         const mbObj = new ModbusRTU();
+        config.gContext = this.context().global;
         mbObj._timeout = COMMUNICATION_TIMEOUT;
         const mbcom = new ModbusCom(config, mbObj);
 

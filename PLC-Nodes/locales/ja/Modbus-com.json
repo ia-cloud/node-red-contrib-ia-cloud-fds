@@ -16,6 +16,7 @@
         "ModbusTCP": "ModbusTCP",
         "ModbusRTU": "ModbusRTU",
         "ModbusASCII": "ModbusASCII",
+        "PLCSim": "PLCシミュレータ",
         "odd": "奇数",
         "even": "偶数",
         "none": "無し",
