@@ -146,7 +146,7 @@ class PLC {
         let eMsg = obj.value;
         if (eMsg !== "ok" && eMsg !== "" ) {
             node.error(eMsg);
-            node.status({fill:"red",shape:"ring",text:"runtime.comError!!"});
+            node.status({fill:"red",shape:"ring",text:"runtime.comError"});
             return;
         }
 

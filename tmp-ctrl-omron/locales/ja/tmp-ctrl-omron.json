@@ -36,6 +36,7 @@
         "badFilePath": "ファイルが見つかりません。",
         "ready": "Ready",
         "preparing": "データ準備中...",
+        "comError": "通信エラー!!",
         "sent": "データ送出"
     }
 }

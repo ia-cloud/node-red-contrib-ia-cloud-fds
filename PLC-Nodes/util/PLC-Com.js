@@ -92,30 +92,34 @@ class PLCCom {
 
     // read test data from globale context
     PLCSimRead(plc, dev, start, qty) {
-        let PLCSim = this.gContext.get("PLCSimulator");
-        if (!PLCSim) return;
-        let devObj = PLCSim[plc][dev];
-        if (!devObj) return;
-        let devKeys = Object.keys(devObj);
         let data = [];
-        for (let add = start; add < start + qty; add++) {
-
-            let devKey = devKeys.find(
-                key => {
-                    let st = parseInt(devObj[key].start);
-                    return (add >= st && add < st + devObj[key].num)
+        try {
+            let PLCSim = this.gContext.get("PLCSimulator");
+            let devObj = PLCSim[plc][dev];   
+            let devKeys = Object.keys(devObj);
+    
+            for (let add = start; add < start + qty; add++) {
+    
+                let devKey = devKeys.find(
+                    key => {
+                        let st = parseInt(devObj[key].start);
+                        return (add >= st && add < st + devObj[key].num)
+                    }
+                );
+                if (devKey) {
+                    let devs = devObj[devKey];
+                    data.push(devs.value[add - devs.start]);
                 }
-            );
-            if (devKey) {
-                let devs = devObj[devKey];
-                data.push(devs.value[add - devs.start]);
-            }
-            else if (dev === "coil" || dev === "IS" || 
-                    dev === "X" || dev === "Y" || dev === "M" ||
-                    dev === "L" || dev === "B" || dev === "SM")
-                data.push(false);
-            else data.push(0);
-        } 
+                else if (dev === "coil" || dev === "IS" || 
+                        dev === "X" || dev === "Y" || dev === "M" ||
+                        dev === "L" || dev === "B" || dev === "SM")
+                    data.push(false);
+                else data.push(0);
+            } 
+        } catch (err){
+            // if error, return data:[]
+            throw new Error("PLC-simulator com error");
+        }
         return {"data": data, "buffer": undefined};
     };
 
