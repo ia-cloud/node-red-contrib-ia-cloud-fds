@@ -15,7 +15,7 @@ class MitsubishiCom extends PLCCom {
         super(config, MCObject);
         // アクセス経路が設定されていたら
         if (config.accessRoute) 
-            this.accessRoute = config.accessRoute.split("H:").join("");
+            this.accessRoute = config.accessRoute.split(":").join("");
         else {
             if (config.comType == "TCP") this.accessRoute = "00FF03FF00";
             if (config.comType == "Serial4") this.accessRoute = "0000FF00";

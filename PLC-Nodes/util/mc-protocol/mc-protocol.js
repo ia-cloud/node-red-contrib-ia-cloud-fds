@@ -59,8 +59,8 @@ const MAX_SERIAL_BUFFER_LEN = 1024;
 
 const TRANSACTION_TIMED_OUT_MESSAGE = "Timed out";
 const TRANSACTION_TIMED_OUT_ERRNO = "ETIMEDOUT";
-const BAD_ACCESSROUTE_MESSAGE = "Bad access route";
-const BAD_ACCESSROUTE_ERRNO = "Bad access route";
+const BAD_PARAMETER_MESSAGE = "Bad com. parameter";
+const BAD_PARAMETER_ERRNO = "Bad com. parameter";
 
 
 var MCPortNotOpenError = function() {
@@ -70,11 +70,11 @@ var MCPortNotOpenError = function() {
     this.errno = PORT_NOT_OPEN_ERRNO;
 };
 
-var MCBadAccessRouteError = function() {
+var MCBadParamError = function() {
     Error.captureStackTrace(this, this.constructor);
     this.name = this.constructor.name;
-    this.message = BAD_ACCESSROUTE_MESSAGE;
-    this.errno = BAD_ACCESSROUTE_ERRNO;
+    this.message = BAD_PARAMETER_MESSAGE;
+    this.errno = BAD_PARAMETER_ERRNO;
 };
 
 var MCTransactionTimedOutError = function() {
@@ -226,7 +226,6 @@ class MCProtocol extends ModbusRTU.default {
         let subCmnd;
         let address = param.addr;
         let length = param.qty;
-        let route =  Buffer.from(accessRoute, "hex");
 
         // convert unit No. to little endian
         // route.writeUInt16LE(route.readUInt16BE(2),2);
@@ -238,15 +237,16 @@ class MCProtocol extends ModbusRTU.default {
             return;
         }
         // sanity check
-        if (typeof accessRoute === "undefined" || typeof address === "undefined") {
-            if (next) next(new BadAccessRouteError());
+        if (typeof address === "undefined") {
+            if (next) next(new MCBadParamError());
             return;
         }
-        if (!accessRoute) {
-            if (next) next(new BadAccessRouteError());
+        if (typeof accessRoute === "undefined" || isNaN (Number("0x" + accessRoute))) {
+            if (next) next(new MCBadParamError());
             return;
         }
 
+        let route =  Buffer.from(accessRoute, "hex");
         dev = DEV_CODE[param.dev].code;
         subCmnd = DEV_CODE[param.dev].subCmnd;
        
@@ -340,7 +340,7 @@ class MCTcpPort extends ModbusRTU.TcpPort {
     // TCP電文フォーマットに合わせて、ヘッダ等を付加
     mcWrite (route, request) {
         // Check access route and request string length
-        if (route.length !== 5 || request.length !== REQUEST_LEN) {
+        if (route.length !== ACCESS_ROUTE_LEN_4E || request.length !== REQUEST_LEN) {
             // Access route is invalid
             return;
         } 
