@@ -65,10 +65,17 @@ class iaCloudConnection {
         // delete url property from options
         // The `url` option is mutually exclusive with the `input` argument
         delete options["url"];
+
         // other options for Got package
         options.responseType = "text";
 
-        try {
+        // Got issue#1169, have to make Authorization header manually
+        options.headers["Authorization"] = "Basic " 
+            + Buffer.from(options.username + ":" + options.password).toString("base64");
+        delete options["username"];
+        delete options["password"];
+
+    try {
             const response = await got(opts.url, options);
             if (response.statusCode === 200){
                 let resbody;
