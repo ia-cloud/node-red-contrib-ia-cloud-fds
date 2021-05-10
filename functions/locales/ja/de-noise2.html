@@ -1,7 +1,7 @@
 
-<script type="text/html" data-help-name="de-noise">
+<script type="text/html" data-help-name="de-noise2">
     <!-- ここにNode機能の概要を、50文字以内で記述-->
-    <p>直近のデータからの変化量を基にia-cloudのデータ値の突変ノイズを除去する</p>
+    <p>直前の移動平均値をからの変化量を基にia-cloudのデータ値の突変ノイズを除去する</p>
 
     <h3>プロパティ項目</h3>
     <dl class="message-properties">
@@ -11,13 +11,11 @@
             <dd>突変除去する対象オブジェクトのオブジェクトキー。空欄の場合、全てのオブジェクトのデータを突変除去します。</dd>
             <dt>データ名称<span class="property-type">文字列</span></dt>
             <dd>突変除去する対象データ項目のデータ名称。空欄の場合、全てのデータ名称が対象となります</dd>
-            <dt>+変位<span class="property-type">数値</span></dt>
-            <dd>データを無効とする前回値とのプラス側の最小変位量</dd> 
-            <dt>-変位<span class="property-type">数値</span></dt>
-            <dd>データを無効とする前回値とのマイナス側の最小変位量</dd> 
-            <dt>時間間隔<span class="property-type">数値</span></dt>
-            <dd>前回入力値との時間間隔（秒）。一定時間データが入力されない場合は前回値との比較を行わない</dd>
-            <dd>空欄の場合は、0秒</dd>
+            <dt>変化量<span class="property-type">数値</span></dt>
+            <dd>データを無効とする移動平均値との最小変位量</dd> 
+            <dt>移動平均時間<span class="property-type">数値</span></dt>
+            <dd>変異量を計算する基となる移動平均値の平均範囲</dd>
+            <dd>秒、分、時、日の指定が可能、空欄の場合は、0秒</dd>
         </dl>
         <dt>名前<span class="property-type">文字列</span></dt>
         <dd>個別のNodeに付与する名前</dd>
@@ -42,8 +40,8 @@
     </dl>
 
     <h3>詳細説明</h3>
-    <p>直近のデータからの変化量を基にia-cloudのデータ値の突変ノイズを除去する</p>
-    <p>別途、直前の移動平均値をからの変化量を基にia-cloudのデータ値の突変ノイズを除去する機能ノードがあります</p>
+    <p>直前の移動平均値をからの変化量を基にia-cloudのデータ値の突変ノイズを除去する</p>
+    <p>別途、直近の値からの変化量を基にia-cloudのデータ値の突変ノイズを除去する機能ノードがあります</p>
     <p>入力メッセージのiaCloudオブジェクトから、設定されたオブジェクトキーのcontentDataを取り出し、設定されたパラメータでの突変データ除去し出力メッセージとして出力します。</p>
     <p>各データ項目を個別に、あるいは全て同一に突変除去できます</p>
     <p>突変除去の対象とならなかったiaCloudオブジェクトは、入力メッセージのまま出力されます。</p>

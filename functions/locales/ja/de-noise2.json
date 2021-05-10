@@ -1,0 +1,23 @@
+{
+    "editor": {
+        "paletteLabel": "ノイズ除去II",
+        "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
+        "objFlag": "オブジェクト全体を除去",
+        "condetionList": "突変条件リスト",
+        "objkey": "オブジェクトキー",
+        "dName": "データ名称",
+        "limit": "変位量",
+        "range": "平均範囲",
+        "sec": "秒",
+        "minute": "分",
+        "hour": "時",
+        "day": "日"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません",
+        "nomatch": "データを全て除去"
+    }
+}

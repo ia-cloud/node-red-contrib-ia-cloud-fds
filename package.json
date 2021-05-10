@@ -70,6 +70,7 @@
       "evaluation": "functions/evaluation.js",
       "smoothing": "functions/smoothing.js",
       "de-noise": "functions/de-noise.js",
+      "de-noise2": "functions/de-noise2.js",
       "edge-delay": "functions/edge-delay.js",
       "rename-object": "functions/rename-object.js",
       "rename-data": "functions/rename-data.js",

@@ -1,0 +1,207 @@
+
+<script type="text/html" data-template-name="de-noise2">
+
+    <div class="form-row">
+        <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+            <span data-i18n="editor.obj-filter"></span></label>
+        <input type="checkbox" checked="checked" id="node-input-objFilter"
+            style="display: inline-block; width: auto;" >
+    </div>
+    <div class="form-row">
+        <label for="node-input-objFlag" style="margin-left: 20px; width: auto">
+            <span data-i18n="editor.objFlag"></span></label>
+        <input type="checkbox" id="node-input-objFlag"
+            style="display: inline-block; margin-left: 10px; width: auto;" >
+    </div>
+
+    <div id="list-property">
+        <div class="form-row">
+            <label style="width:200px; margin-left:8px"><span data-i18n="editor.condetionList"></span></label>
+        </div>
+        <!-- param propertyの設定 -->
+        <div class="form-row node-input-list-container-row">
+            <ol id="node-input-list-container">
+            </ol>
+        </div>
+    </div>  
+
+    <div id="name-block">
+        <div > <hr> </div>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('de-noise2',{
+        category: 'iaCloud functions',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+            objFilter: {value:false},
+            objFlag: {value:false},
+            params: {value:[{}]},
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "de-noise data";
+        },
+        oneditprepare: function() {
+            let node = this;
+            const lblobjkey = node._("editor.objkey");
+            const lbldName = node._("editor.dName");
+            const lblrange = node._("editor.range");
+            const lblsec = node._("editor.sec");
+            const lblmin = node._("editor.minute");
+            const lblhour = node._("editor.hour");
+            const lblday = node._("editor.day");
+            const lbllimit = node._("editor.limit");
+
+        // editableList item のhtml要素
+            // 1行目のデータ名称
+            const paraForm1 =`
+            <input class="objectKey"" placeholder="${lblobjkey}" type="text"
+                    style="width:180px; display:inline-block; text-align:left;">
+                <input class="dataName" placeholder="${lbldName}" type="text"
+                    style="width:120px; display:inline-block; text-align:left; margin-left:10px">
+            `;
+            // 2行目のparameter
+            const paraForm2 =`
+                <div class= "form-row">
+                    <span style="display:inline-block; width:30px"></span>
+                    <label style="width:60px; ">${lbllimit}</span></label>
+                    <input type="text" class="limit" required="required" placeholder="${lbllimit}"
+                        style="width:80px; display:inline-block; text-align:right;">
+                    <input type="number" class="range" required="required" placeholder="${lblrange}"
+                        step="1" min="1" style="width:90px; margin-left:10px; display:inline-block; text-align:right;">
+                    <select class="rangeDenomi" style="width: 60px">
+                        <option selected="selected" value="sec">${lblsec}</option>
+                        <option value="min">${lblmin}</option>
+                        <option value="hour">${lblhour}</option>
+                        <option value="day">${lblday}</option>
+                    </select>
+                </div>
+            `;
+
+            // Define editableList.
+            $("#node-input-list-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 360,
+                
+                addItem: function(container,index,param) {
+
+                    let div1 = $('<div></div>').appendTo(container);
+                    let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                    $('<span></span>',{class:"index", 
+                        style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                        .text((index + 1) + " :")
+                        .appendTo(div1);
+                    $(paraForm1).appendTo(div1);
+
+                    // 2nd row of parameter list
+                    $(paraForm2).appendTo(div2);
+
+                    // 追加ボタンが押されたら、paramは 空{} で呼ばれます。
+                    if(!param.hasOwnProperty("objectKey")) {
+                        param = {
+                            objectKey: "",
+                            rangeDenomi: "sec",
+                            initDenomi: "sec"
+                        }
+                    };
+                    // restore parameters
+                    div1.find(".objectKey").val(param.objectKey);
+                    div1.find(".dataName").val(param.dataName);
+                    div2.find(".range").val(param.range);
+                    div2.find(".rangeDenomi").val(param.rangeDenomi);
+                    div2.find(".limit").val(param.limit);
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-list-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.params.length;i++) {
+                var param = node.params[i];
+                $("#node-input-list-container").editableList('addItem',param);
+            }
+        },
+        
+        oneditsave: function() {
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-list-container").editableList('items');
+            // paramデータ設定を作成
+            node.params = [];
+            items.each(function(i, elm){
+                let param = {
+                    // reatore parameters
+                    objectKey: elm.find(".objectKey").val(),
+                    dataName: elm.find(".dataName").val(),
+                    range: parseInt(elm.find(".range").val()),
+                    rangeDenomi: elm.find(".rangeDenomi").val(),
+                    limit: elm.find(".limit").val(),
+                }
+                node.params.push(param);
+
+                // required properties are not empty
+                if (isNaN(param.limit)) configReady = "";
+                if (!(param.range >= 1)) configReady = "";
+            });
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // node name block height
+            height -= $("#name-block").outerHeight(true);
+
+            // editableList以外の行の高さを引く
+            let rows = $("#list-property>*:not(.node-input-list-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#list-property>div.node-input-list-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-list-container").editableList('height',height);
+        }
+    });
+
+</script>
