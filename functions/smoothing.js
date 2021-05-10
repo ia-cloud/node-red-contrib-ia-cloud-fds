@@ -1,6 +1,5 @@
 
 "use strict";
-const { MaxRedirectsError } = require("got");
 const moment = require("moment");
 // buffer size for ave. calculation
 const MAX_BUFFER_SIZE = 1000;
