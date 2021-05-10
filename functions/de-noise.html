@@ -98,7 +98,7 @@
                     step="any" min="0" style="width:80px; display:inline-block; text-align:right;">
                     <label style="width:40px; text-align:right;">${lblinterval}</label>
                     <input type="number" class="interval" required="required"
-                        step="0.1" min="0.1" style="width:70px; margin-left:10px; display:inline-block; text-align:right;">
+                        step="0.1" min="0" style="width:70px; margin-left:10px; display:inline-block; text-align:right;">
                     <label style="width:30px; text-align: left;">
                         <span style="font-weight: bold">${lblsec}</span>
                     </label>
@@ -191,7 +191,7 @@
                 // required properties are not empty
                 if (param.plusDisp === "" || param.minusDisp === "" || param.interval === "")
                     configReady = "";
-                else if (param.plusDisp < 0 || param.minusDisp < 0 || param.interval <= 0)
+                else if (param.plusDisp < 0 || param.minusDisp < 0 || param.interval < 0)
                     configReady = "";
 
             });
