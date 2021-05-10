@@ -26,11 +26,11 @@ module.exports = function(RED) {
             // payload not exist,empty or no rule, do nothing
             if (params.length === 0 || msg.request !== "store" || !msg.dataObject) return;
 
-            let param = params.filter(para => {
+            let prms = params.filter(para => {
                 return para.objectKey === msg.dataObject.objectKey || para.objectKey === "";
             });
             // no parameter to do
-            if (!param.length) {
+            if (!prms.length) {
                 // pass thru non target object ?
                 if (!objFilter) {
                     send(msg);
@@ -52,47 +52,52 @@ module.exports = function(RED) {
                 objBuffer.push(buffObj);
             }
 
-            if (typeof param.interval === "number" && param.interval !== 0){
-                if (moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= param.interval) {
-                    buffObj.preTimestamp = msg.dataObject.timestamp;
-                    return;
-                }
-            }
-
             let dataItems = msg.dataObject.objectContent.contentData.concat();
-            for (let i = 0; i < dataItems.length; i++) {
+            for (let j = 0; j < prms.length; j++) {
 
-                // dataName dose't match para's
-                if (param.dataName !== "" && dataItems[i].dataName !== param.dataName) continue;
+                let param = prms[j];
 
-                // preData already in buffer ?
-                let item = buffObj.cData.find(elm => {
-                    return elm.dataName === dataItems[i].dataName
-                });
-
-                // dataName not exist yet, push new one
-                if (!item) {
-                    item = {
-                        dataName: dataItems[i].dataName,
-                        preValue: dataItems[i].dataValue,
+                if (typeof param.interval === "number" && param.interval !== 0){
+                    if (moment(msg.dataObject.timestamp).unix() - buffObj.preTimestamp >= param.interval) {
+                        buffObj.preTimestamp = msg.dataObject.timestamp;
+                        return;
                     }
-                    buffObj.cData.push(item);
                 }
+                for (let i = 0; i < dataItems.length; i++) {
 
-                // displacement from the previous data
-                let disp = (dataItems[i].dataValue - item.preValue);
+                    // dataName dose't match para's
+                    if (param.dataName !== "" && dataItems[i].dataName !== param.dataName) continue;
 
-                // check the displacement
-                if (disp > param.plusDisp || disp < -param.minusDisp) {
-                    dataItems[i] = {};
-                    // invalid whole object?
-                    if (objFlag === true) dataItems.length = 0;
-                }
-                else {
-                    // store dataValue as a previous data
-                    item.preValue = dataItems[i].dataValue;
+                    // preData already in buffer ?
+                    let item = buffObj.cData.find(elm => {
+                        return elm.dataName === dataItems[i].dataName
+                    });
+
+                    // dataName not exist yet, push new one
+                    if (!item) {
+                        item = {
+                            dataName: dataItems[i].dataName,
+                            preValue: dataItems[i].dataValue,
+                        }
+                        buffObj.cData.push(item);
+                    }
+
+                    // displacement from the previous data
+                    let disp = (dataItems[i].dataValue - item.preValue);
+
+                    // check the displacement
+                    if (disp > param.plusDisp || disp < -param.minusDisp) {
+                        dataItems[i] = {};
+                        // invalid whole object?
+                        if (objFlag === true) dataItems.length = 0;
+                    }
+                    else {
+                        // store dataValue as a previous data
+                        item.preValue = dataItems[i].dataValue;
+                    }
                 }
             }
+
             // store timestamp for initializing buffer interval
             buffObj.preTimestamp = moment(msg.dataObject.timestamp).unix();
 
