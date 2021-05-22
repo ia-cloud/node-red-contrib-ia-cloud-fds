@@ -8,7 +8,7 @@ const OMRON_MAP = {
     sv: { device: "HR", dataAdd: 0x2403, dp: 0x2410, mask: null },
     pro: { device: "HR", dataAdd: 0x2a00, dp: 0x3309, mask: null },
     int: { device: "HR", dataAdd: 0x2a01, dp: 0x3309, mask: null },
-    dir: { device: "HR", dataAdd: 0x2a02, dp: 0x3309, mask: null },
+    dir: { device: "HR", dataAdd: 0x2a02, dp: null, mask: null },
     run: { device: "HR", dataAdd: 0x2407, dp: null, mask: 0x0100 },
     am: { device: "HR", dataAdd: 0x2407, dp: null, mask: 0x0400 },
     at: { device: "HR", dataAdd: 0x2407, dp: null, mask: 0x0080 },
