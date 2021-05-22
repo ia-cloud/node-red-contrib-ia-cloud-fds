@@ -50,6 +50,8 @@
       "ia-cloud-nfcpy-id": "ia-cloud-nfcpy-id/ia-cloud-nfcpy-id.js",
       "EnOcean-com": "EnOcean/EnOcean-com.js",
       "EnOcean-obj": "EnOcean/EnOcean-obj.js",
+      "signal-watcher": "signal-watcher/signal-watcher.js",
+      "signal-watcher-AE": "signal-watcher/signal-watcher-AE.js",
       "enocean-sensor-core-staff-temperature-humidity": "EnOcean/sensor-core-staff-temperature-humidity-node.js",
       "enocean-sensor-itec-ct": "EnOcean/sensor-itec-ct-node.js",
       "enocean-sensor-optex-occupancy": "EnOcean/sensor-optex-occupancy-node.js",
