@@ -1,0 +1,67 @@
+
+<script type="text/html" data-help-name="signal-watcher-AE">
+   <!-- ここにNode機能の概要を、50文字以内で記述-->
+   <p>シグナルウッチャーのアラーム＆イベントノード</p>
+
+   <h3>プロパティ項目</h3>
+   <dl class="message-properties">
+        <dt>通信ノード<span class="property-type">EnOcean通信設定ノード</span></dt>
+        <dd>EnOcean通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dd>EnOcean通信設定ノードの設定項目として、使用するシリアル通信ポートを指定します。</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>アラーム＆イベントを定期的に収集する場合の周期（秒）</dd>
+            <dt>発生・復帰通知<span class="property-type">チェック（固定）</span></dt>
+            <dd>アラーム＆イベントが発生・復帰時にデータを送出する設定。常にチェック済み</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>アラーム＆イベントオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>アラーム＆イベントオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>アラーム項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+           <dt>データ構造<span class="property-type">文字列（固定）</span></dt>
+           <dd>アラーム＆イベントデータ構造（Alarm&Event）固定</dd>
+           <dt>設定リスト<span class="property-type">アラーム項目リスト</span></dt>
+           <dl class="message-properties" style="margin-left: 8px">
+               <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+               <dd>アラーム項目の番号。自動で生成される</dd>
+               <dt>アラーム対象CH<span class="property-type">選択</span></dt>
+               <dd>アラーム＆イベント情報の元となるシグナルウォッチャーのチャネル。CH1〜4</dd>
+               <dt>アラーム対象項目<span class="property-type">選択</span></dt>
+               <dd>アラーム＆イベント情報の元となるシグナルウォッチャーの点灯状態</dd>
+               <dt>A＆Eコード<span class="property-type">文字列</span></dt>
+               <dd>アラームコード。個々のアラーム＆イベントに付与する任意のコード</dd>
+               <dt>A＆Eの説明<span class="property-type">文字列</span></dt>
+               <dd>個々のアラーム＆イベントの任意の説明</dd>
+           </dl>
+       </dl>
+   </dl>
+   <dl class="message-properties">
+       <dt>名前<span class="property-type">文字列</span></dt>
+       <dd>個別のNodeに付与する名前</dd>
+   </dl>
+   <h3>入力メーッセージ</h3>
+   <dl class="message-properties">
+       <dt>msg.payload<span class="property-type">string</span></dt>
+       <dd>iia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+   </dl>
+
+   <h3>出力メッセージ</h3>
+   <dl class="message-properties">
+       <dt>payload <span class="property-type">string | object</span></dt>
+       <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+       <dt>request <span class="property-type">string</span></dt>
+       <dd>ia-cloudリクエスト内容。"store"固定</dd>
+       <dt>dataObject <span class="property-type">object</span></dt>
+       <dd>ia-cloud dataObject。contentDataの各データ項目は設定にしたがったアラーム＆イベントデータ。</dd>
+   </dl>
+
+   <h3>詳細説明</h3>
+   <p>シグナルウォッチャーの点灯状態をアラームとイベントデータモデルにしたがって送出するノード</p>
+   <p>本Nodeは、稲葉電機産業製の積層表示灯の発光状態を遠隔モニタリングするシグナルウォッチャーの、
+       EnOcean通信を利用して収集しia-cloudのAlarm＆Eventデータを含むia-cloudオブジェクトとして、
+       出力メッセージに出力するNodeである。</p>
+
+</script>

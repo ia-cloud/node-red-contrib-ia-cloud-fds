@@ -1,0 +1,287 @@
+
+<script type="text/html" data-template-name="signal-watcher-AE">
+
+    <div id="com-block">
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+        <!-- enOcean node（設定Node）の選択-->
+        <div class="form-row">
+            <label for="node-input-enOceanCom" style= "vertical-align: middle;">
+                <span data-i18n="editor.comNode"></span></label>
+            <input type="text" style="width: 300px" id="node-input-enOceanCom">
+        </div>
+        <hr>
+    </div>
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+
+            <div class="form-row">
+                <label for="node-input-storeInterval">
+                    <span data-i18n="editor.period"></span></label>
+                <input type="number" id="node-input-storeInterval" min="0" step="10"
+                    value="300" style="display: inline-block; width: auto;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
+                    <span data-i18n="editor.async"></span></label>
+                <input type="checkbox" checked="checked" id="node-input-storeAsync"
+                    style="display: inline-block; width: auto;" >
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label 
+                    for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
+            </div>
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <!-- dataItemの設定 -->
+            <div class="form-row">
+                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
+                <input type="text" style="width: 300px" id="node-input-contentType" disabled="disabled">
+            </div>
+
+            <div class="node-input-dItemcontainer-row">
+                <ol id="node-input-dItemcontainer">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+        <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+        <input type="text" class="form-control" id="node-input-name">
+        </div>
+    </div>
+
+</script>
+
+<script type="text/javascript">
+
+RED.nodes.registerType('signal-watcher-AE',{
+    category: 'iaCloud devices',
+    color:"rgb(231, 180, 100)",
+    defaults: {
+        name: {value:""},
+
+        enOceanCom: {value:"", type:"EnOcean-com", required: true},
+        contentType: {value: "Alarm&Event", required: true},
+
+        // object properties
+        storeInterval: {value:"10"},
+        storeAsync: {value: true},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
+
+        // dataItems property（editableListで使用する。）
+        dataItems : {value: [{},]},
+    },
+    inputs:1,
+    outputs:1,
+    icon: "ia-cloud.png",  //アイコンはTBD
+    label: function() {
+        return this.name || this._("editor.paletteLabel");
+    },
+    labelStyle: function() {
+        return this.name?"node_label_italic":"";
+    },
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "signal-watcher-A&E";
+    },
+    oneditprepare: function() {
+        let node = this;
+
+        const lblAnE = node._("editor.AnE");
+        const lblon = node._("editor.on");
+        const lbloff = node._("editor.off");
+        const lblfastBlink = node._("editor.fastBlink");
+        const lblslowBlink = node._("editor.slowBlink");
+        const lblmomentaryOn = node._("editor.momentaryOn");
+        const lblmomentaryOff = node._("editor.momentaryOff");
+        const lblbat = node._("editor.bat");
+        const lblrssi = node._("editor.rssi");
+        const lblAnECode = node._("editor.AnECode");
+        const lblAnEDesc = node._("editor.AnEDesc");
+
+        // editableList item のhtml要素
+        // 1行目のデータタイプとデータ名称
+        const paraForm1 =`
+            <label style="display:inline-block; width:60px">${lblAnE}</span></label>
+            <select style="display:inline-block; width: 70px" class="chSelect">
+                <option value="CH1" selected="selected">CH1</option>
+                <option value="CH2">CH2</option>
+                <option value="CH3">CH3</option>
+                <option value="CH4">CH4</option>
+            </select>
+            <select style="display:inline-block; width: 100px" class="dataSelect">
+                <option value="on">${lblon}</option>
+                <option value="off">${lbloff}</option>
+                <option value="fastBllink">${lblfastBlink}</option>
+                <option value="slowBlink" selected="selected">${lblslowBlink}</option>
+                <option value="momentaryOn">${lblmomentaryOn}</option>
+                <option value="momentaryOff">${lblmomentaryOff}</option>
+                <option value="battery">${lblbat}</option>
+            </select>
+            <input class="AnECode" placeholder="${lblAnECode}" type="text"
+                    style="width:90px; display:inline-block; text-align:left; margin-left:10px;">
+        `;
+        // 2行目のA&Eコード、A&E説明プロパティ入力項目
+        const paraForm2 =`
+                <span style="display:inline-block; width:30px"> </span>
+                <input type="text" class="AnEDesc" placeholder="${lblAnEDesc}"
+                    style="width:350px; display:inline-block; text-align:left;">
+        `;
+
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
+
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+                let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm1).appendTo(div1);
+
+                // second row of the list
+                $(paraForm2).appendTo(div2);
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("AnE")) {
+                    dItem.ch = "CH1",
+                    dItem.AnE = "on",
+                    dItem.AnECode = "",
+                    dItem.AnEDesc = ""
+                }
+
+                // set back dataItem properties on row1
+                div1.find(".chSelect").val(dItem.ch);
+                div1.find(".dataSelect").val(dItem.AnE);
+                div1.find(".AnECode").val(dItem.AnECode);
+                div2.find(".AnEDesc").val(dItem.AnEDesc);
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
+        });
+
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataItems.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+        }  
+  
+    },
+
+    oneditsave: function() {
+        let node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+        // データ設定を作成
+        node.dataItems = [];
+
+        items.each(function(i, elm){
+            let item = {
+                ch: elm.find(".chSelect").val(),
+                AnE: elm.find(".dataSelect").val(),
+                AnECode: elm.find(".AnECode").val(),
+                AnEDesc: elm.find(".AnEDesc").val()
+            };
+            // 必須propertyが揃っているか？
+            if (!item.AnE) configReady = "";
+
+            // dataItemをプロパティリストにプッシュ
+            node.dataItems.push(item);
+        });
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.dataItems[0]) configReady = "";
+        // 設定完了フラグをセット
+        $("#node-input-configReady").val(configReady);
+    },
+
+    oneditresize: function (size) {
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // Tab以外の部分の高さを引く
+            height -= $("#com-block").outerHeight(true);
+            height -= $("#name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 80;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
+        }
+    }
+});
+
+</script>
