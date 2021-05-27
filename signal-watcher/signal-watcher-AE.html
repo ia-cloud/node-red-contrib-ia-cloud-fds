@@ -23,7 +23,12 @@
         <!-- tab-object-properties starts -->
         <!-- objectの設定 -->
         <div id="tab-object-properties">
-
+            <div class="form-row">
+                <label for="node-input-enOceanId">
+                    <span data-i18n="editor.enOceanId"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                    id="node-input-enOceanId" data-i18n="[placeholder]editor.enOceanIdHolder">
+            </div>
             <div class="form-row">
                 <label for="node-input-storeInterval">
                     <span data-i18n="editor.period"></span></label>
@@ -86,6 +91,7 @@ RED.nodes.registerType('signal-watcher-AE',{
         contentType: {value: "Alarm&Event", required: true},
 
         // object properties
+        enOceanId: {value: "", required: true},
         storeInterval: {value:"10"},
         storeAsync: {value: true},
         objectKey: {value:"", required: true},
@@ -120,7 +126,7 @@ RED.nodes.registerType('signal-watcher-AE',{
         const lblmomentaryOn = node._("editor.momentaryOn");
         const lblmomentaryOff = node._("editor.momentaryOff");
         const lblbat = node._("editor.bat");
-        const lblrssi = node._("editor.rssi");
+        // const lblrssi = node._("editor.rssi");
         const lblAnECode = node._("editor.AnECode");
         const lblAnEDesc = node._("editor.AnEDesc");
 
@@ -133,6 +139,7 @@ RED.nodes.registerType('signal-watcher-AE',{
                 <option value="CH2">CH2</option>
                 <option value="CH3">CH3</option>
                 <option value="CH4">CH4</option>
+                <option value="bat">Battery</option>
             </select>
             <select style="display:inline-block; width: 100px" class="dataSelect">
                 <option value="on">${lblon}</option>
@@ -141,7 +148,7 @@ RED.nodes.registerType('signal-watcher-AE',{
                 <option value="slowBlink" selected="selected">${lblslowBlink}</option>
                 <option value="momentaryOn">${lblmomentaryOn}</option>
                 <option value="momentaryOff">${lblmomentaryOff}</option>
-                <option value="battery">${lblbat}</option>
+                <option value="low">${lblbat}</option>
             </select>
             <input class="AnECode" placeholder="${lblAnECode}" type="text"
                     style="width:90px; display:inline-block; text-align:left; margin-left:10px;">
