@@ -9,6 +9,8 @@
           "data-settings": "データ設定"
         },
         "filename": "設定ファイル名を入力してください",
+        "enOceanId": "EnOcean ID",
+        "enOceanIdHolder": "必須: EnOcean ID",
         "period": "定期収集周期",
         "async": "非同期収集有り",
         "objectname": "object名称",

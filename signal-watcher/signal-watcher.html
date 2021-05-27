@@ -25,6 +25,12 @@
         <div id="tab-object-properties">
 
             <div class="form-row">
+                <label for="node-input-enOceanId">
+                    <span data-i18n="editor.enOceanId"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                    id="node-input-enOceanId" data-i18n="[placeholder]editor.enOceanIdHolder">
+            </div>
+            <div class="form-row">
                 <label for="node-input-storeInterval">
                     <span data-i18n="editor.period"></span></label>
                 <input type="number" id="node-input-storeInterval" min="0" step="1"
@@ -86,6 +92,7 @@ RED.nodes.registerType('signal-watcher',{
         contentType: {value: "iaCloudData", required: true},
 
         // object properties
+        enOceanId: {value: "", required: true},
         storeInterval: {value:"60"},
         storeAsync: {value: false},
         objectKey: {value:"", required: true},
@@ -120,7 +127,7 @@ RED.nodes.registerType('signal-watcher',{
         const lblCH3 = node._("editor.CH3");
         const lblCH4 = node._("editor.CH4");
         const lblbat = node._("editor.bat");
-        const lblrssi = node._("editor.rssi");
+        // const lblrssi = node._("editor.rssi");
         const lblfw = node._("editor.fw");
 
         // editableList item のhtml要素
@@ -133,7 +140,7 @@ RED.nodes.registerType('signal-watcher',{
                 <option value="CH3">${lblCH3}</option>
                 <option value="CH4">${lblCH4}</option>
                 <option value="bat">${lblbat}</option>
-                <option value="rssi">${lblrssi}</option>
+                <!--<option value="rssi">${lblrssi}</option>-->
                 <option value="fw">${lblfw}</option>
             </select>
         `;
@@ -210,8 +217,8 @@ RED.nodes.registerType('signal-watcher',{
                             break;
                         case "bat": name = lblbat;
                             break;
-                        case "rssi": name = lblrssi;
-                            break;
+                        //case "rssi": name = lblrssi;
+                        //    break;
                         case "fw": name = lblfw;
                             break;
                     }
@@ -264,6 +271,8 @@ RED.nodes.registerType('signal-watcher',{
             // dataItemをプロパティリストにプッシュ
             node.dataItems.push(item);
         });
+        // enOceanIdはある？
+        if (!$("#node-input-enOceanId").val()) configReady = "";
         // objectKeyはある？
         if (!$("#node-input-objectKey").val()) configReady = "";
          // contentTypeはある？
