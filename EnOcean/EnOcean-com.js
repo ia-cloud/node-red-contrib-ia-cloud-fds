@@ -184,7 +184,27 @@ module.exports = function (RED) {
         const InterByteTimeout = require('@serialport/parser-inter-byte-timeout')
         this.parser = this.port.pipe(new InterByteTimeout({interval: INTERBYTETIMEOUT}))
         var node = this;
-        var linkObj = [];
+        /**
+         * linkObjの構造
+         * {
+         *     sendorId: [
+         *         {
+         *             sensorId: "1234A5C2",
+         *             value: "0x12a4b5",
+         *             optionalData: "0xa6",  // 電界強度
+         *             objectKey: "key",
+         *             nodeId: "nodeId"
+         *         }
+         *     ]
+         * }
+         */
+        var linkObj = {};
+        /**
+         * listenersの構造ß
+         * {
+         *     nodeId: objectKey
+         * }
+         */
         var listeners = {};
 
         if (this.parser) {
@@ -240,15 +260,15 @@ module.exports = function (RED) {
 
                 node.debug(`radio data = ${erp2.dataDL}`);
 
-                propagateReceivedValue(erp2.originatorId, erp2.dataDL);
+                propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
                 node.debug('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                Object.keys(listeners).forEach(function (nodeId) {
+                Object.keys(listeners).forEach((nodeId) => {
                     if (nodeId) {
                         var EnObjNode = RED.nodes.getNode(nodeId);
                         node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
-                        if (EnObjNode) EnObjNode.emit('linkDatachangeListener', listeners[nodeId]);
+                        if (EnObjNode) EnObjNode.emit('changeListener', listeners[nodeId]);
                     }
                 });
                 listeners = {}; // 通知先をクリアする
@@ -257,42 +277,32 @@ module.exports = function (RED) {
             this.error(RED._('serial.errors.missing-conf'));
         }
 
-        var propagateReceivedValue = function (receivedSensorId, data) {
+        var propagateReceivedValue = (receivedSensorId, data, optionalData) => {
             // Pick up sensor node that has same sensorId.
-            const linkData = linkObj.filter((e) => {
-                if (e.sensorId === receivedSensorId) return true;
-                return parseInt(e.sensorId, 16) === parseInt(receivedSensorId, 16);
-            });
-            if (linkData.length === 0) {
+            const linkData = linkObj[receivedSensorId];
+            if (!linkData || linkData.length === 0) {
                 node.debug(`Sensor ID '${receivedSensorId}' received but there's no node with matched id.`);
             } else {
-                linkData.forEach(function (e) {
+                linkData.forEach((e) => {
                     e.value = data;
-                    if (e.nodeId) {
+                    e.optionalData = optionalData;
+                    if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
-                        const objectKeyAndValueArray = [e.objectKey, e.value];
-                        listeners[e.nodeId] = objectKeyAndValueArray;
-                        node.debug(`listeners[${e.nodeId}] = ${objectKeyAndValueArray}`);
+                        listeners[e.nodeId] = e.objectKey;
+                        node.debug(`listeners[${e.nodeId}] = ${e.objectKey}`);
                     }
                 });
             }
         };
 
-        this.on('addLinkData', function (lObj){
+        this.on('addLinkData', (lObj) => {
             // linkObjに新たなリンクデータを追加
-            Array.prototype.push.apply(linkObj, lObj);
+            if(!linkObj[lObj.sensorId]) linkObj = [];
+            linkObj[lObj.sensorId].push(lObj)
             node.trace(`lObj = ${JSON.stringify(lObj)}`);
             node.trace(`linkObj = ${JSON.stringify(linkObj)}`);
-
         });
-/*
-        EnOceanComNode.prototype.addLinkData = function (lObj) {
-            // linkObjに新たなリンクデータを追加
-            Array.prototype.push.apply(linkObj, lObj);
-            node.log(`lObj = ${JSON.stringify(lObj)}`);
-            node.log(`linkObj = ${JSON.stringify(linkObj)}`);
-        };
-*/
+
         this.on('close', function (done) {
             if (this.port) {
                 this.port.close(done);
