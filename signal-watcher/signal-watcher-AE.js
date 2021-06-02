@@ -4,7 +4,7 @@ const moment = require('moment');
 
 module.exports = function(RED) {
 
-    function signalWatcher(config) {
+    function signalWatcherAE(config) {
 
         RED.nodes.createNode(this,config);
 
@@ -14,7 +14,7 @@ module.exports = function(RED) {
         let nodeId = node.id;
         const { serialPool } = config.enOceanCom;
         // 最後にEnOceanComから受け取ったデータを保持する(定期収集に対応するため)
-        let latestElement;
+        let latestLinkObj;
 
         const enOceanCom = RED.nodes.getNode(config.enOceanCom);
         // enOceanの設定ノードが存在しない場合
@@ -54,16 +54,20 @@ module.exports = function(RED) {
                 // 収集周期がきた。収集周期を再設定。
                 timeCount = Number(config.storeInterval);
                 if(latestElement) {
-                    iaCloudObjectSend(latestElement);
+                    iaCloudObjectSend(latestLinkObj);
                 }
             }
         }, (minCycle * 1000));
 
-        this.on("linkDatachangeListener", (element) => {
-            // 引数に [objectKey, radio_data] を受け取る
+        this.on("changeListener", (objectKey) => {
+            //登録したlinkObに変化があったら呼ばれる。
+            //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             if(config.storeAsync) {
-                iaCloudObjectSend(element);
+                if(!latestLinkObj || linkObj !== latestLinkObj.value) {
+                    iaCloudObjectSend(linkObj);
+                }
             }
+            latestLinkObj = JSON.parse(JSON.stringify(linkObj));    // copy linkObj to latestLinkObj
         });
 
         this.on("input", (msg, send, done) => {
@@ -83,14 +87,18 @@ module.exports = function(RED) {
         });
 
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして送出する関数
-        const iaCloudObjectSend = (element, msg = undefined) => {
+        const iaCloudObjectSend = (obj, msg = undefined) => {
+
+            // 自身のobjectKeyでなかったら何もしない。
+            if(obj.objectKey !== objectKey) return;
+
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
             if(!msg) msg = {};
             msg.request = 'store';
 
-            let preParsedData = latestElement ? parseDataDL(latestElement[1]) : undefined;
-            let parsedData = parseDataDL(element[1]);
+            let preParsedData = latestLinkObj ? parseDataDL(latestLinkObj.value) : undefined;
+            let parsedData = parseDataDL(obj.value);
 
             if (parsedData) {
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
@@ -123,20 +131,18 @@ module.exports = function(RED) {
                 });
 
                 msg.dataObject = {
-                    objectKey: element[0],
+                    objectKey: obj.objectKey,
                     timeStamp: moment().format(),
                     objectType: 'iaCloudObject',
                     objectDescription: config.objectDescription,
                     objectContent: {
                         contentType: config.contentType,
-                        contentData: contentData
+                        contentData
                     }
                 };
-                msg.payload = parsedData;
+                msg.payload = contentData;
 
                 node.send(msg);
-
-                latestElement = element;
 
                 node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             } else {
