@@ -209,8 +209,10 @@ module.exports = function (RED) {
 
         if (this.parser) {
             this.parser.on('data', function (data) {
+                console.log("received data", data);
                 // TODO msgout.payload can be 32 bytes when 2 sensors send telegram at the same time.
                 const esp = pickupEspPacketAsObject(data);
+                console.log("received esp", esp);
 
                 if (esp.syncByte !== '55') {
                     node.error(`Invalid syncByte ${esp.syncByte}`);
@@ -250,6 +252,7 @@ module.exports = function (RED) {
 
                 // --- ERP2 ---
                 const erp2 = pickupErp2DataAsObject(esp.data, esp.optionalData);
+                console.log("received esp2", erp2);
 
                 if (erp2.originatorId) {
                     node.debug(`Originator ID = ${erp2.originatorId}`);
@@ -283,14 +286,16 @@ module.exports = function (RED) {
         }
 
         var propagateReceivedValue = (receivedSensorId, data, optionalData) => {
+            console.log("linkObj", linkObj)
             // Pick up sensor node that has same sensorId.
             const linkData = linkObj[receivedSensorId];
             if (!linkData || linkData.length === 0) {
                 node.debug(`Sensor ID '${receivedSensorId}' received but there's no node with matched id.`);
             } else {
                 linkData.forEach((e) => {
-                    e.value = data;
-                    e.optionalData = optionalData;
+                    console.log("e", e)
+                    e.value = '0x' + data;
+                    e.optionalData = '0x' + optionalData;
                     if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
                         listeners[e.nodeId] = e.objectKey;
@@ -301,8 +306,9 @@ module.exports = function (RED) {
         };
 
         this.on('addLinkData', (lObj) => {
+            console.log("addLinkData lObj", lObj)
             // linkObjに新たなリンクデータを追加
-            if(!linkObj[lObj.sensorId]) linkObj = [];
+            if(!linkObj[lObj.sensorId]) linkObj[lObj.sensorId] = [];
             linkObj[lObj.sensorId].push(lObj)
             node.trace(`lObj = ${JSON.stringify(lObj)}`);
             node.trace(`linkObj = ${JSON.stringify(linkObj)}`);

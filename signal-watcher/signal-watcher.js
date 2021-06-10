@@ -28,11 +28,11 @@ module.exports = function(RED) {
         node.status({fill:"blue", shape:"ring", text:"runtime.preparing"});
 
         // linkObjを登録
-        let linkObj = [{
+        let linkObj = {
             sensorId,
             nodeId,
             objectKey
-        }];
+        };
 
         //ebOceanCom nodeのデータ追加メソッドを呼ぶ
         enOceanCom.emit("addLinkData", linkObj);
@@ -53,7 +53,7 @@ module.exports = function(RED) {
                 if (timeCount > 0) return;
                 // 収集周期がきた。収集周期を再設定。
                 timeCount = Number(config.storeInterval);
-                if(latestElement) {
+                if(latestLinkObj) {
                     iaCloudObjectSend(latestLinkObj);
                 }
             }
@@ -100,10 +100,12 @@ module.exports = function(RED) {
             const parsedData = parseDataDL(obj.value);
 
             if (parsedData) {
+                console.log("parsedData", parsedData)
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
 
                 let contentData = [];
                 config.dataItems.forEach((dataItem, index) => {
+                    console.log("dataItem", dataItem)
                     // dataItem
                     //     item: データ項目(CH1, CH2, CH3, CH4, bat, fw)
                     //     dataName: データ名
@@ -114,6 +116,10 @@ module.exports = function(RED) {
                         dataValue: parsedData[dataItem.item],
                         unit: dataItem.unit
                     };
+                    if(dataItem.item === 'rssi') {
+                        dItem.dataValue = obj.optionalData;
+                    }
+                    console.log("dItem", dItem)
     
                     contentData.push(dItem);
                 });
@@ -150,7 +156,7 @@ module.exports = function(RED) {
             0b01: "low", 0b10: "mid", 0b11: "high"
         };
         const parseDataDL = (data) => {
-            if(data.length !== 4) {
+            if(data.length !== 10) {    // 0xNNNNNNNNの文字列
                 // Dataパケットではないため何もしない
                 return;
             }
@@ -166,9 +172,9 @@ module.exports = function(RED) {
             //      Bit7-4: CH4 Light Status [0000: 消灯・点滅なし, 0001: 点灯・点滅なし, 0011: 点灯・低速点滅, 0111: 点灯・高速点滅, 1000: 点灯中に瞬時消灯, 1001: 消灯中に瞬時点灯]
             //      Bit3-0: F/W Ver. [0000: Ver.1 〜 1111: Ver.16]
             // CRC
-            const data1 = parseInt(data.substring(0, 2), 16);
-            const data2 = parseInt(data.substring(2, 2), 16);
-            const data3 = parseInt(data.substring(4, 2), 16);
+            const data1 = parseInt(data.substring(2, 4), 16);
+            const data2 = parseInt(data.substring(4, 6), 16);
+            const data3 = parseInt(data.substring(6, 8), 16);
             const [heartBeat, bat, CH1, CH2, CH3, CH4, fw] = [
                 (data1 & 0b11000000) >> 6,
                 BAT_STATUS_TABLE[(data1 & 0b00110000) >> 4],
