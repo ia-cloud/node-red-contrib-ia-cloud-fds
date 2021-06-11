@@ -114,9 +114,20 @@
                 "start": "0x3309",
                 "num": 1,
                 "value": [0]
+            },
+            "Alarm&Event" :{
+                "start": "600",
+                "num": 1,
+                "value": [32901]
             }
         },
-        "coil":{},
+        "Coil":{
+            "Alarm&Event" :{
+                "start": "100",
+                "num": 1,
+                "value": [true]
+            }
+        },
         "IR": {}
     }
 }
