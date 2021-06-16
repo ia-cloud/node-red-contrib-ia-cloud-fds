@@ -63,7 +63,7 @@ module.exports = function(RED) {
             //登録したlinkObに変化があったら呼ばれる。
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             if(config.storeAsync) {
-                if(!latestLinkObj || linkObj !== latestLinkObj.value) {
+                if(!latestLinkObj || linkObj.value !== latestLinkObj.value) {
                     iaCloudObjectSend(linkObj);
                 }
             }
@@ -144,7 +144,7 @@ module.exports = function(RED) {
             }
         };
 
-        const LIGHT_STATUS_TABLE = {
+        const SIGNAL_STATUS_TABLE = {
             0b0000: "off",
             0b0001: "on",
             0b0011: "slowBlink",
@@ -178,10 +178,10 @@ module.exports = function(RED) {
             const [heartBeat, bat, CH1, CH2, CH3, CH4, fw] = [
                 (data1 & 0b11000000) >> 6,
                 BAT_STATUS_TABLE[(data1 & 0b00110000) >> 4],
-                LIGHT_STATUS_TABLE[(data1 & 0b00001111) >> 0],
-                LIGHT_STATUS_TABLE[(data2 & 0b11110000) >> 4],
-                LIGHT_STATUS_TABLE[(data2 & 0b00001111) >> 0],
-                LIGHT_STATUS_TABLE[(data3 & 0b11110000) >> 4],
+                SIGNAL_STATUS_TABLE[(data1 & 0b00001111) >> 0],
+                SIGNAL_STATUS_TABLE[(data2 & 0b11110000) >> 4],
+                SIGNAL_STATUS_TABLE[(data2 & 0b00001111) >> 0],
+                SIGNAL_STATUS_TABLE[(data3 & 0b11110000) >> 4],
                 (data3 & 0b00001111) >> 0,
             ];
             if(heartBeat === 1) {
