@@ -119,6 +119,11 @@ RED.nodes.registerType('signal-watcher-AE',{
         let node = this;
 
         const lblAnE = node._("editor.AnE");
+        const lblCH1 = node._("editor.CH1");
+        const lblCH2 = node._("editor.CH2");
+        const lblCH3 = node._("editor.CH3");
+        const lblCH4 = node._("editor.CH4");
+        const lblbattery = node._("editor.battery");
         const lblon = node._("editor.on");
         const lbloff = node._("editor.off");
         const lblfastBlink = node._("editor.fastBlink");
@@ -134,12 +139,12 @@ RED.nodes.registerType('signal-watcher-AE',{
         // 1行目のデータタイプとデータ名称
         const paraForm1 =`
             <label style="display:inline-block; width:60px">${lblAnE}</span></label>
-            <select style="display:inline-block; width: 70px" class="chSelect">
-                <option value="CH1" selected="selected">CH1</option>
-                <option value="CH2">CH2</option>
-                <option value="CH3">CH3</option>
-                <option value="CH4">CH4</option>
-                <option value="bat">Battery</option>
+            <select style="display:inline-block; width: 70px" class="dataNameSelect">
+                <option value="CH1" selected="selected">${lblCH1}</option>
+                <option value="CH2">${lblCH2}</option>
+                <option value="CH3">${lblCH3}</option>
+                <option value="CH4">${lblCH4}</option>
+                <option value="bat">${lblbattery}</option>
             </select>
             <select style="display:inline-block; width: 100px" class="dataSelect">
                 <option value="on">${lblon}</option>
@@ -199,14 +204,14 @@ RED.nodes.registerType('signal-watcher-AE',{
 
                 // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
                 if(!dItem.hasOwnProperty("AnE")) {
-                    dItem.ch = "CH1",
+                    dItem.dataName = "CH1",
                     dItem.AnE = "on",
                     dItem.AnECode = "",
                     dItem.AnEDesc = ""
                 }
 
                 // set back dataItem properties on row1
-                div1.find(".chSelect").val(dItem.ch);
+                div1.find(".dataNameSelect").val(dItem.dataName);
                 div1.find(".dataSelect").val(dItem.AnE);
                 div1.find(".AnECode").val(dItem.AnECode);
                 div2.find(".AnEDesc").val(dItem.AnEDesc);
@@ -244,7 +249,7 @@ RED.nodes.registerType('signal-watcher-AE',{
 
         items.each(function(i, elm){
             let item = {
-                ch: elm.find(".chSelect").val(),
+                dataName: elm.find(".dataNameSelect").val(),
                 AnE: elm.find(".dataSelect").val(),
                 AnECode: elm.find(".AnECode").val(),
                 AnEDesc: elm.find(".AnEDesc").val()

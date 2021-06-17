@@ -106,7 +106,7 @@ module.exports = function(RED) {
                 let contentData = [];
                 config.dataItems.forEach((dataItem, index) => {
                     // dataItem
-                    //     ch: チャネル(CH1, CH2, CH3, CH4, bat, fw)
+                    //     dataName: チャネル(CH1, CH2, CH3, CH4, bat, fw)
                     //     AnE: 通知対象状態(on, off, fastBlink, slowBlink, momentaryOn, momentaryOff, battery)
                     //     AnECode: A&Eコード
                     //     AnEDescription: A&Eの説明 
@@ -114,13 +114,15 @@ module.exports = function(RED) {
                     let dItem = {
                         commonName: "alarm&Event",
                         dataValue: {
+                            dataName: dataItem.dataName,
+                            AnE: dataItem.AnE,
                             AnECode: dataItem.AnECode,
                             AnEDescription: dataItem.AnEDesc,
                         }
                     };
 
-                    let value = parsedData[dataItem.ch] === dataItem.AnE;
-                    let preValue = (preParsedData && preParsedData[dataItem.ch] === dataItem.AnE);
+                    let value = parsedData[dataItem.dataName] === dataItem.AnE;
+                    let preValue = (preParsedData && preParsedData[dataItem.dataName] === dataItem.AnE);
                     if(value) {
                         dItem.dataValue.AnEStatus = preValue ? "on" : "set";
                     } else {

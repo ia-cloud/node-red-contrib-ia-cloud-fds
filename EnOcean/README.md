@@ -1,12 +1,12 @@
 # EnOcean通信ノード
 
-## ia-cloud-EnOceanCom
+## EnOceanCom
 
 ## 機能概要
 
-EnOceanComノードは、EnOcean受信機(USBドングル？)で取得したデータを、そのデータを利用するノード(EnOceanデータ利用ノードと呼ぶ)に渡す機能を提供するNode-REDの設定ノードである。
-EnOceanデータ利用ノードでは、あらかじめLinkObject*1、ノードID、データを参照したいEnOceanデバイスに付与されたEnOceanIDをEnOceanComノードに設定しておく必要がある。
-EnOceanComノードがEnOceanデータを受信すると、このLinkObjectの更新を行い、さらにそのデータを利用したいEnOceanデータ利用ノードにイベントを送信する。
+EnOceanComノードは、EnOcean受信機(USBドングル？)で取得したデータを、そのデータを利用するノード(EnOceanデータ利用ノードと呼ぶ)に渡す機能を提供するNode-REDの設定ノードである。  
+EnOceanデータ利用ノードでは、あらかじめLinkObject*1、ノードID、データを参照したいEnOceanデバイスに付与されたEnOceanIDをEnOceanComノードに設定しておく必要がある。  
+EnOceanComノードがEnOceanデータを受信すると、このLinkObjectの更新を行い、さらにそのデータを利用したいEnOceanデータ利用ノードにイベントを送信する。  
 
 *1: LinkObjectとはEnOceanComノードとEnOceanデータ利用ノードが共有する変数であり、EnOceanComノードでLinkObjectを変更すると、EnOceanデータ利用ノードからそのデータを参照できる。
 
@@ -21,7 +21,6 @@ EnOceanComノードは以下のプロパティを持つ。このプロパティ�
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
 | シリアルポート | string | 使用する通信ポート。例: `/dev/tty.usbserial-XXXXXXXX` |
-| ノード名称 | string | ノードの名称。入力しない場合、「EnOcean通信ノード」となる。 |
 
 ## 出力メッセージ
 
@@ -86,5 +85,3 @@ EnOceanデータ利用ノードで、イベントを受け取った際に、上�
 | objectKey | string | オブジェクトキー。 |
 | value | string | 受信したデータのERP2のRaw Data(16進数の文字列)。例: `0xFFFFFFFF` |
 | optionalData | string | 電界強度。例: `0xa6` |
-
-
