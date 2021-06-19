@@ -241,7 +241,7 @@ class PLC {
                     if (options.encode == "unsigned") dItem.dataValue = parseInt("0" + value, 16);
                     if (options.encode == "BCD") dItem.dataValue = parseInt(value, 10);
                     dItem.dataValue = dItem.dataValue * options.gain + Number(options.offset);
-                    if(dataItem.unit) ditem[umit] = dataItem.unit;
+                    if(options.unit) dItem.unit = options.unit;
                     break;
                 case "string":                 
                     options = dataItem.string;
