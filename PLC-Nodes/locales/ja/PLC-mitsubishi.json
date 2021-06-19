@@ -31,7 +31,7 @@
         "AnE": "A&E",
         "onoff": "on/off",
         "10": "1/0",
-        "bool": "論理値s",  
+        "bool": "論理値",  
         "bitNum": "bit数",
         "pos": "正論理",
         "neg": "負論理",
