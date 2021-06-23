@@ -53,7 +53,7 @@ module.exports = function(RED) {
                 if (timeCount > 0) return;
                 // 収集周期がきた。収集周期を再設定。
                 timeCount = Number(config.storeInterval);
-                if(latestElement) {
+                if(latestLinkObj) {
                     iaCloudObjectSend(latestLinkObj);
                 }
             }
@@ -63,11 +63,11 @@ module.exports = function(RED) {
             //登録したlinkObに変化があったら呼ばれる。
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             if(config.storeAsync) {
-                if(!latestLinkObj || linkObj.value !== latestLinkObj.value) {
-                    iaCloudObjectSend(linkObj);
-                }
+                console.log("storeAsync", config.storeAsync)
+                iaCloudObjectSend(linkObj, null, true);
             }
             latestLinkObj = JSON.parse(JSON.stringify(linkObj));    // copy linkObj to latestLinkObj
+            console.log("latestLinkObj", latestLinkObj)
         });
 
         this.on("input", (msg, send, done) => {
@@ -87,7 +87,7 @@ module.exports = function(RED) {
         });
 
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして送出する関数
-        const iaCloudObjectSend = (obj, msg = undefined) => {
+        const iaCloudObjectSend = (obj, msg = undefined, storeAsync = false) => {
 
             // 自身のobjectKeyでなかったら何もしない。
             if(obj.objectKey !== objectKey) return;
@@ -100,22 +100,40 @@ module.exports = function(RED) {
             let preParsedData = latestLinkObj ? parseDataDL(latestLinkObj.value) : undefined;
             let parsedData = parseDataDL(obj.value);
 
+            console.log("obj", obj)
+            console.log("parsedData", parsedData)
+
             if (parsedData) {
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
 
                 let contentData = [];
+
+                // storeAsyncがtrueの場合は、変化があった場合のみ通信することになるため、
+                // ユーザーが設定したデータに変化があったかどうかチェックする
+                if( storeAsync && preParsedData) {
+                    let changeFlg = false;
+                    config.dataItems.forEach((dataItem, index) => {
+                        if( preParsedData[dataItem.dataName] !== parsedData[dataItem.dataName]) {
+                            changeFlg = true;
+                        }
+                    })
+                    // ユーザーが設定したデータに変化がなかったため処理を終える
+                    if(!changeFlg) {
+                        node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
+                        return;
+                    }
+                }
+
                 config.dataItems.forEach((dataItem, index) => {
                     // dataItem
                     //     dataName: チャネル(CH1, CH2, CH3, CH4, bat, fw)
                     //     AnE: 通知対象状態(on, off, fastBlink, slowBlink, momentaryOn, momentaryOff, battery)
                     //     AnECode: A&Eコード
-                    //     AnEDescription: A&Eの説明 
+                    //     AnEDescription: A&Eの説明
 
                     let dItem = {
                         commonName: "alarm&Event",
                         dataValue: {
-                            dataName: dataItem.dataName,
-                            AnE: dataItem.AnE,
                             AnECode: dataItem.AnECode,
                             AnEDescription: dataItem.AnEDesc,
                         }
@@ -149,6 +167,7 @@ module.exports = function(RED) {
                 node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             } else {
                 node.log('!!! 受信したデータが正しくありません(Tech-inパケットか、ヘルスチェックのDATAパケットの可能性があります) !!!');
+                node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             }
         };
 
@@ -164,7 +183,7 @@ module.exports = function(RED) {
             0b01: "low", 0b10: "mid", 0b11: "high"
         };
         const parseDataDL = (data) => {
-            if(data.length !== 4) {
+            if(data.length !== 10) {    // 0xNNNNNNNNの文字列
                 // Dataパケットではないため何もしない
                 return;
             }
@@ -180,9 +199,9 @@ module.exports = function(RED) {
             //      Bit7-4: CH4 Light Status [0000: 消灯・点滅なし, 0001: 点灯・点滅なし, 0011: 点灯・低速点滅, 0111: 点灯・高速点滅, 1000: 点灯中に瞬時消灯, 1001: 消灯中に瞬時点灯]
             //      Bit3-0: F/W Ver. [0000: Ver.1 〜 1111: Ver.16]
             // CRC
-            const data1 = parseInt(data.substring(0, 2), 16);
-            const data2 = parseInt(data.substring(2, 2), 16);
-            const data3 = parseInt(data.substring(4, 2), 16);
+            const data1 = parseInt(data.substring(2, 4), 16);
+            const data2 = parseInt(data.substring(4, 6), 16);
+            const data3 = parseInt(data.substring(6, 8), 16);
             const [heartBeat, bat, CH1, CH2, CH3, CH4, fw] = [
                 (data1 & 0b11000000) >> 6,
                 BAT_STATUS_TABLE[(data1 & 0b00110000) >> 4],

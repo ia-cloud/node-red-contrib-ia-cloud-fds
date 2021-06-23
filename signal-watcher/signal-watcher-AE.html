@@ -81,6 +81,37 @@
 
 <script type="text/javascript">
 
+const changeDataName = (elem) => {
+    console.log("changeDataName", elem)
+    const dataSelect = $(elem).next();
+    // 選択中の値を求める
+    const beforeValue = $(dataSelect).find("option:selected").val();
+    prepareDataSelection(elem.value, dataSelect, null, beforeValue);
+};
+
+const prepareDataSelection = (dataName, dataSelect, selectedValue = null, beforeValue = null) => {
+    const dataSelectContainer = $(dataSelect);
+    if(dataName === "bat") {
+        console.log("changeDataName", dataName)
+        $(dataSelectContainer).find("option:nth-child(1), option:nth-child(2), option:nth-child(3), option:nth-child(4), option:nth-child(5), option:nth-child(6)").css("display", "none");
+        $(dataSelectContainer).find("option:nth-child(7)").css("display", "block");
+        if(selectedValue) {
+            $(dataSelectContainer).find(`option[value='${selectedValue}']`).prop("selected", true);
+        } else {
+            $(dataSelectContainer).find("option:nth-child(7)").prop("selected", true);
+        }
+    } else if(beforeValue === "low") {
+        console.log("changeDataName", dataName)
+        $(dataSelectContainer).find("option:nth-child(1), option:nth-child(2), option:nth-child(3), option:nth-child(4), option:nth-child(5), option:nth-child(6)").css("display", "block");
+        $(dataSelectContainer).find("option:nth-child(7)").css("display", "none");
+        if(selectedValue) {
+            $(dataSelectContainer).find(`option[value='${selectedValue}']`).prop("selected", true);
+        } else {
+            $(dataSelectContainer).find("option:nth-child(1)").prop("selected", true);
+        }
+    }
+};
+
 RED.nodes.registerType('signal-watcher-AE',{
     category: 'iaCloud devices',
     color:"rgb(231, 180, 100)",
@@ -139,24 +170,24 @@ RED.nodes.registerType('signal-watcher-AE',{
         // 1行目のデータタイプとデータ名称
         const paraForm1 =`
             <label style="display:inline-block; width:60px">${lblAnE}</span></label>
-            <select style="display:inline-block; width: 70px" class="dataNameSelect">
+            <select style="display:inline-block; width: 80px" class="dataNameSelect" onchange="changeDataName(this)">
                 <option value="CH1" selected="selected">${lblCH1}</option>
                 <option value="CH2">${lblCH2}</option>
                 <option value="CH3">${lblCH3}</option>
                 <option value="CH4">${lblCH4}</option>
                 <option value="bat">${lblbattery}</option>
             </select>
-            <select style="display:inline-block; width: 100px" class="dataSelect">
-                <option value="on">${lblon}</option>
+            <select style="display:inline-block; width: 80px" class="dataSelect">
+                <option value="on" selected="selected">${lblon}</option>
                 <option value="off">${lbloff}</option>
                 <option value="fastBllink">${lblfastBlink}</option>
-                <option value="slowBlink" selected="selected">${lblslowBlink}</option>
+                <option value="slowBlink">${lblslowBlink}</option>
                 <option value="momentaryOn">${lblmomentaryOn}</option>
                 <option value="momentaryOff">${lblmomentaryOff}</option>
-                <option value="low">${lblbat}</option>
+                <option value="low" style="display:none">${lblbat}</option>
             </select>
             <input class="AnECode" placeholder="${lblAnECode}" type="text"
-                    style="width:90px; display:inline-block; text-align:left; margin-left:10px;">
+                style="width:90px; display:inline-block; text-align:left; margin-left:10px;">
         `;
         // 2行目のA&Eコード、A&E説明プロパティ入力項目
         const paraForm2 =`
@@ -215,6 +246,7 @@ RED.nodes.registerType('signal-watcher-AE',{
                 div1.find(".dataSelect").val(dItem.AnE);
                 div1.find(".AnECode").val(dItem.AnECode);
                 div2.find(".AnEDesc").val(dItem.AnEDesc);
+                prepareDataSelection(dItem.dataName, div1.find(".dataSelect"), dItem.AnE);
             },
             // リストの順番が変わったら呼ばれる。
             sortItems: function(items) {

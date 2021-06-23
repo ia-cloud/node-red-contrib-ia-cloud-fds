@@ -295,7 +295,11 @@ module.exports = function (RED) {
                 linkData.forEach((e) => {
                     console.log("e", e)
                     e.value = '0x' + data;
-                    e.optionalData = '0x' + optionalData;
+                    // optionalDataはSubTelNumとdBmであり、返却するのはdBmのみで良いため分割する
+                    if(optionalData.length === 4) {
+                        const dBm = optionalData.substring(2);
+                        e.optionalData = '0x' + dBm;
+                    }
                     if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
                         listeners[e.nodeId] = e.objectKey;

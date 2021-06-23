@@ -120,7 +120,6 @@ RED.nodes.registerType('signal-watcher',{
         let node = this;
 
         const lbldName = node._("editor.dname");
-        const lblunit = node._("editor.unit");
         const lblitem = node._("editor.dItem");
         const lblCH1 = node._("editor.CH1");
         const lblCH2 = node._("editor.CH2");
@@ -148,8 +147,6 @@ RED.nodes.registerType('signal-watcher',{
             <span style="display:inline-block; width:30px"> </span>   
             <label style="display:inline-block; width: 100px;">${lbldName}</label>
             <input type="text" required="required" style="display:inline-block; width: 150px;" class="dName">
-            <label style="display:inline-block; margin-left: 20px; width: 50px;">${lblunit}</label>
-            <input type="text" style="display:inline-block; width: 40px;" class="unit">  
         `;
 
         // Tab

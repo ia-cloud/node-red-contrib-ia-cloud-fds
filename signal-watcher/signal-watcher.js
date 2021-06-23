@@ -63,9 +63,7 @@ module.exports = function(RED) {
             //登録したlinkObに変化があったら呼ばれる。
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             if(config.storeAsync) {
-                if(!latestLinkObj || linkObj.value !== latestLinkObj.value) {
-                    iaCloudObjectSend(linkObj);
-                }
+                iaCloudObjectSend(linkObj, null, true);
             }
             latestLinkObj = JSON.parse(JSON.stringify(linkObj));    // copy linkObj to latestLinkObj
         });
@@ -87,7 +85,7 @@ module.exports = function(RED) {
         });
 
         // 指定されたobjectKeyを持つia-cloudオブジェクトを出力メッセージとして送出する関数
-        const iaCloudObjectSend = (obj, msg = undefined) => {
+        const iaCloudObjectSend = (obj, msg = undefined, storeAsync = false) => {
             
             // 自身のobjectKeyでなかったら何もしない。
             if(obj.objectKey !== objectKey) return;
@@ -97,6 +95,7 @@ module.exports = function(RED) {
             if(!msg) msg = {};
             msg.request = 'store';
 
+            const preParsedData = latestLinkObj ? parseDataDL(latestLinkObj.value) : undefined;
             const parsedData = parseDataDL(obj.value);
 
             if (parsedData) {
@@ -104,20 +103,39 @@ module.exports = function(RED) {
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
 
                 let contentData = [];
+
+                // storeAsyncがtrueの場合は、変化があった場合のみ通信することになるため、
+                // ユーザーが設定したデータに変化があったかどうかチェックする
+                if( storeAsync && preParsedData) {
+                    let changeFlg = false;
+                    config.dataItems.forEach((dataItem, index) => {
+                        console.log("preParsedData[dataItem.dataName]", preParsedData[dataItem.item]);
+                        console.log("parsedData[dataItem.dataName]", parsedData[dataItem.item]);
+                        if( preParsedData[dataItem.item] !== parsedData[dataItem.item]) {
+                            changeFlg = true;
+                        }
+                    })
+                    // ユーザーが設定したデータに変化がなかったため処理を終える
+                    if(!changeFlg) {
+                        node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
+                        return;
+                    }
+                }
+
                 config.dataItems.forEach((dataItem, index) => {
                     console.log("dataItem", dataItem)
                     // dataItem
                     //     item: データ項目(CH1, CH2, CH3, CH4, bat, fw)
                     //     dataName: データ名
-                    //     unit: 単位
+                    //     unit: 単位(rssiのときのみdBmを付与)
 
                     let dItem = {
                         dataName: dataItem.dataName,
-                        dataValue: parsedData[dataItem.item],
-                        unit: dataItem.unit
+                        dataValue: parsedData[dataItem.item]
                     };
                     if(dataItem.item === 'rssi') {
-                        dItem.dataValue = obj.optionalData;
+                        dItem.dataValue = Number(obj.optionalData);
+                        dItem.unit = 'dBm';
                     }
                     console.log("dItem", dItem)
     
@@ -141,6 +159,7 @@ module.exports = function(RED) {
                 node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             } else {
                 node.log('!!! 受信したデータが正しくありません(Tech-inパケットか、ヘルスチェックのDATAパケットの可能性があります) !!!');
+                node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
             }
         };
 
