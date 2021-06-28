@@ -63,15 +63,17 @@ module.exports = function(RED) {
             //登録したlinkObに変化があったら呼ばれる。
             //そのlinkObjを参照するia-cloudオブエクトをstoreする。
             if(config.storeAsync) {
-                console.log("storeAsync", config.storeAsync)
                 iaCloudObjectSend(linkObj, null, true);
             }
             latestLinkObj = JSON.parse(JSON.stringify(linkObj));    // copy linkObj to latestLinkObj
-            console.log("latestLinkObj", latestLinkObj)
         });
 
         this.on("input", (msg, send, done) => {
-            if(msg.payload) iaCloudObjectSend(objectKey, msg);
+            if(msg.payload) {
+                if(latestLinkObj) {
+                    iaCloudObjectSend(latestLinkObj, msg);
+                }
+            }
             done();
         });
 
@@ -97,32 +99,13 @@ module.exports = function(RED) {
             if(!msg) msg = {};
             msg.request = 'store';
 
-            let preParsedData = latestLinkObj ? parseDataDL(latestLinkObj.value) : undefined;
-            let parsedData = parseDataDL(obj.value);
-
-            console.log("obj", obj)
-            console.log("parsedData", parsedData)
+            let preParsedData = latestLinkObj ? parseDataDL(latestLinkObj) : undefined;
+            let parsedData = parseDataDL(obj);
 
             if (parsedData) {
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
 
                 let contentData = [];
-
-                // storeAsyncがtrueの場合は、変化があった場合のみ通信することになるため、
-                // ユーザーが設定したデータに変化があったかどうかチェックする
-                if( storeAsync && preParsedData) {
-                    let changeFlg = false;
-                    config.dataItems.forEach((dataItem, index) => {
-                        if( preParsedData[dataItem.dataName] !== parsedData[dataItem.dataName]) {
-                            changeFlg = true;
-                        }
-                    })
-                    // ユーザーが設定したデータに変化がなかったため処理を終える
-                    if(!changeFlg) {
-                        node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
-                        return;
-                    }
-                }
 
                 config.dataItems.forEach((dataItem, index) => {
                     // dataItem
@@ -149,6 +132,16 @@ module.exports = function(RED) {
     
                     contentData.push(dItem);
                 });
+
+                // storeAsyncがtrueの場合は、変化があった場合のみ通信することになるため、
+                // ユーザーが設定したデータのユーザーが指定した状態の変化があったかどうかチェックする
+                if(storeAsync) {
+                    const changedData = contentData.filter((dItem) => dItem.dataValue.AnEStatus === "set" || dItem.dataValue.AnEStatus === "reset");
+                    if(changedData.length === 0) {
+                        node.status({ fill: 'green', shape: 'dot', text: 'status.received' });
+                        return;
+                    }
+                }
 
                 msg.dataObject = {
                     objectKey: obj.objectKey,
@@ -182,7 +175,8 @@ module.exports = function(RED) {
         const BAT_STATUS_TABLE = {
             0b01: "low", 0b10: "mid", 0b11: "high"
         };
-        const parseDataDL = (data) => {
+        const parseDataDL = (obj) => {
+            const data = obj.value;
             if(data.length !== 10) {    // 0xNNNNNNNNの文字列
                 // Dataパケットではないため何もしない
                 return;
@@ -212,10 +206,10 @@ module.exports = function(RED) {
                 (data3 & 0b00001111) >> 0,
             ];
             if(heartBeat === 1) {
-                // Heart Beatのデータであれば無視する
-                return;
+                node.debug("Signal Watcher Heart Beart received");
             }
-            return {bat, CH1, CH2, CH3, CH4, fw};
+            const rssi = Number(obj.optionalData);
+            return {bat, CH1, CH2, CH3, CH4, fw, rssi};
         }
     }
 
