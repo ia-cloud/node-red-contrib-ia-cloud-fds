@@ -69,7 +69,11 @@ module.exports = function(RED) {
         });
 
         this.on("input", (msg, send, done) => {
-            if(msg.payload) iaCloudObjectSend(latestLinkObj, msg);
+            if(msg.payload) {
+                if(latestLinkObj) {
+                    iaCloudObjectSend(latestLinkObj, msg);
+                }
+            }
             done();
         });
 
@@ -95,11 +99,10 @@ module.exports = function(RED) {
             if(!msg) msg = {};
             msg.request = 'store';
 
-            const preParsedData = latestLinkObj ? parseDataDL(latestLinkObj.value) : undefined;
-            const parsedData = parseDataDL(obj.value);
+            const preParsedData = latestLinkObj ? parseDataDL(latestLinkObj) : undefined;
+            const parsedData = parseDataDL(obj);
 
             if (parsedData) {
-                console.log("parsedData", parsedData)
                 node.debug(`parsedData = ${JSON.stringify(parsedData)}`);
 
                 let contentData = [];
@@ -109,8 +112,6 @@ module.exports = function(RED) {
                 if( storeAsync && preParsedData) {
                     let changeFlg = false;
                     config.dataItems.forEach((dataItem, index) => {
-                        console.log("preParsedData[dataItem.dataName]", preParsedData[dataItem.item]);
-                        console.log("parsedData[dataItem.dataName]", parsedData[dataItem.item]);
                         if( preParsedData[dataItem.item] !== parsedData[dataItem.item]) {
                             changeFlg = true;
                         }
@@ -123,21 +124,18 @@ module.exports = function(RED) {
                 }
 
                 config.dataItems.forEach((dataItem, index) => {
-                    console.log("dataItem", dataItem)
                     // dataItem
-                    //     item: データ項目(CH1, CH2, CH3, CH4, bat, fw)
+                    //     item: データ項目(CH1, CH2, CH3, CH4, bat, fw, rssi)
                     //     dataName: データ名
                     //     unit: 単位(rssiのときのみdBmを付与)
 
                     let dItem = {
-                        dataName: dataItem.dataName,
+                        dataName: dataItem.item,
                         dataValue: parsedData[dataItem.item]
                     };
                     if(dataItem.item === 'rssi') {
-                        dItem.dataValue = Number(obj.optionalData);
                         dItem.unit = 'dBm';
                     }
-                    console.log("dItem", dItem)
     
                     contentData.push(dItem);
                 });
@@ -174,7 +172,8 @@ module.exports = function(RED) {
         const BAT_STATUS_TABLE = {
             0b01: "low", 0b10: "mid", 0b11: "high"
         };
-        const parseDataDL = (data) => {
+        const parseDataDL = (obj) => {
+            const data = obj.value;
             if(data.length !== 10) {    // 0xNNNNNNNNの文字列
                 // Dataパケットではないため何もしない
                 return;
@@ -204,10 +203,10 @@ module.exports = function(RED) {
                 (data3 & 0b00001111) >> 0,
             ];
             if(heartBeat === 1) {
-                // Heart Beatのデータであれば無視する
-                return;
+                node.debug("Signal Watcher Heart Beart received");
             }
-            return {bat, CH1, CH2, CH3, CH4, fw};
+            const rssi = Number(obj.optionalData);
+            return {bat, CH1, CH2, CH3, CH4, fw, rssi};
         }
     }
 
