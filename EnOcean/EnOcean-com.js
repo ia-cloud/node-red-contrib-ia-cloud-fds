@@ -258,6 +258,11 @@ module.exports = function (RED) {
                     return;
                 }
 
+                // リピーター経由のデータであればデバッグ出力する
+                if (erp2.extendedHeader) {
+                    node.debug(`This connection went throuth Repeater`);
+                }
+
                 node.debug(`radio data = ${erp2.dataDL}`);
 
                 propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);

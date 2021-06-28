@@ -241,7 +241,7 @@ class PLC {
                     if (options.encode == "unsigned") dItem.dataValue = parseInt("0" + value, 16);
                     if (options.encode == "BCD") dItem.dataValue = parseInt(value, 10);
                     dItem.dataValue = dItem.dataValue * options.gain + Number(options.offset);
-                    if(dataItem.unit) ditem[umit] = dataItem.unit;
+                    if(options.unit) dItem.unit = options.unit;
                     break;
                 case "string":                 
                     options = dataItem.string;
@@ -290,10 +290,18 @@ class PLC {
                 case "AnE":
                     options = dataItem.AnE;
                     lData = linkObj[options.deviceType].find(function(lData) {
-                            return (lData.address == Number(options.address));
-                        });
-                    value = (Number(lData.value)) ? true: false;
-                    preValue = (Number(lData.preValue)) ? true: false;
+                        return (lData.address == Number(options.address));
+                    });
+                    value = (Number(lData.value));
+                    preValue = (Number(lData.preValue));
+                    let bit = parseInt(options.bit);
+                    if (!isNaN(bit)) {
+                        bit = bit >= 16 ? 0: bit;
+                        value = value & 1 << bit;
+                        preValue = preValue & 1 << bit;
+                    }
+                    value = !!value;
+                    preValue = !!preValue;
                     if (options.logic === "neg") {
                         value = !value;
                         preValue = !preValue;  

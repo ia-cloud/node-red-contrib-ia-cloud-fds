@@ -62,8 +62,8 @@ var PLCAENodeConfig = {
                 <!-- <option selected="selected" value="Coil">Coil</option>
                 <option value="IS">IS</option> -->
             </select>
-            <input required="required" class="address" placeholder="${lblAdd}" type="number" min="0" 
-                style="width:80px; display:inline-block; text-align:right; margin-right:20px;">
+            <input required="required" class="addressBit" placeholder="${lblAdd}" type="number" min="0" 
+                step="any" style="width:80px; display:inline-block; text-align:right; margin-right:20px;">
             <select class="logic" style="width:90px; display:inline-block; text-align:right;">
                 <option selected="selected" value= "pos" label="${lblPos}"></option>
                 <option value= "neg" label="${lblNeg}"></option>
@@ -127,7 +127,7 @@ var PLCAENodeConfig = {
                     let itemType = $("#defaultDataItem").data("itemtype");
                     dItem[itemType]={
                         deviceType: $("#defaultAnE").data("devicetype"),
-                        address: $("#defaultAnE").data("address"),
+                        addressBit: $("#defaultAnE").data("address"),
                         logic: $("#defaultAnE").data("logic"),
                         AnECode: $("#defaultAnE").data("anecode"),
                         AnEDesc: $("#defaultAnE").data("anedesc")
@@ -136,7 +136,7 @@ var PLCAENodeConfig = {
 
                 // AnE parameters
                 div1.find(".deviceType").val(dItem.AnE.deviceType);
-                div1.find(".address").val(dItem.AnE.address);
+                div1.find(".addressBit").val(dItem.AnE.addressBit);
                 div1.find(".logic").val(dItem.AnE.logic);
                 div2.find(".AnECode").val(dItem.AnE.AnECode);
                 div2.find(".AnEDesc").val(dItem.AnE.AnEDesc);
@@ -179,14 +179,16 @@ var PLCAENodeConfig = {
                 // Set A&E propertise back
                 AnE: {          
                     deviceType: elm.find(".deviceType").val(),
-                    address: parseInt(elm.find(".address").val()),
+                    addressBit: elm.find(".addressBit").val(),
+                    address: parseInt(elm.find(".addressBit").val()),
+                    bit: parseInt(String(elm.find(".addressBit").val()).split(".")[1]),
                     logic: elm.find(".logic").val(),
                     AnECode: elm.find(".AnECode").val(),
                     AnEDesc: elm.find(".AnEDesc").val()
                 }
             }
             // 必須propertyが揃っているか？
-            if (!Number.isInteger(item.AnE.address)) configReady = "";
+            if (isNaN(item.AnE.address)) configReady = "";
             node.dataItems.push(item);
         });
         // objectKeyはある？

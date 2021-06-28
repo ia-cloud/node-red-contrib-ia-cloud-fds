@@ -11,8 +11,6 @@ module.exports = function(RED) {
 
         RED.nodes.createNode(this, config);
         
-        if(config.configReady !== "ready") return;
-        
         const plcmb = new PLC(this, RED, config);
         plcmb.plcNode();
 

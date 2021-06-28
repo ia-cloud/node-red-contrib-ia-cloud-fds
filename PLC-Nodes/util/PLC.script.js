@@ -439,8 +439,8 @@ var PLCNodeConfig = {
                         unit: elm.find(".number-unit").val(),
                     };
                     if (!Number.isInteger(item.number.address)) configReady = "";
-                    if (!Number.isInteger(item.number.offset)) configReady = "";
-                    if (!Number.isInteger(item.number.gain)) configReady = "";
+                    if (item.number.offset === NaN ) configReady = "";
+                    if (item.number.gain === 0 || item.number.gain === NaN ) configReady = "";
                     break;
                 case "string":
                     item.string = {       // string type parameters

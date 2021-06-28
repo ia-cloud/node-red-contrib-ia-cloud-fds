@@ -1,7 +1,7 @@
 {
-  "name": "enebular-privatenode-contrib-ia-cloud-fds",
+  "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
-  "version": "0.0.48",
+  "version": "0.1.11",
   "author": "ia-cloud project members",
   "bugs": {
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
