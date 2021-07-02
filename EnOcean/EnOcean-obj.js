@@ -121,7 +121,7 @@ module.exports = function (RED) {
             }
         };
         // EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
-        this.on('linkDatachangeListener', ((objectKey) => {
+        this.on('changeListener', ((objectKey) => {
             // objectKeyに対応するlinkDataを探す
             const linkDataList = linkObj.filter(ld => ld.objectKey === objectKey);
             if( linkDataList && linkDataList.length > 0) {
