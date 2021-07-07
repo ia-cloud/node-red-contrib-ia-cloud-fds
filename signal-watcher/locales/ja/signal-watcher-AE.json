@@ -1,0 +1,48 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "paletteLabel": "シグナルウォッチャーA＆E",
+        "ui-config": "ここで設定",
+        "fileConfig": "設定ファイル",
+        "tab": {
+          "object-settings": "オブジェクト設定",
+          "data-settings": "警報・イベント設定"
+        },
+        "filename": "設定ファイル名を入力してください",
+        "enOceanId": "EnOcean ID",
+        "enOceanIdHolder": "必須: EnOcean ID",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "comNode": "通信ノード",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "CH1": "CH1状態",
+        "CH2": "CH2状態",
+        "CH3": "CH3状態",
+        "CH4": "CH4状態",
+        "battery": "電池状態",
+        "on": "点灯",
+        "off": "消灯",
+        "fastBlink": "高速点滅",
+        "slowBlink": "低速点滅",
+        "momentaryOn": "瞬時点灯",
+        "momentaryOff": "瞬時消灯",
+        "bat": "電圧低下",
+        "AnECode": "A&Eコード",
+        "AnEDesc": "A&Eの説明",
+        "AnE": "AnE対象"
+    },
+    "runtime": {
+        "badFilePath": "ファイルが見つかりません。",
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "comError": "通信エラー!!",
+        "sent": "データ送出"
+    }
+}
