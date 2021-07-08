@@ -253,16 +253,16 @@ module.exports = function (RED) {
 
                 // リピーター経由のデータであればデバッグ出力する
                 if (erp2.extendedHeader) {
-                    node.debug(`This connection went throuth Repeater`);
+                    node.debug('This connection went throuth Repeater');
                 }
 
                 node.debug(`radio data = ${erp2.dataDL}`);
 
                 const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
-                node.debug('listeners = ' + JSON.stringify(listeners));
+                node.debug(`listeners = ${JSON.stringify(listeners)}`);
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                listeners.filter(l => l.nodeId).forEach((listener) => {
+                listeners.filter((l) => l.nodeId).forEach((listener) => {
                     const enObjNode = RED.nodes.getNode(listener.nodeId);
                     node.debug(`nodeId = ${listener.nodeId}, enObjNode = ${JSON.stringify(enObjNode)}`);
                     if (enObjNode) {
@@ -285,11 +285,11 @@ module.exports = function (RED) {
                 node.debug(`Sensor ID '${receivedSensorId}' received but there's no node with matched id.`);
             } else {
                 linkData.forEach((e) => {
-                    e.value = '0x' + data;
+                    e.value = `0x${data}`;
                     // optionalDataはSubTelNumとdBmであり、返却するのはdBmのみで良いため分割する
-                    if(optionalData.length === 4) {
+                    if (optionalData.length === 4) {
                         const dBm = optionalData.substring(2);
-                        e.optionalData = '0x' + dBm;
+                        e.optionalData = `0x${dBm}`;
                     }
                     if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
@@ -303,7 +303,7 @@ module.exports = function (RED) {
 
         this.on('addLinkData', (lObj) => {
             // lObjのチェック
-            if(!lObj || !lObj.sensorId || !lObj.nodeId || !lObj.objectKey) {
+            if (!lObj || !lObj.sensorId || !lObj.nodeId || !lObj.objectKey) {
                 // 必要な要素が含まれていないため何もしない
                 node.error('The required elements are not included in the addLinkData event.');
                 return;
@@ -311,7 +311,9 @@ module.exports = function (RED) {
             // sensorId(16進数の文字列)はすべて小文字で扱う
             const sensorId = lObj.sensorId.toLowerCase();
             // linkObjに新たなリンクデータを追加
-            if(!linkObj[sensorId]) linkObj[sensorId] = [];
+            if (!linkObj[sensorId]) {
+                linkObj[sensorId] = [];
+            }
             linkObj[sensorId].push(lObj);
             node.trace(`lObj = ${JSON.stringify(lObj)}`);
             node.trace(`linkObj = ${JSON.stringify(linkObj)}`);
