@@ -199,13 +199,6 @@ module.exports = function (RED) {
          * }
          */
         var linkObj = {};
-        /**
-         * listenersの構造ß
-         * {
-         *     nodeId: objectKey
-         * }
-         */
-        var listeners = {};
 
         if (this.parser) {
             this.parser.on('data', function (data) {
@@ -265,7 +258,7 @@ module.exports = function (RED) {
 
                 node.debug(`radio data = ${erp2.dataDL}`);
 
-                propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
+                const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
                 node.debug('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
@@ -276,13 +269,16 @@ module.exports = function (RED) {
                         if (EnObjNode) EnObjNode.emit('changeListener', listeners[nodeId]);
                     }
                 });
-                listeners = {}; // 通知先をクリアする
             });
         } else {
             this.error(RED._('serial.errors.missing-conf'));
         }
 
+        /**
+         * @return {object} - { nodeId: objectKey }
+         */
         var propagateReceivedValue = (receivedSensorId, data, optionalData) => {
+            const listeners = {};
             // Pick up sensor node that has same sensorId.
             const linkData = linkObj[receivedSensorId];
             if (!linkData || linkData.length === 0) {
@@ -302,6 +298,7 @@ module.exports = function (RED) {
                     }
                 });
             }
+            return listeners;
         };
 
         this.on('addLinkData', (lObj) => {
