@@ -262,11 +262,11 @@ module.exports = function (RED) {
                 node.debug('listeners = ' + JSON.stringify(listeners));
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                Object.keys(listeners).forEach((nodeId) => {
-                    if (nodeId) {
-                        var EnObjNode = RED.nodes.getNode(nodeId);
-                        node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
-                        if (EnObjNode) EnObjNode.emit('changeListener', listeners[nodeId]);
+                listeners.filter(l => l.nodeId).forEach((listener) => {
+                    const enObjNode = RED.nodes.getNode(listener.nodeId);
+                    node.debug(`nodeId = ${listener.nodeId}, enObjNode = ${JSON.stringify(enObjNode)}`);
+                    if (enObjNode) {
+                        enObjNode.emit('changeListener', listener.objectKey);
                     }
                 });
             });
@@ -275,10 +275,10 @@ module.exports = function (RED) {
         }
 
         /**
-         * @return {object} - { nodeId: objectKey }
+         * @return {array} - [{ nodeId, objectKey },,,]
          */
         var propagateReceivedValue = (receivedSensorId, data, optionalData) => {
-            const listeners = {};
+            const listeners = [];
             // Pick up sensor node that has same sensorId.
             const linkData = linkObj[receivedSensorId];
             if (!linkData || linkData.length === 0) {
@@ -293,8 +293,8 @@ module.exports = function (RED) {
                     }
                     if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
-                        listeners[e.nodeId] = e.objectKey;
-                        node.debug(`listeners[${e.nodeId}] = ${e.objectKey}`);
+                        listeners.push({ nodeId: e.nodeId, objectKey: e.objectKey });
+                        node.debug(`listeners.push({ nodeId: ${e.nodeId}, objectKey: ${e.objectKey} });`);
                     }
                 });
             }
