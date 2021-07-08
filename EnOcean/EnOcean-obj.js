@@ -123,8 +123,8 @@ module.exports = function (RED) {
         // EnOceanObjNode.prototype.linkDatachangeListener = function (element) {
         this.on('changeListener', ((objectKey) => {
             // objectKeyに対応するlinkDataを探す
-            const linkDataList = linkObj.filter(ld => ld.objectKey === objectKey);
-            if( linkDataList && linkDataList.length > 0) {
+            const linkDataList = linkObj.filter((ld) => ld.objectKey === objectKey);
+            if (linkDataList && linkDataList.length > 0) {
                 // 引数に [objectKey, radio_data] を受け取る
                 iaCloudObjectSend([objectKey, linkDataList[0].value]);
             }
