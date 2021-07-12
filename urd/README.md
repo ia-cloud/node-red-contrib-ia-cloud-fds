@@ -67,7 +67,7 @@ msg = {
   "request": "store",
   "dataObject": {
     "objectKey": "string",
-    "timeStamp": "YYYY-MM-DDThh:mm:ss+09:00",
+    "timestamp": "YYYY-MM-DDThh:mm:ss+09:00",
     "objectType": "iaCloudObject",
     "objectDescription": "string",
     "objectContent": {

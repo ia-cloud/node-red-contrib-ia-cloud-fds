@@ -29,7 +29,7 @@ module.exports = function(RED) {
                 let msg = {
                     "payload"   : card.id,
                     "type"      : card.type,
-                    "timeStamp" : moment().format()
+                    "timestamp" : moment().format()
                 };
                 cardArray.push(msg);
             }catch(err){
@@ -56,7 +56,7 @@ module.exports = function(RED) {
                   "objectType"        : "iaCloudObjectArray",
                   "objectKey"         : node.objectKey,
                   "objectDescription" : "RFID_cardID",
-                  "timeStamp"         : moment().format(),
+                  "timestamp"         : moment().format(),
                   "length"            : 0,
                   "ObjectArray"       : []
               }
@@ -68,7 +68,7 @@ module.exports = function(RED) {
                             newMsg.dataObject.ObjectArray.push({
                                 "objectType"    : "iaCloudObject",
                                 "objectKey"     : node.objectKey,
-                                "instanceKey"   : "cardID" + cardArray[k].timeStamp,
+                                "instanceKey"   : "cardID" + cardArray[k].timestamp,
                                 "ObjectContent" : {
                                   "contentType"   : "iaCloudData",
                                   "contentData"   : [

@@ -40,7 +40,7 @@ module.exports = function(RED) {
             if(lengthCount > 0) {
 
                 msg.dataObject.objectKey = config.objectKey;
-                msg.dataObject.timeStamp = moment().format();
+                msg.dataObject.timestamp = moment().format();
                 msg.dataObject.objectType = "iaCloudObjectArray";
                 msg.dataObject.objectDescription = config.objectDescription;
                 msg.dataObject.length = lengthCount;

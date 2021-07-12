@@ -103,7 +103,7 @@ module.exports = function (RED) {
 
                 msg.dataObject = {
                     objectKey: element[0],
-                    timeStamp: moment().format(),
+                    timestamp: moment().format(),
                     objectType: 'iaCloudObject',
                     objectDescription: iaObject.objectDescription,
                     objectContent: {

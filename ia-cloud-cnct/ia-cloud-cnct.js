@@ -123,7 +123,7 @@ module.exports = function(RED) {
                 userID: info.userID,
                 FDSKey: info.FDSKey,
                 FDSType: "iaCloudFDS",
-                timeStamp: moment().format(),
+                timestamp: moment().format(),
                 comment: info.comment
               };
               opts.body = JSON.stringify(reqbody);
@@ -177,7 +177,7 @@ module.exports = function(RED) {
                 var reqbody = {
                   request: "getStatus",
                   serviceID: info.serviceID,
-                  timeStamp: moment().format(),
+                  timestamp: moment().format(),
                   comment: config.comment
                 };
                 opts.body = JSON.stringify(reqbody);

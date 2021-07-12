@@ -87,7 +87,7 @@ module.exports = function (RED) {
 
             if (iaObject) {
                 sendMsg.dataObject.objectKey = element[0];
-                sendMsg.dataObject.timeStamp = moment().format();
+                sendMsg.dataObject.timestamp = moment().format();
                 sendMsg.dataObject.objectType = 'iaCloudObject';
                 sendMsg.dataObject.objectDescription = iaObject.objectDescription;
                 sendMsg.dataObject.objectContent.contentType = 'iaCloudData';

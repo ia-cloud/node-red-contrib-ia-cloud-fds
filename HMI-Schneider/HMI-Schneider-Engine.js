@@ -262,7 +262,7 @@ function createMsg(obj, isvariable) {
     let msg = { request: "store", dataObject: { ObjectContent: {} } };
 
     msg.dataObject.objectKey = obj.objectKey;
-    msg.dataObject.timeStamp = moment().format();
+    msg.dataObject.timestamp = moment().format();
     msg.dataObject.objectType = "iaCloudObject";
     msg.dataObject.objectDescription = obj.objectDescription;
     msg.dataObject.ObjectContent.contentType = obj.ObjectContent.contentType;
