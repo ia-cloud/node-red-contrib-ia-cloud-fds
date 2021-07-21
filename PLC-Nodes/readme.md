@@ -61,7 +61,7 @@ PLCのデータ項目とアラーム項目の設定情報を保持するオブ�
 ```
 データアイテムの設定オプション(number)
 ```
-dataObjects[i].ObjectContent.contentData[i].options = {
+dataObjects[i].objectContent.contentData[i].options = {
     itemType: "number",   // 取得するデータの種別、number(数値)
     deviceType: "IR",     // 取得するデータのあるデバイス種別（PLC機種依存）
     address:213,           // 取得するデータのあるデバイスアドレス
@@ -73,7 +73,7 @@ dataObjects[i].ObjectContent.contentData[i].options = {
 ```
 データアイテムの設定オプション(string)
 ```
-dataObjects[i].ObjectContent.contentData[i].options = {
+dataObjects[i].objectContent.contentData[i].options = {
     itemType: "string",   // 取得するデータの種別、string(文字列)
     deviceType: "IR",     // 取得する文字列のあるデバイス種別（PLC機種依存）
     address:123,           // 取得する文字列の先頭デバイスアドレス
@@ -83,7 +83,7 @@ dataObjects[i].ObjectContent.contentData[i].options = {
 ```
 データアイテムの設定オプション(numList)
 ```
-dataObjects[i].ObjectContent.contentData[i].options = {
+dataObjects[i].objectContent.contentData[i].options = {
     itemType: "numList",  // 取得するデータの種別、numList(数値列)
     deviceType: "HR",     // 取得するデータのあるデバイス種別（PLC機種依存）
     address:213,           // 取得するデータのあるデバイスアドレス

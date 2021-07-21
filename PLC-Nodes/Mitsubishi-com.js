@@ -17,7 +17,8 @@ class MitsubishiCom extends PLCCom {
         if (config.accessRoute) 
             this.accessRoute = config.accessRoute.split(":").join("");
         else {
-            if (config.comType == "TCP") this.accessRoute = "00FF03FF00";
+            if (config.comType == "TCP" || config.comType === "TCP3E" 
+                || config.comType === "TCP4E") this.accessRoute = "00FF03FF00";
             if (config.comType == "Serial4") this.accessRoute = "0000FF00";
             if (config.comType == "Serial5") this.accessRoute = "0000FF03FF0000";
         }
@@ -31,8 +32,11 @@ class MitsubishiCom extends PLCCom {
         let comType = config.comType;
 
         if (!mcpObj.isOpen && !(config.comType === "PLCSim")) {
-            if (comType == "TCP") {
-                await mcpObj.connectTCP(config.IPAdd, {port: Number(config.TCPPort)});
+            if (comType === "TCP" || comType === "TCP4E") {
+                await mcpObj.connectTCP4E(config.IPAdd, {port: Number(config.TCPPort)});
+            }
+            else if (comType === "TCP3E") {
+                await mcpObj.connectTCP3E(config.IPAdd, {port: Number(config.TCPPort)});
             }
             else if (comType == "Serial4") {
                 await mcpObj.connectSerialF4(config.serialPort, {baudRate: Number(config.baud), parity: config.parity});

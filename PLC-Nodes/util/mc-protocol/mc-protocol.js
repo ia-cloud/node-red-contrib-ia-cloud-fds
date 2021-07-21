@@ -24,8 +24,10 @@ const Delimiter = require('@serialport/parser-delimiter');
 const SUB_HEADER1 = 0x5400;
 const SUB_HEADER2 = 0x0000;
 const SUB_HEADER_LEN = 6;
+const SUB_HEADER_3E = 0x5000;
+const SUB_HEADER_3E_LEN = 2;
 const MONITORING_TIMER = 16;
-const ACCESS_ROUTE_LEN_4E = 5;
+const ACCESS_ROUTE_LEN_4E = 5;  // access route length for 4E/3E frame
 const ACCESS_ROUTE_LEN_4C = 7;
 const ACCESS_ROUTE_LEN_3C = 4;
 const HEADER_F5 = 0x1002;
@@ -287,16 +289,16 @@ class MCProtocol extends ModbusRTU.default {
 };
 
 /**
- * Simulate a modbus-RTU port using modbus-TCP connection.
+ * MCprotcol TCP 4E frame port extended fron ModbusRTU.TcpPort.
  *
  * @param ip
  * @param options
- *   options.port: Nonstandard Modbus port (default is 502).
+ *   options.port: Mitsubishi PLC port No. (default 1025)
  *   options.localAddress: Local IP address to bind to, default is any.
  *   options.family: 4 = IPv4-only, 6 = IPv6-only, 0 = either (default).
  * @constructor
  */
-class MCTcpPort extends ModbusRTU.TcpPort {
+class MCTcpPort4E extends ModbusRTU.TcpPort {
     constructor(ip, options){
         super(ip, options);
         let mcTcp = this;
@@ -371,6 +373,87 @@ class MCTcpPort extends ModbusRTU.TcpPort {
     
         // set next transaction id
         this._transactionIdWrite = (this._transactionIdWrite + 1) % MAX_TRANSACTIONS;
+    };
+}
+
+/**
+ * MCprotcol TCP 3E frame port extended fron ModbusRTU.TcpPort.
+ *
+ * @param ip
+ * @param options
+ *   options.port: Mitsubishi PLC port No. (default 1025)
+ *   options.localAddress: Local IP address to bind to, default is any.
+ *   options.family: 4 = IPv4-only, 6 = IPv6-only, 0 = either (default).
+ * @constructor
+ */
+ class MCTcpPort3E extends ModbusRTU.TcpPort {
+    constructor(ip, options){
+        super(ip, options);
+        let mcTcp = this;
+        mcTcp._route = 0x0;
+
+        // Modbus TcpPortのデータ受信コールバックをMCプロトコール対応に付け替え
+        this._client.removeAllListeners("data");
+        this._client.on("data", function(data) {
+            var buffer;
+            var length;
+  
+            // data recived    
+            /* Modbus-serial moduleの実装を踏襲：一つのeventに複数のPDUが含まれている
+            可能性に対応したコードになっている。
+            */
+            while (data.length > SUB_HEADER_3E_LEN + ACCESS_ROUTE_LEN_4E) {
+
+                // response data length
+                length = data.readUInt16LE(7);
+                // prepare buffer to emit 
+                buffer = Buffer.alloc(length + 3);
+
+                // access route check
+                if (data.slice(2, 7).equals(mcTcp._route)) buffer.writeUInt8(0x0, 0)
+                else buffer.writeUInt8(0x08, 0)
+
+                // cut sub-header
+                data.copy(buffer, 1, SUB_HEADER_3E_LEN + ACCESS_ROUTE_LEN_4E);
+    
+                // emit data
+                mcTcp.emit("data", buffer);
+    
+                // reset data
+                data = data.slice(SUB_HEADER_3E_LEN + buffer.length);
+            }
+        });
+    };
+    // Modbus TcpPortのMCプロトコール対応methodを登録
+    // TCP電文フォーマットに合わせて、ヘッダ等を付加
+    mcWrite (route, request) {
+        // Check access route and request string length
+        if (route.length !== ACCESS_ROUTE_LEN_4E || request.length !== REQUEST_LEN) {
+            // Access route is invalid
+            return;
+        } 
+        // convert unit No. to little endian
+        route.writeUInt16LE(route.readUInt16BE(2),2);
+
+        this._route = route;
+
+        // prepare TCP/IP 3E Frame buffer
+        let bufLength = route.length + request.length;   //access route & request data length
+        bufLength += 4;        // add the monitoring timer length.
+        bufLength += 2;        // add sub header length
+        var buffer = Buffer.alloc(bufLength);
+
+        buffer.writeUInt16BE(SUB_HEADER_3E, 0);               // Fixed sub-header
+
+        route.copy(buffer, 2);         // Access route for 4E/3E frame
+
+        buffer.writeUInt16LE(request.length + 2, 7);    // Request length
+        buffer.writeUInt16LE(MONITORING_TIMER, 9);      // Monitoring timer
+
+        request.copy(buffer, 11);       // Request data for device read
+   
+        // send buffer to slave
+        this._client.write(buffer);
     };
 }
 
@@ -735,6 +818,7 @@ require("./mc-promise")(MCProtocol);
 
 // exports
 module.exports = MCProtocol;
-module.exports.MCTcpPort = MCTcpPort;
+module.exports.MCTcpPort4E = MCTcpPort4E;
+module.exports.MCTcpPort3E = MCTcpPort3E;
 module.exports.MCSerialF4 = MCSerialF4;
 module.exports.MCSerialF5 = MCSerialF5;

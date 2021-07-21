@@ -56,7 +56,7 @@ msg = {
     objectType: "iaCloudObject",
     timestamp: "",
     objectDescription: "説明",
-    ObjectContent: {
+    objectContent: {
       contentType: "iaCloudData",
       contentData: [{
         dataName

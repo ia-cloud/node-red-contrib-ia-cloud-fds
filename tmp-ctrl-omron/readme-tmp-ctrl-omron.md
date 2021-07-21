@@ -28,7 +28,7 @@ msg = {
     objectType: "iaCloudObject",
     timestamp: "",
     objectDescription: "説明",
-    ObjectContent: {
+    objectContent: {
       contentType: "tempCont",
       contentData": [{
         "dataName"
@@ -92,7 +92,7 @@ msg = {
           "storeInterval": 300,
           "storeAsync": true
         },
-        "ObjectContent": {
+        "objectContent": {
             "contentType": "tempContData",
             "contentData": [{
                 "dataName": "炉内温度",

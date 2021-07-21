@@ -27,7 +27,7 @@ msg = {
     objectKey: "com.ia-cloud.........",
     objectType: "iaCloudObject",
     objectDescription: "説明",
-    ObjectContent: {
+    objectContent: {
       contentType: "Alarm&Event",
       contentData: [
         {
@@ -108,7 +108,7 @@ msg = {
         "objectType": "iaCloudObject",
         "objectDescription": "modbusのアラームデータ",
         "options":{"storeInterval": 300, "storeAsync": true},
-        "ObjectContent": {
+        "objectContent": {
             "contentType": "Alarm&Event",
             "contentData": [
               {
@@ -143,7 +143,7 @@ msg = {
         "objectKey": "com.atbridge-cnsltg.node-RED.testAE1",
         "objectType": "iaCloudObject",
         "objectDescription": "modbusのアラームデータ",
-        "ObjectContent": {
+        "objectContent": {
             "contentType": "Alarm&Event",
             "contentData": [
               {

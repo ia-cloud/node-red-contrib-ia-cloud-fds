@@ -58,7 +58,7 @@ var addConnctionAPI = function(MCProtocol) {
      * @param {Object} options - the serial port options - optional.
      * @param {Function} next the function to call next.
      */
-    cl.connectTCP = function(ip, options, next) {
+    cl.connectTCP4E = function(ip, options, next) {
         // check if we have options
         if (typeof next === "undefined" && typeof options === "function") {
             next = options;
@@ -71,7 +71,7 @@ var addConnctionAPI = function(MCProtocol) {
         }
 
         // create the TcpPort
-        var MCTcpPort = require("./mc-protocol").MCTcpPort;
+        var MCTcpPort = require("./mc-protocol").MCTcpPort4E;
         if (this._timeout) {
             options.timeout = this._timeout;
         }
@@ -81,6 +81,35 @@ var addConnctionAPI = function(MCProtocol) {
         return open(this, next);
     };
 
+     /**
+     * Connect to a communication port, using TcpPort.
+     *
+     * @param {string} ip the ip of the TCP Port - required.
+     * @param {Object} options - the serial port options - optional.
+     * @param {Function} next the function to call next.
+     */
+      cl.connectTCP3E = function(ip, options, next) {
+        // check if we have options
+        if (typeof next === "undefined" && typeof options === "function") {
+            next = options;
+            options = {};
+        }
+
+        // check if we have options
+        if (typeof options === "undefined") {
+            options = {};
+        }
+
+        // create the TcpPort
+        var MCTcpPort = require("./mc-protocol").MCTcpPort3E;
+        if (this._timeout) {
+            options.timeout = this._timeout;
+        }
+        this._port = new MCTcpPort(ip, options);
+
+        // open and call next
+        return open(this, next);
+    };
 
     /**
      * Connect to a communication port, using Bufferd Serial port.

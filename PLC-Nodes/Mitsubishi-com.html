@@ -21,7 +21,8 @@
         <div class="form-row">
             <label for="node-config-input-comType"><span data-i18n="editor.comType"></span></label>
             <select style="width: 150px;" id="node-config-input-comType">
-                <option selected="selected" value="TCP" data-i18n="editor.TCP"></span></option>
+                <option selected="selected" value="TCP4E" data-i18n="editor.TCP4E"></span></option>
+                <option value="TCP3E" data-i18n="editor.TCP3E"></option>
                 <option value="Serial4" data-i18n="editor.Serial4"></option>
                 <option value="Serial5" data-i18n="editor.Serial5"></option>
                 <option value="PLCSim" data-i18n="editor.PLCSim"></option>
@@ -90,7 +91,7 @@
             refreshCycle: {value:10, required:true},
             maxDataNum: {value:64, required:true},
             noBlank: {value:false, required:true},
-            comType: {value:"TCP"},
+            comType: {value:"TCP4E"},
             TCPPort:{value: 1025},
             IPAdd:{value:"" },
             serialPort:{value:"" },
@@ -106,18 +107,21 @@
         },
 
         oneditprepare: function() {
-
             let node = this;
             // 通信種別ボタンが変化したら、設定画面を切り替える関数を定義
             $("#node-config-input-comType").off('change');
             $("#node-config-input-comType").on('change', function(){
                 let value = $("#node-config-input-comType").val();
 
-                if (value == "TCP") {
+                if ( !value || value === "TCP") {
+                    value = "TCP4E";
+                    $("#node-config-input-comType").val(value);
+                }
+                if (value === "TCP3E" || value === "TCP4E") {
                     $("#etherConf").show();
                     $("#serialConf").hide();
                     $("#accessRoute").show();
-                } else if (value == "PLCSim") {
+                } else if (value === "PLCSim") {
                     $("#etherConf").hide();
                     $("#serialConf").hide();
                     $("#accessRoute").hide();
@@ -155,7 +159,7 @@
                 switch($(obj).attr("id")) {
                     case "node-config-input-IPAdd":
                     case "node-config-input-TCPPort":
-                        if (!$(obj).val() && (comType === "TCP")) requiredSet = "";
+                        if (!$(obj).val() && (comType === "TCP3E" || comType === "TCP4E")) requiredSet = "";
                         break;
                     case "node-config-input-serialPort":
                     case "node-config-input-parity":

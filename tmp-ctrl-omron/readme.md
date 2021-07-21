@@ -31,7 +31,7 @@ PLC-Modbus、PLC-Modbus-AEの設定情報を保持するオブジェクト。
       objectType: "iaCloudObject",
       objectDescription: "modbusのビット系データ",
       options:{storeInterval: 60, storeAsync: true},   // オブジェクトのオプション
-      ObjectContent: {
+      objectContent: {
         contentType: "PLC-bit",
         contentData: [{
           dataName: "装置I稼働",
@@ -53,7 +53,7 @@ dataObjects[i].options = {
 ```
 データアイテムの設定オプション(bit列)
 ```
-dataObjects[i].ObjectContent.contentData[i].options = {
+dataObjects[i].objectContent.contentData[i].options = {
     source:123,           // 取得するビットデータ
   }
 ```

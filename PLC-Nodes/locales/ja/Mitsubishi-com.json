@@ -12,6 +12,8 @@
         "baud": "ボーレート",
         "parity": "パリティ",
         "TCP": "TCP",
+        "TCP3E": "TCP 3Eフレーム",
+        "TCP4E": "TCP 4Eフレーム",
         "Serial4": "シリアル形式4",
         "Serial5": "シリアル形式5",
         "PLCSim": "PLCシミュレータ",
