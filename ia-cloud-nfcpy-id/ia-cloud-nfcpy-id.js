@@ -69,7 +69,7 @@ module.exports = function(RED) {
                                 "objectType"    : "iaCloudObject",
                                 "objectKey"     : node.objectKey,
                                 "instanceKey"   : "cardID" + cardArray[k].timestamp,
-                                "ObjectContent" : {
+                                "objectContent" : {
                                   "contentType"   : "iaCloudData",
                                   "contentData"   : [
                                     {
