@@ -14,14 +14,14 @@ module.exports = function (RED) {
     this.status(this._engine.NodeStatus.Preparing);
 
     // プロパティを読み込んでオブジェクトを生成
-    let obj = { ObjectContent: {} };
+    let obj = { objectContent: {} };
     obj.asyncInterval = config.storeAsync ? 1 : 0;
     obj.storeInterval = config.storeInterval;
     obj.objectKey = config.objectKey;
     obj.objectDescription = config.objectDescription;
-    obj.ObjectContent.contentType = config.contentType;
-    obj.ObjectContent.contentData = [];
-    config.aeItems.forEach(item => { obj.ObjectContent.contentData.push(Object.assign({}, item)); }, this);
+    obj.objectContent.contentType = config.contentType;
+    obj.objectContent.contentData = [];
+    config.aeItems.forEach(item => { obj.objectContent.contentData.push(Object.assign({}, item)); }, this);
     this._engine.addObject(obj);
 
     // Nodeステータスを変更

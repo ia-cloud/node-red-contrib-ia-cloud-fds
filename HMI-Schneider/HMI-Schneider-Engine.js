@@ -84,7 +84,7 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
     }
 
     this._objects.forEach(function (obj) {
-        obj.ObjectContent.contentData.forEach(function (dataItem) {
+        obj.objectContent.contentData.forEach(function (dataItem) {
             for (let i = 0; i < variables.length; i++) {
                 if (dataItem.varName == variables[i].name) {
                     let value = (variables[i].quality != "good") ? null : variables[i].value;
@@ -102,7 +102,7 @@ HmiSchneiderEngine.prototype.alarmUpdated = function (alarms) {
     }
 
     this._objects.forEach(function (obj) {
-        obj.ObjectContent.contentData.forEach(function (dataItem, index) {
+        obj.objectContent.contentData.forEach(function (dataItem, index) {
             for (let i = 0; i < alarms.length; i++) {
                 if (dataItem.varName == alarms[i].variable) {
                     dataItem.status = (alarms[i].status == "Return") ? null : alarms[i].type;
@@ -124,13 +124,13 @@ HmiSchneiderEngine.prototype.statusChanged = function () {
 
 function addObject_imp(_obj) {
     let obj = Object.assign({}, _obj)
-    obj.ObjectContent = Object.assign({}, _obj.ObjectContent);
-    obj.ObjectContent.contentData = [];
-    _obj.ObjectContent.contentData.forEach(item => { obj.ObjectContent.contentData.push(Object.assign({}, item)); });
+    obj.objectContent = Object.assign({}, _obj.objectContent);
+    obj.objectContent.contentData = [];
+    _obj.objectContent.contentData.forEach(item => { obj.objectContent.contentData.push(Object.assign({}, item)); });
 
     obj.lastIntervalCheck = null;
     obj.lastValueChangedCheck = null;
-    obj.ObjectContent.contentData.forEach(item => {
+    obj.objectContent.contentData.forEach(item => {
         if (this._isvariable) {
             item.value = null;
         } else {    //  alarm
@@ -152,7 +152,7 @@ function addLink() {
     if (this._isvariable) {
         let items = [];
         this._objects.forEach(function (obj) {
-            obj.ObjectContent.contentData.forEach(function (dataItem) {
+            obj.objectContent.contentData.forEach(function (dataItem) {
                 items.push(dataItem.varName);
             });
         });
@@ -191,7 +191,7 @@ function intervalFuncVar() {
         if (obj.asyncInterval > 0) {
             if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
                 obj.lastValueChangedCheck = current;
-                if (!haveVarsUpdated.call(self, obj.ObjectContent.contentData)) {
+                if (!haveVarsUpdated.call(self, obj.objectContent.contentData)) {
                     return;
                 }
                 sendVarMessages.call(self, obj, true);
@@ -207,7 +207,7 @@ function haveVarsUpdated(items) {
 function sendVarMessages(obj, valuechanged) {
     let msg = createMsg(obj, true);
     if (valuechanged) { //  update previous value when value changed trigger
-        obj.ObjectContent.contentData.forEach(item => { item.prev = item.value; });
+        obj.objectContent.contentData.forEach(item => { item.prev = item.value; });
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
@@ -234,7 +234,7 @@ function intervalFuncAlarm() {
         if (obj.asyncInterval > 0) {
             if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
                 obj.lastValueChangedCheck = current;
-                if (!haveAlarmsUpdated.call(self, obj.ObjectContent.contentData)) {
+                if (!haveAlarmsUpdated.call(self, obj.objectContent.contentData)) {
                     return;
                 }
                 sendAlarmMessages.call(self, obj, true);
@@ -250,7 +250,7 @@ function haveAlarmsUpdated(items) {
 function sendAlarmMessages(obj, valuechanged) {
     let msg = createMsg(obj, false);
     if (valuechanged) { //  update previous value when value changed trigger
-        obj.ObjectContent.contentData.forEach(item => { item.prev = item.status; });
+        obj.objectContent.contentData.forEach(item => { item.prev = item.status; });
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
@@ -259,16 +259,16 @@ function sendAlarmMessages(obj, valuechanged) {
 }
 
 function createMsg(obj, isvariable) {
-    let msg = { request: "store", dataObject: { ObjectContent: {} } };
+    let msg = { request: "store", dataObject: { objectContent: {} } };
 
     msg.dataObject.objectKey = obj.objectKey;
     msg.dataObject.timestamp = moment().format();
     msg.dataObject.objectType = "iaCloudObject";
     msg.dataObject.objectDescription = obj.objectDescription;
-    msg.dataObject.ObjectContent.contentType = obj.ObjectContent.contentType;
+    msg.dataObject.objectContent.contentType = obj.objectContent.contentType;
 
     let contentData = createContendData(obj, isvariable);
-    msg.dataObject.ObjectContent.contentData = contentData;
+    msg.dataObject.objectContent.contentData = contentData;
     msg.payload = contentData;
 
     return msg;
@@ -276,7 +276,7 @@ function createMsg(obj, isvariable) {
 
 function createContendData(obj, isvariable) {
     let contentData = [];
-    obj.ObjectContent.contentData.forEach(function (item) {
+    obj.objectContent.contentData.forEach(function (item) {
         let dItem = {};
         if (isvariable) {
             dItem.dataName = item.dataName;

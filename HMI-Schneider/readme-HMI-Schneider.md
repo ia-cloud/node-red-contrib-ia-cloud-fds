@@ -21,7 +21,7 @@ ia-cloudオブジェクトを送出するタイミングを指示するメッセ
 |timestamp|string|メッセージ作成時点のタイムスタンプ|
 |objectType|string|"iaCloudObject"|
 |objectDescription|string|プロパティ「objectの説明」で設定した文字列|
-|ObjectContent|object| |
+|objectContent|object| |
 |contentType|string|プロパティ「データ構造型」で設定した文字列|
 |contentData|array of object|ストアするデータの配列|
 |dataName|string|プロパティ「データ名称」で設定した文字列|
@@ -47,7 +47,7 @@ ia-cloudオブジェクトを送出するタイミングを指示するメッセ
     "objectKey": "object key",
     "objectType": "iaCloudObject",
     "objectDescription": "object description",
-    "ObjectContent": {
+    "objectContent": {
       "contentType": "iaCloudData",
       "contentData": [
         {

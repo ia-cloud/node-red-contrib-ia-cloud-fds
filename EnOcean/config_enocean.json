@@ -3,7 +3,7 @@
         "sensorId": "0400f5d8",
         "sensorKind": "watty"
     },
-    "ObjectContent": {
+    "objectContent": {
         "contentData": [{
             "unit": "℃",
             "dataValue": "0",
@@ -35,7 +35,7 @@
         "sensorId": "04009efc",
         "sensorKind": "u-rd"
     },
-    "ObjectContent": {
+    "objectContent": {
         "contentData": [{
             "unit": "A",
             "dataValue": "0",
