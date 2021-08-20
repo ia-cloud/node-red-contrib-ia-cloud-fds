@@ -168,7 +168,7 @@ class PLC {
                 dItem = {
                     commonName: dataItem.commonName,
                     dataValue: { AnEStatus: false,
-                        AnEcode: dataItem.AnE.AnECode,
+                        AnECode: dataItem.AnE.AnECode,
                         AnEDescription: dataItem.AnE.AnEDesc
                     }
                 };           
