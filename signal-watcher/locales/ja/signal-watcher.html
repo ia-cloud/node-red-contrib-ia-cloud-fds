@@ -1,0 +1,81 @@
+
+<script type="text/html" data-help-name="signal-watcher">
+   <!-- ここにNode機能の概要を、50文字以内で記述-->
+   <p>シグナルウッチャーのデータ収集ノード</p>
+
+   <h3>プロパティ項目</h3>
+   <dl class="message-properties">
+        <dt>通信ノード<span class="property-type">EnOcean通信設定ノード</span></dt>
+        <dd>EnOcean通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dd>EnOcean通信設定ノードの設定項目として、使用するシリアル通信ポートを指定します。</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>EnOcean ID<span class="property-type">文字列</span></dt>
+            <dd>無線モジュール識別番号</dd>
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>シグナルウォッチャーの点灯状態データを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>シグナルウォッチャーの点灯状態データに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>シグナルウォッチャーの点灯状態データに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>シグナルウォッチャーの点灯状態データのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+           <dt>データ構造<span class="property-type">文字列（固定）</span></dt>
+           <dd>シグナルウォッチャー点灯状態データの構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData<（Alarm&Event）固定</dd>
+
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データ項目<span class="property-type">選択</span></dt>
+                <dt>温調計の持つ読み取り可能なデータ項目のリストが示されるので選択する</dt>
+               
+                <dd>データ名称: データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+                <dd>単位: データ項目に付与する単位</dd>  
+            </dl>
+
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+           <dt>データ構造<span class="property-type">文字列（固定）</span></dt>
+           <dd>シグナルウォッチャー点灯状態データの構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData<（Alarm&Event）固定</dd>
+           <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+           <dl class="message-properties" style="margin-left: 8px">
+               <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+               <dd>データ項目の番号。自動で生成される</dd>
+               <dt>データ項目<span class="property-type">選択</span></dt>
+               <dt>シグナルウォッチャーの持つ読み取り可能なデータ項目のリストが示されるので選択する</dt>
+               <dd>データ名称: データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
+               <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+               <dd>単位: データ項目に付与する単位</dd>  
+           </dl>
+       </dl>
+   </dl>
+   <dl class="message-properties">
+       <dt>名前<span class="property-type">文字列</span></dt>
+       <dd>個別のNodeに付与する名前</dd>
+   </dl>
+   <h3>入力メーッセージ</h3>
+   <dl class="message-properties">
+       <dt>msg.payload<span class="property-type">string</span></dt>
+       <dd>iia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+   </dl>
+
+   <h3>出力メッセージ</h3>
+   <dl class="message-properties">
+       <dt>payload <span class="property-type">string | object</span></dt>
+       <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+       <dt>request <span class="property-type">string</span></dt>
+       <dd>ia-cloudリクエスト内容。"store"固定</dd>
+       <dt>dataObject <span class="property-type">object</span></dt>
+       <dd>ia-cloud dataObject。contentDataの各データ項目は設定にしたがったアラーム＆イベントデータ。</dd>
+   </dl>
+
+   <h3>詳細説明</h3>
+   <p>シグナルウォッチャーの点灯状態を送出するノード</p>
+   <p>本Nodeは、稲葉電機産業製の積層表示灯の発光状態を遠隔モニタリングするシグナルウォッチャーの、
+       EnOcean通信を利用して収集しia-cloudオブジェクトとして、出力メッセージに出力するNodeである。</p>
+
+</script>

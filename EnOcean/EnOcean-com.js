@@ -184,8 +184,21 @@ module.exports = function (RED) {
         const InterByteTimeout = require('@serialport/parser-inter-byte-timeout')
         this.parser = this.port.pipe(new InterByteTimeout({interval: INTERBYTETIMEOUT}))
         var node = this;
-        var linkObj = [];
-        var listeners = {};
+        /**
+         * linkObjの構造
+         * {
+         *     <sensorId>: [
+         *         {
+         *             sensorId: "1234A5C2",
+         *             value: "0x12a4b5",
+         *             optionalData: "0xa6",  // 電界強度
+         *             objectKey: "key",
+         *             nodeId: "nodeId"
+         *         }
+         *     ]
+         * }
+         */
+        var linkObj = {};
 
         if (this.parser) {
             this.parser.on('data', function (data) {
@@ -240,64 +253,72 @@ module.exports = function (RED) {
 
                 // リピーター経由のデータであればデバッグ出力する
                 if (erp2.extendedHeader) {
-                    node.debug(`This connection went throuth Repeater`);
+                    node.debug('This connection went throuth Repeater');
                 }
 
                 node.debug(`radio data = ${erp2.dataDL}`);
 
-                propagateReceivedValue(erp2.originatorId, erp2.dataDL);
-                node.debug('listeners = ' + JSON.stringify(listeners));
+                const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
+                node.debug(`listeners = ${JSON.stringify(listeners)}`);
 
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                Object.keys(listeners).forEach(function (nodeId) {
-                    if (nodeId) {
-                        var EnObjNode = RED.nodes.getNode(nodeId);
-                        node.debug(`nodeId = ${nodeId}, EnObjNode = ${JSON.stringify(EnObjNode)}`);
-                        if (EnObjNode) EnObjNode.emit('linkDatachangeListener', listeners[nodeId]);
+                listeners.filter((l) => l.nodeId).forEach((listener) => {
+                    const enObjNode = RED.nodes.getNode(listener.nodeId);
+                    node.debug(`nodeId = ${listener.nodeId}, enObjNode = ${JSON.stringify(enObjNode)}`);
+                    if (enObjNode) {
+                        enObjNode.emit('changeListener', listener.objectKey);
                     }
                 });
-                listeners = {}; // 通知先をクリアする
             });
         } else {
             this.error(RED._('serial.errors.missing-conf'));
         }
 
-        var propagateReceivedValue = function (receivedSensorId, data) {
+        /**
+         * @return {array} - [{ nodeId, objectKey },,,]
+         */
+        var propagateReceivedValue = (receivedSensorId, data, optionalData) => {
+            const listeners = [];
             // Pick up sensor node that has same sensorId.
-            const linkData = linkObj.filter((e) => {
-                if (e.sensorId === receivedSensorId) return true;
-                return parseInt(e.sensorId, 16) === parseInt(receivedSensorId, 16);
-            });
-            if (linkData.length === 0) {
+            const linkData = linkObj[receivedSensorId];
+            if (!linkData || linkData.length === 0) {
                 node.debug(`Sensor ID '${receivedSensorId}' received but there's no node with matched id.`);
             } else {
-                linkData.forEach(function (e) {
-                    e.value = data;
-                    if (e.nodeId) {
+                linkData.forEach((e) => {
+                    e.value = `0x${data}`;
+                    // optionalDataはSubTelNumとdBmであり、返却するのはdBmのみで良いため分割する
+                    if (optionalData.length === 4) {
+                        const dBm = optionalData.substring(2);
+                        e.optionalData = `0x${dBm}`;
+                    }
+                    if (e.nodeId) { // TODO: この条件は必要ないか？？
                         // Add/overwrite to list.
-                        const objectKeyAndValueArray = [e.objectKey, e.value];
-                        listeners[e.nodeId] = objectKeyAndValueArray;
-                        node.debug(`listeners[${e.nodeId}] = ${objectKeyAndValueArray}`);
+                        listeners.push({ nodeId: e.nodeId, objectKey: e.objectKey });
+                        node.debug(`listeners.push({ nodeId: ${e.nodeId}, objectKey: ${e.objectKey} });`);
                     }
                 });
             }
+            return listeners;
         };
 
-        this.on('addLinkData', function (lObj){
+        this.on('addLinkData', (lObj) => {
+            // lObjのチェック
+            if (!lObj || !lObj.sensorId || !lObj.nodeId || !lObj.objectKey) {
+                // 必要な要素が含まれていないため何もしない
+                node.error('The required elements are not included in the addLinkData event.');
+                return;
+            }
+            // sensorId(16進数の文字列)はすべて小文字で扱う
+            const sensorId = lObj.sensorId.toLowerCase();
             // linkObjに新たなリンクデータを追加
-            Array.prototype.push.apply(linkObj, lObj);
+            if (!linkObj[sensorId]) {
+                linkObj[sensorId] = [];
+            }
+            linkObj[sensorId].push(lObj);
             node.trace(`lObj = ${JSON.stringify(lObj)}`);
             node.trace(`linkObj = ${JSON.stringify(linkObj)}`);
-
         });
-/*
-        EnOceanComNode.prototype.addLinkData = function (lObj) {
-            // linkObjに新たなリンクデータを追加
-            Array.prototype.push.apply(linkObj, lObj);
-            node.log(`lObj = ${JSON.stringify(lObj)}`);
-            node.log(`linkObj = ${JSON.stringify(linkObj)}`);
-        };
-*/
+
         this.on('close', function (done) {
             if (this.port) {
                 this.port.close(done);
