@@ -180,9 +180,9 @@ module.exports = function (RED) {
     function EnOceanComNode(config) {
         RED.nodes.createNode(this, config);
 
-        this.port = new SerialPort(config.serialPort, {baudRate: BAUDRATE});
-        const InterByteTimeout = require('@serialport/parser-inter-byte-timeout')
-        this.parser = this.port.pipe(new InterByteTimeout({interval: INTERBYTETIMEOUT}))
+        this.port = new SerialPort(config.serialPort, { baudRate: BAUDRATE });
+        const InterByteTimeout = require('@serialport/parser-inter-byte-timeout');
+        this.parser = this.port.pipe(new InterByteTimeout({ interval: INTERBYTETIMEOUT }));
         var node = this;
         /**
          * linkObjの構造
