@@ -139,21 +139,31 @@ class PLC {
             return;
         }
 
-        // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
-        // 自身のNodeIDをセット。
-        let ownNodeId = this.node.id;
-        let obj = linkObj.error.find(lnkError => lnkError.nodeId === ownNodeId);
-        let eMsg = obj.value;
-        if (eMsg !== "ok" && eMsg !== "" ) {
-            node.error(eMsg);
-            node.status({fill:"red",shape:"ring",text:"runtime.comError"});
-            return;
-        }
-
-        node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
-
         let msg = {request:"store", dataObject:{objectContent:{}}};
         let contentData = [];
+
+        // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
+        // 自身のNodeIDをセット。
+        let obj = linkObj.error.find(lnkError => lnkError.nodeId === nodeId);
+        let eMsg = obj.value;
+
+        // using quality infomation
+        if (config.qInfo) {
+            if (eMsg !== "ok" && eMsg !== "" ) {
+                node.error(eMsg);
+                msg.dataObject.quality = "com. error";
+            } else {
+                msg.dataObject.quality = "good";
+                node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
+            }
+        } else {
+            delete msg.dataObject.quality;
+            if (eMsg !== "ok" && eMsg !== "" ) {
+                node.error(eMsg);
+                node.status({fill:"red",shape:"ring",text:"runtime.comError"});
+                return;
+            }
+        }
 
         msg.dataObject.objectKey = config.objectKey;
         msg.dataObject.timestamp = moment().format();
@@ -318,8 +328,11 @@ class PLC {
         msg.payload = contentData;
         // Send output message to the next Nodes
         node.send(msg);
-        // make Node status to "sent"
-        node.status({fill:"green", shape:"dot", text:"runtime.sent"});
+        // make Node status to "sent" or "com. error"
+        if (msg.dataObject.quality && msg.dataObject.quality !== "good")
+            node.status({fill:"red",shape:"ring",text:"runtime.comError"});
+        else
+            node.status({fill:"green", shape:"dot", text:"runtime.sent"});
     }
     // 周期実行を停止する外部メソッド
 

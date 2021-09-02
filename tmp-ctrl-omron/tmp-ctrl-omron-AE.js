@@ -104,21 +104,31 @@ module.exports = function(RED) {
             // 自身のobjectKeyでなかったら何もしない。
             if(objectKey !== myObjKey) return;
 
-            // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
-            // 自身のNodeIDをセット。
-
-            let obj = linkObj.error.find(lnkError => lnkError.nodeId === nodeId);
-            let eMsg = obj.value;
-            if (eMsg !== "ok" && eMsg !== "" ) {
-                node.error(eMsg);
-                node.status({fill:"red",shape:"ring",text:"runtime.comError"});
-                return;
-            }
-
-            node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
-
             let msg = {request:"store", dataObject:{objectContent:{}}};
             let contentData = [];
+
+            // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
+            // 自身のNodeIDをセット。
+            let obj = linkObj.error.find(lnkError => lnkError.nodeId === nodeId);
+            let eMsg = obj.value;
+
+            // using quality infomation
+            if (config.qInfo) {
+                if (eMsg !== "ok" && eMsg !== "" ) {
+                    node.error(eMsg);
+                    msg.dataObject.quality = "com. error";
+                } else {
+                    msg.dataObject.quality = "good";
+                    node.status({fill:"blue",shape:"ring",text:"runtime.preparing"});
+                }
+            } else {
+                delete msg.dataObject.quality;
+                if (eMsg !== "ok" && eMsg !== "" ) {
+                    node.error(eMsg);
+                    node.status({fill:"red",shape:"ring",text:"runtime.comError"});
+                    return;
+                }
+            }
 
             msg.dataObject.objectKey = myObjKey;
             msg.dataObject.timestamp = moment().format();
@@ -156,7 +166,10 @@ module.exports = function(RED) {
             msg.dataObject.objectContent.contentData = contentData;
             msg.payload = contentData;
             node.send(msg);
-            node.status({fill:"green", shape:"dot", text:"runtime.sent"});
+            if (msg.dataObject.quality && msg.dataObject.quality !== "good")
+                node.status({fill:"red",shape:"ring",text:"runtime.comError"});
+            else
+                node.status({fill:"green", shape:"dot", text:"runtime.sent"});
         }
 
         this.on("input",function(msg) {

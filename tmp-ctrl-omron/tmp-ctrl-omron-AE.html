@@ -44,6 +44,11 @@
                 for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
             <input type="text" style="width: 300px" id="node-input-objectDescription">
         </div>
+        <hr>
+        <div class="form-row">
+            <label for="node-input-qInfo"><span data-i18n="editor.qInfo"></span></label>
+            <input type="checkbox" id="node-input-qInfo" style="display: inline-block; width: auto;" >
+        </div>        
     </div>
     <!-- tab-object-properties ends -->
 
@@ -90,6 +95,7 @@ RED.nodes.registerType('tmp-ctrl-omron-AE',{
         storeAsync: {value: true},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
+        qInfo: {value: false},
 
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true},

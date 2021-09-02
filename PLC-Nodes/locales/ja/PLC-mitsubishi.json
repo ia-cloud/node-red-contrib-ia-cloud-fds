@@ -11,6 +11,7 @@
         },
         "period": "定期収集周期",
         "async": "非同期収集有り",
+        "qInfo": "品質情報を使う",
         "objectName": "object名称",
         "objectKey": "objectキー",
         "objectKeyholder": "必須: 固有のキー",
