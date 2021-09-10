@@ -87,8 +87,19 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
         obj.objectContent.contentData.forEach(function (dataItem) {
             for (let i = 0; i < variables.length; i++) {
                 if (dataItem.varName == variables[i].name) {
-                    let value = (variables[i].quality != "good") ? null : variables[i].value;
-                    dataItem.value = value;
+                    switch (variables[i].quality) {
+                        case "good":
+                            dataItem.quality = "good";
+                            dataItem.value = variables[i].value;
+                            break;
+                        case "invalid":
+                        case "bad":
+                            dataItem.quality = "com. error";
+                            break;
+                        case "unknown":
+                            dataItem.quality = "not updated";
+                            break;
+                    }
                     break;
                 }
             }
@@ -133,6 +144,7 @@ function addObject_imp(_obj) {
     obj.objectContent.contentData.forEach(item => {
         if (this._isvariable) {
             item.value = null;
+            item.quality = "not updated";
         } else {    //  alarm
             item.status = null;
             item.message = "";
@@ -281,6 +293,7 @@ function createContendData(obj, isvariable) {
         if (isvariable) {
             dItem.dataName = item.dataName;
             dItem.dataValue = item.value;
+            dItem.quality = item.quality;
             if (item.unit && (item.unit != "")) {
                 dItem.unit = item.unit;
             }
