@@ -145,6 +145,7 @@ function addObject_imp(_obj) {
         if (this._isvariable) {
             item.value = null;
             item.quality = "not updated";
+            item.prev_quality = item.quality;
         } else {    //  alarm
             item.status = null;
             item.message = "";
@@ -213,13 +214,13 @@ function intervalFuncVar() {
 }
 
 function haveVarsUpdated(items) {
-    return (items.find(item => item.value != item.prev) != undefined) ? true : false;
+    return (items.find(item => ((item.value != item.prev) || (item.quality != item.prev_quality))) != undefined) ? true : false;
 }
 
 function sendVarMessages(obj, valuechanged) {
     let msg = createMsg(obj, true);
     if (valuechanged) { //  update previous value when value changed trigger
-        obj.objectContent.contentData.forEach(item => { item.prev = item.value; });
+        obj.objectContent.contentData.forEach(item => { item.prev = item.value; item.prev_quality = item.quality; });
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
