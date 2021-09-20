@@ -144,7 +144,7 @@ class PLC {
 
         // PLC通信の設定Nodeでエラーが発生していれば、エラーステータスを表示し、なにもしない
         // 自身のNodeIDをセット。
-        let obj = linkObj.error.find(lnkError => lnkError.nodeId === nodeId);
+        let obj = linkObj.error.find(lnkError => lnkError.nodeId === node.id);
         let eMsg = obj.value;
 
         // using quality infomation
