@@ -104,6 +104,8 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
                 }
             }
         });
+        //  最後にObjectのQualityをgoodに変更する
+        obj.quality = "good";
     });
 }
 
@@ -129,6 +131,18 @@ HmiSchneiderEngine.prototype.statusChanged = function () {
     if (!this.isconnected()) {
         //  HMIの接続が切れた場合はエラーとする
         this._owner.error("HMI is not connected.");
+
+        if (this._isvariable) {
+            //  variableの場合はqualityをerrorにする更新
+            //  goodに戻すのは、HMIから変化通知が来たときに行う
+            this._objects.forEach(function (obj) {
+                obj.quality = "com. error";
+                //  itemのqualityも全てエラーにする
+                obj.objectContent.contentData.forEach(item => {
+                    item.quality = "com. error";
+                });
+            });
+        }
     }
     this._RED.nodes.getNode(this._owner.id).emit("statusChanged");
 }
@@ -141,6 +155,11 @@ function addObject_imp(_obj) {
 
     obj.lastIntervalCheck = null;
     obj.lastValueChangedCheck = null;
+    if (this._isvariable) {
+        obj.quality = "not updated";
+        obj.prev_quality = obj.quality;
+    }
+
     obj.objectContent.contentData.forEach(item => {
         if (this._isvariable) {
             item.value = null;
@@ -204,7 +223,7 @@ function intervalFuncVar() {
         if (obj.asyncInterval > 0) {
             if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
                 obj.lastValueChangedCheck = current;
-                if (!haveVarsUpdated.call(self, obj.objectContent.contentData)) {
+                if ((obj.quality == obj.prev_quality) && !haveVarsUpdated.call(self, obj.objectContent.contentData)) {
                     return;
                 }
                 sendVarMessages.call(self, obj, true);
@@ -221,6 +240,7 @@ function sendVarMessages(obj, valuechanged) {
     let msg = createMsg(obj, true);
     if (valuechanged) { //  update previous value when value changed trigger
         obj.objectContent.contentData.forEach(item => { item.prev = item.value; item.prev_quality = item.quality; });
+        obj.prev_quality = obj.quality;
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
@@ -279,6 +299,9 @@ function createMsg(obj, isvariable) {
     msg.dataObject.objectType = "iaCloudObject";
     msg.dataObject.objectDescription = obj.objectDescription;
     msg.dataObject.objectContent.contentType = obj.objectContent.contentType;
+    if (isvariable) {
+        msg.dataObject.quality = obj.quality;
+    }
 
     let contentData = createContendData(obj, isvariable);
     msg.dataObject.objectContent.contentData = contentData;
