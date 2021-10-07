@@ -8,6 +8,7 @@ function HmiSchneiderEngine(RED, owner, com, isvariable) {
     this._RED = RED;
     this._owner = owner;
     this._com = com.getEngine();
+    this._com_state = "init"
     this._isvariable = isvariable;
 
     this._objects = [];
@@ -84,6 +85,7 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
     }
 
     this._objects.forEach(function (obj) {
+        let updated = false;
         obj.objectContent.contentData.forEach(function (dataItem) {
             for (let i = 0; i < variables.length; i++) {
                 if (dataItem.varName == variables[i].name) {
@@ -100,12 +102,15 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
                             dataItem.quality = "not updated";
                             break;
                     }
+                    updated = true;
                     break;
                 }
             }
         });
-        //  最後にObjectのQualityをgoodに変更する
-        obj.quality = "good";
+        if (updated) {
+            //  最後にObjectのQualityをgoodに変更する
+            obj.quality = "good";
+        }
     });
 }
 
@@ -128,9 +133,15 @@ HmiSchneiderEngine.prototype.alarmUpdated = function (alarms) {
 }
 
 HmiSchneiderEngine.prototype.statusChanged = function () {
-    if (!this.isconnected()) {
+    if (this.isconnected()) {
+        this._com_state = "connected";
+    }
+    else {
         //  HMIの接続が切れた場合はエラーとする
-        this._owner.error("HMI is not connected.");
+        if (this._com_state != "disconnected") {
+            this._owner.error("HMI is not connected");
+            this._com_state = "disconnected"
+        }
 
         if (this._isvariable) {
             //  variableの場合はqualityをerrorにする更新

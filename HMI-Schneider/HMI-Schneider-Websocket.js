@@ -16,6 +16,7 @@ module.exports = class HmiSchneiderWebSocket {
     this._cb_onopen = null;
     this._cb_onmessage = null;
     this._cb_onclose = null;
+    this._cb_onerror = null;
 
     this._disposed = false;
   }
@@ -39,6 +40,10 @@ module.exports = class HmiSchneiderWebSocket {
 
   set onclose(func) {
     this._cb_onclose = func;
+  }
+
+  set onerror(func) {
+    this._cb_onerror = func;
   }
 
   open(url, token) {
@@ -101,6 +106,10 @@ module.exports = class HmiSchneiderWebSocket {
   }
 
   onError(event) {
+    if (this._cb_onerror) {
+      this._cb_onerror.call(this, this._id);
+    }
+
     this.close();
   }
 
