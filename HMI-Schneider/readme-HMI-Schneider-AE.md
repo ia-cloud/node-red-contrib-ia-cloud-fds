@@ -21,12 +21,23 @@ ia-cloudオブジェクトを送出するタイミングを指示するメッセ
 |dataObject.timestamp|string|メッセージ作成時点のタイムスタンプ|
 |dataObject.objectType|string|"iaCloudObject"|
 |dataObject.objectDescription|string|プロパティ「objectの説明」で設定した文字列|
+|dataObject.quality|string|dataObjectのQuality。Schneider表示器との通信状態を示します。値については後述しています。|
 |dataObject.objectContent|object| |
 |dataObject.objectContent.contentType|string|"Alarm&Event"|
 |dataObject.objectContent.contentData|array of object|ストアするデータの配列|
 |dataObject.objectContent.contentData\[n\].AnEStatus|string|アラーム&イベントの状態|
 |dataObject.objectContent.contentData\[n\].AnECode|string|プロパティ「A&Eコード」で設定した文字列<br>プロパティで設定していない場合、Schneider表示器上の変数名が入ります。|
-|dataObject.objectContent.contentData\[n\].AnEDescription|string|プロパティ「A&E説明」で設定した文字列<br>プロパティで設定していない場合、Schneider表示器から取得したメッセージが入ります。| 
+|dataObject.objectContent.contentData\[n\].AnEDescription|string|プロパティ「A&E説明」で設定した文字列<br>プロパティで設定していない場合、Schneider表示器から取得したメッセージが入ります。|
+
+### Quality
+
+当Nodeはqualityオプションに対応しています。
+
+`dataObject.quality`はNodeとSchneider表示機間の通信状態をQualityとして反映させています。
+|値|説明|
+|:-|:-|
+|good|Schneider表示機と接続中です|
+|com. error|Schneider表示機と接続できていません|
 
 ### サンプル
 
@@ -37,6 +48,7 @@ ia-cloudオブジェクトを送出するタイミングを指示するメッセ
     "objectKey": "object key",
     "objectType": "iaCloudObject",
     "objectDescription": "object description",
+    "quality": "good",
     "objectContent": {
       "contentType": "Alarm&Event",
       "contentData": [
