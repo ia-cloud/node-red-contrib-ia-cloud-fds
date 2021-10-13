@@ -62,16 +62,17 @@ module.exports = function (RED) {
         if (enObjects) {
             // 取り合えず enObjects は要素数1としてコードを書く
             enObjects.forEach((enObj) => {
-                linkObj.push({
+                const linkData = {
                     sensorId: enObj.options.sensorId,
                     nodeId: node.id,
                     objectKey: enObj.objectKey,
-                });
+                };
+                linkObj.push(linkData);
+                // enoceanCom nodeのデータ追加メソッドを呼ぶ
+                enoceanCom.emit('addLinkData', linkData);
             });
         }
 
-        // enoceanCom nodeのデータ追加メソッドを呼ぶ
-        enoceanCom.emit('addLinkData', linkObj);
         node.status({ fill: 'green', shape: 'dot', text: 'status.ready' });
 
         const iaCloudObjectSend = function (element) {
@@ -125,10 +126,14 @@ module.exports = function (RED) {
         };
 
         // UrdObjNode.prototype.linkDatachangeListener = function (element) {
-        this.on('linkDatachangeListener', (element) => {
-            // 引数に [objectKey, radio_data] を受け取る
-            iaCloudObjectSend(element);
-        });
+        this.on('changeListener', ((objectKey) => {
+            // objectKeyに対応するlinkDataを探す
+            const linkDataList = linkObj.filter((ld) => ld.objectKey === objectKey);
+            if (linkDataList && linkDataList.length > 0) {
+                // 引数に [objectKey, radio_data] を受け取る
+                iaCloudObjectSend([objectKey, linkDataList[0].value]);
+            }
+        }));
 
         this.on('input', (msg, send, done) => done()); // 処理なし
 
