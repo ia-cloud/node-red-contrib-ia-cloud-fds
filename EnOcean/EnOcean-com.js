@@ -1,3 +1,4 @@
+const util = require('util')
 const SerialPort = require('serialport');
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
@@ -194,6 +195,7 @@ module.exports = function (RED) {
          *             optionalData: "0xa6",  // 電界強度
          *             objectKey: "key",
          *             nodeId: "nodeId"
+         *             qInfo: "Quality Info." // 品質情報送信が設定されている場合のみ
          *         }
          *     ]
          * }
@@ -264,7 +266,7 @@ module.exports = function (RED) {
                 // 通知先のノード（EnOcean-obj）があればそちらに通知する
                 listeners.filter((l) => l.nodeId).forEach((listener) => {
                     const enObjNode = RED.nodes.getNode(listener.nodeId);
-                    node.debug(`nodeId = ${listener.nodeId}, enObjNode = ${JSON.stringify(enObjNode)}`);
+                    node.debug(util.inspect(enObjNode));
                     if (enObjNode) {
                         enObjNode.emit('changeListener', listener.objectKey);
                     }
