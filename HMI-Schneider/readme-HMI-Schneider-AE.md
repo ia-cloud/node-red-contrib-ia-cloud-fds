@@ -33,11 +33,13 @@ ia-cloudオブジェクトを送出するタイミングを指示するメッセ
 
 当Nodeはqualityオプションに対応しています。
 
-`dataObject.quality`はNodeとSchneider表示機間の通信状態をQualityとして反映させています。
+`dataObject.quality`はNodeとSchneider表示器間の通信状態をQualityとして反映させています。
 |値|説明|
 |:-|:-|
-|good|Schneider表示機と接続中です|
-|com. error|Schneider表示機と接続できていません|
+|good|Schneider表示器と接続中です|
+|com. error|Schneider表示器と接続できていません|
+
+Schneider表示器の外部変数を使用している場合、当Nodeでは変数自体のQualityを検出できません。表示器にてシステムエラーなどを確認してください。
 
 ### サンプル
 
