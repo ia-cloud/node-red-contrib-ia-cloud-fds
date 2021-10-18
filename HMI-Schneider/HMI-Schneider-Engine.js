@@ -133,6 +133,7 @@ HmiSchneiderEngine.prototype.alarmUpdated = function (alarms) {
 }
 
 HmiSchneiderEngine.prototype.statusChanged = function () {
+    let self = this;
     if (this.isconnected()) {
         this._com_state = "connected";
 
@@ -154,7 +155,7 @@ HmiSchneiderEngine.prototype.statusChanged = function () {
         //  qualityをerrorにする
         this._objects.forEach(function (obj) {
             obj.quality = "com. error";
-            if (this._isvariable) {
+            if (self._isvariable) {
                 //  variableはitemのqualityも全てエラーにする
                 obj.objectContent.contentData.forEach(item => {
                     item.quality = "com. error";
