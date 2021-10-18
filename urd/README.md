@@ -17,16 +17,17 @@
 |オブジェクトキー|string|ia-cloudオブジェクトのobjectKeyとして使われる。|
 |オブジェクトの説明|string|ia-cloudオブジェクトのobjectDescriptionとして使われる。|
 |センサーオブジェクト|設定Node|使用するセンサーの項目設定を行う。対応する設定Nodeはセンサー種別に依存する。<ul><li>1ch電流センサー : urd-ac-1ch-node</li><li>3ch電流センサー : urd-ac-3ch-node</li></ul>|
-|URDセンサー通信オブジェクト|設定Node|urd-com Node。センサーとの通信に用いる受信用USBモジュールの設定を行う。|
+|EnOcean通信オブジェクト|設定Node|EnOcean-com Node。センサーとの通信に用いる受信用USBモジュールの設定を行う。この設定はEnOceanノードと共有している|
 
-### urd-com
+### EnOcean-com
 
-URDセンサー通信オブジェクトの設定ノード。以下のプロパティを持つ。
+EnOcean-com通信オブジェクトの設定ノード。以下のプロパティを持つ。
+詳細は[EnOcean通信ノード](../EnOcean/README.md#EnOceanCom)を参照
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:-----|
 |名前|string|設定Nodeの表示名。|
-|シリアルポート|設定Node|使用するシリアルポートを設定する。|
+|シリアルポート|string|使用するシリアルポートを設定する。|
 
 ### urd-ac-1ch-node
 
