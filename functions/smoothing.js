@@ -114,8 +114,7 @@ module.exports = function(RED) {
 
                 if (rangeDenomi !== "num") {
                     // subtracts the older than the range limit
-                    while (item.current !== 0 
-                        && item.timeArray[item.start] <= currentTime - range) {
+                    while (item.timeArray[item.start] <= currentTime - range) {
                         item.sum = item.sum - item.dataValueArray[item.start];
                         if (++item.start >= MAX_BUFFER_SIZE) item.start = 0;
                     }
@@ -136,7 +135,7 @@ module.exports = function(RED) {
                 dItem.dataValue = item.sum / num;
 
                 // ++current pointer and over buffer size?
-                if (++item.current > MAX_BUFFER_SIZE) item.current = 0;
+                if (++item.current >= MAX_BUFFER_SIZE) item.current = 0;
 
             }
             // store timestamp for initializing buffer interval

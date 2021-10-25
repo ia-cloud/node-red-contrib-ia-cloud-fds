@@ -1,0 +1,248 @@
+
+<script type="text/html" data-template-name="data-range">
+
+    <!-- rule-property starts -->
+    <div id="rule-property">
+        <div class="form-row">
+            <label for="node-input-objFilter" style="width: auto; margin-right: 20px;">
+                <span data-i18n="editor.obj-filter"></span></label>
+            <input type="checkbox" checked="checked" id="node-input-objFilter"
+                style="display: inline-block; width: auto;" >
+        </div>
+
+        <div class="form-row">
+            <label style="margin-left:8px"><span data-i18n="editor.ruleList"></span></label>
+        </div>
+        <!-- rule propertyの設定 -->
+        <div class="form-row node-input-rule-container-row">
+            <ol id="node-input-rule-container">
+            </ol>
+        </div>
+    </div>  
+
+    <!-- tab ends --> 
+    <div id="name-block">
+        <div > <hr> </div>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('data-range',{
+        category: 'iaCloud functions',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+            objFilter: {value: false},
+            actionType: {value: "bool"},
+            rules: {value:[{}]},
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "data data-range";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblobjkey = node._("editor.objkey");
+            const lbldName = node._("editor.dataName");
+            const lblscale = node._("editor.scale");
+            const lbllimit = node._("editor.limit");
+            const lbloffset = node._("editor.offset");
+            const lblgain = node._("editor.gain");
+            const lblHlimit = node._("editor.Hlimit");
+            const lblLlimit = node._("editor.Llimit");
+
+            // editableList item のhtml要素
+            // 1st line, objectKey
+            const paraForm0 =`
+            <span style="display:inline-block; width:30px"> </span>
+            <label style="width:auto; text-align: left; margin-right: 10px;">${lblobjkey}</label>
+                <input class="objkey"" placeholder="${lblobjkey}" type="text"
+                    style="width:150px; display:inline-block; text-align:left; margin-right:20px;">
+            `;
+            // 2nd line, dataName, scale or limit
+            const paraForm1 =`
+                <label style="width:70px; text-align: right; margin-right: 10px;">${lbldName}</label>
+                <input class="dataName"" placeholder="${lbldName}" type="text" required="required" 
+                    style="width:150px; display:inline-block; text-align:left; margin-right:10px;">
+                <select class="mode" style="width:110px; display:inline-block; text-align:left;">
+                    <option value="scale" selected>${lblscale}</option>
+                    <option value="limit">${lbllimit}</option>
+                </select>
+            `;
+            // 3rd line, scale or limit parameters
+            const paraForm2 =`
+                <div class="scale-div">
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                        <span>${lbloffset}</span>
+                    </label>
+                    <input type="text" class="offset" placeholder="${lbloffset}" required="required"
+                        style="width:80px; display:inline-block; text-align:left;">
+                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                        <span>${lblgain}</span>
+                    </label>
+                    <input type="text" class="gain" placeholder="${lblgain}" required="required"
+                        style="width:80px; display:inline-block; text-align:left;">
+                </div>
+                <div class="limit-div" hidden>
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:60px; text-align: right; margin-right: 10px;">
+                        <span>${lblLlimit}</span>
+                    </label>
+                    <input type="text" class="Llimit" placeholder="${lblLlimit}" required="required"
+                        style="width:80px; display:inline-block; text-align:left;">
+                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                        <span>${lblHlimit}</span>
+                    </label>
+                    <input type="text" class="Hlimit" placeholder="${lblHlimit}" required="required"
+                        style="width:80px; display:inline-block; text-align:left;">
+                </div>
+            `;
+
+            // Define editableList.
+            $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 360,
+                
+                addItem: function(container,index,rule) {
+
+                    let div0 = $('<div></div>').appendTo(container);
+                    let div1 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+                    let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                    $(paraForm0).appendTo(div0);
+                    $('<span></span>',{class:"index", 
+                        style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                        .text((index + 1) + " :")
+                        .appendTo(div1);
+                    $(paraForm1).appendTo(div1);
+
+                    // 2nd row of parameter list
+                    $(paraForm2).appendTo(div2);
+
+                    // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
+                    if(!rule.hasOwnProperty("dataName")) {
+                        rule = {dataName: "", mode: "scale"}
+                    };
+                    // restore parameters
+                    div0.find(".objkey").val(rule.objectKey);
+                    div1.find(".dataName").val(rule.dataName);
+                    div1.find(".mode").val(rule.mode);
+                    div2.find(".offset").val(rule.offset);
+                    div2.find(".gain").val(rule.gain);
+                    div2.find(".Hlimit").val(rule.Hlimit);
+                    div2.find(".Llimit").val(rule.Llimit);
+
+                    div1.find(".mode").change(function() {
+                        let mode = $(this).val();
+                        // 該当するhtml要素を表示、他を隠す
+                        div2.find(".scale-div").hide();
+                        div2.find(".limit-div").hide();
+                        switch(mode) {
+                            case "scale":
+                                div2.find(".scale-div").show();
+                                break;
+                            case "limit":
+                                div2.find(".limit-div").show();
+                                break;
+                            default:
+                        }
+                    });
+                    div1.find(".mode").change();
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-rule-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.rules.length;i++) {
+                var rule = node.rules[i];
+                $("#node-input-rule-container").editableList('addItem',rule);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-rule-container").editableList('items');
+            // ruleデータ設定を作成
+            node.rules = [];
+            items.each(function(i, elm){
+                let rule = {
+                    // reatore parameters
+                    objectKey: elm.find(".objkey").val(),
+                    dataName: elm.find(".dataName").val(),
+                    mode: elm.find(".mode").val(),
+                    offset: (Number(elm.find(".offset").val()) !== NaN)? elm.find(".offset").val(): "",
+                    gain: (Number(elm.find(".gain").val()) !== NaN)? elm.find(".gain").val(): "",
+                    Hlimit: (Number(elm.find(".Hlimit").val()) !== NaN)? elm.find(".Hlimit").val(): "",
+                    Llimit: (Number(elm.find(".LLimit").val()) !== NaN)? elm.find(".Llimit").val(): "",
+                }
+                node.rules.push(rule);
+
+                // dataName is not null
+                if (!rule.dataName) configReady = "";
+                if (rule.mode === "scale" && (!rule.offset && !rule.gain)) configReady = "";
+                if (rule.mode === "limit" && (!rule.Hlimit && !rule.Llimit)) configReady = "";
+            });
+
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // node name block height
+            height -= $("#name-block").outerHeight(true);
+
+            // editableList以外の行の高さを引く
+            let rows = $("#rule-property>*:not(.node-input-rule-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#rule-property>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-rule-container").editableList('height',height);
+        }
+    });
+
+</script>

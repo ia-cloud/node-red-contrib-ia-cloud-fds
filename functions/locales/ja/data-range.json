@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "paletteLabel": "データ範囲",
+        "name": "ノード名称",
+        "obj-filter": "対象外オブジェクト削除",
+        "ruleList": "変換リスト",
+        "objkey": "オブジェクトキー",
+        "dataName": "データ名称",
+        "scale": "offset/gain",
+        "limit": "上下限",
+        "offset": "オフセット",
+        "gain": "ゲイン",
+        "Hlimit": "上限値",
+        "Llimit": "下限値"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません",
+        "nomatch": "出力がありません"
+    }
+}
