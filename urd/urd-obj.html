@@ -54,6 +54,19 @@ limitations under the License.
             </div>
         </div>
     </div>
+    <hr>
+    <!-- qInfo setting -->
+    <div class="form-group">
+        <div class="form-row" id="qInfo">
+            <label for="node-input-qInfo"><span data-i18n="urdDataItem.label.qInfo"></span></label>
+            <input type="checkbox" id="node-input-qInfo" style="display: inline-block; width: auto;" >
+        </div>
+        <div class="form-row" id="qInterval">
+            <label for="node-input-qInterval"><span data-i18n="urdDataItem.label.qInterval"></span></label>
+            <input type="number" id="node-input-qInterval" min="0" step="1" value="60" style="display: inline-block; width: auto;">
+            <label for="node-input-qInterval"><span data-i18n="urdDataItem.label.qIntervalSec"></span></label>
+        </div>
+    </div>
 
     <hr>
 
@@ -136,6 +149,8 @@ limitations under the License.
                 },
             },
             selectSensor: { value: '', required: true },
+            qInfo: { value: false, required: true },
+            qInterval: { value: '0' },
         },
         color: 'rgb(231, 180, 100)',
         inputs: 1,
@@ -164,6 +179,14 @@ limitations under the License.
                     $('#AC3ch').show();
                 }
             });
+            // 品質情報使用チェックボックス押下時
+            $('#node-input-qInfo').change(function () {
+            if($('#node-input-qInfo').prop('checked')) {
+                $('#qInterval').show();
+            } else {
+                $('#qInterval').hide();
+            };
+        });
         },
 
         oneditsave() {
@@ -178,6 +201,10 @@ limitations under the License.
                 // 設定にない値が入っている場合はそのまま返す
                 return $('#node-input-selectSensor').val();
             });
+            // 品質情報チェックがない場合は周期を0に初期化
+            if(!$('#node-input-qInfo').prop('checked') || isNaN($('#node-input-qInterval').val())) {
+                $('#node-input-qInterval').val('0');
+            };
         },
     });
 </script>
