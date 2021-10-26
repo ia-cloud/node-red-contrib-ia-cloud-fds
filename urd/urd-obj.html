@@ -113,6 +113,13 @@ limitations under the License.
 
         TI has no current values, so the status of this node becomes "Received data without current value" and send nothing.
     </p>
+    <h3>Quality information</h3>
+    <p>
+        When "Quality info" is checked, quality parameter is added to msg.dataObject.
+        If the Sensor data is not recieved in setting interval, quality is set to "not updated", and previous sensor parameter is set to sending data.
+        (If Sensor data has never been recieved, this node will not send data)
+        If Sensor data recieved, quality is set to "good".
+    </p>
 
 </script>
 
