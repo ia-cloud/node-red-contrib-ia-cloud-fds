@@ -118,7 +118,11 @@ module.exports = function (RED) {
                 });
 
                 sendMsg.dataObject.objectContent.contentData = contentData;
-                if (iaObject.qInfo) sendMsg.dataObject.quality = quality;
+                if (iaObject.qInfo) {
+                    // 品質情報を設定し、該当ObjectのtimeCountを初期化
+                    sendMsg.dataObject.quality = quality;
+                    iaObject.timeCount = iaObject.qInterval;
+                }
                 sendMsg.payload = contentData;
                 node.debug(JSON.stringify(sendMsg.dataObject));
                 node.send(sendMsg);
