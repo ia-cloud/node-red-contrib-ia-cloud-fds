@@ -9,12 +9,12 @@
     <!-- Sensor ID -->
     <div class="form-row">
         <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
-        <input type="text" id="node-config-input-sensorId" data-i18n="serial.label.sensorId" placeholder="センサーIDを入力します　例) 0500ef1c">
+        <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]enoceanDataItem.placeholder.sensorId">
     </div>
 
     <!-- Title of contentData. -->
     <div class="form-row" style="margin-bottom:0;">
-        <label><i class="fa fa-list"></i> <span data-i18n="urdDataItem.label.itemNo" /></label>
+        <label><i class="fa fa-list"></i> <span data-i18n="enoceanDataItem.label.itemNo" /></label>
     </div>
     <!-- List of contentData. -->
     <div>
@@ -25,19 +25,19 @@
 </script>
 
 <script type="text/html" data-help-name="Optex_Occupancy_Sensor" charset="utf-8">
-    <p>Optex社の人感センサーに関する設定をここで行います。</p>
+    <p>Settings about OPTEX occupancy sensor.</p>
 </script>
 
 <script type="text/javascript">
     RED.nodes.registerType('Optex_Occupancy_Sensor', {
         category: 'config',
         defaults: {
-            name: { value: 'Optex Occupancy Sensor' },
+            name: { value: 'OPTEX Occupancy Sensor' },
             sensorId: { value: '', required: true },
             configObject: { value: '' },
         },
         label: function() {
-            return this.name || ('Itec CT Sensor');
+            return this.name || ('OPTEX Occupancy Sensor');
         },
         oneditprepare: function() {
             const node = this;
