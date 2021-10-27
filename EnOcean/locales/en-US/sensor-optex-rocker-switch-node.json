@@ -1,7 +1,11 @@
 {
     "enoceanDataItem": {
         "label": {
-            "dataName": "Data Name"
+            "dataName": "Data Name",
+            "itemNo": "Item No"
+        },
+        "placeholder": {
+            "sensorId": "Input sensor id here e.g. 0500ef1c"
         },
         "input": {
             "dataItems": {
