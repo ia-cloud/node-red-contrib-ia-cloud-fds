@@ -3,8 +3,12 @@
         "label": {
             "object_key": "オブジェクトキー",
             "object_desc": "オブジェクトの説明",
+            "itemNo": "データ項目",
             "dataName": "データ名称",
             "unit": "単位"
+        },
+        "placeholder": {
+            "sensorId": "センサーIDを入力します　例) 0500ef1c"
         },
         "input": {
             "dataItems": {
