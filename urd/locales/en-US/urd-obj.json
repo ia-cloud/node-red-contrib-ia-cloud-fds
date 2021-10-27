@@ -1,4 +1,5 @@
 {
+    "paletteLabel": "URD Current Sensor",
     "status": {
         "excluded": "Recieved data without current value",
         "jsonParseError": "JSON parse error",
