@@ -3,8 +3,12 @@
         "label": {
             "object_key": "Object Key",
             "object_desc": "Object Description",
+            "itemNo": "Item No",
             "dataName": "Data Name",
             "unit": "Unit"
+        },
+        "placeholder": {
+            "sensorId": "Input sensor id here e.g. 0500ef1c"
         },
         "input": {
             "dataItems": {
