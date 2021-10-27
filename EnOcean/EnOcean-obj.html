@@ -62,6 +62,18 @@
 
 </script>
 
+<script type="text/html" data-help-name="EnOcean-obj" charset="utf-8">
+    <p>Sends an ia-cloud object at specific intervals or asynchronously.</p>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>msg.request<span class="property-type">string</span></dt>
+        <dd>"store" fixed string to send to ia-cloud-cnct node.</dd>
+        <dt>msg.dataObject<span class="property-type">object</span></dt>
+        <dd>ia cloud object supposed to be send to ia cloud CCS.</dd>
+    </dl>
+</script>
+
 <script type="text/javascript">
 RED.nodes.registerType('EnOcean-obj', {
     category: 'iaCloud devices',
