@@ -31,7 +31,9 @@ module.exports = class UrdAC3ch extends SensorInterface {
 
         let message = '';
 
-        if (typeof serialData === 'undefined' || serialData.length < 5 * 2) {
+        // 16進数表記から0xを除外
+        const serialDataString = serialData.replace('0x', '');
+        if (typeof serialData === 'undefined' || serialDataString.length < 5 * 2) {
             // 5Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message, sendFlg: false };
         }
@@ -39,7 +41,7 @@ module.exports = class UrdAC3ch extends SensorInterface {
         // contentDataの生成
         const contentData = contentDataConfig.slice(0, 3).map((dItem, index) => {
             // Decode to decimal value. ex. 'FFF' => 4095
-            const dec = parseInt(serialData.substr(index * 3, 3), 16);
+            const dec = parseInt(serialDataString.substr(index * 3, 3), 16);
 
             if (dItem.clampType === 'unconnected') {
                 // センサー未設定としたチャンネルに測定値(最大値以外)がある場合に警告メッセージを追加

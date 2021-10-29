@@ -4,6 +4,7 @@
         "jsonParseError": "JSON parse error",
         "noEnOceanCom": "EnOcean communication object has no setting",
         "noSensor": "No sensor setting",
+        "notUpdated": "Max interval timeout",
         "ready": "Ready",
         "received": "Received"
     },
@@ -14,6 +15,9 @@
             "filename": "Filename",
             "objectDesc": "Object description",
             "objectKey": "Object key",
+            "qInfo": "Quality info",
+            "qInterval": "Max interval",
+            "qIntervalSec": "[s]",
             "selectFile": "Select setting file.",
             "sensor": "Sensor type",
             "sensorConfig": "Sensor config",

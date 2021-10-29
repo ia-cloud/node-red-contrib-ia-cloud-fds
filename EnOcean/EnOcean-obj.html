@@ -76,7 +76,41 @@
 </script>
 
 <script type="text/html" data-help-name="EnOcean-obj" charset="utf-8">
-    <p>一定周期あるいは非同期にia-cloudオブジェクトを生成して出力します</p>
+    <p>This node recieves EnOcean sensor data, and generates and outputs ia-cloud object</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dd>None</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>msg.request<span class="property-type">string</span></dt>
+        <dd>"store" fixed string to send to ia-cloud-cnct Node</dd>
+        <dt>msg.dataObject<span class="property-type">object</span></dt>
+        <dd>ia cloud object supporsed to be send to ia cloud CCS</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>
+        Select the sensor type and define the sensor data from the setting Node according to the type.
+        Set the receiving port for sensor data in the EnOcean communication object (EnOcean-com Node).
+        When it receives data from the sensor, it will generate and output an ia-cloud object.
+        objectKey hopes to be a unique key, Since the objectKey is the name that identifies the sensor.
+    </p>
+
+    <h3>Recieved data without measured values</h3>
+    <p>
+        EnOcean communication stipulates a mechanism to notify information about a sensor (called TI; Teach-In).
+        Since TI has no measured values, send nothing.
+    </p>
+    <h3>Quality information</h3>
+    <p>
+        When "Quality info" is checked, quality parameter is added to msg.dataObject.
+        If the sensor data is not recieved in setting interval, quality is set to "not updated", and previous sensor parameter is set to sending data.
+        (If sensor data has never been recieved, this node will not send data)
+        If sensor data recieved, quality is set to "good".
+    </p>
 </script>
 
 <script type="text/javascript">
