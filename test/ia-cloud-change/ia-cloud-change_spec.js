@@ -27,7 +27,7 @@ describe('ia-cloud-change node', () => {
     });
 
     // eslint-disable-next-line no-undef
-    it('should make payload lower case', (done) => {
+    it('should convert to ia-cloud format', (done) => {
         const flow = [
             {
                 id: 'n1',
