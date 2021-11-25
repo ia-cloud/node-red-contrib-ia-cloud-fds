@@ -87,7 +87,8 @@
     "url": "git+ssh://git@github.com/ia-cloud/node-red-contrib-ia-cloud-fds.git"
   },
   "scripts": {
-    "test": "mocha \"test/**/*_spec.js\""
+    "test": "mocha \"test/**/*_spec.js\"",
+    "test:watch": "mocha \"test/**/*_spec.js\" --watch"
   },
   "homepage": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds#readme"
 }
