@@ -1,5 +1,5 @@
 const helper = require('node-red-node-test-helper');
-const lowerNode = require('../../ia-cloud-change/ia-cloud-change');
+const changeNode = require('../../ia-cloud-change/ia-cloud-change');
 
 // eslint-disable-next-line no-undef
 describe('ia-cloud-change node', () => {
@@ -19,7 +19,7 @@ describe('ia-cloud-change node', () => {
     // eslint-disable-next-line no-undef
     it('should be loaded', (done) => {
         const flow = [{ id: 'n1', type: 'ia-cloud-change', name: 'test name' }];
-        helper.load(lowerNode, flow, () => {
+        helper.load(changeNode, flow, () => {
             const n1 = helper.getNode('n1');
             n1.should.have.property('name', 'test name');
             return done();
@@ -41,7 +41,7 @@ describe('ia-cloud-change node', () => {
             },
             { id: 'n2', type: 'helper' }];
 
-        helper.load(lowerNode, flow, () => {
+        helper.load(changeNode, flow, () => {
             const n2 = helper.getNode('n2');
             const n1 = helper.getNode('n1');
 
