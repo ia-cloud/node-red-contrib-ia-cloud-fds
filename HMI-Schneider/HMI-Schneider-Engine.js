@@ -23,6 +23,7 @@ function HmiSchneiderEngine(RED, owner, com, isvariable) {
     this._RED = RED;
     this._owner = owner;
     this._com = com.getEngine();
+    this._com_state = "init"
     this._isvariable = isvariable;
 
     this._objects = [];
@@ -99,15 +100,32 @@ HmiSchneiderEngine.prototype.valueUpdated = function (variables) {
     }
 
     this._objects.forEach(function (obj) {
+        let updated = false;
         obj.objectContent.contentData.forEach(function (dataItem) {
             for (let i = 0; i < variables.length; i++) {
                 if (dataItem.varName == variables[i].name) {
-                    let value = (variables[i].quality != "good") ? null : variables[i].value;
-                    dataItem.value = value;
+                    switch (variables[i].quality) {
+                        case "good":
+                            dataItem.quality = "good";
+                            dataItem.value = variables[i].value;
+                            break;
+                        case "invalid":
+                        case "bad":
+                            dataItem.quality = "com. error";
+                            break;
+                        case "unknown":
+                            dataItem.quality = "not updated";
+                            break;
+                    }
+                    updated = true;
                     break;
                 }
             }
         });
+        if (updated) {
+            //  最後にObjectのQualityをgoodに変更する
+            obj.quality = "good";
+        }
     });
 }
 
@@ -130,9 +148,35 @@ HmiSchneiderEngine.prototype.alarmUpdated = function (alarms) {
 }
 
 HmiSchneiderEngine.prototype.statusChanged = function () {
-    if (!this.isconnected()) {
+    let self = this;
+    if (this.isconnected()) {
+        this._com_state = "connected";
+
+        //  再接続時にAlarmは通知がこないので、ここでqualityを更新しておく
+        //  Variableは変化通知が届くので、その時に行う
+        if (!this._isvariable) {
+            this._objects.forEach(function (obj) {
+                obj.quality = "good";
+            });
+        }
+    }
+    else {
         //  HMIの接続が切れた場合はエラーとする
-        this._owner.error("HMI is not connected.");
+        if (this._com_state != "disconnected") {
+            this._owner.error("HMI is not connected");
+            this._com_state = "disconnected"
+        }
+
+        //  qualityをerrorにする
+        this._objects.forEach(function (obj) {
+            obj.quality = "com. error";
+            if (self._isvariable) {
+                //  variableはitemのqualityも全てエラーにする
+                obj.objectContent.contentData.forEach(item => {
+                    item.quality = "com. error";
+                });
+            }
+        });
     }
     this._RED.nodes.getNode(this._owner.id).emit("statusChanged");
 }
@@ -145,9 +189,14 @@ function addObject_imp(_obj) {
 
     obj.lastIntervalCheck = null;
     obj.lastValueChangedCheck = null;
+    obj.quality = "not updated";
+    obj.prev_quality = obj.quality;
+
     obj.objectContent.contentData.forEach(item => {
         if (this._isvariable) {
             item.value = null;
+            item.quality = "not updated";
+            item.prev_quality = item.quality;
         } else {    //  alarm
             item.status = null;
             item.message = "";
@@ -194,7 +243,7 @@ function intervalFuncVar() {
     self._objects.forEach(function (obj) {  //  check interval
         if (obj.storeInterval > 0) {
             if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
-                if (this.isconnected()) {   // 接続時のみ
+                if (obj.quality != "not updated") {   // 接続結果待ちは除外
                     sendVarMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
                 }
                 obj.lastIntervalCheck = current;
@@ -206,7 +255,7 @@ function intervalFuncVar() {
         if (obj.asyncInterval > 0) {
             if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
                 obj.lastValueChangedCheck = current;
-                if (!haveVarsUpdated.call(self, obj.objectContent.contentData)) {
+                if ((obj.quality == obj.prev_quality) && !haveVarsUpdated.call(self, obj.objectContent.contentData)) {
                     return;
                 }
                 sendVarMessages.call(self, obj, true);
@@ -216,13 +265,14 @@ function intervalFuncVar() {
 }
 
 function haveVarsUpdated(items) {
-    return (items.find(item => item.value != item.prev) != undefined) ? true : false;
+    return (items.find(item => ((item.value != item.prev) || (item.quality != item.prev_quality))) != undefined) ? true : false;
 }
 
 function sendVarMessages(obj, valuechanged) {
     let msg = createMsg(obj, true);
     if (valuechanged) { //  update previous value when value changed trigger
-        obj.objectContent.contentData.forEach(item => { item.prev = item.value; });
+        obj.objectContent.contentData.forEach(item => { item.prev = item.value; item.prev_quality = item.quality; });
+        obj.prev_quality = obj.quality;
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
@@ -237,7 +287,7 @@ function intervalFuncAlarm() {
     self._objects.forEach(function (obj) { //  check interval
         if (obj.storeInterval > 0) {
             if ((obj.lastIntervalCheck == null) || (current - (obj.lastIntervalCheck) >= (obj.storeInterval * 1000))) {
-                if (this.isconnected()) {   // 接続時のみ
+                if (obj.quality != "not updated") {   // 接続結果待ちは除外
                     sendAlarmMessages.call(self, obj, (obj.lastIntervalCheck == null)); //  初回だけ変化通知のフラグをONする
                 }
                 obj.lastIntervalCheck = current;
@@ -249,7 +299,7 @@ function intervalFuncAlarm() {
         if (obj.asyncInterval > 0) {
             if ((obj.lastValueChangedCheck == null) || (current - (obj.lastValueChangedCheck) >= (obj.asyncInterval * 1000))) {
                 obj.lastValueChangedCheck = current;
-                if (!haveAlarmsUpdated.call(self, obj.objectContent.contentData)) {
+                if ((obj.quality == obj.prev_quality) && !haveAlarmsUpdated.call(self, obj.objectContent.contentData)) {
                     return;
                 }
                 sendAlarmMessages.call(self, obj, true);
@@ -266,6 +316,7 @@ function sendAlarmMessages(obj, valuechanged) {
     let msg = createMsg(obj, false);
     if (valuechanged) { //  update previous value when value changed trigger
         obj.objectContent.contentData.forEach(item => { item.prev = item.status; });
+        obj.prev_quality = obj.quality;
     }
 
     this._RED.nodes.getNode(this._owner.id).emit("outputMsg", msg);
@@ -281,6 +332,7 @@ function createMsg(obj, isvariable) {
     msg.dataObject.objectType = "iaCloudObject";
     msg.dataObject.objectDescription = obj.objectDescription;
     msg.dataObject.objectContent.contentType = obj.objectContent.contentType;
+    msg.dataObject.quality = obj.quality;
 
     let contentData = createContendData(obj, isvariable);
     msg.dataObject.objectContent.contentData = contentData;
@@ -296,6 +348,7 @@ function createContendData(obj, isvariable) {
         if (isvariable) {
             dItem.dataName = item.dataName;
             dItem.dataValue = item.value;
+            dItem.quality = item.quality;
             if (item.unit && (item.unit != "")) {
                 dItem.unit = item.unit;
             }

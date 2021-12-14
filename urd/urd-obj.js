@@ -26,6 +26,9 @@ module.exports = function (RED) {
         this.enoceanCom = config.enoceanCom;
         this.sensorType = config.sensorType;
         this.selectSensor = config.selectSensor;
+        this.qInfo = config.qInfo;
+        this.qInterval = parseInt(config.qInterval, 10);
+        this.intervalId = [];
 
         const { serialPool } = config.enoceanCom;
 
@@ -58,6 +61,8 @@ module.exports = function (RED) {
         enObjects[0].objectContent.contentType = 'iaCloudData';
         enObjects[0].objectContent.contentData = SensorNode.configObject;
         enObjects[0].range = SensorNode.range || [];
+        enObjects[0].qInfo = this.qInfo;
+        enObjects[0].qInterval = this.qInterval;
 
         if (enObjects) {
             // 取り合えず enObjects は要素数1としてコードを書く
@@ -67,6 +72,9 @@ module.exports = function (RED) {
                     nodeId: node.id,
                     objectKey: enObj.objectKey,
                 };
+                // 品質情報ステータス設定がtrueならば"good"を初期設定する
+                if (enObj.qInfo) linkData.quality = 'good';
+
                 linkObj.push(linkData);
                 // enoceanCom nodeのデータ追加メソッドを呼ぶ
                 enoceanCom.emit('addLinkData', linkData);
@@ -75,7 +83,7 @@ module.exports = function (RED) {
 
         node.status({ fill: 'green', shape: 'dot', text: 'status.ready' });
 
-        const iaCloudObjectSend = function (element) {
+        const iaCloudObjectSend = function (element, quality = undefined) {
             node.status({ fill: 'blue', shape: 'ring', text: 'runtime.preparing' });
 
             const msg = { request: 'store', dataObject: { objectContent: {} } };
@@ -112,7 +120,12 @@ module.exports = function (RED) {
                         contentData: measuredResult.contentData,
                     },
                 };
-
+                if (iaObject.qInfo) {
+                    // 品質情報を設定し、該当ObjectのtimeCountを初期化
+                    msg.dataObject.quality = quality;
+                    iaObject.timeCount = iaObject.qInterval;
+                }
+                msg.payload = measuredResult.contentData;
                 node.send(msg);
 
                 if (measuredResult.message) {
@@ -125,19 +138,52 @@ module.exports = function (RED) {
             }
         };
 
+        // 品質情報による定期送信処理
+        const minCycle = 1;
+        enObjects.forEach((obj, i) => {
+            if (obj.qInfo && obj.qInterval) {
+                obj.timeCount = obj.qInterval;
+                this.intervalId[i] = setInterval(() => {
+                    // 設定された格納周期で、ia-cloudオブジェクトを生成しメッセージで送出
+                    // 複数の周期でオブジェクトの格納をするため、1秒周期でカウントし、カウントアップしたら、
+                    // オブジェクト生成、メッセージ出力を行う。
+
+                    // 収集周期前であれば何もせず
+                    obj.timeCount -= minCycle;
+                    if (obj.timeCount > 0) return;
+
+                    // 収集周期がきた。収集周期を再設定。
+                    obj.timeCount = obj.qInterval;
+                    // objectKeyに対応するlinkDataを探す
+                    const linkDataList = linkObj.filter((ld) => ld.objectKey === obj.objectKey);
+                    if (linkDataList && linkDataList.length > 0 && linkDataList[0].value) {
+                        // linkDataの品質情報ステータスを"not updated"にする
+                        linkDataList[0].quality = 'not updated';
+                        // 引数に [objectKey, radio_data] を受け取る
+                        iaCloudObjectSend([obj.objectKey, linkDataList[0].value], linkDataList[0].quality);
+                        node.status({ fill: 'yellow', shape: 'ring', text: 'status.notUpdated' });
+                    }
+                }, (minCycle * 1000));
+            }
+        });
+
         // UrdObjNode.prototype.linkDatachangeListener = function (element) {
         this.on('changeListener', ((objectKey) => {
             // objectKeyに対応するlinkDataを探す
             const linkDataList = linkObj.filter((ld) => ld.objectKey === objectKey);
             if (linkDataList && linkDataList.length > 0) {
+                // linkDataに品質情報ステータスがあれば"good"にする
+                if (linkDataList[0].quality) linkDataList[0].quality = 'good';
                 // 引数に [objectKey, radio_data] を受け取る
-                iaCloudObjectSend([objectKey, linkDataList[0].value]);
+                iaCloudObjectSend([objectKey, linkDataList[0].value], linkDataList[0].quality);
             }
         }));
 
         this.on('input', (msg, send, done) => done()); // 処理なし
 
         this.on('close', function (done) {
+            // 周期実行を停止
+            this.intervalId.forEach((id) => clearInterval(id));
             if (this.serialConfig) {
                 // TODO: ここのserialPoolをSerialPortノードから取得するようにする
                 serialPool.close(this.serialConfig.serialport, done);

@@ -5,6 +5,7 @@
         "jsonParseError": "JSON読み込みエラー",
         "noEnOceanCom": "EnOcean通信オブジェクトが設定されていません",
         "noSensor": "センサー情報が設定されていません",
+        "notUpdated": "送信間隔タイムアウト",
         "ready": "受信待機中",
         "received": "データ受信済"
     },
@@ -15,6 +16,9 @@
             "filename": "設定ファイル名",
             "objectDesc": "オブジェクトの説明",
             "objectKey": "オブジェクトキー",
+            "qInfo": "品質情報を使う",
+            "qInterval": "最大送信間隔",
+            "qIntervalSec": "[s]",
             "selectFile": "設定ファイル名を選択してください",
             "sensor": "センサー種別",
             "sensorConfig": "センサー詳細設定",

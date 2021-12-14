@@ -3,6 +3,7 @@
         "jsonParseError": "JSON読み込みエラー",
         "noEnOceanCom": "EnOcean通信オブジェクトが設定されていません",
         "noSensor": "センサー情報が設定されていません",
+        "notUpdated": "送信間隔タイムアウト",
         "ready": "受信待機中",
         "received": "データ受信済"
     },
@@ -17,6 +18,9 @@
             "optexOccupancy": "OPTEX人感センサー",
             "optexRocker": "OPTEXスイッチ",
             "sensorKind": "センサー種別",
+            "qInfo": "品質情報を使う",
+            "qInterval": "最大送信間隔",
+            "qIntervalSec": "[s]",
             "wattyTemp": "Watty温度センサー"
         },
         "sensors": {

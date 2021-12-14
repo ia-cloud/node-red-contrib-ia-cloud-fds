@@ -47,6 +47,10 @@ HmiSchneiderComEngine.prototype.isconnected = function () {
   return (this._wsList.find(obj => obj.connected == false) == undefined);
 }
 
+HmiSchneiderComEngine.prototype.iserror = function () {
+  return (this._wsList.find(obj => obj.error == false) == undefined);
+}
+
 HmiSchneiderComEngine.prototype.addLinkData = function (obj) {
   let self = this;
   let found = false;
@@ -99,11 +103,12 @@ function getMonitorVariables() {
 function addNewWebSocket() {
   let id = this._wsList.length;
 
-  let obj = { connected: false };
+  let obj = { connected: false, error: false };
 
   obj.ws = new HmiSchneiderWebSocket(id, (id == 0), false);
   obj.ws.onopen = onOpen.bind(this);
   obj.ws.onclose = onClose.bind(this);
+  obj.ws.onerror = onError.bind(this);
   obj.ws.onmessage = onMessage.bind(this);
 
   this._wsList.push(obj);
@@ -166,6 +171,7 @@ function onOpen(id) {
 
   let self = this;
   this._wsList[id].connected = true;
+  this._wsList[id].error = false; //  clear error
   if (this.isconnected()) {
     startMonitor.call(self);
     statusUpdate.call(self);
@@ -180,6 +186,19 @@ function onClose(id) {
   this._wsList[id].connected = false;
 
   if (connected && !this.isconnected()) {
+    statusUpdate.call(self);
+  }
+}
+
+function onError(id) {
+  if (this._wsList.length <= id) { return; }
+
+  let self = this;
+  let error = this.iserror();
+  this._wsList[id].connected = false;
+  this._wsList[id].error = true;
+
+  if (!error && this.iserror()) {
     statusUpdate.call(self);
   }
 }
