@@ -21,6 +21,7 @@
             "qInfo": "品質情報を使う",
             "qInterval": "最大送信間隔",
             "qIntervalSec": "[s]",
+            "wattyHyco": "Watty HYCO CO2センサー",
             "wattyHyhqFf": "Watty HYHQ-FF 4ch 温度センサー送信機",
             "wattyTemp": "Watty HYJ 温度センサー"
         },
@@ -30,6 +31,7 @@
             "optexOccupancy": "人感センサー (OPTEX)",
             "optexRocker": "ロッカースイッチ (OPTEX)",
             "watty": "HYJ 温度センサー (Watty)",
+            "wattyHyco": "HYCO CO2濃度センサー (Watty)",
             "wattyHyhqFf": "HYHQ-FF 4ch 温度センサー送信機 (Watty)"
         }
     }

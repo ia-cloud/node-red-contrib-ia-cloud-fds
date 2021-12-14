@@ -1,0 +1,124 @@
+/**
+ * Copyright 2019 ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+<!-- EnOcean-dItems Config Node の記述 -->
+<script type="text/html" data-template-name="Watty_HYCO_Sensor">
+
+    <!-- Name -->
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-config-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+
+    <!-- Sensor ID -->
+    <div class="form-row">
+        <label for="node-config-input-sensorId"><i class="fa fa-flag"></i> <span data-i18n="serial.label.sensorId"></span></label>
+        <input type="text" id="node-config-input-sensorId" data-i18n="[placeholder]enoceanDataItem.placeholder.sensorId">
+    </div>
+
+    <!-- Title of contentData. -->
+    <div class="form-row" style="margin-bottom:0;">
+        <label><i class="fa fa-list"></i> <span data-i18n="enoceanDataItem.label.itemNo"></span></label>
+    </div>
+    <!-- List of contentData. -->
+    <div>
+        <ol id="content_data">
+            <!-- Insert $rowTemplate -->
+        </ol>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="Watty_HYCO_Sensor" charset="utf-8">
+    <p>Settings about Watty Corporation HYCO CO2 sensor.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('Watty_HYCO_Sensor',{
+        category: 'config',
+        defaults: {
+            name: { value: 'Watty CO2_Sensor' },
+            sensorId: { value: '', required: true },
+            configObject: { value: '' },
+        },
+        label: function() {
+            return this.name || ('Watty CO2_Sensor');
+        },
+        oneditprepare: function() {
+            const node = this;
+
+            // Define editableList.
+            $('#content_data').css('min-height', '340px').css('min-width', '400px').editableList({
+                addButton: false,
+                sortable: false,
+                removable: false,
+                // Process when click add button.
+                addItem($row, index, data) {
+                    // Labels
+                    const labelDataName = node._('enoceanDataItem.label.dataName');
+                    const labelUnit = node._('enoceanDataItem.label.unit');
+
+                    const dataName = data.dataName || '';
+                    const unit = data.unit || '';
+
+                    // A row template.
+                    const $rowTemplate = $(`
+                    <div class="row">
+                            <!-- dataName -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelDataName}</label>
+                                <input type="text" class="data-name" value="${dataName}">
+                            </div>
+                            <!-- unit -->
+                            <div class="form-row">
+                                <label><i class="fa fa-tag"></i> ${labelUnit}</label>
+                                <input type="text" class="unit" style="width: 100px;" value="${unit}">
+                            </div>
+                        </div>
+                    `);
+
+                    // Append row.
+                    $rowTemplate.appendTo($row);
+                },
+            });
+
+            // Default values for each row.
+            const defaultRows = [
+                { dataName: node._('enoceanDataItem.input.dataItems.0.dataName'), unit: node._('enoceanDataItem.input.dataItems.0.unit') },
+                { dataName: node._('enoceanDataItem.input.dataItems.1.dataName'), unit: node._('enoceanDataItem.input.dataItems.1.unit') },
+                { dataName: node._('enoceanDataItem.input.dataItems.2.dataName'), unit: node._('enoceanDataItem.input.dataItems.2.unit') },
+            ];
+
+            // Stack rows.
+            let configObject;
+            if (typeof this.configObject === 'string') {
+                configObject = defaultRows;
+            } else {
+                configObject = this.configObject || defaultRows;
+            }
+            $('#content_data').editableList('addItems', configObject);
+        },
+        oneditsave: function() {
+            const editableItems = $('#content_data').editableList('items');
+
+            this.configObject = Array.from(editableItems).map(($item) => {
+                return {
+                    dataName: $item.find('.data-name').val(),
+                    unit: $item.find('.unit').val(),
+                };
+            });
+        }
+    });
+</script>

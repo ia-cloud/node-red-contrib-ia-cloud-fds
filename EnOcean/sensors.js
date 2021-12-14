@@ -20,6 +20,7 @@ const optexOccupancy = require('./sensor-optex-occupancy');
 const optexRockerSwitch = require('./sensor-optex-rocker-switch');
 const wattyTemperature = require('./sensor-watty-temperature');
 const wattyHyhqFf = require('./sensor-watty-hyhq-ff');
+const wattyHyco = require('./sensor-watty-hyco');
 
 module.exports = [
     {
@@ -57,5 +58,11 @@ module.exports = [
         type: 'watty_hyhq_ff',
         process: wattyHyhqFf.process,
         nodeRedFunction: wattyHyhqFf.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYCO',
+        type: 'watty_hyco',
+        process: wattyHyco.process,
+        nodeRedFunction: wattyHyco.nodeRedFunction,
     },
 ];
