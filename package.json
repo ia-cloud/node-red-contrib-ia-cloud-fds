@@ -1,7 +1,7 @@
 {
   "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "author": "ia-cloud project members",
   "bugs": {
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
@@ -25,7 +25,9 @@
   "devDependencies": {
     "eslint": "^6.5.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "node-red": "^1.0.3",
+    "node-red-node-test-helper": "^0.2.3"
   },
   "keywords": [
     "node-red"
@@ -84,7 +86,8 @@
     "url": "git+ssh://git@github.com/ia-cloud/node-red-contrib-ia-cloud-fds.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"test/**/*_spec.js\"",
+    "test:watch": "mocha \"test/**/*_spec.js\" --watch"
   },
   "homepage": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds#readme"
 }

@@ -163,14 +163,14 @@ limitations under the License.
         inputs: 1,
         outputs: 1,
         icon: 'ia-cloud.png',
-        label:function () {
+        label: function () {
             return this.name || this._(`urdDataItem.sensors.${this.sensor}`);
         },  
         labelStyle: function() {
-            return this.name?"node_label_italic":"";
+            return this.name ? 'node_label_italic' : '';
         },
         paletteLabel: function() {
-            return this._("paletteLabel") || "URD Current Sensor";
+            return this._('paletteLabel') || 'URD Current Sensor';
         },
         oneditprepare() {
             // センサー種別が変更されたときの処理
