@@ -29,6 +29,7 @@
                 <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
                 <option value="watty_hyhq" data-i18n="enoceanDataItem.sensors.wattyHyhq"></option>
                 <option value="watty_hyhq_ff" data-i18n="enoceanDataItem.sensors.wattyHyhqFf"></option>
+                <option value="watty_hyhu3" data-i18n="enoceanDataItem.sensors.wattyHyhu3"></option>
                 <option value="watty_hyco" data-i18n="enoceanDataItem.sensors.wattyHyco"></option>
                 <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
                 <option value="itec" data-i18n="enoceanDataItem.sensors.itec"></option>
@@ -56,6 +57,10 @@
             <div class="form-row" id="watty_hyhq_ff">
                 <label for="node-input-watty_hyhq_ff_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhqFf"></span></label>
                 <input type="text" id="node-input-watty_hyhq_ff_sensor">
+            </div>
+            <div class="form-row" id="watty_hyhu3">
+                <label for="node-input-watty_hyhu3_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhu3"></span></label>
+                <input type="text" id="node-input-watty_hyhu3_sensor">
             </div>
             <div class="form-row" id="watty_hyco">
                 <label for="node-input-watty_hyco_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyco"></span></label>
@@ -185,6 +190,16 @@ RED.nodes.registerType('EnOcean-obj', {
                 return true;
             },
         },
+        watty_hyhu3_sensor: {
+            type: 'Watty_HYHU3_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyhu3') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
         watty_hyco_sensor: {
             type: 'Watty_HYCO_Sensor',
             value: '',
@@ -257,6 +272,8 @@ RED.nodes.registerType('EnOcean-obj', {
             return this._("enoceanDataItem.label.wattyHyhq");
         } else if (this.sensorKind === 'watty_hyhq_ff') {
             return this._("enoceanDataItem.label.wattyHyhqFf");
+        } else if (this.sensorKind === 'watty_hyhu3') {
+            return this._("enoceanDataItem.label.wattyHyhu3");
         } else if (this.sensorKind === 'watty_hyco') {
             return this._("enoceanDataItem.label.wattyHyco");
         } else if (this.sensorKind === 'core_staff') {
@@ -295,6 +312,10 @@ RED.nodes.registerType('EnOcean-obj', {
             } else if (str === 'watty_hyhq_ff') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide(); 
                 $('#watty_hyhq_ff').show();
+
+            } else if (str === 'watty_hyhu3') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyhu3').show();
 
             } else if (str === 'watty_hyco') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide(); 
@@ -350,6 +371,8 @@ RED.nodes.registerType('EnOcean-obj', {
             selectSensor = $('#node-input-watty_hyhq_sensor').val();
         } else if (str === 'watty_hyhq_ff') {
             selectSensor = $('#node-input-watty_hyhq_ff_sensor').val();
+        } else if (str === 'watty_hyhu3') {
+            selectSensor = $('#node-input-watty_hyhu3_sensor').val();
         } else if (str === 'watty_hyco') {
             selectSensor = $('#node-input-watty_hyco_sensor').val();
         } else if (str === 'core_staff') {

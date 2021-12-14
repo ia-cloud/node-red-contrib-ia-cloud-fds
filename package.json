@@ -59,6 +59,7 @@
       "enocean-sensor-optex-rocker-switch": "EnOcean/sensor-optex-rocker-switch-node.js",
       "enocean-sensor-watty-hyhq": "EnOcean/sensor-watty-hyhq-node.js",
       "enocean-sensor-watty-hyhq-ff": "EnOcean/sensor-watty-hyhq-ff-node.js",
+      "enocean-sensor-watty-hyhu3": "EnOcean/sensor-watty-hyhu3-node.js",
       "enocean-sensor-watty-hyco": "EnOcean/sensor-watty-hyco-node.js",
       "enocean-sensor-watty-temperature": "EnOcean/sensor-watty-temperature-node.js",
       "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
