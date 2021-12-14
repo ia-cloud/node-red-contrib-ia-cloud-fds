@@ -25,6 +25,7 @@
             "wattyHyhq": "Watty HYHQ 2ch 温度センサー送信機",
             "wattyHyhqFf": "Watty HYHQ-FF 4ch 温度センサー送信機",
             "wattyHyhu3": "Watty HYHU-3 温湿度センサー",
+            "wattyHypm": "Watty HYPM 換気センサー（PM2.5 センサー）",
             "wattyTemp": "Watty HYJ 温度センサー"
         },
         "sensors": {
@@ -36,7 +37,8 @@
             "wattyHyco": "HYCO CO2濃度センサー (Watty)",
             "wattyHyhq": "HYHQ 2ch 温度センサー送信機 (Watty)",
             "wattyHyhqFf": "HYHQ-FF 4ch 温度センサー送信機 (Watty)",
-            "wattyHyhu3": "HYHU-3 温湿度センサー (Watty)"
+            "wattyHyhu3": "HYHU-3 温湿度センサー (Watty)",
+            "wattyHypm": "HYPM PM2.5 センサー (Watty)"
         }
     }
 }

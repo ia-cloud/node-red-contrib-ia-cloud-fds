@@ -23,6 +23,7 @@ const wattyHyhq = require('./sensor-watty-hyhq');
 const wattyHyhqFf = require('./sensor-watty-hyhq-ff');
 const wattyHyhu3 = require('./sensor-watty-hyhu3');
 const wattyHyco = require('./sensor-watty-hyco');
+const wattyHypm = require('./sensor-watty-hypm');
 
 module.exports = [
     {
@@ -78,5 +79,11 @@ module.exports = [
         type: 'watty_hyco',
         process: wattyHyco.process,
         nodeRedFunction: wattyHyco.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYPM',
+        type: 'watty_hypm',
+        process: wattyHypm.process,
+        nodeRedFunction: wattyHypm.nodeRedFunction,
     },
 ];
