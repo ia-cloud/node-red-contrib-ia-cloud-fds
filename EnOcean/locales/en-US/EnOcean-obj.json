@@ -21,14 +21,16 @@
             "qInterval": "Max interval",
             "qIntervalSec": "[s]",
             "sensorKind": "Sensor type",
-            "wattyTemp": "Watty Temp sensor"
+            "wattyHyhqFf": "Watty HYHQ-FF 4ch Temp sensor",
+            "wattyTemp": "Watty HYJ Temp sensor"
         },
         "sensors": {
             "coreStaff": "Temperature / Humidity (CoreStaff)",
             "itec": "Current sensor (ITEC)",
             "optexOccupancy": "Occupancy sensor (OPTEX)",
             "optexRocker": "Rocker switch (OPTEX)",
-            "watty": "Temperature (Watty)"
+            "watty": "HYJ Temperature (Watty)",
+            "wattyHyhqFf": "HYHQ-FF 4ch Temperature (Watty)"
         }
     }
 }
