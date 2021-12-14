@@ -22,6 +22,7 @@
             "qIntervalSec": "[s]",
             "sensorKind": "Sensor type",
             "wattyHyco": "Watty HYCO CO2 sensor",
+            "wattyHyhq": "Watty HYHQ 2ch Temp sensor",
             "wattyHyhqFf": "Watty HYHQ-FF 4ch Temp sensor",
             "wattyTemp": "Watty HYJ Temp sensor"
         },
@@ -32,6 +33,7 @@
             "optexRocker": "Rocker switch (OPTEX)",
             "watty": "HYJ Temperature (Watty)",
             "wattyHyco": "HYCO CO2 concentration (Watty)",
+            "wattyHyhq": "HYHQ 2ch Temperature (Watty)",
             "wattyHyhqFf": "HYHQ-FF 4ch Temperature (Watty)"
         }
     }

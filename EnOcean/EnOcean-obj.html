@@ -27,6 +27,7 @@
             <label for="node-input-sensorKind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensorKind"></span></label>
             <select type="text" id="node-input-sensorKind">
                 <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
+                <option value="watty_hyhq" data-i18n="enoceanDataItem.sensors.wattyHyhq"></option>
                 <option value="watty_hyhq_ff" data-i18n="enoceanDataItem.sensors.wattyHyhqFf"></option>
                 <option value="watty_hyco" data-i18n="enoceanDataItem.sensors.wattyHyco"></option>
                 <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
@@ -47,6 +48,10 @@
             <div class="form-row" id="watty">
                 <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyTemp"></span></label>
                 <input type="text" id="node-input-watty_temp_sensor">
+            </div>
+            <div class="form-row" id="watty_hyhq">
+                <label for="node-input-watty_hyhq_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhq"></span></label>
+                <input type="text" id="node-input-watty_hyhq_sensor">
             </div>
             <div class="form-row" id="watty_hyhq_ff">
                 <label for="node-input-watty_hyhq_ff_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhqFf"></span></label>
@@ -160,6 +165,16 @@ RED.nodes.registerType('EnOcean-obj', {
                 return true;
             },
         },
+        watty_hyhq_sensor: {
+            type: 'Watty_HYHQ_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyhq') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
         watty_hyhq_ff_sensor: {
             type: 'Watty_HYHQ_FF_Sensor',
             value: '',
@@ -238,6 +253,8 @@ RED.nodes.registerType('EnOcean-obj', {
             return this.name;
         } else if (this.sensorKind === 'watty') {
             return this._("enoceanDataItem.label.wattyTemp");
+        } else if (this.sensorKind === 'watty_hyhq') {
+            return this._("enoceanDataItem.label.wattyHyhq");
         } else if (this.sensorKind === 'watty_hyhq_ff') {
             return this._("enoceanDataItem.label.wattyHyhqFf");
         } else if (this.sensorKind === 'watty_hyco') {
@@ -271,6 +288,10 @@ RED.nodes.registerType('EnOcean-obj', {
                 // $('#node-input-name').val('Watty Temperature Sensor');
                 // $('#node-input-object_key').val('watty.sensor');
                 // $('#node-input-object_desc').val('Watty温度センサー');
+            } else if (str === 'watty_hyhq') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyhq').show();
+
             } else if (str === 'watty_hyhq_ff') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide(); 
                 $('#watty_hyhq_ff').show();
@@ -325,6 +346,8 @@ RED.nodes.registerType('EnOcean-obj', {
         // TODO: センサー追加により条件分岐を増やすことのないように工夫する
         if (str === 'watty') {
             selectSensor = $('#node-input-watty_temp_sensor').val();
+        } else if (str === 'watty_hyhq') {
+            selectSensor = $('#node-input-watty_hyhq_sensor').val();
         } else if (str === 'watty_hyhq_ff') {
             selectSensor = $('#node-input-watty_hyhq_ff_sensor').val();
         } else if (str === 'watty_hyco') {

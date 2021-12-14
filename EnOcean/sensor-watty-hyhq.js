@@ -16,7 +16,7 @@
 
 const SensorInterface = require('./sensors-interface');
 
-module.exports = class WattyHyhqFf extends SensorInterface {
+module.exports = class WattyHyhq extends SensorInterface {
     /**
      * 温度計算.
      */
@@ -24,21 +24,16 @@ module.exports = class WattyHyhqFf extends SensorInterface {
         // 16進数表記から0xを除外
         const dataString = data.replace('0x', '');
         const ret = [];
-        if (dataString.length < 9 * 2) {
-            // 9Byte以上でなければ空リスト返却
+        if (dataString.length < 4 * 2) {
+            // 4Byte以上でなければ空リスト返却
             return ret;
         }
-        // 0~3: 温度1, 4~7: 温度2, 8~11: 温度3, 12~15: 温度4, 16~17: 電圧
+        // 0~3: 温度1, 4~7: 温度2
         const dec1 = parseInt(dataString.substr(0, 4), 16);
         const dec2 = parseInt(dataString.substr(4, 4), 16);
-        const dec3 = parseInt(dataString.substr(8, 4), 16);
-        const dec4 = parseInt(dataString.substr(12, 4), 16);
-        const dec5 = parseInt(dataString.substr(16, 2), 16);
         const decList = [];
         decList.push(dec1);
         decList.push(dec2);
-        decList.push(dec3);
-        decList.push(dec4);
 
         const paramList = [];
         decList.forEach((chVal) => {
@@ -46,15 +41,12 @@ module.exports = class WattyHyhqFf extends SensorInterface {
             const param = Math.round(((parseFloat(chVal) / 65535.0) * 310 - 50) * 1000) / 1000;
             paramList.push(param);
         });
-        // 電圧計算を行い、小数第4位を四捨五入して代入
-        const volt = Math.round(parseFloat((dec5 * 3.3) / 255) * 1000) / 1000;
-        paramList.push(volt);
         return paramList;
     }
 
     static nodeRedFunction(RED) {
         // collect-data-object config node function definition
-        function WattyHyhqFfSensor(config) {
+        function WattyHyhqSensor(config) {
             RED.nodes.createNode(this, config);
             this.sensorId = config.sensorId;
             this.configObject = config.configObject;
@@ -62,6 +54,6 @@ module.exports = class WattyHyhqFf extends SensorInterface {
             this.on('input', function (msg) {});
             this.on('close', function () {});
         }
-        RED.nodes.registerType('Watty_HYHQ_FF_Sensor', WattyHyhqFfSensor);
+        RED.nodes.registerType('Watty_HYHQ_Sensor', WattyHyhqSensor);
     }
 };
