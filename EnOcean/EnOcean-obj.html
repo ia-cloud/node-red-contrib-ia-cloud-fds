@@ -27,6 +27,11 @@
             <label for="node-input-sensorKind"><i class="fa fa-eye"></i> <span data-i18n="enoceanDataItem.label.sensorKind"></span></label>
             <select type="text" id="node-input-sensorKind">
                 <option value="watty" data-i18n="enoceanDataItem.sensors.watty"></option>
+                <option value="watty_hyhq" data-i18n="enoceanDataItem.sensors.wattyHyhq"></option>
+                <option value="watty_hyhq_ff" data-i18n="enoceanDataItem.sensors.wattyHyhqFf"></option>
+                <option value="watty_hyhu3" data-i18n="enoceanDataItem.sensors.wattyHyhu3"></option>
+                <option value="watty_hyco" data-i18n="enoceanDataItem.sensors.wattyHyco"></option>
+                <option value="watty_hypm" data-i18n="enoceanDataItem.sensors.wattyHypm"></option>
                 <option value="core_staff" data-i18n="enoceanDataItem.sensors.coreStaff"></option>
                 <option value="itec" data-i18n="enoceanDataItem.sensors.itec"></option>
                 <option value="optex_rocker" data-i18n="enoceanDataItem.sensors.optexRocker"></option>
@@ -46,6 +51,26 @@
                 <label for="node-input-watty_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyTemp"></span></label>
                 <input type="text" id="node-input-watty_temp_sensor">
             </div>
+            <div class="form-row" id="watty_hyhq">
+                <label for="node-input-watty_hyhq_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhq"></span></label>
+                <input type="text" id="node-input-watty_hyhq_sensor">
+            </div>
+            <div class="form-row" id="watty_hyhq_ff">
+                <label for="node-input-watty_hyhq_ff_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhqFf"></span></label>
+                <input type="text" id="node-input-watty_hyhq_ff_sensor">
+            </div>
+            <div class="form-row" id="watty_hyhu3">
+                <label for="node-input-watty_hyhu3_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyhu3"></span></label>
+                <input type="text" id="node-input-watty_hyhu3_sensor">
+            </div>
+            <div class="form-row" id="watty_hyco">
+                <label for="node-input-watty_hyco_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHyco"></span></label>
+                <input type="text" id="node-input-watty_hyco_sensor">
+            </div>
+            <div class="form-row" id="watty_hypm">
+                <label for="node-input-watty_hypm_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.wattyHypm"></span></label>
+                <input type="text" id="node-input-watty_hypm_sensor">
+            </div>
             <div class="form-row" id="core_staff">
                 <label for="node-input-core_temp_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.coreStaffTemp"></span></label>
                 <input type="text" id="node-input-core_temp_sensor">
@@ -61,6 +86,19 @@
             <div class="form-row" id="optex_occupancy">
                 <label for="node-input-optex_occupancy_sensor"><i class="fa fa-random"></i> <span data-i18n="enoceanDataItem.label.optexOccupancy"></span></label>
                 <input type="text" id="node-input-optex_occupancy_sensor">
+            </div>
+        </div>
+        <hr>
+        <!-- qInfo setting -->
+        <div class="form-group">
+            <div class="form-row" id="qInfo">
+                <label for="node-input-qInfo"><span data-i18n="enoceanDataItem.label.qInfo"></span></label>
+                <input type="checkbox" id="node-input-qInfo" style="display: inline-block; width: auto;" >
+            </div>
+            <div class="form-row" id="qInterval">
+                <label for="node-input-qInterval"><span data-i18n="enoceanDataItem.label.qInterval"></span></label>
+                <input type="number" id="node-input-qInterval" min="0" step="1" value="60" style="display: inline-block; width: auto;">
+                <label for="node-input-qInterval"><span data-i18n="enoceanDataItem.label.qIntervalSec"></span></label>
             </div>
         </div>
     </div>
@@ -81,13 +119,39 @@
 <script type="text/html" data-help-name="EnOcean-obj" charset="utf-8">
     <p>Sends an ia-cloud object at specific intervals or asynchronously.</p>
 
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dd>None</dd>
+    </dl>
+
     <h3>Outputs</h3>
     <dl class="message-properties">
         <dt>msg.request<span class="property-type">string</span></dt>
-        <dd>"store" fixed string to send to ia-cloud-cnct node.</dd>
+        <dd>"store" fixed string to send to ia-cloud-cnct Node</dd>
         <dt>msg.dataObject<span class="property-type">object</span></dt>
         <dd>ia cloud object supposed to be send to ia cloud CCS.</dd>
     </dl>
+
+    <h3>Details</h3>
+    <p>
+        Select the sensor type and define the sensor data from the setting Node according to the type.
+        Set the receiving port for sensor data in the EnOcean communication object (EnOcean-com Node).
+        When it receives data from the sensor, it will generate and output an ia-cloud object.
+        objectKey hopes to be a unique key, Since the objectKey is the name that identifies the sensor.
+    </p>
+
+    <h3>Recieved data without measured values</h3>
+    <p>
+        EnOcean communication stipulates a mechanism to notify information about a sensor (called TI; Teach-In).
+        Since TI has no measured values, send nothing.
+    </p>
+    <h3>Quality information</h3>
+    <p>
+        When "Quality info" is checked, quality parameter is added to msg.dataObject.
+        If the sensor data is not recieved in setting interval, quality is set to "not updated", and previous sensor parameter is set to sending data.
+        (If sensor data has never been recieved, this node will not send data)
+        If sensor data recieved, quality is set to "good".
+    </p>
 </script>
 
 <script type="text/javascript">
@@ -106,6 +170,56 @@ RED.nodes.registerType('EnOcean-obj', {
             value: '',
             validate: function (v) {
                 if ($('#node-input-sensorKind').val() === 'watty') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
+        watty_hyhq_sensor: {
+            type: 'Watty_HYHQ_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyhq') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
+        watty_hyhq_ff_sensor: {
+            type: 'Watty_HYHQ_FF_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyhq_ff') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
+        watty_hyhu3_sensor: {
+            type: 'Watty_HYHU3_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyhu3') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
+        watty_hyco_sensor: {
+            type: 'Watty_HYCO_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hyco') {
+                    return v !== '';
+                }
+                return true;
+            },
+        },
+        watty_hypm_sensor: {
+            type: 'Watty_HYPM_Sensor',
+            value: '',
+            validate: function (v) {
+                if ($('#node-input-sensorKind').val() === 'watty_hypm') {
                     return v !== '';
                 }
                 return true;
@@ -157,6 +271,8 @@ RED.nodes.registerType('EnOcean-obj', {
         // optex_rocker_sw: {type:'Optex_Rocker_SW', required:false, value: ''},
         // optex_occupancy_sensor: {type:'Optex_Occupancy_Sensor', required:false, value: ''},
         selectSensor: { value: '', required: true },
+        qInfo: { value: false, required: true },
+        qInterval: { value: '0' },
     },
     color: 'rgb(231, 180, 100)',
     inputs: 1,
@@ -167,6 +283,16 @@ RED.nodes.registerType('EnOcean-obj', {
             return this.name;
         } else if (this.sensorKind === 'watty') {
             return this._("enoceanDataItem.label.wattyTemp");
+        } else if (this.sensorKind === 'watty_hyhq') {
+            return this._("enoceanDataItem.label.wattyHyhq");
+        } else if (this.sensorKind === 'watty_hyhq_ff') {
+            return this._("enoceanDataItem.label.wattyHyhqFf");
+        } else if (this.sensorKind === 'watty_hyhu3') {
+            return this._("enoceanDataItem.label.wattyHyhu3");
+        } else if (this.sensorKind === 'watty_hyco') {
+            return this._("enoceanDataItem.label.wattyHyco");
+        } else if (this.sensorKind === 'watty_hypm') {
+            return this._("enoceanDataItem.label.wattyHypm");
         } else if (this.sensorKind === 'core_staff') {
             return this._("enoceanDataItem.label.coreStaffTemp");
         } else if (this.sensorKind === 'itec') {
@@ -196,6 +322,26 @@ RED.nodes.registerType('EnOcean-obj', {
                 // $('#node-input-name').val('Watty Temperature Sensor');
                 // $('#node-input-object_key').val('watty.sensor');
                 // $('#node-input-object_desc').val('Watty温度センサー');
+            } else if (str === 'watty_hyhq') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyhq').show();
+
+            } else if (str === 'watty_hyhq_ff') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyhq_ff').show();
+
+            } else if (str === 'watty_hyhu3') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyhu3').show();
+
+            } else if (str === 'watty_hyco') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hyco').show();
+
+            } else if (str === 'watty_hypm') {
+                $('#ia_cloud_enocean_sensors div.form-row').hide(); 
+                $('#watty_hypm').show();
+
             } else if (str === 'core_staff') {
                 $('#ia_cloud_enocean_sensors div.form-row').hide(); 
                 $('#core_staff').show();
@@ -226,6 +372,14 @@ RED.nodes.registerType('EnOcean-obj', {
                 // $('#node-input-object_desc').val('OPTEX人感センサー');
             }
         });
+        // 品質情報使用チェックボックス押下時
+        $('#node-input-qInfo').change(function () {
+            if($('#node-input-qInfo').prop('checked')) {
+                $('#qInterval').show();
+            } else {
+                $('#qInterval').hide();
+            };
+        });
     },
 
     oneditsave: function () {
@@ -234,6 +388,16 @@ RED.nodes.registerType('EnOcean-obj', {
         // TODO: センサー追加により条件分岐を増やすことのないように工夫する
         if (str === 'watty') {
             selectSensor = $('#node-input-watty_temp_sensor').val();
+        } else if (str === 'watty_hyhq') {
+            selectSensor = $('#node-input-watty_hyhq_sensor').val();
+        } else if (str === 'watty_hyhq_ff') {
+            selectSensor = $('#node-input-watty_hyhq_ff_sensor').val();
+        } else if (str === 'watty_hyhu3') {
+            selectSensor = $('#node-input-watty_hyhu3_sensor').val();
+        } else if (str === 'watty_hyco') {
+            selectSensor = $('#node-input-watty_hyco_sensor').val();
+        } else if (str === 'watty_hypm') {
+            selectSensor = $('#node-input-watty_hypm_sensor').val();
         } else if (str === 'core_staff') {
             selectSensor = $('#node-input-core_temp_sensor').val();
         } else if (str === 'itec') {
@@ -244,6 +408,10 @@ RED.nodes.registerType('EnOcean-obj', {
             selectSensor = $('#node-input-optex_occupancy_sensor').val();
         }
         $('#node-input-selectSensor').val(selectSensor);
+        // 品質情報チェックがない場合は周期を0に初期化
+        if(!$('#node-input-qInfo').prop('checked') || isNaN($('#node-input-qInterval').val())) {
+            $('#node-input-qInterval').val('0');
+        };
     },
 });
 </script>

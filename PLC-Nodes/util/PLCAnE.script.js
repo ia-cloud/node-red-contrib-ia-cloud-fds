@@ -22,6 +22,7 @@ var PLCAENodeConfig = {
         storeAsync: {value: true, required: true},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
+        qInfo: {value: false},
 
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true},

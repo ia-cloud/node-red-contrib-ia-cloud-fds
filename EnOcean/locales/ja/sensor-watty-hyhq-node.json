@@ -1,0 +1,93 @@
+{
+    "enoceanDataItem": {
+        "label": {
+            "object_key": "オブジェクトキー",
+            "object_desc": "オブジェクトの説明",
+            "itemNo": "データ項目",
+            "dataName": "データ名称",
+            "unit": "単位"
+        },
+        "placeholder": {
+            "sensorId": "センサーIDを入力します　例) 0500ef1c"
+        },
+        "input": {
+            "dataItems": {
+                "0": {
+                    "dataName": "温度1",
+                    "unit": "℃"
+                },
+                "1": {
+                    "dataName": "温度2",
+                    "unit": "℃"
+                }
+            }
+        }
+    },
+    "serial": {
+        "status": {
+            "waiting": "待機中",
+            "timeout": "タイムアウト"
+        },
+        "label": {
+            "serialport": "シリアルポート",
+            "settings": "設定",
+            "baudrate": "ボーレート",
+            "databits": "データビット",
+            "parity": "パリティ",
+            "stopbits": "終了ビット",
+            "input": "入力",
+            "split": "入力の分割方法",
+            "deliver": "分割後の配信データ",
+            "output": "出力",
+            "request": "リクエスト",
+            "ms": "ms",
+            "serial": "EnOcean-com",
+            "enoceanDataItems": "EnOceanデータ項目",
+            "linkObjName": "リンクデータオブジェクト",
+            "enoceanCom": "EnOcean通信オブジェクト",
+            "sensorId": "センサID",
+            "sensorKind": "センサ種別",
+            "notify": "通知有無",
+            "value": "EnOceanデータ",
+            "objectName": "オブジェクト名",
+            "entryID": "エントリーID",
+            "none": "なし"
+        },
+        "placeholder": {
+            "serialport": "例: /dev/ttyUSB0/"
+        },
+        "parity": {
+            "none": "なし",
+            "even": "偶数",
+            "mark": "マーク",
+            "odd": "奇数",
+            "space": "スペース"
+        },
+        "split": {
+            "character": "文字列で区切る",
+            "timeout": "タイムアウト後で区切る",
+            "silent": "after a silence of",
+            "lengths": "一定の文字数で区切る"
+        },
+        "output": {
+            "ascii": "文字列",
+            "binary": "バイナリバッファ"
+        },
+        "addsplit": "出力メッセージに分割文字を追加する",
+        "tip": {
+            "responsetimeout": "Tip: The default response timeout can be overridden by setting msg.timeout.",
+            "split": "Tip: \"区切り\" 文字は、入力を別々のメッセージに分割するために使用され、シリアルポートに送信されるすべてのメッセージに追加することもできます。",
+            "silent": "Tip: In line-silent mode timeout is restarted upon arrival of any character (i.e. inter-byte timeout).",
+            "timeout": "Tip: タイムアウトモードでのタイムアウトは最初の文字が到着したときから始まります。"
+        },
+        "onopen": "serial port __port__ opened at __baud__ baud __config__",
+        "errors": {
+            "missing-conf": "missing serial config",
+            "serial-port": "serial port",
+            "error": "serial port __port__ error: __error__",
+            "unexpected-close": "serial port __port__ closed unexpectedly",
+            "disconnected": "serial port __port__ disconnected",
+            "closed": "serial port __port__ closed"
+        }
+    }
+}

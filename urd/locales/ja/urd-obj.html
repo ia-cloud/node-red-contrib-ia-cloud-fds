@@ -10,7 +10,7 @@
     <dl class="message-properties">
         <dt>msg.request<span class="property-type">string</span></dt>
         <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
-        <dt>msg.dataObject<span class="property-type">number</span></dt>
+        <dt>msg.dataObject<span class="property-type">object</span></dt>
         <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
     </dl>
 
@@ -28,6 +28,13 @@
 
         TIには電流値のデータが含まれないため、後続のノードへのデータ送信はせず、
         ノードのステータスが「測定電流以外のデータを受信」になります。
+    </p>
+    <h3>品質情報</h3>
+    <p>
+        品質情報を有効にした場合、msg.dataObjectにqualityパラメータが追加されます。
+        指定された間隔内にデータを受信しなかった場合、quality: "not updated"となります。この時のセンサーデータは前回受信した値を送信します。
+        (一度も受信していない場合は送信されません)
+        データを受信した場合はquality: "good"となります。
     </p>
 
 </script>

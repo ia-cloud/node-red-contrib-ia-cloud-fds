@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+//  definition of disconnect sec in idle.
+//  HMI will send ping every 10sec if there are any communication.
+//  And if HMI do not receive pong from client, disconnet session in 60sec.
+//  From the specification, if HMI is connected, websocket client should receive ping in every 10 sec.
+const websocket_disconnect_sec = 30;
+
 /* Pro-face BLUE/Schneider Electric EcoStruxure Operator Terminal Expart WebSocket class */
 module.exports = class HmiSchneiderWebSocket {
   constructor(id, alarm, error) {
@@ -31,6 +37,7 @@ module.exports = class HmiSchneiderWebSocket {
     this._cb_onopen = null;
     this._cb_onmessage = null;
     this._cb_onclose = null;
+    this._cb_onerror = null;
 
     this._disposed = false;
   }
@@ -56,12 +63,16 @@ module.exports = class HmiSchneiderWebSocket {
     this._cb_onclose = func;
   }
 
+  set onerror(func) {
+    this._cb_onerror = func;
+  }
+
   open(url, token) {
     if (this._disposed) {
       return;
     }
 
-    var WebSocket = require('websocket').w3cwebsocket;
+    var WebSocket = require('ws');
 
     if (!this._ws) {
       if (url != undefined) {
@@ -79,6 +90,7 @@ module.exports = class HmiSchneiderWebSocket {
       this._ws.onmessage = this.onMessage.bind(this);
       this._ws.onclose = this.onClose.bind(this);
       this._ws.onerror = this.onError.bind(this);
+      this._ws.on('ping', this.onPing.bind(this));
     }
   }
 
@@ -91,7 +103,7 @@ module.exports = class HmiSchneiderWebSocket {
     this._status = this.en_status.en_none;
   }
 
-  onOpen(event) {
+  onOpen() {
     if (this._reconnect_id) {
       clearTimeout(this._reconnect_id);
       this._reconnect_id = null;
@@ -115,11 +127,15 @@ module.exports = class HmiSchneiderWebSocket {
     }
   }
 
-  onError(event) {
+  onError() {
+    if (this._cb_onerror) {
+      this._cb_onerror.call(this, this._id);
+    }
+
     this.close();
   }
 
-  onClose(event) {
+  onClose() {
     this._ws = null;
 
     this._status = this.en_status.en_none;
@@ -139,6 +155,10 @@ module.exports = class HmiSchneiderWebSocket {
     if (this._cb_onclose) {
       this._cb_onclose.call(this, this._id);
     }
+  }
+
+  onPing(data) {
+    this.update_received_date();
   }
 
   send_authorization() {
@@ -200,13 +220,12 @@ module.exports = class HmiSchneiderWebSocket {
   check_connection() {
     this._timer_id = null;
     if (this._ws) {
-      if (Date.now() - this._last_received > 10000) {
-        //  HMI will disconnect when there are any communication in 60 secs.
-        //  if 10sec is idle, send ping to HMI
-        this._ws._connection.ping();
-        this.update_received_date();
+      if ((Date.now() - this._last_received) > (websocket_disconnect_sec * 1000)) {
+        this.close();
       }
-      this._timer_id = setTimeout(this.check_connection.bind(this), 1000);
+      else {
+        this._timer_id = setTimeout(this.check_connection.bind(this), 1000);
+      }
     }
   }
 }

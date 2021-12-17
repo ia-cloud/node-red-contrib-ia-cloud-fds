@@ -1,0 +1,48 @@
+{
+    "editor": {
+        "name": "Node name",
+        "paletteLabel": "Omron temp Cntrl",
+        "ui-config": "UI config",
+        "fileConfig": "File config",
+        "tab": {
+            "object-settings": "object prop.",
+          "data-settings": "A&E prop."
+        },
+        "filename": "config file name",
+        "period": "period",
+        "async": "Async. ",
+        "qInfo": "quality info",
+        "objectname": "object name",
+        "objectKey": "object key",
+        "objectKeyholder": "unique key",
+        "objectDescription": "object description",
+        "modbusNode": "Modbus config. node",
+        "contentType": "content type",
+        "itemNumber": "item number",
+        "del": "delete",
+        "add": "add",
+        "hh": "HC hold",
+        "ad": "ADC error",
+        "hs": "HS alarm",
+        "se": "inpit error",
+        "ct1": "HB1",
+        "ct2": "HB2",
+        "alm1": "alarm1",
+        "alm2": "alarm2",
+        "alm3": "alarm3",
+        "evt1": "evet1",
+        "evt2": "evet2",
+        "evt3": "evet3",
+        "evt4": "evet4",
+        "AnECode": "A&E code",
+        "AnEDesc": "A&E Description",
+        "AnE": "A&E"
+    },
+    "runtime": {
+        "badFilePath": "bad file path",
+        "ready": "Ready",
+        "preparing": "preparing",
+        "comError": "com. error",
+        "sent": "data sent"
+    }
+}

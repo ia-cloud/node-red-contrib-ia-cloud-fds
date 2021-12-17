@@ -3,6 +3,7 @@
         "jsonParseError": "JSON parse error",
         "noEnOceanCom": "EnOcean communication object has no setting",
         "noSensor": "No sensor setting",
+        "notUpdated": "Max interval timeout",
         "ready": "Ready",
         "received": "Received"
     },
@@ -16,15 +17,28 @@
             "objectKey": "Object key",
             "optexOccupancy": "OPTEX occupancy sensor",
             "optexRocker": "OPTEX Rocker SW",
+            "qInfo": "Quality info",
+            "qInterval": "Max interval",
+            "qIntervalSec": "[s]",
             "sensorKind": "Sensor type",
-            "wattyTemp": "Watty Temp sensor"
+            "wattyHyco": "Watty HYCO CO2 sensor",
+            "wattyHyhq": "Watty HYHQ 2ch Temp sensor",
+            "wattyHyhqFf": "Watty HYHQ-FF 4ch Temp sensor",
+            "wattyHyhu3": "Watty HYHU-3 Thermometer and Humidity sensor",
+            "wattyHypm": "Watty HYPM Particulate Matter Sensor (PM2.5)",
+            "wattyTemp": "Watty HYJ Temp sensor"
         },
         "sensors": {
             "coreStaff": "Temperature / Humidity (CoreStaff)",
             "itec": "Current sensor (ITEC)",
             "optexOccupancy": "Occupancy sensor (OPTEX)",
             "optexRocker": "Rocker switch (OPTEX)",
-            "watty": "Temperature (Watty)"
+            "watty": "HYJ Temperature (Watty)",
+            "wattyHyco": "HYCO CO2 concentration (Watty)",
+            "wattyHyhq": "HYHQ 2ch Temperature (Watty)",
+            "wattyHyhqFf": "HYHQ-FF 4ch Temperature (Watty)",
+            "wattyHyhu3": "HYHU-3 Thermo and Humidity (Watty)",
+            "wattyHypm": "HYPM Particulate Matter (Watty)"
         }
     }
 }

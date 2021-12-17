@@ -1,7 +1,7 @@
 {
   "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
-  "version": "0.1.15",
+  "version": "0.1.17",
   "author": "ia-cloud project members",
   "bugs": {
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
@@ -19,7 +19,6 @@
     "serialport": "^9.0.0",
     "@serialport/parser-inter-byte-timeout": "^9.0.0",
     "@serialport/parser-delimiter": "^9.0.0",
-    "websocket": "^1.0.30",
     "ws": "^7.1.2",
     "got": "^11.5.2"
   },
@@ -58,6 +57,11 @@
       "enocean-sensor-itec-ct": "EnOcean/sensor-itec-ct-node.js",
       "enocean-sensor-optex-occupancy": "EnOcean/sensor-optex-occupancy-node.js",
       "enocean-sensor-optex-rocker-switch": "EnOcean/sensor-optex-rocker-switch-node.js",
+      "enocean-sensor-watty-hyhq": "EnOcean/sensor-watty-hyhq-node.js",
+      "enocean-sensor-watty-hyhq-ff": "EnOcean/sensor-watty-hyhq-ff-node.js",
+      "enocean-sensor-watty-hyhu3": "EnOcean/sensor-watty-hyhu3-node.js",
+      "enocean-sensor-watty-hyco": "EnOcean/sensor-watty-hyco-node.js",
+      "enocean-sensor-watty-hypm": "EnOcean/sensor-watty-hypm-node.js",
       "enocean-sensor-watty-temperature": "EnOcean/sensor-watty-temperature-node.js",
       "HMI-Schneider": "HMI-Schneider/HMI-Schneider.js",
       "HMI-Schneider-AE": "HMI-Schneider/HMI-Schneider-AE.js",

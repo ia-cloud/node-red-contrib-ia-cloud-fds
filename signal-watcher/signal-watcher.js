@@ -146,7 +146,7 @@ module.exports = function(RED) {
                     //     unit: 単位(rssiのときのみdBmを付与)
 
                     let dItem = {
-                        dataName: dataItem.item,
+                        dataName: dataItem.dataName,
                         dataValue: parsedData[dataItem.item]
                     };
                     if(dataItem.item === 'rssi') {
