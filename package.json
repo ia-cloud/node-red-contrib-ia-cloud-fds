@@ -79,7 +79,8 @@
       "edge-delay": "functions/edge-delay.js",
       "rename-object": "functions/rename-object.js",
       "rename-data": "functions/rename-data.js",
-      "PLC-sim": "PLC-Nodes/PLC-sim.js"
+      "PLC-sim": "PLC-Nodes/PLC-sim.js",
+      "arrgregation": "functions/aggregation.js"
     }
   },
   "repository": {

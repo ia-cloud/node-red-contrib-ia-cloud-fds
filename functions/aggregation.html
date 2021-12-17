@@ -1,0 +1,318 @@
+/**
+ * Copyright 2019 hiro Hashimukai for the ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+<script type="text/html" data-template-name="aggregation">
+
+    <div id="ready-block">
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+
+            <div class="form-row">
+                <label for="node-input-aggPeriod">
+                    <span data-i18n="editor.period"></span></label>
+                <select style="width: 80px" id="node-input-aggPeriod">
+                    <option value="1min" data-i18n="editor.1min"></option>
+                    <option value="10min" data-i18n="editor.10min"></option>
+                    <option value="30min" data-i18n="editor.30min"></option>
+                    <option selected="selected" value="1hour" data-i18n="editor.1hour"></option>
+                    <option value="12hour" data-i18n="editor.12hour"></option>
+                    <option value="1day" data-i18n="editor.1day"></option>
+                    <option value="1week" data-i18n="editor.1week"></option>
+                    <option value="1mon" data-i18n="editor.1mon"></option>
+                </select>
+            </div>
+            <hr>
+            <div class="form-row">
+                <label style="width: 300px"><span data-i18n="editor.outObject"></span></label>
+            </div>
+            <div class="form-row">
+                <label for="node-input-progOut" style="margin-left: 20px;"><span data-i18n="editor.progress"></span></label>
+                <input type="checkbox" id="node-input-progOut" style="display: inline-block; width: auto;">
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectKey" style="margin-left: 20px;"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectdescription" style="margin-left: 20px;"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
+            </div>
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <!-- dataItemの設定 -->
+            <div class="form-row">
+                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
+                <input type="text" style="width: 300px" id="node-input-contentType">
+            </div>
+
+            <div class="node-input-dItemcontainer-row">
+                <ol id="node-input-dItemcontainer">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+          <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+          <input type="text" class="form-control" id="node-input-name">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+RED.nodes.registerType('aggregation',{
+
+    category: 'iaCloud functions',
+    color:"rgb(231, 180, 100)",
+    defaults: {
+        name: {value:""},
+
+        contentType: {value: "iaCloudData", required: true},
+
+        // object properties
+        aggPeriod: {value:"1hour"},
+        progOut: {value: false},
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
+
+        // params property（editableListで使用する。）
+        params : {value: [{},]},
+    },
+    inputs:1,
+    outputs:1,
+    icon: "ia-cloud.png",  //アイコンはTBD
+    label: function() {
+        return this.name||this._("editor.paletteLabel");
+    },
+    labelStyle: function() {
+        return this.name?"node_label_italic":"";
+    },
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "aggregation";
+    },
+    oneditprepare: function() {
+        let node = this;
+
+        const lblobjkey = node._("editor.objkey");
+        const lbldName = node._("editor.dName");
+        const lblaggdName = node._("editor.aggdName");
+        const lblaggmode = node._("editor.aggMode");
+        const lblunit = node._("editor.unit");
+        const lblsum = node._("editor.sum");
+        const lblcount = node._("editor.count");
+        const lblave = node._("editor.ave");
+        const lblvar = node._("editor.var");
+        const lblstdev = node._("editor.stdev");
+        const lblmax = node._("editor.max");
+        const lblmin = node._("editor.min");
+        const lblmed = node._("editor.med");
+
+        // editableList item のhtml要素
+        // 1行目のデータ名称
+        const paraForm1 =`
+            <input class="objectKey" placeholder="${lblobjkey}" type="text" required="required"
+                    style="width:180px; display:inline-block; text-align:left;">
+                <input class="dataName" required="required" placeholder="${lbldName}" type="text"
+                    style="width:140px; display:inline-block; text-align:left; margin-left:20px">
+            `;
+            // 2行目のparameter
+            const paraForm2 =`
+                <div class= "form-row">
+                    <span style="display:inline-block; width:30px"></span>
+                    <input type="text" class="aggdName" required="required" placeholder="${lblaggdName}"
+                        style="width:180px; display:inline-block;">
+                    <select class="aggMode" style="width: 100px; text-align:right; margin-left:20px">
+                        <option selected="selected" value="sum">${lblsum}</option>
+                        <option value="count">${lblcount}</option>
+                        <option value="ave">${lblave}</option>
+                        <option value="var">${lblvar}</option>
+                        <option value="stdev">${lblstdev}</option>
+                        <option value="max">${lblmax}</option>
+                        <option value="min">${lblmin}</option>
+                        <option value="med">${lblmed}</option>
+                    </select>
+                    <input type="text" class="aggUnit" placeholder="${lblunit}"
+                        style="display:inline-block; width: 60px; margin-left:20px"> 
+                </div>
+            `;
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
+debugger;
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+                let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm1).appendTo(div1);
+
+                // second row of the list
+                $(paraForm2).appendTo(div2);
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("dataName")) {
+                    dItem.dataName = "";
+                    dItem.aggMode = "sum"
+                }
+
+                // set back dataItem properties
+                div1.find(".objectKey").val(dItem.objectKey);
+                div1.find(".dataName").val(dItem.dataName);
+                div2.find(".aggMode").val(dItem.aggMode);
+                div2.find(".aggdName").val(dItem.aggdName);
+                div2.find(".aggUnit").val(dItem.aggUnit);
+
+                let aggdNameSet = function () {
+                    let dName = div1.find(".dataName").val();
+                    if (dName) {
+                        let aggName = "[" + div2.find(".aggMode option:selected").text() + "]" + dName ;
+                        div2.find(".aggdName").val(aggName);
+                    }
+                    else div2.find(".aggdName").val("");
+                }
+                // dataNameが変更されたら呼ばれるコールバック関数を登録
+                div1.find(".dataName").change(aggdNameSet);
+                div2.find(".aggMode").change(aggdNameSet);
+            }, 
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
+        });
+
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.params.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.params[i]);
+        }  
+
+    },
+
+    oneditsave: function() {
+        let node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+        // データ設定を作成
+        node.params = [];
+
+        items.each(function(i, elm){
+            let item = {
+                objectKey: elm.find(".objectKey").val(),
+                dataName: elm.find(".dataName").val(),
+                aggdName: elm.find(".aggdName").val(),
+                aggMode: elm.find(".aggMode").val(),
+                aggUnit: elm.find(".aggUnit").val()
+            };
+            // 必須propertyが揃っているか？
+            if (!item.objectKey || !item.aggdName || !item.dataName) configReady = "";
+
+            // dataItemをプロパティリストにプッシュ
+            node.params.push(item);
+        });
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.params[0]) configReady = "";
+        // 設定完了フラグをセット
+        $("#node-input-configReady").val(configReady);
+    },
+
+    oneditresize: function (size) {
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // Tab以外の部分の高さを引く
+            height -= $("#ready-block").outerHeight(true);
+            height -= $("#name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 80;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
+        }
+    }
+});
+
+</script>

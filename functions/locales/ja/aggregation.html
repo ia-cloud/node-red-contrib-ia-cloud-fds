@@ -1,0 +1,55 @@
+
+<script type="text/html" data-help-name="aggregation">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>ia-cloudのデータ値を集計する。</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>集計周期<span class="property-type">数値・選択</span></dt>
+            <dd>集計を行う周期。（1分,10分,30分,1時間,12時間,1日,1週,1月）</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>集計結果を出力するia-cloudおｂジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>PLCデータ項目のわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dt>設定リスト<span class="property-type">集計設定</span></dt>       
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+                <dd>集計する対象オブジェクトのオブジェクトキー。空欄の場合、全てのオブジェクトのデータを集計します。</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>集計する対象データ項目のデータ名称。空欄の場合、全てのデータ項目のデータを集計します。</dd>
+                <dt>集計方法<span class="property-type">文字列・選択</span></dt>
+                <dd>行う集計の種別。（総和・個数・平均・分散・標準偏差・最大値・最小値・中央値）</dd>
+            </dl>
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"のみ有効</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject構造のオブジェクト。</dd>
+        <dd>dataObject内のcontentDataが持つdetaValueは、数値ないしは、数値として評価される文字列</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって積算された値となり、</dd>
+        <dd>設定された集計期間毎に出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力メッセージのiaCloudオブジェクトから、設定されたオブジェクトキーのcontentDataを取り出し、各dataValueの集計を行い出力メッセージとして出力します。</p>
+    <p>各データ項目を全て同一の期間で集計します。</p>
+    <p>集計期間の最大データ数は10,000データ以下とします。</p>
+
+</script>

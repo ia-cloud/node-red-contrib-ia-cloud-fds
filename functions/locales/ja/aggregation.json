@@ -1,0 +1,45 @@
+{
+    "editor": {
+        "paletteLabel": "集計",
+        "name": "ノード名称",
+        "tab": {
+          "object-settings": "オブジェクト設定",
+          "data-settings": "データ設定"
+        },
+        "outObject": "出力オブジェクトの設定",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "contentType": "データ構造型",
+        "progress": "経過出力をする",
+        "period": "集計期間",
+        "1min": "1分",
+        "10min": "10分",
+        "30min": "30分",
+        "1hour": "1時間",
+        "12hour": "12時間",
+        "1day": "1日",
+        "1week": "1週",
+        "1mon": "1月",
+
+        "condetionList": "集計リスト",
+        "objkey": "オブジェクトキー",
+        "dName": "データ名称",
+        "aggdName": "集計データ名称",
+        "unit": "単位",
+        "sum": "総和",
+        "count": "個数",
+        "ave": "平均",
+        "var": "分散",
+        "stdev": "標準偏差",
+        "max": "最大値",
+        "min": "最小値",
+        "med": "中央値"
+    },
+    "runtime": {
+        "ready": "集計中",
+        "sent": "データ送出",
+        "buffOver": "データ数超過",
+        "norule": "ルールがありません"
+    }
+}
