@@ -15,7 +15,7 @@
  */
 
 <!-- EnOcean-dItems Config Node の記述 -->
-<script type="text/html" data-template-name="Watty_Temp_Sensor">
+<script type="text/html" data-template-name="Watty_HYPM_Sensor">
 
     <!-- Name -->
     <div class="form-row">
@@ -41,20 +41,20 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="Watty_Temp_Sensor" charset="utf-8">
-    <p>Settings about Watty Corporation HYJ Temperature sensor.</p>
+<script type="text/html" data-help-name="Watty_HYPM_Sensor" charset="utf-8">
+    <p>Settings about Watty Corporation HYPM Particulate Matter Sensor (PM2.5).</p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Watty_Temp_Sensor',{
+    RED.nodes.registerType('Watty_HYPM_Sensor',{
         category: 'config',
         defaults: {
-            name: { value: 'Watty Temp_Sensor' },
+            name: { value: 'Watty HYPM Sensor' },
             sensorId: { value: '', required: true },
             configObject: { value: '' },
         },
         label: function() {
-            return this.name || ('Watty Temp_Sensor');
+            return this.name || ('Watty HYPM Sensor');
         },
         oneditprepare: function() {
             const node = this;

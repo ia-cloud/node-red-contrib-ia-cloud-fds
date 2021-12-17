@@ -19,6 +19,11 @@ const itecCT = require('./sensor-itec-ct');
 const optexOccupancy = require('./sensor-optex-occupancy');
 const optexRockerSwitch = require('./sensor-optex-rocker-switch');
 const wattyTemperature = require('./sensor-watty-temperature');
+const wattyHyhq = require('./sensor-watty-hyhq');
+const wattyHyhqFf = require('./sensor-watty-hyhq-ff');
+const wattyHyhu3 = require('./sensor-watty-hyhu3');
+const wattyHyco = require('./sensor-watty-hyco');
+const wattyHypm = require('./sensor-watty-hypm');
 
 module.exports = [
     {
@@ -50,5 +55,35 @@ module.exports = [
         type: 'watty',
         process: wattyTemperature.process,
         nodeRedFunction: wattyTemperature.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYHQ',
+        type: 'watty_hyhq',
+        process: wattyHyhq.process,
+        nodeRedFunction: wattyHyhq.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYHQ-FF',
+        type: 'watty_hyhq_ff',
+        process: wattyHyhqFf.process,
+        nodeRedFunction: wattyHyhqFf.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYHU3',
+        type: 'watty_hyhu3',
+        process: wattyHyhu3.process,
+        nodeRedFunction: wattyHyhu3.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYCO',
+        type: 'watty_hyco',
+        process: wattyHyco.process,
+        nodeRedFunction: wattyHyco.nodeRedFunction,
+    },
+    {
+        name: 'Watty HYPM',
+        type: 'watty_hypm',
+        process: wattyHypm.process,
+        nodeRedFunction: wattyHypm.nodeRedFunction,
     },
 ];

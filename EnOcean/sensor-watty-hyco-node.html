@@ -15,7 +15,7 @@
  */
 
 <!-- EnOcean-dItems Config Node の記述 -->
-<script type="text/html" data-template-name="Watty_Temp_Sensor">
+<script type="text/html" data-template-name="Watty_HYCO_Sensor">
 
     <!-- Name -->
     <div class="form-row">
@@ -41,26 +41,26 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="Watty_Temp_Sensor" charset="utf-8">
-    <p>Settings about Watty Corporation HYJ Temperature sensor.</p>
+<script type="text/html" data-help-name="Watty_HYCO_Sensor" charset="utf-8">
+    <p>Settings about Watty Corporation HYCO CO2 sensor.</p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('Watty_Temp_Sensor',{
+    RED.nodes.registerType('Watty_HYCO_Sensor',{
         category: 'config',
         defaults: {
-            name: { value: 'Watty Temp_Sensor' },
+            name: { value: 'Watty CO2_Sensor' },
             sensorId: { value: '', required: true },
             configObject: { value: '' },
         },
         label: function() {
-            return this.name || ('Watty Temp_Sensor');
+            return this.name || ('Watty CO2_Sensor');
         },
         oneditprepare: function() {
             const node = this;
 
             // Define editableList.
-            $('#content_data').css('min-height', '450px').css('min-width', '400px').editableList({
+            $('#content_data').css('min-height', '340px').css('min-width', '400px').editableList({
                 addButton: false,
                 sortable: false,
                 removable: false,
@@ -99,7 +99,6 @@
                 { dataName: node._('enoceanDataItem.input.dataItems.0.dataName'), unit: node._('enoceanDataItem.input.dataItems.0.unit') },
                 { dataName: node._('enoceanDataItem.input.dataItems.1.dataName'), unit: node._('enoceanDataItem.input.dataItems.1.unit') },
                 { dataName: node._('enoceanDataItem.input.dataItems.2.dataName'), unit: node._('enoceanDataItem.input.dataItems.2.unit') },
-                { dataName: node._('enoceanDataItem.input.dataItems.3.dataName'), unit: node._('enoceanDataItem.input.dataItems.3.unit') },
             ];
 
             // Stack rows.
