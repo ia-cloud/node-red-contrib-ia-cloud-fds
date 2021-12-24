@@ -21,7 +21,8 @@
         "1day": "1日",
         "1week": "1週",
         "1mon": "1月",
-
+        "aggOutput": "集計出力",
+        "progOutput": "経過出力",
         "condetionList": "集計リスト",
         "objkey": "オブジェクトキー",
         "dName": "データ名称",

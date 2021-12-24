@@ -36,7 +36,8 @@ module.exports = function(RED) {
         const progOut = config.progOut;
 
         let objBuffer = [];
-        
+        let cycleId, cycleFlag = true;
+
         // no rule found
         if (params.length === 0)
             node.status({fill:"yellow", shape:"ring", text:"runtime.norule"});
@@ -44,7 +45,7 @@ module.exports = function(RED) {
             node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
         // function to make aggregation
-        let aggre = function() {
+        function aggre() {
             // contentData for aggregation data 
             let contentData = [];
 
@@ -101,53 +102,61 @@ module.exports = function(RED) {
                     unit: prm.aggUnit
                 });
             }
-            // make output message and send
-            if (!contentData.lenght) {
-
-                let msg = {request:"store", dataObject:{objectContent:{}}};
-                msg.dataObject.objectContent.contentData = contentData;
-                msg.dataObject.objectKey = objectKey;
-                msg.dataObject.timestamp = moment().format();
-                msg.dataObject.objectType = "iaCloudObject";
-                msg.dataObject.objectDescription = objectDescription;
-                msg.dataObject.objectContent.contentType = contentType;
-                msg.payload = msg.dataObject.objectContent.contentData;
-    
-                node.send(msg);
-                node.status({fill:"green", shape:"dot", text:"runtime.sent"});
-            }
-            return;
+            return(contentData);
         }
 
-        let intervalId = setInterval(function(){
-
+        // just one munute interval 
+        const  getInterval = () => 60000 - (moment() % 60000);
+        // one munute timer
+        setTimeout(function cycle(){
             // get current time
             let currentTime = moment();
-            //check minute end
-            if (currentTime.second() !== 59 ) return;
+            let act = true;
             // 10 minute2 ?
-            if (period === "10min" && currentTime.minute() % 10 !== 9) return;
+            if (period === "10min" && currentTime.minute() % 10 !== 0) act = false;
             // 30 mminutes
-            if (period === "30min" && currentTime.minute() % 30 !== 29) return;
+            if (period === "30min" && currentTime.minute() % 30 !== 0) act = false;
             if (period !== "1min" && period !== "10min" && period !== "30min") {
                 // hour end ?
-                if (currentTime.minute() !== 59) return;
+                if (currentTime.minute() !== 0) act = false;
                 // 12 hour ?
-                if (period === "12hour" && currentTime.hour() % 12 !== 11) return;
+                if (period === "12hour" && currentTime.hour() % 12 !== 0) act = false;
                 // day end ?
                 if (period === "1day" || period === "1week" || period === "1mon") {
-                    if (currentTime.hour() !== 23) return;
-                    if (period === "1week" && currentTime.day() !== 6) return;
-                    if (period === "1mon" && currentTime.date() !== currentTime.endOf("month").date()) return;
+                    if (currentTime.hour() !== 0) act = false;
+                    if (period === "1week" && currentTime.day() !== 0) act = false;
+                    if (period === "1mon" && currentTime.date() !== currentTime.startOf("month").date()) act = false;
                 }
             }
-            // period end, make aggregation and send message
-            aggre();
-            // clear arregation data buffer
-            objBuffer.length = 0;
-            return;
+            if (act) {
+                // period end, make aggregation
+                let contentData = aggre();
+                // clear arregation data buffer
+                objBuffer.length = 0;
+                // send aggregation output message 
+                            // make output message and send
+                if (!contentData.lenght) {
 
-        }, 1000);
+                    let msg = {request:"store", dataObject:{objectContent:{}}};
+                    msg.dataObject.objectContent.contentData = contentData;
+                    msg.dataObject.objectKey = objectKey;
+                    msg.dataObject.timestamp = moment().format();
+                    msg.dataObject.objectType = "iaCloudObject";
+                    msg.dataObject.objectDescription = objectDescription;
+                    msg.dataObject.objectContent.contentType = contentType;
+                    msg.payload = msg.dataObject.objectContent.contentData;
+        
+                    node.send([msg, null]);
+                    node.status({fill:"green", shape:"dot", text:"runtime.sent"});
+                }
+            }
+            // next turn
+            if (cycleFlag) {
+
+                cycleId = setTimeout(cycle, getInterval());
+            }
+
+        }, getInterval());
 
         // input message listener
         this.on("input",function(msg, send) {
@@ -207,11 +216,30 @@ module.exports = function(RED) {
                 else node.status({fill:"yellow", shape:"dot", text:"runtime.buffOver"});
             }
             // if progress output
-            if (progOut) aggre();
+            if (progOut) {
+                let contentData = aggre();
+                // send progress output message 
+                // make output message and send
+                if (!contentData.lenght) {
+
+                    let msg = {request:"store", dataObject:{objectContent:{}}};
+                    msg.dataObject.objectContent.contentData = contentData;
+                    msg.dataObject.objectKey = objectKey;
+                    msg.dataObject.timestamp = moment().format();
+                    msg.dataObject.objectType = "iaCloudObject";
+                    msg.dataObject.objectDescription = objectDescription;
+                    msg.dataObject.objectContent.contentType = contentType;
+                    msg.payload = msg.dataObject.objectContent.contentData;
+        
+                    send([null, msg]);
+                    node.status({fill:"green", shape:"dot", text:"runtime.sent"});
+                }
+            }
         }); 
 
         this.on("close",function(done) {
-            clearInterval(intervalId);
+            clearTimeout(cycleId);
+            cycleFlag = false;
             done();
         });
     }

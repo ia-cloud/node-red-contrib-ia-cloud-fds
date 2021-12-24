@@ -19,6 +19,7 @@
     <div id="ready-block">
         <!-- 隠しのNodeプロパティ -->
         <input type="hidden" id="node-input-configReady">
+        <input type="hidden" id="node-input-outputs"/>
     </div>
     <!-- Tab, ownself -->
     <div class="form-row">
@@ -108,7 +109,7 @@ RED.nodes.registerType('aggregation',{
         progOut: {value: false},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
-
+        outputs: {value:1},
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true},
 
@@ -117,6 +118,9 @@ RED.nodes.registerType('aggregation',{
     },
     inputs:1,
     outputs:1,
+    outputLabels: function(index) {
+            return (index === 0) ? this._("editor.aggOutput"): this._("editor.progOutput");
+        },
     icon: "ia-cloud.png",  //アイコンはTBD
     label: function() {
         return this.name||this._("editor.paletteLabel");
@@ -189,7 +193,6 @@ RED.nodes.registerType('aggregation',{
             id: 'tab-dataItem-properties',
             label: this._('editor.tab.data-settings'),
         });
-debugger;
         $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
             removable: true,
             sortable: true,
@@ -287,6 +290,12 @@ debugger;
         if (!node.params[0]) configReady = "";
         // 設定完了フラグをセット
         $("#node-input-configReady").val(configReady);
+        // sets output port number
+        let progOut = $("#node-input-progOut").prop('checked');
+
+        let outputs = progOut ? 2 : 1;
+        $("#node-input-outputs").val(outputs);
+
     },
 
     oneditresize: function (size) {
