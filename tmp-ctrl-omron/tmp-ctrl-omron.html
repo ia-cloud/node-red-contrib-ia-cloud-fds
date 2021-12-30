@@ -220,28 +220,30 @@ RED.nodes.registerType('tmp-ctrl-omron',{
 
                 // データタイプが変更されたら呼ばれるコールバック関数を登録
                 div1.find(".dataSelect").change(function(){
-                    let type = $(this).val();
-                    let name;
-                    // set dataItem default name。
-                    switch(type) {
-                        case "pv": name = lblpv;
-                            break;
-                        case "sv": name = lblsv;
-                            break;
-                        case "pro": name = lblpro;
-                            break;
-                        case "int": name = lblint;
-                            break;
-                        case "dir": name = lbldir;
-                            break;
-                        case "run": name = lblrun;
-                            break;
-                        case "am": name = lblam;
-                            break;
-                        case "at": name = lblat;
-                            break;
+                    let name = div2.find(".dName").val();
+                    if (!name) {
+                        let type = $(this).val();
+                        // set dataItem default name。
+                        switch(type) {
+                            case "pv": name = lblpv;
+                                break;
+                            case "sv": name = lblsv;
+                                break;
+                            case "pro": name = lblpro;
+                                break;
+                            case "int": name = lblint;
+                                break;
+                            case "dir": name = lbldir;
+                                break;
+                            case "run": name = lblrun;
+                                break;
+                            case "am": name = lblam;
+                                break;
+                            case "at": name = lblat;
+                                break;
+                        }
+                        div2.find(".dName").val(name);
                     }
-                    div2.find(".dName").val(name);
                 });
                 div1.find(".dataSelect").change();
 
