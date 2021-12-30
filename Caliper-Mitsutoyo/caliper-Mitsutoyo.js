@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 ia-cloud project
+ * Copyright 2019 Hiro Hashimukai for ia-cloud project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@
 
 const BASH_INTERVAL = 700;
 const readline = require('readline');
+const code = { 69: "numLock", 82: "0", 79: "1", 80: "2", 81: "3", 75: "4",
+    76: "5", 77: "6", 71: "7", 72: "8", 73: "9", 83: ".", 74: "-"
+}
 
 module.exports = function(RED) {
 
@@ -33,28 +36,30 @@ module.exports = function(RED) {
         let bashCount = 0;
         let itemCount = 0;
         let timeoutId = undefined;
+        let buff=[];
 
         // Nodeステータスを　Readyに
         node.status({fill:"green", shape:"dot", text:"runtime.ready"});
 
-        const rl = readline.createInterface({input: process.stdin, });
+        if (!config.rpiKB) {
+            const rl = readline.createInterface({input: process.stdin, });
+            // readLine from standerd input
+            rl.on("line",(data) => {
+                // parse measured data
+                let measuredData = Number(data.toString("ascii", 0, data.lenghth - 1));
 
-        // readLine from standerd input
-        rl.on("line",(data) => {
-            // parse measured data
-            let measuredData = Number(data.toString("ascii", 0, data.lenghth - 1));
-
-            // detects bashing a button 
-            if (bashCount === 0) {
-                timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
-                bashCount++;
-            }
-            else if (bashCount <= 3) {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
-                bashCount++;
-            }
-        });
+                // detects bashing a button 
+                if (bashCount === 0) {
+                    timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
+                    bashCount++;
+                }
+                else if (bashCount <= 3) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
+                    bashCount++;
+                }
+            });
+        }
 
         // after bash interval, take action to store data
         let storeData = function (data) {
@@ -79,15 +84,14 @@ module.exports = function(RED) {
             } else if (bashCount === 2){
                 bashCount = 0;
                 itemCount = 0;
-                dataItems = iaCloudObjectSend(dataItems);
+                if (dataItems.length) dataItems = iaCloudObjectSend(dataItems);
+                else node.status({fill:"green", shape:"ring", text: "runtime.noData"});
             // bash button three times for clear all data
             } else if (bashCount >= 3){
                 bashCount = 0;
                 itemCount = 0;
                 dataItems = [];
-                // Send dataItem to message.payload
-                msg.payload = dataItems;
-                node.send(msg);
+                // set node status to reset data
                 node.status({fill:"green", shape:"ring", text: "runtime.reset"});
             }
             bashCount = 0;
@@ -126,14 +130,36 @@ module.exports = function(RED) {
 
 
         this.on("input",function(msg) {
-            if (msg.payload === "send") {
+            if (msg.control === "send") {
                 bashCount = 0;
                 itemCount = 0;
                 iaCloudObjectSend(dataItems);
-            } else if (msg.payload === "reset"){
+            } else if (msg.control === "reset"){
                 bashCount = 0;
                 itemCount - 0;
                 dataItems = [];
+            }
+            if (config.rpiKB) {
+                if (!msg.payload || msg.action !== "down" || msg.topic !== "pi/key") return;
+                if (msg.payload === 69) {
+                    buff = []; 
+                    return;
+                }               
+                if (msg.payload === 28) {
+                    let measuredData = Number(buff.join(""));
+                    buff = [];
+                    // detects bashing a button 
+                    if (bashCount === 0) {
+                        timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
+                        bashCount++;
+                    }
+                    else if (bashCount <= 3) {
+                        clearTimeout(timeoutId);
+                        timeoutId = setTimeout(function(){storeData(measuredData)}, BASH_INTERVAL);
+                        bashCount++;
+                    }
+                }
+                else buff.push(code[msg.payload]);
             }
         });
         this.on("close",function(done) {

@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "ノード名称",
+        "rpiKB": "rpi-keyboardノードを使う",
         "tab": {
           "object-settings": "オブジェクトの設定",
           "data-settings": "データの設定"
@@ -18,6 +19,7 @@
         "ready": "測定待ち",
         "preparing": "データ準備中...",
         "sent": "データ送出",
+        "noData": "データ無し",
         "reset": "データリセット"
     }
 }
