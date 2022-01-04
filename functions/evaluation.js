@@ -28,6 +28,10 @@ module.exports = function(RED) {
         const actionType = config.actionType;
         const rules = config.rules;
 
+        // buffer for previous value
+        let prevs = []
+        prevs.length = rules.length;
+
         // no rule found
         if (rules.length === 0)
             node.status({fill:"yellow", shape:"ring", text:"runtime.norule"});
@@ -109,6 +113,15 @@ module.exports = function(RED) {
                 // if yes, convert to boolean dataValue
                 if (actionType === "bool") 
                     dataItem.dataValue = result;
+                // if yes, convert to boolean dataValue
+                if (actionType === "01") 
+                    dataItem.dataValue = Number(result);
+                // if yes, convert to equipementStatus dataValue
+                if (actionType === "epSt") {
+                    if (result) dataItem.dataValue = prevs[i]? "on": "start";
+                    else dataItem.dataValue = prevs[i]? "stop": "off";
+                    prevs[i] = result;
+                }
                 // if yes, discard the dataItem
                 if (actionType === "indiv") 
                     if(!result) {
