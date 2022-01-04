@@ -76,6 +76,7 @@
       "urd-ac-3ch": "urd/urd-ac-3ch-node.js",
       "unpack": "functions/unpack.js",
       "evaluation": "functions/evaluation.js",
+      "evaluationAE": "functions/evaluationAE.js",
       "data-range": "functions/data-range.js",
       "smoothing": "functions/smoothing.js",
       "de-noise": "functions/de-noise.js",
