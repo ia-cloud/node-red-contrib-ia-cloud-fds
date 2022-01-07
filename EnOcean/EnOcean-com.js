@@ -28,38 +28,55 @@ module.exports = function (RED) {
     /**
      * Pick up 'Sync. Byte', 'Header' and 'CRC8H' from receivedEspData.
      * @param {Buffer} receivedEspData
-     * @returns {object} ESP3 Packet as object.
+     * @returns {Array<object>} Array of ESP3 Packet object.
      */
     const pickupEspPacketAsObject = (receivedEspData) => {
-        const syncByte = receivedEspData.slice(0, 1).toString('hex'); // receivedEspData[0].toString(16),
-        const dataLength = receivedEspData.slice(1, 3).toString('hex');
-        const optionalLength = receivedEspData.slice(3, 4).toString('hex');
-        const packetType = receivedEspData.slice(4, 5).toString('hex');
-        const crc8h = receivedEspData.slice(5, 6).toString('hex');
-        //
-        const dataLengthAsInt = parseInt(dataLength, 16);
-        const optionalLengthAsInt = parseInt(optionalLength, 16);
-        const offsetOptionalData = 6 + dataLengthAsInt;
-        const offsetCrc8d = offsetOptionalData + optionalLengthAsInt;
-        //
-        const data = receivedEspData.slice(6, offsetOptionalData).toString('hex');
-        const optionalData = receivedEspData.slice(offsetOptionalData, offsetCrc8d).toString('hex');
-        const crc8d = receivedEspData.slice(offsetCrc8d, offsetCrc8d + 1).toString('hex');
+        const espArray = [];
+        let restBuffer = receivedEspData;
+        // loop in case EspData are combined
+        do {
+            // find syncByte index
+            const syncByteIndex = restBuffer.findIndex((d) => d === 0x55);
+            // slide restBuffer to the beginning of syncByte
+            restBuffer = restBuffer.slice(syncByteIndex);
 
-        return {
-            syncByte,
-            header: {
-                dataLength,
-                dataLengthAsInt,
-                optionalLength,
-                optionalLengthAsInt,
-                packetType,
-            },
-            crc8h,
-            data,
-            optionalData,
-            crc8d,
-        };
+            const syncByte = restBuffer.slice(0, 1).toString('hex'); // restBuffer[0].toString(16),
+            const dataLength = restBuffer.slice(1, 3).toString('hex');
+            const optionalLength = restBuffer.slice(3, 4).toString('hex');
+            const packetType = restBuffer.slice(4, 5).toString('hex');
+            const crc8h = restBuffer.slice(5, 6).toString('hex');
+            //
+            const dataLengthAsInt = parseInt(dataLength, 16);
+            const optionalLengthAsInt = parseInt(optionalLength, 16);
+            const offsetOptionalData = 6 + dataLengthAsInt;
+            const offsetCrc8d = offsetOptionalData + optionalLengthAsInt;
+            //
+            const data = restBuffer.slice(6, offsetOptionalData).toString('hex');
+            const optionalData = restBuffer.slice(offsetOptionalData, offsetCrc8d).toString('hex');
+            const crc8d = restBuffer.slice(offsetCrc8d, offsetCrc8d + 1).toString('hex');
+
+            espArray.push({
+                syncByte,
+                header: {
+                    dataLength,
+                    dataLengthAsInt,
+                    optionalLength,
+                    optionalLengthAsInt,
+                    packetType,
+                },
+                crc8h,
+                data,
+                optionalData,
+                crc8d,
+            });
+            // if next offset cannot aquired
+            if (Number.isNaN(offsetCrc8d)) break;
+
+            // set rest of receivedEspData buffer
+            restBuffer = restBuffer.slice(offsetCrc8d + 1);
+        } while (restBuffer.length > 0);
+
+        return espArray;
     };
 
     /**
@@ -220,72 +237,79 @@ module.exports = function (RED) {
 
         if (this.parser) {
             this.parser.on('data', function (data) {
-                // TODO msgout.payload can be 32 bytes when 2 sensors send telegram at the same time.
-                const esp = pickupEspPacketAsObject(data);
-
-                if (esp.syncByte !== '55') {
-                    node.error(`Invalid syncByte ${esp.syncByte}`);
-                    return;
-                }
-                if (esp.header.dataLengthAsInt <= 6) {
-                    node.error(`Data Length (${esp.header.dataLength}) is less than 6 bytes.`);
-                    return;
-                }
-                if (esp.header.packetType !== '0a') {
-                    node.error(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
-                    return;
-                }
-                // check phantom telegram
-                if (data.length > esp.header.dataLengthAsInt + 9) {
-                    node.warn(`consecutive (sub)telegrams might be recieved, the length is ${data.length}`);
-                    return;
-                }
-
-                // Header CRC Check
-                const espHeaderBuffer = Buffer.from(`${esp.header.dataLength}${esp.header.optionalLength}${esp.header.packetType}`, 'hex');
-                const computedCrc8hNumber = crc8.compute(espHeaderBuffer);
-                const computedCrc8h = (`00${computedCrc8hNumber.toString(16)}`).slice(-2);
-                if (computedCrc8h !== esp.crc8h) {
-                    node.warn(`Failed to header CRC check. header: ${esp.crc8h} computed: ${computedCrc8h}`);
-                    return;
-                }
-
-                // Data CRC Check
-                const espDataBuffer = Buffer.from(`${esp.data}${esp.optionalData}`, 'hex');
-                const computedCrc8dNumber = crc8.compute(espDataBuffer);
-                const computedCrc8d = (`00${computedCrc8dNumber.toString(16)}`).slice(-2);
-                if (computedCrc8d !== esp.crc8d) {
-                    node.warn(`Failed to data CRC check. data: ${esp.crc8d} computed: ${computedCrc8d}`);
-                    return;
-                }
-
-                // --- ERP2 ---
-                const erp2 = pickupErp2DataAsObject(esp.data, esp.optionalData);
-
-                if (erp2.originatorId) {
-                    node.debug(`Originator ID = ${erp2.originatorId}`);
-                } else {
-                    node.error('Originator-ID is empty.');
-                    return;
-                }
-
-                // リピーター経由のデータであればデバッグ出力する
-                if (erp2.extendedHeader) {
-                    node.debug('This connection went throuth Repeater');
-                }
-
-                node.debug(`radio data = ${erp2.dataDL}`);
-
-                const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
-                node.debug(`listeners = ${JSON.stringify(listeners)}`);
-
-                // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                listeners.filter((l) => l.nodeId).forEach((listener) => {
-                    const enObjNode = RED.nodes.getNode(listener.nodeId);
-                    node.debug(util.inspect(enObjNode));
-                    if (enObjNode) {
-                        enObjNode.emit('changeListener', listener.objectKey);
+                const espArray = pickupEspPacketAsObject(data);
+                espArray.forEach((esp) => {
+                    if (esp.syncByte !== '55') {
+                        node.error(`Invalid syncByte ${esp.syncByte}`);
+                        return;
                     }
+                    if (esp.header.dataLengthAsInt <= 6) {
+                        node.error(`Data Length (${esp.header.dataLength}) is less than 6 bytes.`);
+                        return;
+                    }
+                    if (esp.header.packetType !== '0a') {
+                        node.error(`This node only supports ESP3 Packet Type 10 (RADIO_ERP2), Ignore ${esp.header.packetType}`);
+                        return;
+                    }
+                    // Excluded due to supporting multi teregram
+                    // // check phantom telegram
+                    // if (data.length > esp.header.dataLengthAsInt + 9) {
+                    //     node.warn(`consecutive (sub)telegrams might be recieved, the length is ${data.length}`);
+                    //     return;
+                    // }
+
+                    // check data length
+                    if (esp.data.length !== esp.header.dataLengthAsInt * 2) {
+                        node.warn(`Aquired data length is wrong to the setting of header. data: ${esp.data}, length setting: ${esp.header.dataLengthAsInt}`);
+                        return;
+                    }
+
+                    // Header CRC Check
+                    const espHeaderBuffer = Buffer.from(`${esp.header.dataLength}${esp.header.optionalLength}${esp.header.packetType}`, 'hex');
+                    const computedCrc8hNumber = crc8.compute(espHeaderBuffer);
+                    const computedCrc8h = (`00${computedCrc8hNumber.toString(16)}`).slice(-2);
+                    if (computedCrc8h !== esp.crc8h) {
+                        node.warn(`Failed to header CRC check. header: ${esp.crc8h} computed: ${computedCrc8h}`);
+                        return;
+                    }
+
+                    // Data CRC Check
+                    const espDataBuffer = Buffer.from(`${esp.data}${esp.optionalData}`, 'hex');
+                    const computedCrc8dNumber = crc8.compute(espDataBuffer);
+                    const computedCrc8d = (`00${computedCrc8dNumber.toString(16)}`).slice(-2);
+                    if (computedCrc8d !== esp.crc8d) {
+                        node.warn(`Failed to data CRC check. data: ${esp.crc8d} computed: ${computedCrc8d}`);
+                        return;
+                    }
+
+                    // --- ERP2 ---
+                    const erp2 = pickupErp2DataAsObject(esp.data, esp.optionalData);
+
+                    if (erp2.originatorId) {
+                        node.debug(`Originator ID = ${erp2.originatorId}`);
+                    } else {
+                        node.error('Originator-ID is empty.');
+                        return;
+                    }
+
+                    // リピーター経由のデータであればデバッグ出力する
+                    if (erp2.extendedHeader) {
+                        node.debug('This connection went throuth Repeater');
+                    }
+
+                    node.debug(`radio data = ${erp2.dataDL}`);
+
+                    const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
+                    node.debug(`listeners = ${JSON.stringify(listeners)}`);
+
+                    // 通知先のノード（EnOcean-obj）があればそちらに通知する
+                    listeners.filter((l) => l.nodeId).forEach((listener) => {
+                        const enObjNode = RED.nodes.getNode(listener.nodeId);
+                        node.debug(util.inspect(enObjNode));
+                        if (enObjNode) {
+                            enObjNode.emit('changeListener', listener.objectKey);
+                        }
+                    });
                 });
             });
         } else {
