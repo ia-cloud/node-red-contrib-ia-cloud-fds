@@ -18,7 +18,7 @@ const util = require('util');
 const SerialPort = require('serialport');
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
-const INTERBYTETIMEOUT = 100;   // set inter byte timeout 100ms
+const INTERBYTETIMEOUT = 60;   // set inter byte timeout 100ms
 
 module.exports = function (RED) {
     'use strict';
