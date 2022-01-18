@@ -186,9 +186,9 @@ module.exports = function (RED) {
             dataDL = esp3RawData.substr(index, 6);
             index += 6;
         } else if (telegramType === 0b1111) { // EXT
-            if (extendedTelegramType === 0x07) { // In case of GP // 0x07: Generic Profiles Complete data (0xB2)
-                dataDL = esp3RawData.substr(index, 10);
-                index += 10;
+            if (extendedTelegramType === 0x07) { // EXTの場合は長さが一定でないため、残りのパラメータ全てを代入する
+                dataDL = esp3RawData.substr(index);
+                index = esp3RawData.length;
             }
         }
 
