@@ -21,12 +21,15 @@ module.exports = class OptexRockerSwitch extends SensorInterface {
      * ロッカースイッチの状況取得.
      */
     static process(data) {
+        const dataLength = 2; // 1Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const result = [];
-        if (data.length < 2) {
+        if (fixedLengthData.length < dataLength) {
             // 1Byte以上でなければ空リスト返却
             return result;
         }
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         const bin = `00000000${dec.toString(2)}`.slice(-8); // 0パディング（8桁）
         // State of the energy bow
         const ebo = parseInt(bin.substr(0, 1), 2);

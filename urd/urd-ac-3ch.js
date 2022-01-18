@@ -22,6 +22,7 @@ module.exports = class UrdAC3ch extends SensorInterface {
      * 電流計算およびcontentDataの生成.
      */
     static process(serialData, contentDataConfig) {
+        const dataLength = 10; // 5Byte * 2
         const presetRange = {
             WLS50: 400,
             WLS100: 400,
@@ -31,17 +32,17 @@ module.exports = class UrdAC3ch extends SensorInterface {
 
         let message = '';
 
-        // 16進数表記から0xを除外
-        const serialDataString = serialData.replace('0x', '');
-        if (typeof serialData === 'undefined' || serialDataString.length < 5 * 2) {
+        if (typeof serialData === 'undefined' || serialData.replace('0x', '').length < dataLength) {
             // 5Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message, sendFlg: false };
         }
 
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = serialData.replace('0x', '').slice(0, dataLength);
         // contentDataの生成
         const contentData = contentDataConfig.slice(0, 3).map((dItem, index) => {
             // Decode to decimal value. ex. 'FFF' => 4095
-            const dec = parseInt(serialDataString.substr(index * 3, 3), 16);
+            const dec = parseInt(fixedLengthData.substr(index * 3, 3), 16);
 
             if (dItem.clampType === 'unconnected') {
                 // センサー未設定としたチャンネルに測定値(最大値以外)がある場合に警告メッセージを追加

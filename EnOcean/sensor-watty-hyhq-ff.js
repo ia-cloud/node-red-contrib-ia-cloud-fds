@@ -21,19 +21,20 @@ module.exports = class WattyHyhqFf extends SensorInterface {
      * 温度計算.
      */
     static process(data) {
-        // 16進数表記から0xを除外
-        const dataString = data.replace('0x', '');
+        const dataLength = 18; // 9Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const ret = [];
-        if (dataString.length < 9 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 9Byte以上でなければ空リスト返却
             return ret;
         }
         // 0~3: 温度1, 4~7: 温度2, 8~11: 温度3, 12~15: 温度4, 16~17: 電圧
-        const dec1 = parseInt(dataString.substr(0, 4), 16);
-        const dec2 = parseInt(dataString.substr(4, 4), 16);
-        const dec3 = parseInt(dataString.substr(8, 4), 16);
-        const dec4 = parseInt(dataString.substr(12, 4), 16);
-        const dec5 = parseInt(dataString.substr(16, 2), 16);
+        const dec1 = parseInt(fixedLengthData.substr(0, 4), 16);
+        const dec2 = parseInt(fixedLengthData.substr(4, 4), 16);
+        const dec3 = parseInt(fixedLengthData.substr(8, 4), 16);
+        const dec4 = parseInt(fixedLengthData.substr(12, 4), 16);
+        const dec5 = parseInt(fixedLengthData.substr(16, 2), 16);
         const decList = [];
         decList.push(dec1);
         decList.push(dec2);
