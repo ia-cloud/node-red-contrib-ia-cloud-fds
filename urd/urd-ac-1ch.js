@@ -21,13 +21,17 @@ module.exports = class UrdAC1ch extends SensorInterface {
      * 電流計算およびcontentDataの生成.
      */
     static process(data, contentDataConfig) {
-        if (typeof data === 'undefined' || data.length < 4 * 2) {
+        const dataLength = 8; // 4Byte * 2
+
+        if (typeof data === 'undefined' || data.replace('0x', '').length < dataLength) {
             // 4Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message: '', sendFlg: false };
         }
 
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         // Decode to decimal value. ex. 'FFF' => 4095
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         // eslint-disable-next-line no-bitwise
         const adVal = (dec >> 8) & 0b1111111111;
 
