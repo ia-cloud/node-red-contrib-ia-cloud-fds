@@ -18,7 +18,7 @@ const util = require('util');
 const SerialPort = require('serialport');
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
-const INTERBYTETIMEOUT = 100;   // set inter byte timeout 100ms
+const INTERBYTETIMEOUT = 60;   // set inter byte timeout 100ms
 
 module.exports = function (RED) {
     'use strict';
@@ -82,10 +82,11 @@ module.exports = function (RED) {
     /**
      * Pick up individual data from ESP2 data.
      * @param {string} esp3RawData
+     * @param {string} optionalData
      * @returns {object} ERP2 data
      * @see {@link EnOceanRadioProtocol2.pdf} 4.5 Data contents for Length > 6 Bytes
      */
-    const pickupErp2DataAsObject = (esp3RawData) => {
+    const pickupErp2DataAsObject = (esp3RawData, optionalData) => {
         let index = 0;
 
         // ----------------------------------------
@@ -205,9 +206,32 @@ module.exports = function (RED) {
             originatorId,
             destinationId,
             dataDL,
-            optionalData: '',
+            optionalData,
             crc: '',
         };
+    };
+
+    /**
+     * Remove duplicated ID to exclude phantom telegram
+     * @param {Array<object>} espArray
+     * @param {*} node this
+     * @returns {Array<object>} ESP array of Unique ID
+     */
+    const removeDuplicatedId = ([...array], node) => {
+        const originatorIdArray = array.map((esp) => esp.originatorId);
+        // return only unique originatorId
+        const uniqueArray = array.filter((value, index) => {
+            const firstIndex = originatorIdArray.indexOf(value.originatorId);
+            const lastIndex = originatorIdArray.lastIndexOf(value.originatorId);
+            if (firstIndex === lastIndex) {
+                return true;
+            }
+            if (index === firstIndex) {
+                node.warn(`Duplicated EnOcean ID recieved instantly, excluded: ${value.originatorId}.`);
+            }
+            return false;
+        });
+        return uniqueArray;
     };
 
     // EnOcean-com node function definition
@@ -237,6 +261,7 @@ module.exports = function (RED) {
 
         if (this.parser) {
             this.parser.on('data', function (data) {
+                const erp2Array = [];
                 const espArray = pickupEspPacketAsObject(data);
                 espArray.forEach((esp) => {
                     if (esp.syncByte !== '55') {
@@ -284,7 +309,12 @@ module.exports = function (RED) {
 
                     // --- ERP2 ---
                     const erp2 = pickupErp2DataAsObject(esp.data, esp.optionalData);
-
+                    erp2Array.push(erp2)
+                });
+                
+                // remove duplicated originatorId(check phantom telegram)
+                const uniqueErp2Array = removeDuplicatedId(erp2Array, node)
+                uniqueErp2Array.forEach((erp2) => {
                     if (erp2.originatorId) {
                         node.debug(`Originator ID = ${erp2.originatorId}`);
                     } else {
@@ -299,7 +329,7 @@ module.exports = function (RED) {
 
                     node.debug(`radio data = ${erp2.dataDL}`);
 
-                    const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, esp.optionalData);
+                    const listeners = propagateReceivedValue(erp2.originatorId, erp2.dataDL, erp2.optionalData);
                     node.debug(`listeners = ${JSON.stringify(listeners)}`);
 
                     // 通知先のノード（EnOcean-obj）があればそちらに通知する
