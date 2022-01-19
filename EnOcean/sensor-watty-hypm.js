@@ -21,18 +21,19 @@ module.exports = class WattyPm extends SensorInterface {
      * PM計算.
      */
     static process(data) {
-        // 16進数表記から0xを除外
-        const dataString = data.replace('0x', '');
+        const dataLength = 16; // 8Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const ret = [];
-        if (dataString.length < 8 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 8Byte以上でなければ空リスト返却
             return ret;
         }
         // 0~3: PM1.0, 4~7: PM2.5, 8~11: PM4.0, 12~15: PM10.0
-        const dec1 = parseInt(dataString.substr(0, 4), 16);
-        const dec2 = parseInt(dataString.substr(4, 4), 16);
-        const dec3 = parseInt(dataString.substr(8, 4), 16);
-        const dec4 = parseInt(dataString.substr(12, 4), 16);
+        const dec1 = parseInt(fixedLengthData.substr(0, 4), 16);
+        const dec2 = parseInt(fixedLengthData.substr(4, 4), 16);
+        const dec3 = parseInt(fixedLengthData.substr(8, 4), 16);
+        const dec4 = parseInt(fixedLengthData.substr(12, 4), 16);
         const decList = [];
         decList.push(dec1);
         decList.push(dec2);

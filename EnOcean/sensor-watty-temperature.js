@@ -21,14 +21,17 @@ module.exports = class WattyTemperature extends SensorInterface {
      * 温度計算.
      */
     static process(data) {
+        const dataLength = 10; // 5Byte * 2
         const ret = [];
-        if (data.length < 5 * 2) {
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
+        if (fixedLengthData.length < dataLength) {
             // 5Byte以上でなければ空リスト返却
             return ret;
         }
         // javascriptでは32bit以上の数値をビットシフトできないため
         // 数値を10bit毎に分割してから計算する
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         const bin = dec.toString(2);
         const dec1 = parseInt(bin.substr(0, 10), 2);
         const dec2 = parseInt(bin.substr(10, 10), 2);

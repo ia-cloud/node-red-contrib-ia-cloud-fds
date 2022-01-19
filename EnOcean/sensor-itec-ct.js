@@ -21,12 +21,15 @@ module.exports = class itecCT extends SensorInterface {
      * 電流計算.
      */
     static process(data) {
+        const dataLength = 6; // 3Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const result = [];
-        if (data.length < 3 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 3Byte以上でなければ空リスト返却
             return result;
         }
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         const bin = `000000000000000000000000${dec.toString(2)}`.slice(-24); // 0パディング（24桁）
         // Divisor（先頭から2bit目)の値を取得する
         const div = parseInt(bin.substr(1, 1), 2);

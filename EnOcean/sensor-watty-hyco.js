@@ -21,17 +21,18 @@ module.exports = class WattyHyco extends SensorInterface {
      * CO2濃度計算.
      */
     static process(data) {
-        // 16進数表記から0xを除外
-        const dataString = data.replace('0x', '');
+        const dataLength = 12; // 6Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const ret = [];
-        if (dataString.length < 6 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 6Byte以上でなければ空リスト返却
             return ret;
         }
         // 0~3: CO2濃度, 4~7: 湿度, 8~11: 温度
-        const dec1 = parseInt(dataString.substr(0, 4), 16);
-        const dec2 = parseInt(dataString.substr(4, 4), 16);
-        const dec3 = parseInt(dataString.substr(8, 4), 16);
+        const dec1 = parseInt(fixedLengthData.substr(0, 4), 16);
+        const dec2 = parseInt(fixedLengthData.substr(4, 4), 16);
+        const dec3 = parseInt(fixedLengthData.substr(8, 4), 16);
         const paramList = [];
 
         // CO2濃度計算を行い、小数第4位を四捨五入して代入

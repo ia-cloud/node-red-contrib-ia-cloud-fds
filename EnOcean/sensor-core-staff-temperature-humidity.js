@@ -21,13 +21,16 @@ module.exports = class CoreStaffTemperatureHumidity extends SensorInterface {
      * 温湿度計算.
      */
     static process(data) {
+        const dataLength = 8; // 4Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const result = [];
-        if (data.length < 4 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 4Byte以上でなければ空リスト返却
             return result;
         }
         // 4Byteのデータ長のうち先頭2Byte目が湿度、3Byte目が温度
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         // 湿度の抽出(2Byte目)
         const dec1 = (dec >> 16) & 0xFF;
         // 温度の抽出(3Byte目)

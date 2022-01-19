@@ -21,14 +21,17 @@ module.exports = class OptexOccupancy extends SensorInterface {
      * 在室センサーの状況取得.
      */
     static process(data) {
+        const dataLength = 8; // 4Byte * 2
+        // 処理に必要なデータ長を抽出
+        const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         const result = [];
-        if (data.length < 4 * 2) {
+        if (fixedLengthData.length < dataLength) {
             // 4Byte以上でなければ空リスト返却
             return result;
         }
 
         // 4Byteのデータ長のうち先頭1Byte目が供給電圧、3Byte目が在室状態
-        const dec = parseInt(data, 16);
+        const dec = parseInt(fixedLengthData, 16);
         // 供給電圧の抽出(1Byte目)
         const dec1 = (dec >> 24) & 0xFF;
         // 在室状態の抽出(3Byte目)
