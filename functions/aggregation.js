@@ -135,7 +135,7 @@ module.exports = function(RED) {
                 objBuffer.length = 0;
                 // send aggregation output message 
                             // make output message and send
-                if (!contentData.lenght) {
+                if (contentData.length) {
 
                     let msg = {request:"store", dataObject:{objectContent:{}}};
                     msg.dataObject.objectContent.contentData = contentData;
@@ -192,6 +192,9 @@ module.exports = function(RED) {
             for (let dItem of contentData) {
                 
                 value = Number(dItem.dataValue);
+                // if value is not number, get it thru
+                if (isNaN(value)) continue;
+
                 // dataName or commonName dose match para's ?
                 let param = prms.find(pr => { return (
                     dItem.dataName === pr.dataName || dItem.commonName === pr.dataName)
@@ -220,7 +223,7 @@ module.exports = function(RED) {
                 let contentData = aggre();
                 // send progress output message 
                 // make output message and send
-                if (!contentData.lenght) {
+                if (contentData.length) {
 
                     let msg = {request:"store", dataObject:{objectContent:{}}};
                     msg.dataObject.objectContent.contentData = contentData;
