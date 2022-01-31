@@ -2,6 +2,16 @@
     "editor": {
         "paletteLabel": "集計",
         "name": "ノード名称",
+        "nodata": "データ無の時に値を出力",
+        "period": "集計期間",
+        "1min": "1分",
+        "10min": "10分",
+        "30min": "30分",
+        "1hour": "1時間",
+        "12hour": "12時間",
+        "1day": "1日",
+        "1week": "1週",
+        "1mon": "1月",
         "tab": {
           "object-settings": "オブジェクト設定",
           "data-settings": "データ設定"
@@ -12,15 +22,7 @@
         "objectDescription": "objectの説明",
         "contentType": "データ構造型",
         "progress": "経過出力をする",
-        "period": "集計期間",
-        "1min": "1分",
-        "10min": "10分",
-        "30min": "30分",
-        "1hour": "1時間",
-        "12hour": "12時間",
-        "1day": "1日",
-        "1week": "1週",
-        "1mon": "1月",
+
         "aggOutput": "集計出力",
         "progOutput": "経過出力",
         "condetionList": "集計リスト",

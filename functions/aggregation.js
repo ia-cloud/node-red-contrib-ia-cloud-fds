@@ -34,6 +34,8 @@ module.exports = function(RED) {
         const contentType = config.contentType;
         const params = config.params;
         const progOut = config.progOut;
+        const nodata = config.nodata;
+        const nodataValue = Number(config.nodataValue);
 
         let objBuffer = [];
         let cycleId, cycleFlag = true;
@@ -48,53 +50,57 @@ module.exports = function(RED) {
         function aggre() {
             // contentData for aggregation data 
             let contentData = [];
+            let cBuff;
+            let iBuff;
+            let buff = [];
 
             for (let prm of params) {
                 //  objectKey and dataName match ?
-                let cBuff = objBuffer.find(elm => elm.objectKey === prm.objectKey)
-                if (!cBuff) continue;
-                let iBuff = cBuff.cDataBuffer.find(elm => elm.dataName === prm.dataName)
-                if (!iBuff) continue;
-                let buff = iBuff.dataValueArray;
+                cBuff = objBuffer.find(elm => elm.objectKey === prm.objectKey)
+                if (cBuff) iBuff = cBuff.cDataBuffer.find(elm => elm.dataName === prm.dataName)
+                if (iBuff) buff = iBuff.dataValueArray;
+
                 // still no data in buffer
-                if (buff.length === 0) continue;
-                let value;
-                switch (prm.aggMode) {
-                    case "count":
-                        value = buff.length;
-                        break;
-                    case "sum":
-                    case "ave":
-                    case "var":
-                    case "stdev":
-                        // get summention
-                        value = buff.reduce((sum, elm) => sum + elm);
-                        if (prm.aggMode === "sum") break;
-                        // get average
-                        value = buff.reduce((sum, elm) => sum + elm) / buff.length;
-                        if (prm.aggMode === "ave") break;
-                        // culculate variance and standerd deviation
-                        let ave = value;
-                        value = buff.map((current) => {
-                            return ((current - ave) ** 2);
-                        }).reduce((curr, next) => curr + next) / buff.length;
-                        if (prm.aggMode === "var") break;
-                        value = Math.sqrt(value)
-                        break;
-                    case "max":
-                        value = buff.reduce((min, elm) => (min < elm)? elm: min);
-                        break;
-                    case "min":
-                        value = buff.reduce((min, elm) => (min > elm)? elm: min);
-                        break;
-                    case "med":
-                        // get median
-                        let half = (buff.length / 2) | 0;
-                        buff.sort((curr, next) => curr - next);
-                        if (buff.length % 2) value = buff[half];
-                        else value = (buff[half - 1] + buff[half]) / 2;
-                        break;                      
-                    default:
+                if (buff.length === 0 && !nodata) continue;
+                let value = nodataValue;
+                if (buff.length !== 0) {
+                    switch (prm.aggMode) {
+                        case "count":
+                            value = buff.length;
+                            break;
+                        case "sum":
+                        case "ave":
+                        case "var":
+                        case "stdev":
+                            // get summention
+                            value = buff.reduce((sum, elm) => sum + elm);
+                            if (prm.aggMode === "sum") break;
+                            // get average
+                            value = buff.reduce((sum, elm) => sum + elm) / buff.length;
+                            if (prm.aggMode === "ave") break;
+                            // culculate variance and standerd deviation
+                            let ave = value;
+                            value = buff.map((current) => {
+                                return ((current - ave) ** 2);
+                            }).reduce((curr, next) => curr + next) / buff.length;
+                            if (prm.aggMode === "var") break;
+                            value = Math.sqrt(value)
+                            break;
+                        case "max":
+                            value = buff.reduce((min, elm) => (min < elm)? elm: min);
+                            break;
+                        case "min":
+                            value = buff.reduce((min, elm) => (min > elm)? elm: min);
+                            break;
+                        case "med":
+                            // get median
+                            let half = (buff.length / 2) | 0;
+                            buff.sort((curr, next) => curr - next);
+                            if (buff.length % 2) value = buff[half];
+                            else value = (buff[half - 1] + buff[half]) / 2;
+                            break;                      
+                        default:
+                    }
                 }
                 contentData.push({
                     dataName: prm.aggdName,

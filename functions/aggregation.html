@@ -21,6 +21,28 @@
         <input type="hidden" id="node-input-configReady">
         <input type="hidden" id="node-input-outputs"/>
     </div>
+
+    <div class="form-row">
+        <label for="node-input-aggPeriod">
+            <span data-i18n="editor.period"></span></label>
+        <select style="width: 80px" id="node-input-aggPeriod">
+            <option value="1min" data-i18n="editor.1min"></option>
+            <option value="10min" data-i18n="editor.10min"></option>
+            <option value="30min" data-i18n="editor.30min"></option>
+            <option selected="selected" value="1hour" data-i18n="editor.1hour"></option>
+            <option value="12hour" data-i18n="editor.12hour"></option>
+            <option value="1day" data-i18n="editor.1day"></option>
+            <option value="1week" data-i18n="editor.1week"></option>
+            <option value="1mon" data-i18n="editor.1mon"></option>
+        </select>
+    </div>
+    <div >
+        <input type="checkbox" id="node-input-nodata"  style="display:inline-block; margin-right:10px">
+        <label for="node-input-nodata" style="display:inline-block; width:180;margin-right:20px">
+            <span data-i18n="editor.nodata"></span></label>
+        <input type="number" style="width:100px;" id="node-input-nodataValue" disabled>
+    </div>
+    <hr>
     <!-- Tab, ownself -->
     <div class="form-row">
         <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
@@ -33,21 +55,6 @@
         <!-- objectの設定 -->
         <div id="tab-object-properties">
 
-            <div class="form-row">
-                <label for="node-input-aggPeriod">
-                    <span data-i18n="editor.period"></span></label>
-                <select style="width: 80px" id="node-input-aggPeriod">
-                    <option value="1min" data-i18n="editor.1min"></option>
-                    <option value="10min" data-i18n="editor.10min"></option>
-                    <option value="30min" data-i18n="editor.30min"></option>
-                    <option selected="selected" value="1hour" data-i18n="editor.1hour"></option>
-                    <option value="12hour" data-i18n="editor.12hour"></option>
-                    <option value="1day" data-i18n="editor.1day"></option>
-                    <option value="1week" data-i18n="editor.1week"></option>
-                    <option value="1mon" data-i18n="editor.1mon"></option>
-                </select>
-            </div>
-            <hr>
             <div class="form-row">
                 <label style="width: 300px"><span data-i18n="editor.outObject"></span></label>
             </div>
@@ -106,6 +113,8 @@ RED.nodes.registerType('aggregation',{
 
         // object properties
         aggPeriod: {value:"1hour"},
+        nodata: {value: false},
+        nodataValue: {value:0},
         progOut: {value: false},
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
@@ -133,7 +142,6 @@ RED.nodes.registerType('aggregation',{
     },
     oneditprepare: function() {
         let node = this;
-
         const lblobjkey = node._("editor.objkey");
         const lbldName = node._("editor.dName");
         const lblaggdName = node._("editor.aggdName");
@@ -176,6 +184,14 @@ RED.nodes.registerType('aggregation',{
                         style="display:inline-block; width: 60px; margin-left:20px"> 
                 </div>
             `;
+
+        //nodata
+        $('#node-input-nodata').change(function(){
+            if ($('#node-input-nodata').prop("checked") === true) {
+                $('#node-input-nodataValue').prop("disabled", false);
+            }
+            else $('#node-input-nodataValue').prop("disabled", true);
+        });
         // Tab
         const tabs = RED.tabs.create({
             id: 'red-tabs',
@@ -193,6 +209,7 @@ RED.nodes.registerType('aggregation',{
             id: 'tab-dataItem-properties',
             label: this._('editor.tab.data-settings'),
         });
+
         $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
             removable: true,
             sortable: true,
