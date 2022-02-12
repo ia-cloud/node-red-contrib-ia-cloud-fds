@@ -46,10 +46,10 @@
         "utf": "UTF8",
         "euc": "EUCjp",
         "wnumber": "数",
-        "dev-Coil": "コイル",
-        "dev-IS": "IS",
-        "dev-HR": "HR",
-        "dev-IR": "IR"
+        "dev-Coil": "FC1:Coil",
+        "dev-IS": "FC2:IS",
+        "dev-HR": "FC3:HR",
+        "dev-IR": "FC4:IR"
     },
     "runtime": {
         "ready": "Ready",

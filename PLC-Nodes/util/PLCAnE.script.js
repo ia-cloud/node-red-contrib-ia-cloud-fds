@@ -59,7 +59,7 @@ var PLCAENodeConfig = {
         // 1行目のデバイスタイプとアドレス、論理入力項目
         const paraForm1 =`
             <select class="deviceType" 
-                style="width:80px; display:inline-block; text-align:right;">
+                style="width:90px; display:inline-block; text-align:center;">
                 <!-- <option selected="selected" value="Coil">Coil</option>
                 <option value="IS">IS</option> -->
             </select>

@@ -99,7 +99,7 @@ var PLCNodeConfig = {
             <div class="bitFm">
                 <span style="display:inline-block; width:30px"> </span>                
                 <select class="bit-deviceType" 
-                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:90px; display:inline-block; text-align:center; padding-right:5px;">
                     <!-- <option selected="selected" value="Coil">Coil</option>
                     <option value="IS">IS</option> -->
                 </select>
@@ -120,7 +120,7 @@ var PLCNodeConfig = {
             <div class="bitListFm">
                 <span style="display:inline-block; width:30px"> </span>                
                 <select class="bitList-deviceType" 
-                    style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:90px; display:inline-block; text-align:center; padding-right:5px;">
                     <!-- <option selected="selected" value="Coil">Coil</option>
                     <option value="IS">IS</option> -->
                 </select>
@@ -139,7 +139,7 @@ var PLCNodeConfig = {
                 <div style="margin-top:8px;">
                     <span style="display:inline-block; width:30px"> </span>
                     <select class="number-deviceType" 
-                        style="width:60px; display:inline-block; text-align:right; padding-right:5px;">
+                        style="width:90px; display:inline-block; text-align:center; padding-right:5px;">
                         <!-- <option selected="selected" value="IR">IR</option>
                         <option value="HR">HR</option> -->
                     </select>
@@ -174,7 +174,7 @@ var PLCNodeConfig = {
             <div class="stringFm hidden" style="margin-top:8px;">
                 <span style="display:inline-block; width:30px"> </span>
                 <select class="string-deviceType" 
-                    style="width:55px; display:inline-block; text-align:right; padding-right:5px;"> 
+                    style="width:90px; display:inline-block; text-align:center; padding-right:5px;"> 
                     <!-- <option selected="selected" value="IR">IR</option>
                     <option value="HR">HR</option> -->
                 </select>
@@ -193,7 +193,7 @@ var PLCNodeConfig = {
             <div class="numListFm hidden" style="margin-top:8px;">
                 <span style="display:inline-block; width:30px"> </span>
                 <select class="numList-deviceType" 
-                    style="width:60px; display:inline-block; text-align:right; padding-right:5px;">
+                    style="width:90px; display:inline-block; text-align:center; padding-right:5px;">
                     <!-- <option selected="selected" value="IR">IR</option>
                     <option value="HR">HR</option> -->
                 </select>
