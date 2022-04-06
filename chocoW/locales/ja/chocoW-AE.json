@@ -1,0 +1,48 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "paletteLabel": "オムロン温調計A＆E",
+        "ui-config": "ここで設定",
+        "fileConfig": "設定ファイル",
+        "tab": {
+          "object-settings": "オブジェクト設定",
+          "data-settings": "警報・イベント設定"
+        },
+        "filename": "設定ファイル名を入力してください",
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "qInfo": "品質情報を使う",
+        "objectname": "object名称",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "modbusNode": "通信ノード",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "hh": "H電流値ホールド",
+        "ad": "ADC異常",
+        "hs": "HS警報",
+        "se": "入力異常",
+        "ct1": "H断線1",
+        "ct2": "H断線2",
+        "alm1": "警報1",
+        "alm2": "警報2",
+        "alm3": "警報3",
+        "evt1": "イベント1",
+        "evt2": "イベント2",
+        "evt3": "イベント3",
+        "evt4": "イベント4",
+        "AnECode": "A&Eコード",
+        "AnEDesc": "A&Eの説明",
+        "AnE": "AnE対象"
+    },
+    "runtime": {
+        "badFilePath": "ファイルが見つかりません。",
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "comError": "通信エラー!!",
+        "sent": "データ送出"
+    }
+}

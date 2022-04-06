@@ -1,0 +1,116 @@
+
+<script type="text/html" data-help-name="choco-watcher">
+    <p>因幡電機産業チョコ亭ウォッチャーノード</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>チョコ亭ウォッチャーアドレス<span class="property-type">Modbus通信設定ノード</span></dt>
+        <dd>接続するチョコ亭ウォッチャーのネットアドレス</dd>
+        <dt>チョコ亭ウォッチャーの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">        
+            <dt>録画モード<span class="property-type">選択</span></dt>
+            <dd>録画モード。トリガーオンリー/ループ&トリガーロック/不変のいずれか。</dd>
+            <dt>録画単位<span class="property-type">選択</span></dt>
+            <dd>録画単位時間。トリガーオンリーモードの場合、20秒か40秒か不変。ループ&トリガーロックモードの場合、1,3,5,10分,不変のいずれか</dd>
+            <dt>スピーカ音量<span class="property-type">選択</span></dt>
+            <dd>チョコ亭ウォッチャーのスピーカの設定音量、大、中、小、OFF、不変のいずれか</dd>
+            <dt>カメラアングル<span class="property-type">選択</span></dt>
+            <dd>チョコ亭ウォッチャーのカメラアングル。110度、180度、不変、のいずれか。</dd>
+        </dl>
+        <dt>データ収集の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>動画収集方式<span class="property-type">選択</span></dt>
+            <dd>動画（ロックファイル）収集する方式。都度収集・定期収集のいずれか</dd>
+            <dt>動画収集周期<span class="property-type">数値</span></dt>
+            <dd>動画（ロックファイル）を定期収集する場合の周期（秒）</dd>
+            <dt>静止画収集周期<span class="property-type">数値</span></dt>
+            <dd>静止画を定期的に収集する場合の周期（秒）</dd>
+            <dd>空欄または0で、定期静止画収集なし。ただし、入力メッセージmsg.getImageの内容が真であれば取得する。</dd>
+            <dt>静止画出力<span class="property-type">選択</span></dt>
+            <dd>収集した静止画を出力する出力先。ia-cloudオブジェクト出力・ローカルモニタ出力・両方。</dd>
+        </dl>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>チョコ亭ウォッチャーデータに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>動画・静止画データ項目のわかりやすい説明</dd>
+            <dt>品質情報を使う<span class="property-type">チェック</span></dt>
+            <dd>チョコ亭ウォッチャーとの通信エラー時に品質情報を出力する場合にチェックを入れる</dd>
+            <dd>収集ファイル名: データ項目につける名称。</dd>
+            <dd>収集する動画データにつけるファイル名。空欄は、チョコ亭ウォッチャーが使用するデフォルトのファイル名。</dd>
+            <dd>指定されたファイル名の後ろにタイムスタンプで拡張された名称となる。</dd>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.trigger<span class="property-type">string</span></dt>
+        <dd>入力メッセージのmsg.triggerの内容が真であれば、チョコ亭ウォッチャーに対しトリガー送信を行う。</dd>
+        <dt>msg.getImage<span class="property-type">string</span></dt>
+        <dd>入力メッセージのmsg.getImageの内容が真であれば、チョコ亭ウォッチャーから静止画を取得する。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>動画ファイルあるいは静止画ファイルのia-cloud file dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>因幡電機産業チョコ亭ウォッチャーの録画データを収集するノード</p>
+    <p>本Nodeは、因幡電機産業チョコ亭ウォッチャーの録画データをhttp通信を利用して収集し、ia-cloudオブジェクトとして出力メッセージに出力するNodeである。</p>
+    <p>設定された周期で、チョコ亭ウォッチャーの録画ファイル（ロックファイル）を確認し、新しいファイルが見つかると取得して、ia-cloudオブジェクトとして出力する。</p>
+    <p>入力メッセージのmsg.triggerの内容が真であれば、チョコ亭ウォッチャーに対しトリガー送信を行う。</p>
+    <p>入力メッセージのmsg.getImageの内容が真であれば、チョコ亭ウォッチャーから静止画を取得する。</p>
+    <p>以下、オプション</p>
+    <p>設定された周期で、静止画をia-cloudファイルデータオブジェクトとして送出する。</p>
+    <p>エラーステータスが”E000"以外の時に、ia-cloudアラーム&イベントデータオブジェクトを送出する。</p>
+    <p>リアルタイム静止画をローカルダッシュボードでのモニタ用として第2の出力ポートに出力する。</p>
+
+    <dt>動画収集機能<span class="property-type">object</span></dt>
+    <dd>チョコ亭ウォッチャーの録画データ（ロックファイル）を監視し、設定応じてia-cloudファイルデータオブジェクトとして送出する。</dd>
+    <dl class="message-properties">
+        <dt>都度収集 <span class="property-type">string | object</span></dt>
+        <dd>設定間隔（1,10,30,60分のいずれか）でチョコ亭ウォッチャーのロックファイルを監視し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出すると共に、ロックファイイルを削除する。</dd>
+        <dt>定期収集 <span class="property-type">string</span></dt>
+        <dd>設定間隔（1,2,6,12,24時間のいずれか）ででチョコ亭ウォッチャーのロックファイル情報を取得し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出する。チョコ亭ウォッチャーのロックファイルは削除しない。</dd>
+    </dl>
+    <dt>チョコ亭ウォッチャー監視機能<span class="property-type">object</span></dt>
+    <dd>固定周期（10秒）で、チョコ亭ウォッチャーの以下の状態をモニタし、必要な動作を行う。</dd>
+    <dl class="message-properties">
+        <dt>都度収集 <span class="property-type">string | object</span></dt>
+        <dd>設定間隔（1,10,30,60分のいずれか）でチョコ亭ウォッチャーのロックファイルを監視し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出すると共に、ロックファイイルを削除する。</dd>
+        <dt>定期収集 <span class="property-type">string</span></dt>
+        <dd>設定間隔（1,2,6,12,24時間のいずれか）ででチョコ亭ウォッチャーのロックファイル情報を取得し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出する。チョコ亭ウォッチャーのロックファイルは削除しない。</dd>
+    </dl>
+    <dt>静止画定期収集機能<span class="property-type">object</span></dt>
+    <dl class="message-properties">
+        <dt>都度収集 <span class="property-type">string | object</span></dt>
+        <dd>設定間隔（1,10,30,60分のいずれか）でチョコ亭ウォッチャーのロックファイルを監視し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出すると共に、ロックファイイルを削除する。</dd>
+        <dt>定期収集 <span class="property-type">string</span></dt>
+        <dd>設定間隔（1,2,6,12,24時間のいずれか）ででチョコ亭ウォッチャーのロックファイル情報を取得し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出する。チョコ亭ウォッチャーのロックファイルは削除しない。</dd>
+    </dl>
+    <dt>入力メッセージによるトリガ機能<span class="property-type">object</span></dt>
+    <dl class="message-properties">
+        <dt>都度収集 <span class="property-type">string | object</span></dt>
+        <dd>設定間隔（1,10,30,60分のいずれか）でチョコ亭ウォッチャーのロックファイルを監視し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出すると共に、ロックファイイルを削除する。</dd>
+        <dt>定期収集 <span class="property-type">string</span></dt>
+        <dd>設定間隔（1,2,6,12,24時間のいずれか）ででチョコ亭ウォッチャーのロックファイル情報を取得し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出する。チョコ亭ウォッチャーのロックファイルは削除しない。</dd>
+    </dl>
+    <dt>ローカルモニタ用静止画出力<span class="property-type">object</span></dt>
+    <dl class="message-properties">
+        <dt>都度収集 <span class="property-type">string | object</span></dt>
+        <dd>設定間隔（1,10,30,60分のいずれか）でチョコ亭ウォッチャーのロックファイルを監視し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出すると共に、ロックファイイルを削除する。</dd>
+        <dt>定期収集 <span class="property-type">string</span></dt>
+        <dd>設定間隔（1,2,6,12,24時間のいずれか）ででチョコ亭ウォッチャーのロックファイル情報を取得し、新しいロックファイルが存在した場合にはia-cloudファイルデータオブジェクトを送出する。チョコ亭ウォッチャーのロックファイルは削除しない。</dd>
+    </dl>
+    
+</script>

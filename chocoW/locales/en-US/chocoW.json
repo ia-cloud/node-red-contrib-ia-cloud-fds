@@ -1,0 +1,49 @@
+{
+    "editor": {
+        "name": "Node name",
+        "paletteLabel": "Omron temp Cntrl",
+        "ui-config": "UI config",
+        "fileConfig": "File config",
+        "tab": {
+          "object-settings": "object prop.",
+          "data-settings": "Data item"
+        },
+        "filename": "config file name",
+        "period": "period",
+        "async": "Async. ",
+        "qInfo": "quality info",
+        "objectname": "object name",
+        "objectKey": "object key",
+        "objectKeyholder": "unique key",
+        "objectDescription": "object description",
+        "modbusNode": "Modbus config. node",
+        "contentType": "content type",
+        "itemNumber": "item number",
+        "del": "delete",
+        "add": "add",
+        "dItem": "data item",
+        "dname": "data name",
+        "unit": "unit",
+        "pv": "proccess value",
+        "sv": "set value",
+        "pro": "prpotion",
+        "int": "integration",
+        "dir": "dir",
+        "run": "run mode",
+        "am": "auto/manual",
+        "at": "auto tuning"
+    },
+    "runtime": {
+        "badFilePath": "bad file path",
+        "ready": "Ready",
+        "preparing": "preparing",
+        "comError": "com. error",
+        "sent": "data sent",
+        "AnE": {
+            "E000": "No error",
+            "E001": "SD card don't exist",
+            "E002": "bad SD card",
+            "E103": "file system error"
+        }
+    }
+}
