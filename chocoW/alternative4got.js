@@ -17,20 +17,26 @@
  "use strict";
 
 // const got = require('got');
-const request = require("request")
+const request = require("request");
 
 //class alt4got {
 
 //    constructor() {
 
 //    }
-    // alternative method for promise-ized got
+// alternative method for promise-ized got
 function got(opt) {
+
+    if(opt.isStream) {
+        if (opt.searchParams) opt.url = opt.url + "?file=" + opt.searchParams.file;
+        const respStream = request(opt);
+        return respStream;
+    }
+    else {
         return new Promise(function(resolev, reject){
             if (opt.method === "POST") 
                 opt.headers = Object.assign({"Content-Length": opt.body.length}, opt.headers);
 
-            if (opt.searchParams) opt.url = opt.url + "?" + opt.searchParams;
             request(opt,function(err,res,body) {
                 if (err) {
                     reject(err);
@@ -47,6 +53,8 @@ function got(opt) {
             })
         })
     }
-//}
+       
+}
+
 module.exports = got;
  
