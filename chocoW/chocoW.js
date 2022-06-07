@@ -73,18 +73,23 @@ module.exports = function(RED) {
         }
 
         node.status({fill:"green", shape:"dot", text:"runtime.ready"});
-        try {
-            // get camera info and set back it
-            watchr.updateChocoInfo(params)
-            .then(watchr.setCamMode("rec")) 
-            .then(watchr.startRecMovie())            
-            // and get to check loop in
-            .then(checkLoop);
-        }
-        catch (error) {
-            node.status({fill:"yellow", shape:"ring", text:"chocoWHttpError"});
-            node.warn(error.toString());
-        }
+
+        (async () => {
+            try {
+                // get camera info and set back it
+                await watchr.updateChocoInfo(params);
+                await watchr.setCamMode("rec"); 
+                await watchr.startRecMovie();        
+                // and get to check loop in
+                await checkLoop();
+            }
+            catch (error) {
+                node.status({fill:"yellow", shape:"ring", text:"chocoWHttpError"});
+                node.warn(error.toString());
+            }
+        })();
+
+
     
         // loop function
         async function checkLoop() {
@@ -107,7 +112,7 @@ module.exports = function(RED) {
                 if (storeTiming === "each" || (storeTiming === "periodic" && now % storePeriod === 0)) {
                     node.status({fill:"green", shape:"dot", text:"runtime.geting-v-files"});
                     let files = await watchr.getLockedFiles();
-                    if (files.length > 0) _sendVideoFiles(files);
+                    if (files.length > 0) await _sendVideoFiles(files);
                 }
             }
             if (dateSync && moment().unix % ONEDAY === 0) 
@@ -118,7 +123,7 @@ module.exports = function(RED) {
                     node.status({fill:"green", shape:"dot", text:"runtime.geting-i-files"});
                     const filePath = await watchr.getCamImage();
                     if (capOut === "both" || capOut === "ia-cloud")
-                        _sendImageFile(filePath);
+                        await _sendImageFile(filePath);
                     if (capOut === "both" || capOut === "nodeOut"){
 //                        let pl = fs.readFileSync(filePath).toString("base64");
                         node.send([, {
@@ -164,10 +169,10 @@ module.exports = function(RED) {
                     rs.pipe(b64s).pipe(ws);
             
                     // Write Stream finished ?
-                    ws.on('finish', () => {
+                    ws.on('finish', async () => {
                         resolve();
                     });
-                    ws.on("error",(err) => {
+                    ws.on("error", async (err) => {
                         reject(err);
                     })
                 });
@@ -213,10 +218,10 @@ module.exports = function(RED) {
                 rs.pipe(b64s).pipe(ws);
         
                 // Write Stream finished ?
-                ws.on('finish', () => {
+                ws.on('finish', async () => {
                     resolve();
                 });
-                ws.on("error",(err) => {
+                ws.on("error", async (err) => {
                     reject(err);
                 })
             });
@@ -286,6 +291,7 @@ module.exports = function(RED) {
                     if (capOut === "both" || capOut === "nodeOut"){
 //                        let pl = fs.readFileSync(filePath).toString("base64");
                         let now = moment().unix();
+                        node.status({fill:"green", shape:"dot", text:"runtime.image-out"});
                         node.send([, {
 //                               <img src="data:image/jpg;base64,${pl}" width="100%">
                             payload: `

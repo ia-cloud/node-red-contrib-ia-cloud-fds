@@ -16,8 +16,6 @@
 
 "use strict";
 
-const fs = require("fs");
-
 module.exports = function(RED) {
 
     const iaCloudConnection = require("./util/ia-cloud-connection.js");
@@ -181,27 +179,7 @@ module.exports = function(RED) {
                     // リクエスト
                     try {
                         let res;
-                        if (msg.request === "store") {
-                            // if contentType is "Filedata", read encoded data from file path
-                            if (dataObject.objectContent.contentType == "Filedata") {
-                                let contD = dataObject.objectContent.contentData;
-                                let ind = contD.findIndex(obj => {
-                                    return obj.commonName === "file path";
-                                });
-                                if (ind === -1) throw "no file path";
-                                let path = contD[ind].dataValue;
-                                let buf = fs.readFileSync(path);
-
-                                contD.splice(ind, 1);
-                                contD.push({
-                                    commonName: "Encodee data", 
-                                    dataValue: buf
-                                })
-                                // remove original .mov file
-                                fs.unlinkSync(path);
-                            }
-                            res = await iaC.store(auth, dataObject);
-                        }
+                        if (msg.request === "store") res = await iaC.store(auth, dataObject);
                         if (msg.request === "retrieve") res = await iaC.retrieve(auth);
                         if (msg.request === "convey") res = await iaC.convey(auth);
                         node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
