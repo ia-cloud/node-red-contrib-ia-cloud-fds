@@ -153,10 +153,10 @@ class chocoWatcher {
                 rs.pipe(ws);
         
                 // Write Stream finished ?
-                ws.on('finish', async () => {
+                ws.on('finish', () => {
                     resolve();
                 });
-                ws.on("error", async (err) => {
+                ws.on("error", (err) => {
                     reject(err);
                 })
             });

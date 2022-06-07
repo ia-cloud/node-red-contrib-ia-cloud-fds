@@ -99,13 +99,13 @@ class iaCloudConnection {
                         reject(new IaCloudLowerError());
                     }
                 });
-                resBodyStream.on("data",async (chunk) => {
+                resBodyStream.on("data", (chunk) => {
                     resbody += chunk;
                 });
-                resBodyStream.on("end",async () => {
+                resBodyStream.on("end", () => {
                     resolve(resbody);
                 });
-                resBodyStream.on("error",async (err) => {
+                resBodyStream.on("error", (err) => {
                     reject(new IaCloudLowerError(err));
                 });
             });
