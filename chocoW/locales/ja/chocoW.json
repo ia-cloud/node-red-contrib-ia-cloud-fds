@@ -2,9 +2,9 @@
     "editor": {
         "name": "ノード名称",
         "netAddress": "ネットアドレス",
-        "paletteLabel": "チョコ亭ウォッチャー",
+        "paletteLabel": "チョコ停ウォッチャー",
         "tab": {
-          "device-prop": "チョコ亭設定",
+          "device-prop": "チョコ停設定",
           "func-prop": "機能設定",
           "object-prop": "オブジェクト設定"
         },
