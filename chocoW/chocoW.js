@@ -23,8 +23,10 @@ const chocoWatcher = require("./choco-watcher.js");
 const path = require("path");
 
 // status read interval 10sec
-const CHECK_INTERVAL = 10 * 1000
-const ONEDAY = 60 * 60 * 24 * 1000
+const CHECK_INTERVAL = 10 * 1000;
+// clook adjustment interval, a little over than one day but not precise
+const ONEDAY = 100000;
+
 // directory name for temp files store
 const TEMPDIRNAME = "temp-dir-ia-cloud/";
 const TEMPIMAGEFILENAME = "choco-live.jpg";
@@ -65,7 +67,7 @@ module.exports = function(RED) {
         // preparing camera info
         let params = {
             timestamp: dateSync ? moment().format("YYYY.MM.DD HH:mm:ss") : "",
-            valume: speaker !== "asis" ? speaker: "",
+            volume: speaker !== "asis" ? speaker: "",
             recMode: triggerMode !== "asis" ? triggerMode: "",
             recDurationSD: (triggerMode === "SD" && periodicRecTime !== "asis") ? periodicRecTime: "",
             recDurationDRAM: (triggerMode === "DRAM" && eachRecTime !== "asis") ? eachRecTime: "",
@@ -76,10 +78,15 @@ module.exports = function(RED) {
 
         (async () => {
             try {
-                // get camera info and set back it
-                await watchr.updateChocoInfo(params);
                 await watchr.setCamMode("rec"); 
-                await watchr.startRecMovie();        
+                const prms = await watchr.getCamInfo();
+                // overwrite parameters to camInfo
+                delete prms.firmwareVersion;
+                for (let key of Object.keys(params)) {
+                    if(params[key]) prms[key] = params[key]
+                }
+                // set back camera info, takes 1.2 sec
+                await watchr.updateChocoInfo(prms);    
                 // and get to check loop in
                 await checkLoop();
             }
@@ -115,9 +122,17 @@ module.exports = function(RED) {
                     if (files.length > 0) await _sendVideoFiles(files);
                 }
             }
-            if (dateSync && moment().unix % ONEDAY === 0) 
-                await watchr.updateCamInfo({timestamp: moment().format("YYY.MM.DD HH:mm:ss")});  
-
+            if (dateSync && moment().unix() % ONEDAY <= 10) {
+                const prms = await watchr.getCamInfo();
+                // overwrite parameters to camInfo
+                delete prms.firmwareVersion;
+                let ts = moment(prms.timestamp, "YYYY.MM.DD HH:mm:ss")
+                if (Math.abs(moment(ts).unix() - moment().unix()) > 60) {
+                    prms.timestamp = moment().format("YYYY.MM.DD HH:mm:ss");
+                    await watchr.updateChocoInfo(prms);  
+                }
+            }
+ 
             if (capOut !== "none" && capPeriod !== "msgOnly") {
                 if (now % capPeriod <= 10) {
                     node.status({fill:"green", shape:"dot", text:"runtime.geting-i-files"});
@@ -125,7 +140,6 @@ module.exports = function(RED) {
                     if (capOut === "both" || capOut === "ia-cloud")
                         await _sendImageFile(filePath);
                     if (capOut === "both" || capOut === "nodeOut"){
-//                        let pl = fs.readFileSync(filePath).toString("base64");
                         node.send([, {
                             payload: `
                             <html>

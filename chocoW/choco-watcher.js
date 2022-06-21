@@ -45,7 +45,7 @@ class CHOCOWHTTPERROR extends Error {
 class chocoWatcher {
 
     constructor(netAddress) {
-        this.urlPref = "http://" + netAddress + "/xaccja/";
+        this.urlPref = "http://" + netAddress;
         let urlPref= this.urlPref;
 
         // prepaing http header for choco watcher API for GET method
@@ -79,23 +79,25 @@ class chocoWatcher {
         }
         // preparing Http request option for each API command
         this.command = {
-            getCamMode: {url: urlPref + "getCamMode", method: "GET", headers: getHeaders},
-            setCamMode: {url: urlPref + "setCamMode", method: "POST", headers: postHeaders},
-            setTimeoutExt: {url: urlPref + "setTimeoutExt", method: "POST", headers: postHeaders},
-            setTrigger: {url: urlPref + "setTrigger", method: "POST", headers: postHeaders},
-            getCamInfo: {url: urlPref + "getCamInfo", method: "GET", headers: getHeaders},
-            setCamInfo: {url: urlPref + "setCamInfo", method: "POST", headers: postHeaders},
-            getImageStatus: {url: urlPref + "getImageStatus", method: "GET", headers: getHeaders},
-            getImage: {url: urlPref + "getImage", method: "GET", headers: fileHeaders, isStream: true},
-            deletImage: {url: urlPref + "deletImage", method: "POST", headers: postHeaders},
-            getCamImage: {url: urlPref + "getCamImage", method: "GET", headers: fileHeaders, isStream: true},
-            getRemainingCapacity:{url: urlPref + "getRemainingCapacity", method: "GET", headers: getHeaders},
-            getErrorLog: {url: urlPref + "getErrorLog", method: "GET", headers: getHeaders},
-            getErrorCode: {url: urlPref + "getErrorCode", method: "GET", headers: getHeaders},
-            getAlertStatus: {url: urlPref + "getAlertStatus", method: "GET", headers: getHeaders},
-            startRecMovie: {url: urlPref + "startRecMovie",  method: "POST", headers: postHeaders},
-            endRecMovie: {url: urlPref + "endRecMovie",  method: "POST", headers: postHeaders},
-            deleteImage: {url: urlPref + "deleteImage",  method: "POST", headers: postHeaders}
+            getHome: {url: urlPref, method: "GET", headers: getHeaders},
+            getSetting: {url: urlPref + "/Setting.html", method: "GET", headers: getHeaders},
+            getCamMode: {url: urlPref + "/xaccja/getCamMode", method: "GET", headers: getHeaders},
+            setCamMode: {url: urlPref + "/xaccja/setCamMode", method: "POST", headers: postHeaders},
+            setTimeoutExt: {url: urlPref + "/xaccja/setTimeoutExt", method: "POST", headers: postHeaders},
+            setTrigger: {url: urlPref + "/xaccja/setTrigger", method: "POST", headers: postHeaders},
+            getCamInfo: {url: urlPref + "/xaccja/getCamInfo", method: "GET", headers: getHeaders},
+            setCamInfo: {url: urlPref + "/xaccja/setCamInfo", method: "POST", headers: postHeaders},
+            getImageStatus: {url: urlPref + "/xaccja/getImageStatus", method: "GET", headers: getHeaders},
+            getImage: {url: urlPref + "/xaccja/getImage", method: "GET", headers: fileHeaders, isStream: true},
+            deletImage: {url: urlPref + "/xaccja/deletImage", method: "POST", headers: postHeaders},
+            getCamImage: {url: urlPref + "/xaccja/getCamImage", method: "GET", headers: fileHeaders, isStream: true},
+            getRemainingCapacity:{url: urlPref + "/xaccja/getRemainingCapacity", method: "GET", headers: getHeaders},
+            getErrorLog: {url: urlPref + "/xaccja/getErrorLog", method: "GET", headers: getHeaders},
+            getErrorCode: {url: urlPref + "/xaccja/getErrorCode", method: "GET", headers: getHeaders},
+            getAlertStatus: {url: urlPref + "/xaccja/getAlertStatus", method: "GET", headers: getHeaders},
+            startRecMovie: {url: urlPref + "/xaccja/startRecMovie",  method: "POST", headers: postHeaders},
+            endRecMovie: {url: urlPref + "/xaccja/endRecMovie",  method: "POST", headers: postHeaders},
+            deleteImage: {url: urlPref + "/xaccja/deleteImage",  method: "POST", headers: postHeaders}
         }
 
     }
@@ -230,21 +232,37 @@ class chocoWatcher {
     // async function for to get camera info and to write it back
     async updateChocoInfo(params) {
         try{
-            const prms = await this._chocoRequest("getCamInfo");
-            // overwrite parameters to camInfo
-            delete prms.firmwareVersion;
-
-            for (let key of Object.keys(params)) {
-                if(params[key]) prms[key] = params[key]
-            }
             let resp = await this.endRecMovie();
             if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            resp = await this._chocoRequest("setCamInfo", {body: prms});
+            // get into Setting mode. takes 0.3 sec
+            await this.getSetting(); 
+            resp = await this._chocoRequest("setCamInfo", {body: params});
             if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-
+            // get back to Rec mode, takes 0.8 sec
+            await this.getHome(); 
             // make choco watcher rec. start mode back
             resp = await this.startRecMovie();
             if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+    // async function for to get top page
+    async getHome() {
+        try{
+            await this._chocoRequest("getHome")
+            return;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+    // async function for to get seeting page
+    async getSetting() {
+        try{
+            const resp = await this._chocoRequest("getSetting")
+            return;
         }
         catch (err) {
             throw err;
@@ -255,6 +273,16 @@ class chocoWatcher {
         try{
             const mode = await this._chocoRequest("getCamMode")
             return mode;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+    // async function for to get camera mode
+    async getCamInfo() {
+        try{
+            const prms = await this._chocoRequest("getCamInfo")
+            return prms;
         }
         catch (err) {
             throw err;
