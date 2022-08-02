@@ -10,7 +10,7 @@
 
 ### ロックファイルチェック機能
 
-チョコ停ウォッチャーに保存された録画データ(ロックファイル)を設定周期毎にチェックする。ロックファイルが存在した場合、すべてのロックファイルについてia-cloudファイルデータオブジェクト形式に変換して出力すると共に、チョコ停ウォッチャーから削除する。<br>
+チョコ停ウォッチャーに保存された録画データ(ロックファイル)を設定周期毎にチェックする。ロックファイルが存在した場合、すべてのロックファイルについてia-cloudファイルデータオブジェクト形式に変換して出力する *1 と共に、チョコ停ウォッチャーから削除する。<br>
 ロックファイルのチェック周期は、以下の2種類から選択できる。
 
 #### -都度チェック
@@ -41,12 +41,12 @@ msg.getImageがNULL、0、false 以外で入力された場合に、チョコ停
 
 #### -静止画のia-cloudデータオブジェクト出力
 
-「静止画出力」プロパティが「ia-cloud格納」か「両方」に設定されている場合、チョコ停ウォッチャーから取得された静止画データをia-cloudデータオブジェクトで出力する。
+「静止画出力」プロパティが「ia-cloud格納」か「両方」に設定されている場合、チョコ停ウォッチャーから取得した静止画データをia-cloudデータオブジェクトで出力する。 *1
 
 
 #### -ローカルモニタ用静止画出力
 
-「静止画出力」プロパティが「ローカルモニタ出力」か「両方」に設定されている場合、チョコ停ウォッチャーから取得された静止画データをノードの2番目の出力からmsg.payloadとして出力する。<br>
+「静止画出力」プロパティが「ローカルモニタ出力」か「両方」に設定されている場合、チョコ停ウォッチャーから取得された静止画データをノードの2番目の出力からmsg.payload(出力メッセージ2)として出力する。 *2<br>
 ノードの2番目の出力は、「静止画出力」プロパティで「ローカルモニタ出力」か「両方」を選択した場合に接続できるようになる。
 
 ### チョコ停ウォッチャーの設定機能
@@ -67,7 +67,7 @@ msg.getImageがNULL、0、false 以外で入力された場合に、チョコ停
 |msg.trigger|boolean/string/number/object|NULL、0、false 以外の時、チョコ停ウォッチャーへトリガーコマンドを入力する。チョコ停ウォッチャーがトリガーを受信すると、ロックファイルが保存される。| 
 |msg.getImage|boolean/string/number/object|NULL、0、false 以外の時、チョコ停ウォッチャーから静止画データを取得し、「静止画出力」プロパティの設定に応じた形式で出力する。| 
 
-## 出力メッセージ1
+## *1: 出力メッセージ1
 
 ノードの1番目の出力からの出力メッセージは、ia-cloudファイルデータオブジェクトとそれをia-cloud CSへ格納するためのリクエストを含む。ia-cloud-cnctノードへの接続を想定している。
 
@@ -76,47 +76,91 @@ msg.getImageがNULL、0、false 以外で入力された場合に、チョコ停
 |msg.request|string|ia-cloud APIのリクエスト。"store"固定。|
 |msg.dataObject|object|格納するia-cloudデータオブジェクト| 
 
-#### msgオブジェクトの構成
+#### msgオブジェクトの構成例(ia-cloudファイルデータオブジェクトの場合)
 
 ```
 {
-    request: "store" //ia-cloud APIのrequest。"store"固定。
-    dataObject: object //ia-cloudオブジェクト
-        objectType: "iaCloudObject"
-        objectContent: object
-            contentType: "Filedata"
-            contentData: array[5]
-                0: object
-                    commonName: "File Name"
-                    dataValue: "ファイル名"
-                1: object
-                    commonName: "MIME Type"
-                    dataValue: "MIMEタイプ"
-                2: object
-                    commonName: "Encoding"
-                    dataValue: "base64"
-                3: object
-                    commonName: "Size"
-                    dataValue: サイズ
-                4: object
-                    commonName: "file path"
-                    dataValue: "ファイルパス"
-        objectKey: "オブジェクトキー" //ia-cloudオブジェクトキー
-        objectDescription: "オブジェクト説明" //ia-cloudオブジェクトの説明
-        timestamp: "タイムスタンプ"
-    _msgid: "メッセージID"
+    "request": "store", //ia-cloud APIのrequest。"store"固定。
+    "dataObject": {
+        "objectType": "iaCloudObject", //ia-cloudオブジェクト
+        "objectContent": {
+            "contentType": "Filedata",
+            "contentData": [
+                {
+                    "commonName": "File Name",
+                    "dataValue": "ファイル名"
+                },
+                {
+                    "commonName": "MIME Type",
+                    "dataValue": "MIMEタイプ" //動画ファイルの場合は"video/quicktime"、画像ファイルは"image/jpeg"
+                },
+                {
+                   "commonName": "Encoding",
+                    "dataValue": "base64" 
+                },
+                {
+                    "commonName": "Size",
+                    "dataValue": サイズ
+                },
+                {
+                    "commonName": "file path",
+                    "dataValue": "ファイルパス"
+                }
+            ],
+        "objectKey": "オブジェクトキー", //ia-cloudオブジェクトキー
+        "objectDescription": "オブジェクト説明", //ia-cloudオブジェクトの説明
+        "timestamp": "タイムスタンプ",
+        "_msgid": "メッセージID"
+        }
+    }
 }
 ```
 
-## 出力メッセージ2
+#### msgオブジェクトの構成例(ia-cloudアラーム＆イベントデータオブジェクトの場合)
+```
+{
+    "request": "store", //ia-cloud APIのrequest。"store"固定。
+    "dataObject": {
+        "objectType": "iaCloudObject", //ia-cloudオブジェクト
+        "objectContent": {
+            "contentType": "Alarm&Event",
+            "contentData": [
+                {
+                    "commonName": "Alarm&Event",
+                    "dataValue": {
+                        "AnEStatus": "アラーム&イベントの状態",
+                        "AnEcode": "エラーコード",
+                        "AnEDescription": "エラーステータス表示"
+                    }
+                }
+            ],
+        "objectKey": "オブジェクトキー", //ia-cloudオブジェクトキー
+        "objectDescription": "オブジェクト説明", //ia-cloudオブジェクトの説明
+        "timestamp": "タイムスタンプ",
+        "_msgid": "メッセージID"
+        }
+    }
+}
+```
 
-ノードの2番目の出力は、チョコ停ウォッチャーから取得した静止画を表示するためのメッセージを出力する。<br>
-また、ノードの2番目の出力は「静止画出力」プロパティで「ローカルモニタ出力」か「両方」を選択した場合に接続できる。
+## *2: 出力メッセージ2
+
+ノードの2番目の出力は、チョコ停ウォッチャーから取得した静止画を表示するためのメッセージを出力する。
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
-|msg.payload|stream|MIME type image/jpeg の静止画データ|
+|msg.payload|string|MIME type が image/jpeg の静止画データを表示するhtml|
 
+#### msg.payloadの内容
+
+```
+payload: 
+    <html>
+    <body>
+        <img src="ファイルパス" width="100%">                          
+    </body>
+    </html>
+```
 ## プロパティ
 
 本ノードは以下のプロパティを持つ。
@@ -133,7 +177,7 @@ msg.getImageがNULL、0、false 以外で入力された場合に、チョコ停
 
 | 名称 | 種別 | 説明 |
 |:----------|:-----:|:--------------------|
-|PC時刻同期|boolean| 起動時とロックファイル読み出し時に、チョコ停ウォッチャーの時計をNode-REDアプリケーションと同期する場合にチェックする。|
+|PC時刻同期|boolean| 起動時とロックファイル読み出し時に、チョコ停ウォッチャーの時計を接続したPCと同期する場合にチェックする。|
 |録画モード|string| 「トリガーオンリー」、「ループ&トリガーロック」、「本体のまま」のいずれか。チョコ停ウォッチャーは、「トリガーオンリー」の場合には動画を本体の内部メモリに一時記録し、トリガーを受信するとトリガータイミングを中心とした1つのロックファイルをSDカードに保存する。「ループ&トリガーロック」の場合には、動画を設定した録画単位ごとにSDカードに保存し、トリガーを受信するとトリガータイミングの動画とその前後の3つの動画をロックファイルとして保存する。　|
 |録画単位|string| 「トリガーオンリー」モードの場合、「20秒」、「40秒」、「本体のまま」のいずれか。「ループ&トリガーロック」モードの場合、「1分」、「3分」、「5分」、「10分」、「本体のまま」のいずれか。|
 |スピーカー音量|string| チョコ停ウォッチャーのスピーカーの設定音量。「大」、「中」、「小」、「OFF」、「本体のまま」のいずれか。|
