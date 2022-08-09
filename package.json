@@ -20,7 +20,8 @@
     "@serialport/parser-inter-byte-timeout": "^9.0.0",
     "@serialport/parser-delimiter": "^9.0.0",
     "ws": "^7.1.2",
-    "got": "^11.5.2"
+    "got": "^11.5.2",
+    "websocket-as-promised": "^2.0.1"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
@@ -38,6 +39,7 @@
     "nodes": {
       "ia-cloud-cnct": "ia-cloud-cnct/ia-cloud-cnct.js",
       "ia-cloud-cnct2": "ia-cloud-cnct/ia-cloud-cnct2.js",
+      "ia-cloud-V2-cnct": "ia-cloud-cnct/ia-cloud-V2-cnct.js",
       "object-array": "ia-cloud-object-array/object-array.js",
       "ibress": "ibress-cnct/ibress-cloud.js",
       "plc-mc-protocol": "plc-mc-protocol/plc-mc-protocol.js",
