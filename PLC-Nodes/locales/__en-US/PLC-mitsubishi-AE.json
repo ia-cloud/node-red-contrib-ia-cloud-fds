@@ -1,0 +1,47 @@
+{
+    "editor": {
+        "name": "node name",
+        "UIconfig": "conf. by UI",
+        "fileconfig": "conf. by file",
+        "tab": {
+          "file-settings": "configuration file",
+          "object-settings": "object configuration",
+          "data-settings": "dataitem configuration"
+        },
+        "filename": "configration file path",
+        "period": "period",
+        "async": "asyn. store",
+        "objectname": "object name",
+        "objectKey": "object key",
+        "objectKeyholder": "required: unique key",
+        "objectDescription": "object description",
+        "contentType": "content type",
+        "itemNumber": "item No.",
+        "bit": "bit",
+        "number": "number",
+        "string": "string",
+        "numList": "number array",
+        "del": "delete",
+        "add": "add",
+        "dname": "data name",
+        "address": "start address",
+        "bitNum": "number of bit",
+        "pos": "positive",
+        "neg": "negative",
+        "AnECode": "A&E code",
+        "AnEDescription": "A$E description",
+        "modbusNode": "modbus com. node",
+        "dev-X": "X",
+        "dev-Y": "Y",
+        "dev-D": "D",
+        "dev-W": "W"
+    },
+    "runtime": {
+        "badFilePath": "bad file path",
+        "ready": "Ready",
+        "preparing": "preparing",
+        "sent": "data sent",
+        "comNode": "comNode not found",
+        "comError": "communication error!!"
+    }
+}

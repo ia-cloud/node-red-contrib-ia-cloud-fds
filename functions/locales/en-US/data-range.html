@@ -1,0 +1,52 @@
+<script type="text/html" data-help-name="data-range">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Convert the numeric range of data items in ia-cloud. </p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>non-target objects <span class="property-type">Check</span></dt>
+        <dd>Remove non-target objects: Do not output ia-cloud objects that were not converted</dd>
+        <dt>Convertion list<span class="property-type">list</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd> Object key to evaluate to.  If left blank, convert data for all objects.</dd>
+            <dt>Data name<span class="property-type">String</span></dt>
+            <dd> Data name of the target data item to be evaluated. </dd>
+            <dt>Conversion Method<span class="property-type">Selection</span></dt>
+            <dd>How to convert data values:</dd>
+            <dd>Choose either off/gain or upper/lower limit</dd>
+            <dt>parameters to use for conversion<span class="property-type">number</span></dt>
+            <dd>For scaling: output = offset + (input * gain)</dd>
+            <dd>In the case of upper and lower limits: Limit the data range with the upper and lower limits</dd>
+        </dl>
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Valid only for "store"</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>An object of the ia-cloud dataObject structure. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Defaults to the same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. The dataObject resulting from convertion with the contents of the convertion list. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Converts the numerical value of each data item of the iaCloud object of the input message according to the set rules</p>
+    <p>Convertion rules are applied in order from the top, and only the combination of the same object key/data name that appears first, including blanks, is applied</p>
+    <p>The conversion has selectable scaling and upper and lower limits. </p>
+    <p>Scaling sets the zero point and scale factor. output = offset + (input * gain)</p>
+    <p>Upper and lower limits limit the input value with lower and upper limits. </p>
+    <p>You can select one of the following output methods</p>
+    <p>If there is no data item to convert, the ia-cloud object outputs a message as is. </p>
+    <p>If there is no data item to convert, do not output the ia-cloud object message. </p>
+</script>

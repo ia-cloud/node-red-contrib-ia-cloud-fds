@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "paletteLabel": "Smoothing",
+        "name": "node name",
+        "obj-filter": "del. non scope object",
+        "smoothingList": "smoothingList",
+        "objkey": "object key",
+        "dName": "data name",
+        "range": "range",
+        "number": "value",
+        "sec": "sec",
+        "minute": "min.",
+        "hour": "hour",
+        "day": "day",
+        "initTime": "reset"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule"
+    }
+}

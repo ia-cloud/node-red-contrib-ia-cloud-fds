@@ -1,0 +1,45 @@
+<script type="text/html" data-help-name="rename-data">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>A function Node that changes the dataName of the ia-cloud object</p>
+
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>Remove not specified <span class="property-type">Check</span></dt>
+        <dd>Remove not specified ia-cloud objects, if checked.</dd>
+        <dt>Remove data items data name not changed <span class="property-type">Check</span></dt>
+        <dd>if checked, remove data items that do not change the data name</dd>
+        <dt>Change Condition List<span class="property-type">List</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Target object key <span class="property-type">string</span></dt>
+            <dd>Object key of the ia-cloud object to modify. If blank, all ia-cloud objects are subject to change</dd>
+            <dt>Source data name<span class="property-type">String</span></dt>
+            <dd>Data name before change. </dd>
+            <dt>Changed data name<span class="property-type">string</span></dt>
+            <dd>Data name to be set after change</dd>
+            <dt>Keep Original Data<span class="property-type">Check</span></dt>
+            <dd>Retain the data item with the data name before change. If checked, the data of the data name before change is retained as it is, and </dd>
+            <dd>the data with the changed data name is newly added. </dd>
+        </dl>
+        <dt>node name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg<span class="property-type">iaCloud object</span></dt>
+        <dd>ia-cloud object specified in the ia-cloud Web API specification</dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>Each data item of the ia-cloud object will be changed its dataName according to the setting. </dd>
+        <dd>Data items with data names that are not subject to change will be deleted or output as is according to the settings. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Function Node that changes the data name of the ia-cloud object of the input message based on the rules</p>
+</script>

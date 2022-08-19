@@ -5,7 +5,6 @@
         "period": "まとめ送出間隔",
         "sec": "秒",
         "length": "まとめ送出数",
-        "objectname": "object名称",
         "objectKey": "objectキー",
         "objectKeyholder": "必須: 固有のキー",
         "objectDescription": "objectの説明"

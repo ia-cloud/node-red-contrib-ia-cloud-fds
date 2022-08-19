@@ -1,0 +1,23 @@
+{
+    "editor": {
+        "paletteLabel": "Nois Reduc.",
+        "name": "node name",
+        "obj-filter": "del. non scope Object",
+        "objFlag": "whole object del.",
+        "condetionList": "condetion list",
+        "objkey": "object key",
+        "dName": "data name",
+        "plusDisp": "+ Disp",
+        "minusDisp": "- Disp",
+        "plusSens": "+ sense",
+        "minusSens": "- sense",
+        "interval": "interval",
+        "sec": "sec"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

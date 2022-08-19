@@ -1,29 +1,57 @@
-
 <script type="text/html" data-help-name="Modbus-com">
-    <p>A configration node for Modbus PLC communication.</p>
+    <p>Configuration node that executes Modbus communication</p>
 
-<h3>Inputs</h3>
-<dl class="message-properties">
-    <dd>None</dd>
-</dl>
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Communication cycle<span class="property-type">Number</span></dt>
+        <dd>Period for updating PLC data via Modbus communication (seconds)</dd>
+        <dt>Number of consecutive reads<span class="property-type">Number</span></dt>
+        <dd>Number of data read in one communication. Determined by the communication capability of the other device. Default 64</dd>
+        <dt>continuous read only <span class="property-type">check</span></dt>
+        <dd>If checked, do not include unspecified addresses in the continuous read range</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>Communication type <span class="property-type">Select</span></dt>
+        <dd>Communication to use. Either Modbus-TCP/Modbus-RTU/Modbus-ASCII</dd>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Modbus-TCP setting list<span class="property-type">TCP communication setting</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+              <dt>Net address<span class="property-type">string</span></dt>
+              <dd>Host address or IP address of Modbus communication device</dd>
+              <dt>Port number<span class="property-type">Number</span></dt>
+              <dd>TCP port number of Modbus communication device. Default is 502</dd>
+              <dt>Unit ID<span class="property-type">Number</span></dt>
+              <dd>Modbus-TCP unit ID. Default is 255</dd>
+            </dl>
+            <dt>Serial setting list<span class="property-type">Serial communication setting</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Communication port<span class="property-type">string</span></dt>
+                <dd>Communication port connected to Modbus communication device. Use search button for connected port search.</dd>
+                <dt>address<span class="property-type">number</span></dt>
+                <dd>RS485 communication address of Modbus communication device. Default is 1</dd>
+                <dt>Baud Rate<span class="property-type">Select</span></dt>
+                <dd>RS485 communication baud rate of Modbus communication device</dd>
+                <dt>parity <span class="property-type">selection</span></dt>
+                <dd>Parity setting for RS485 communication of Modbus communication device</dd>
+                <dd>Other settings for RS485 communication are auto settings</dd>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dd>none</dd>
+    </dl>
 
-<h3>Outputs</h3>
-<dl class="message-properties">
-    <dd>None</dd>
-</dl>
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dd>none</dd>
+    </dl>
 
-<h3>Details</h3>
-<p>This configration node provides Modbus client functionality to read Modbus device data, and can be used for a property of a PLC-Modbus Node and/or a PLC-Modbus-AE Node.
-
-The node sends periodic read function message to Mosdbus devices and update the link object.
-The link Object(linkObj) keeps 
-<dl>
-    <dd>device type and address</dd>
-    <dd>deta value</dd>
-    <dd>previous data value</dd>
-    <dd>node ID that uses this data value</dd>
-    <dd>object key that reffering this data</dd>
-</dl>
-</p>
+    <h3>Details</h3>
+    <p>Setting node used by PLC-Modbus Node or PLC-Modbus-AE Node</p>
 
 </script>

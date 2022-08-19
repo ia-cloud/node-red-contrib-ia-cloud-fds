@@ -1,0 +1,27 @@
+{
+    "editor": {
+        "name": "node name",
+        "cycle": "cycle time",
+        "maxDataNum": "max consec.",
+        "noBlanck": "no blanck",
+        "comType": "com. type",
+        "TCPPort": "TCP port",
+        "netAddress": "Network add.",
+        "serialPort": "port",
+        "baud": "baud rate",
+        "parity": "parity",
+        "TCP": "TCP",
+        "Serial4": "Serial F.4",
+        "Serial5": "Serial F.5",
+        "odd": "Odd",
+        "even": "Even",
+        "none": "None",
+        "accessRoute": "Access Route",
+        "accessRouteExp": "Usually not required",
+        "tip-accessRoute": "Accessing network connected station、set access route。（Ex.）4E：nn:pp:mmm:SS　4C：ss:nn:pp:mmmm:SS　3C：ss:nn:pp:SS　[0-9、A-F]",
+        "tip-serial": "Fixed the following parameters. stopbit: 1, sumcheck: in use."
+    },
+    "runtime": {
+
+    }
+}

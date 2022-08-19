@@ -1,0 +1,55 @@
+<script type="text/html" data-help-name="Mitsubishi-com">
+    <p>Setting node for Mitsubishi MC-protocol communication</p>
+
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>Communication cycle<span class="property-type">Number</span></dt>
+        <dd>Period (seconds) for acquiring and updating PLC data via Mitsubishi MC-protocol</dd>
+        <dt>Number of consecutive reads<span class="property-type">Number</span></dt>
+        <dd>Number of data read in one communication. Determined by the communication capability of the other device. Default 64</dd>
+        <dt>continuous read only <span class="property-type">check</span></dt>
+        <dd>If checked, do not include unspecified addresses in the continuous read range</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>Communication type <span class="property-type">Select</span></dt>
+        <dd>Communication type to use. One of TCP (4E frame) / TCP (3E frame) / Serial format 5 (4C binary) / Serial format 4 (3C)</dd>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>TCP setting list<span class="property-type">TCP communication setting</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+              <dt>Net address<span class="property-type">string</span></dt>
+              <dd>Host address or IP address of Mitubishi PLC</dd>
+              <dt>Port number<span class="property-type">Number</span></dt>
+              <dd>TCP port number of Mitubishi PLC. Default is 1025</dd>
+            </dl>
+            <dt>Serial setting list<span class="property-type">Serial communication setting</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Communication port<span class="property-type">string</span></dt>
+                <dd>Communication port connected to Mitubishi PLC. Search for connected ports with the search button. </dd>
+                <dt>Baud Rate<span class="property-type">Select</span></dt>
+                <dd>RS485 communication baud rate of Mitubishi PLC</dd>
+                <dt>parity <span class="property-type">selection</span></dt>
+                <dd>Parity setting for RS485 communication of Mitubishi PLC</dd>
+                <dd>Other settings for RS485 communication are auto settings</dd>
+            </dl>
+        </dl>
+        <dt>Access route <span class="property-type">string</span></dt>
+        <dd>Access route to the target PLC. Normally, leave this field blank to automatically set your own station. </dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dd>none</dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dd>none</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Setting node used by PLC-Modbus Node or PLC-Modbus-AE Node</p>
+
+</script>
