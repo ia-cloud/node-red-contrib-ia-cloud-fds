@@ -128,7 +128,7 @@
          status = await watchr.getChocoStatus();
          // if error code changed
          if (AnE){
-           if ((preStatus === undefined) && (status["errorStatus"].toString() !== "E000")){
+           if ((preStatus === undefined) && (status["alertStatus"] === "1")){
              preStatus = {
                "running Status": "T000",
                "errorStatus": ["E000"],
