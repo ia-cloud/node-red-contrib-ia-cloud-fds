@@ -1,3 +1,4 @@
+
 {
     "editor": {
         "name": "Node name",
@@ -39,6 +40,9 @@
         "preparing": "preparing",
         "comError": "com. error",
         "sent": "data sent",
+        "settings-not-reflected": "Settings are not reflected in the device.",
+        "device-not-connected": "Device may not be connected.",
+        "redeploy-required": "Please deploy again.",
         "AnE": {
             "E000": "No error",
             "E001": "SD card don't exist",
