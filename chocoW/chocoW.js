@@ -144,7 +144,7 @@
          // check SD card
          let remainingCap = await watchr.getRemainingCapacity();
          if (remainingCap.lockFiles !== "0") {
-           if (storeTiming === "each" || (storeTiming === "periodic" && now % storePeriod === 0)) {
+           if (storeTiming === "each" || (storeTiming === "periodic" && now % storePeriod <= 10)) {
              node.status({fill: "green", shape: "dot", text: "runtime.geting-v-files"});
              let files = await watchr.getLockedFiles();
              flowDoneFlag = true;
