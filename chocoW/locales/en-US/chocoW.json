@@ -1,4 +1,3 @@
-
 {
     "editor": {
         "name": "Node name",
@@ -47,6 +46,7 @@
             "E000": "No error",
             "E001": "SD card don't exist",
             "E002": "bad SD card",
+            "E004": "No storage space on SD card",
             "E103": "file system error"
         }
     }
