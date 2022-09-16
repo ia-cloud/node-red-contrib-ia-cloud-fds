@@ -38,8 +38,7 @@
      let node = this;
      let netAddress = config.netAddress;
      let checkLoopFlag = true, checkLoopID;
-     // let loopFlag = true;
-     let flowDoneFlag = false;
+ 
      let errorCount = 0;
  
      // device properties of Choco Watcher
@@ -57,7 +56,11 @@
      let AnE = config.AnE, AnEobjectKey = config.AnEobjectKey, AnEobjectDescription = config.AnEobjectDescription;
      let status, preStatus;
  
-     const watchr = new chocoWatcher(netAddress);
+     const watchr = new chocoWatcher(netAddress, false, false);
+     // const watchr = new chocoWatcher(netAddress);
+ 
+     watchr.flowDoneFlag = false;
+     watchr.closeFlag = false;
  
      // node status preparing
      node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
@@ -72,25 +75,7 @@
        camAngle: angle !== "asis" ? angle : "",
      };
  
-     let i = 0;
-     function rmTempdir(){
-       node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
-       fs.rmdir(TEMPDIRNAME, { recursive: true }, (err) => {
-         if(err){
-           i++;
-           if (i < 21){
-             setTimeout(rmTempdir, 3000);
-           } else {
-             node.warn(RED._("runtime.redeploy-required"));
-           }
-         }
-       })
-     };
-     
-     
-     if( fs.existsSync( TEMPDIRNAME ) ){
-       rmTempdir();
-     }
+     fs.rmdirSync(TEMPDIRNAME, { recursive: true });
  
      node.status({ fill: "green", shape: "dot", text: "runtime.ready" });
  
@@ -110,14 +95,15 @@
        } catch (error) {
          node.status({ fill: "yellow", shape: "ring", text: "chocoWHttpError" });
          node.warn(error.toString() + " (" + RED._("runtime.settings-not-reflected") + ")" );
-         flowDoneFlag = true;
+         watchr.flowDoneFlag = true;
        }
      })();
  
      // loop function
      async function checkLoop() {
        try {
-         flowDoneFlag = false;
+         watchr.flowDoneFlag = false;
+         watchr.closeFlag = false;
  
          let now = moment().unix();
          // node status Ready
@@ -128,13 +114,8 @@
          status = await watchr.getChocoStatus();
          // if error code changed
          if (AnE){
-           if ((preStatus === undefined) && (status["alertStatus"] === "1")){
-             preStatus = {
-               "running Status": "T000",
-               "errorStatus": ["E000"],
-               "alertStatus": "0"
-             }
-             _sendAnE(status, preStatus);
+           if ((preStatus === undefined) && (status["errorStatus"].toString() !== "E000")){
+             _sendAnE(status);
            } else if ((preStatus !== undefined) && (preStatus["errorStatus"].toString() !== status["errorStatus"].toString())) {
              _sendAnE(status, preStatus);
            }
@@ -147,8 +128,7 @@
            if (storeTiming === "each" || (storeTiming === "periodic" && now % storePeriod <= 10)) {
              node.status({fill: "green", shape: "dot", text: "runtime.geting-v-files"});
              let files = await watchr.getLockedFiles();
-             flowDoneFlag = true;
-             if (files.length > 0) await _sendVideoFiles(files);
+             if ((watchr.closeFlag === false) && (files.length > 0)) await _sendVideoFiles(files);
            }
          }
  
@@ -178,12 +158,13 @@
              }
            }
          }
-         flowDoneFlag = true;
+         watchr.flowDoneFlag = true;
          errorCount = 0;
          // check loop
          if (checkLoopFlag) checkLoopID = setTimeout(checkLoop, CHECK_INTERVAL);
        } catch (error) {
-         flowDoneFlag = true;
+         // console.log("Loop Error");
+         watchr.flowDoneFlag = true;
          clearTimeout(checkLoopID);
          errorCount++;
          if (checkLoopFlag === true) {
@@ -200,6 +181,7 @@
        let msgs = [];
        let filePathB64;
        for (let i = 0; i < files.length; i++) {
+         console.log("send Start");
          // if no file exist, just through to next
          if (!fs.existsSync(files[i].filePath)) continue;
  
@@ -218,7 +200,6 @@
  
            // connecting each stram with pipe
            rs.pipe(b64s).pipe(ws);
- 
            // Write Stream finished ?
            ws.on("finish", async () => {
              resolve();
@@ -247,9 +228,17 @@
            { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 },
          ];
          msgs.push(msg);
+         console.log("send End");
        }
        node.send([msgs]);
        node.status({ fill: "green", shape: "dot", text: "runtime.v-file-sent" });
+       await watchr.endRecMovie();
+       node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
+       await watchr.getSetting(); 
+       await watchr.getHome();
+       // await watchr.startRecMovie();
+       await watchr.setCamMode("rec");
+       await watchr.startRecMovie();
      }
  
      // Send image file as ia-cloud objects
@@ -294,7 +283,7 @@
      }
  
      // Send alarm&event as ia-cloud objects
-     function _sendAnE(status, preStatus) {
+     function _sendAnE(status, preStatus={}) {
        let msg1 = {request: "store", dataObject: { objectType: "iaCloudObject", objectContent: {} }};
        msg1.dataObject.objectKey = AnEobjectKey;
        msg1.dataObject.objectDescription = AnEobjectDescription;
@@ -363,17 +352,31 @@
          } catch(error) {
            node.status({ fill: "yellow", shape: "ring", text: "chocoWHttpError" });
            node.warn(error.toString());
-           flowDoneFlag = true;
+           watchr.flowDoneFlag = true;
          }
        })();
      });
  
      this.on("close", function (done) {
+       watchr.closeFlag = true;
        checkLoopFlag = false;
+ 
        clearTimeout(checkLoopID);
-       if (flowDoneFlag === true) {
-         done();
-       }
+       
+       let j = 0;
+       let closeId = setInterval(() => {
+         if (watchr.flowDoneFlag === true){
+           clearInterval(closeId);
+           done();
+         } else {
+           if (j === 15){
+             console.log("No done");
+             clearInterval(closeId);
+             done();
+           }
+           j++;
+         }
+       }, 1000);
      });
    }
  
@@ -391,7 +394,6 @@
        try {
          image = fs.readFileSync(fname);
        } catch (e) {
-         //エラーの場合。
          image = null;
        }
        res.type("image/jpg").send(image);
