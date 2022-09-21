@@ -56,11 +56,11 @@
      let AnE = config.AnE, AnEobjectKey = config.AnEobjectKey, AnEobjectDescription = config.AnEobjectDescription;
      let status, preStatus;
  
-     const watchr = new chocoWatcher(netAddress, false, false);
-     // const watchr = new chocoWatcher(netAddress);
+     const watcher = new chocoWatcher(netAddress, false, false);
  
-     watchr.flowDoneFlag = false;
-     watchr.closeFlag = false;
+     // flag to close normally
+     watcher.flowDoneFlag = false;
+     watcher.closeFlag = false;
  
      // node status preparing
      node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
@@ -81,38 +81,39 @@
  
      (async () => {
        try {
-         await watchr.setCamMode("rec");
-         const prms = await watchr.getCamInfo();
+         node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
+         await watcher.startRecMovie();
+         const prms = await watcher.getCamInfo();
          // overwrite parameters to camInfo
          delete prms.firmwareVersion;
          for (let key of Object.keys(params)) {
            if (params[key]) prms[key] = params[key];
          }
          // set back camera info, takes 1.2 sec
-         await watchr.updateChocoInfo(prms);
+         await watcher.updateChocoInfo(prms);
          // and get to check loop in
          await checkLoop();
        } catch (error) {
          node.status({ fill: "yellow", shape: "ring", text: "chocoWHttpError" });
          node.warn(error.toString() + " (" + RED._("runtime.settings-not-reflected") + ")" );
-         watchr.flowDoneFlag = true;
+         watcher.flowDoneFlag = true;
        }
      })();
  
      // loop function
      async function checkLoop() {
        try {
-         watchr.flowDoneFlag = false;
-         watchr.closeFlag = false;
+         watcher.flowDoneFlag = false;
+         watcher.closeFlag = false;
  
          let now = moment().unix();
          // node status Ready
-         await watchr.setCamMode("rec");
+         await watcher.setCamMode("rec");
  
          node.status({ fill: "green", shape: "dot", text: "runtime.ready" });
          // chech choco watcher status
-         status = await watchr.getChocoStatus();
-         // if error code changed
+         status = await watcher.getChocoStatus();
+         // if initial error code other than E000, or error code changed
          if (AnE){
            if ((preStatus === undefined) && (status["errorStatus"].toString() !== "E000")){
              _sendAnE(status);
@@ -123,30 +124,32 @@
          preStatus = status;
  
          // check SD card
-         let remainingCap = await watchr.getRemainingCapacity();
+         let remainingCap = await watcher.getRemainingCapacity();
          if (remainingCap.lockFiles !== "0") {
            if (storeTiming === "each" || (storeTiming === "periodic" && now % storePeriod <= 10)) {
-             node.status({fill: "green", shape: "dot", text: "runtime.geting-v-files"});
-             let files = await watchr.getLockedFiles();
-             if ((watchr.closeFlag === false) && (files.length > 0)) await _sendVideoFiles(files);
+             node.status({fill: "green", shape: "dot", text: "runtime.getting-v-files"});
+             let files = await watcher.getLockedFiles();
+             if ((watcher.closeFlag === false) && (files.length > 0)) await _sendVideoFiles(files);
            }
          }
  
+         // synchronize clocks
          if (dateSync && moment().unix() % CLOCK_SYNC_INTERVAL <= 10) {
-           const prms = await watchr.getCamInfo();
+           const prms = await watcher.getCamInfo();
            // overwrite parameters to camInfo
            delete prms.firmwareVersion;
            let ts = moment(prms.timestamp, "YYYY.MM.DD HH:mm:ss");
            if (Math.abs(moment(ts).unix() - moment().unix()) > 60) {
              prms.timestamp = moment().format("YYYY.MM.DD HH:mm:ss");
-             await watchr.updateChocoInfo(prms);
+             await watcher.updateChocoInfo(prms);
            }
          }
  
+         // sending image files
          if (capOut !== "none" && capPeriod !== "msgOnly") {
            if (now % capPeriod <= 10) {
-             node.status({ fill: "green", shape: "dot", text: "runtime.geting-i-files"});
-             const filePath = await watchr.getCamImage();
+             node.status({ fill: "green", shape: "dot", text: "runtime.getting-i-files"});
+             const filePath = await watcher.getCamImage();
              if (capOut === "both" || capOut === "ia-cloud")
                await _sendImageFile(filePath);
              if (capOut === "both" || capOut === "nodeOut") {
@@ -158,13 +161,12 @@
              }
            }
          }
-         watchr.flowDoneFlag = true;
          errorCount = 0;
          // check loop
          if (checkLoopFlag) checkLoopID = setTimeout(checkLoop, CHECK_INTERVAL);
+         watcher.flowDoneFlag = true;
        } catch (error) {
-         // console.log("Loop Error");
-         watchr.flowDoneFlag = true;
+         watcher.flowDoneFlag = true;
          clearTimeout(checkLoopID);
          errorCount++;
          if (checkLoopFlag === true) {
@@ -181,7 +183,6 @@
        let msgs = [];
        let filePathB64;
        for (let i = 0; i < files.length; i++) {
-         console.log("send Start");
          // if no file exist, just through to next
          if (!fs.existsSync(files[i].filePath)) continue;
  
@@ -228,17 +229,15 @@
            { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 },
          ];
          msgs.push(msg);
-         console.log("send End");
        }
        node.send([msgs]);
        node.status({ fill: "green", shape: "dot", text: "runtime.v-file-sent" });
-       await watchr.endRecMovie();
+       await watcher.endRecMovie();
        node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
-       await watchr.getSetting(); 
-       await watchr.getHome();
-       // await watchr.startRecMovie();
-       await watchr.setCamMode("rec");
-       await watchr.startRecMovie();
+       await watcher.getSetting(); 
+       await watcher.getHome();
+       await watcher.setCamMode("rec");
+       await watcher.startRecMovie();
      }
  
      // Send image file as ia-cloud objects
@@ -291,7 +290,7 @@
        msg1.dataObject.objectContent.contentType = "Alarm&Event";
        msg1.dataObject.objectContent.contentData = [];
  
-       let i = 0;
+       let contentDataKey = 0;
        for (let key of Object.keys(status)) {
          if (key === "errorStatus") {
            msg1.dataObject.objectContent.contentData.push({
@@ -312,8 +311,8 @@
            });
          }
          if (status[key] !== preStatus[key])
-           msg1.dataObject.objectContent.contentData[i].dataValue.AnEStatus = "set";
-         i++;
+           msg1.dataObject.objectContent.contentData[contentDataKey].dataValue.AnEStatus = "set";
+           contentDataKey++;
        }
        node.send([msg1]);
        node.status({ fill: "green", shape: "dot", text: "runtime.alarm-sent" });
@@ -331,12 +330,12 @@
          try{
            // if trigger input to choco Watcher
            if (msg.trigger) {
-             await watchr.setTrigger();
+             await watcher.setTrigger();
              node.status({ fill: "green", shape: "dot", text: "runtime.trigger" });
            }
            // if getting live image file
            if (msg.getImage) {
-             const filePath = await watchr.getCamImage();
+             const filePath = await watcher.getCamImage();
              if (capOut === "both" || capOut === "ia-cloud")
                _sendImageFile(filePath);
              if (capOut === "both" || capOut === "nodeOut") {
@@ -352,29 +351,30 @@
          } catch(error) {
            node.status({ fill: "yellow", shape: "ring", text: "chocoWHttpError" });
            node.warn(error.toString());
-           watchr.flowDoneFlag = true;
+           watcher.flowDoneFlag = true;
          }
        })();
      });
  
      this.on("close", function (done) {
-       watchr.closeFlag = true;
+       watcher.closeFlag = true;
        checkLoopFlag = false;
  
        clearTimeout(checkLoopID);
        
-       let j = 0;
+       // flow starts when checkLoop finishes when deployed within 15 seconds
+       let flowDoneCheckCount = 0;
        let closeId = setInterval(() => {
-         if (watchr.flowDoneFlag === true){
+         if (watcher.flowDoneFlag === true){
            clearInterval(closeId);
            done();
          } else {
-           if (j === 15){
-             console.log("No done");
+           flowDoneCheckCount++;
+           if (flowDoneCheckCount === 15){
+             node.warn(RED._("runtime.unexpected-close-error"));
              clearInterval(closeId);
              done();
            }
-           j++;
          }
        }, 1000);
      });

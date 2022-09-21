@@ -16,14 +16,8 @@
 
  "use strict";
 
-// const got = require('got');
 const request = require("request");
 
-//class alt4got {
-
-//    constructor() {
-
-//    }
 // alternative method for promise-ized got
 function got(opt) {
     if(opt.isStream) {

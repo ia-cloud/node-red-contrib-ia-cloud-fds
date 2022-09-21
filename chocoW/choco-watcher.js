@@ -45,7 +45,6 @@ class CHOCOWHTTPERROR extends Error {
 class chocoWatcher {
 
     constructor(netAddress, flowDoneFlag, closeFlag) {
-    // constructor(netAddress) {
         this.urlPref = "http://" + netAddress;
         this.flowDoneFlag = flowDoneFlag;
         this.closeFlag = closeFlag;
@@ -121,7 +120,6 @@ class chocoWatcher {
                     if (resp.headers["content-type"] === "application/json")
                         // Convert the JSON body to the object
                         return JSON.parse(resp.body); 
-                    // return body
                     else return resp.body;
                 } 
                 else throw new CHOCOWHTTPERROR(resp.statusCode);
@@ -158,21 +156,15 @@ class chocoWatcher {
         
                 rs.pipe(ws);
                 
+                // end stream if deployed while loading video file
                 let id = setInterval(() => {
                     if (this.closeFlag === true){
-                        // rs.end();
+                        rs.end();
                         ws.end();
                         clearInterval(id);
-                    } else {
-                        console.log("check End");
                     }
                 }, 1000);
 
-                // Write Stream finished ?
-                // rs.on('error', (err) => {
-                //     ws.end();
-                //     clearInterval(id);
-                // })
                 ws.on('finish', () => {
                     clearInterval(id);
                     resolve();
@@ -204,83 +196,40 @@ class chocoWatcher {
             throw err;
         }
     };
-    // geting locked video files
+    // getting locked video files
     async getLockedFiles() {
         try{
-            // let status = await this.getChocoStatus();
             // make choco watcher rec. stop mode
             let resp = await this.endRecMovie();
-            // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
             // get chocoW PLAY mode for file access          
             resp = await this.setCamMode("play");
-            // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            /*
-            resp = await this.setTimeoutExt(300);
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            */
-            // geting file info of locked files
+            // getting file info of locked files
             resp = await this._chocoRequest("getImageStatus");
             
             let files = resp.files;
             const fileNamePattern = /\d{3}[A-H|JKL]\d{4}/;
-            // for (let i = 0; i < resp.images; i++) {
+            // read only locked files
             for(let i = 0; i < files.length; i++){
                 if((this.closeFlag === false) && (files[i].file.match(fileNamePattern))){
-                    console.log("yomikomi Start");
                     // file retreiving API command
                     files[i].filePath = await this._chocoFileRequest(files[i].file);
                     // converting timestamp to ISO expression
                     files[i].startTime = files[i].startTime.replace(/\./g, "-").replace(" ", "T");
                     files[i].endTime = files[i].endTime.replace(/\./g, "-").replace(" ", "T");
-                    console.log("yomikomi End");
                 }
             }
-
-            // await this.getSetting(); 
-            // await this.getHome();
-            // await this.startRecMovie();
-            // await this.setCamMode("rec");
-            // await this.startRecMovie();
-
-            // this.flowDoneFlag = true;
             
-            // await this.getSetting(); 
-            // await this.getHome();
-            // await this.startRecMovie();
-            // await this.setCamMode("rec");
-            // await this.startRecMovie();
-            
-            console.log("previous delete : " + this.closeFlag);
             if (this.closeFlag === false){
                 for(let i=0; i<files.length; i++){
-                    // for (let i = 0; i < resp.image; i++) {
-                    console.log(files[i].file)
                     resp = await this.deleteImage(files[i].file);
-                    console.log("delete Finish");
-                    // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
                 }
             }
-            // delete locked file that has read from choco watcher
-            // for(let i=0; i<files.length; i++){
-            // // for (let i = 0; i < resp.image; i++) {
-            //     console.log(files[i].file)
-            //     resp = await this.deleteImage(files[i].file);
-            //     console.log("delete Finish");
-            //     if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            // }
-            // this.flowDoneFlag = true;
-            // get chocoW REC mode back
-            // resp = await this.setCamMode("rec");
-            // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
 
             // make choco watcher rec. start mode
             await this.getSetting(); 
             await this.getHome();
-            resp = await this.setCamMode("rec");
-            resp = await this.startRecMovie();
-            // await this.setCamMode("rec");
-            // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-
+            await this.setCamMode("rec");
+            await this.startRecMovie();
             // return with stored file infomation
             return files;
         }
@@ -365,7 +314,6 @@ class chocoWatcher {
         try{
             const resp = await this._chocoRequest("setCamMode", {body: {camMode: mode}});
             if (!(resp.resp === "0")) throw new CHOCOWAPIERROR();
-            // if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
             return resp;
         }
         catch (err) {

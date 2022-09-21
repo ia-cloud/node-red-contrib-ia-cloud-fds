@@ -71,7 +71,7 @@
         "i-file-sent": "画像ファイル送出",
         "image-out": "静止画表示",
         "v-file-sent": "動画ファイル送出",
-        "geting-v-files": "動画ファイル取得中",
+        "getting-v-files": "動画ファイル取得中",
         "alarm-sent": "A&E送出",
         "trigger": "録画トリガー",
         "failed-send": "送出失敗"
