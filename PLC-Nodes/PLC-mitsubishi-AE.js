@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 ia-cloud project
+ * Copyright 2019 Hiro Hashimukai on the ia-cloud project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ module.exports = function(RED) {
         });
 
         this.on("input",function(msg) {
-            if (msg.payload) iaCloudObjectSend(config.objectKey);
+            if (msg.payload) plcmc.iaCloudObjectSend(config.objectKey);
         });
         this.on("close",function() {
             plcmc.close();

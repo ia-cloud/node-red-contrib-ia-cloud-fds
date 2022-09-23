@@ -44,8 +44,10 @@ class CHOCOWHTTPERROR extends Error {
 
 class chocoWatcher {
 
-    constructor(netAddress) {
+    constructor(netAddress, flowDoneFlag, closeFlag) {
         this.urlPref = "http://" + netAddress;
+        this.flowDoneFlag = flowDoneFlag;
+        this.closeFlag = closeFlag;
         let urlPref= this.urlPref;
 
         // prepaing http header for choco watcher API for GET method
@@ -83,7 +85,7 @@ class chocoWatcher {
             getSetting: {url: urlPref + "/Setting.html", method: "GET", headers: getHeaders},
             getCamMode: {url: urlPref + "/xaccja/getCamMode", method: "GET", headers: getHeaders},
             setCamMode: {url: urlPref + "/xaccja/setCamMode", method: "POST", headers: postHeaders},
-            setTimeoutExt: {url: urlPref + "/xaccja/setTimeoutExt", method: "POST", headers: postHeaders},
+            setTimeoutExt: {url: urlPref + "/xaccja/setTimeoutExt", method: "POST", headers: postHeaders},//使ってない？
             setTrigger: {url: urlPref + "/xaccja/setTrigger", method: "POST", headers: postHeaders},
             getCamInfo: {url: urlPref + "/xaccja/getCamInfo", method: "GET", headers: getHeaders},
             setCamInfo: {url: urlPref + "/xaccja/setCamInfo", method: "POST", headers: postHeaders},
@@ -92,15 +94,15 @@ class chocoWatcher {
             deletImage: {url: urlPref + "/xaccja/deletImage", method: "POST", headers: postHeaders},
             getCamImage: {url: urlPref + "/xaccja/getCamImage", method: "GET", headers: fileHeaders, isStream: true},
             getRemainingCapacity:{url: urlPref + "/xaccja/getRemainingCapacity", method: "GET", headers: getHeaders},
-            getErrorLog: {url: urlPref + "/xaccja/getErrorLog", method: "GET", headers: getHeaders},
+            getErrorLog: {url: urlPref + "/xaccja/getErrorLog", method: "GET", headers: getHeaders},//使ってない？
             getErrorCode: {url: urlPref + "/xaccja/getErrorCode", method: "GET", headers: getHeaders},
             getAlertStatus: {url: urlPref + "/xaccja/getAlertStatus", method: "GET", headers: getHeaders},
             startRecMovie: {url: urlPref + "/xaccja/startRecMovie",  method: "POST", headers: postHeaders},
             endRecMovie: {url: urlPref + "/xaccja/endRecMovie",  method: "POST", headers: postHeaders},
             deleteImage: {url: urlPref + "/xaccja/deleteImage",  method: "POST", headers: postHeaders}
         }
-
     }
+
     // async function for choco watcher API command request
     async _chocoRequest(command, param) {
         if (!param) param = {};
@@ -110,15 +112,14 @@ class chocoWatcher {
                 let resp;
                 // if POST method, jsonize the body
                 if (options.hasOwnProperty("body")) options.body = JSON.stringify(options.body);
-                
+
                 // http request
                 resp = await got(options);
-
+                
                 if (resp.statusCode === 200){
                     if (resp.headers["content-type"] === "application/json")
                         // Convert the JSON body to the object
                         return JSON.parse(resp.body); 
-                    // return body
                     else return resp.body;
                 } 
                 else throw new CHOCOWHTTPERROR(resp.statusCode);
@@ -146,23 +147,34 @@ class chocoWatcher {
             options = Object.assign(options, this.command["getCamImage"]);
             filePath = TEMPDIRNAME + "choco-live.jpg";
         }
+
         try {
             // promisify streaming from http to file store
-            await new Promise((resolve, reject) => {                
+            await new Promise((resolve, reject) => {       
                 const rs = got(options);
                 const ws = fs.createWriteStream(filePath);
         
                 rs.pipe(ws);
-        
-                // Write Stream finished ?
+                
+                // end stream if deployed while loading video file
+                let id = setInterval(() => {
+                    if (this.closeFlag === true){
+                        rs.end();
+                        ws.end();
+                        clearInterval(id);
+                    }
+                }, 1000);
+
                 ws.on('finish', () => {
+                    clearInterval(id);
                     resolve();
                 });
                 ws.on("error", (err) => {
+                    clearInterval(id);
                     reject(err);
                 })
             });
-            // return with stored file path
+
             return filePath;
 
         } catch(err) {
@@ -176,7 +188,6 @@ class chocoWatcher {
         try{
             let body = await this._chocoRequest("getErrorCode");
             Object.assign(status,body); 
-
             body = await this._chocoRequest("getAlertStatus"); 
             Object.assign(status, body); 
             return status;
@@ -185,43 +196,40 @@ class chocoWatcher {
             throw err;
         }
     };
-    // geting locked video files
+    // getting locked video files
     async getLockedFiles() {
         try{
             // make choco watcher rec. stop mode
             let resp = await this.endRecMovie();
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
             // get chocoW PLAY mode for file access          
             resp = await this.setCamMode("play");
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            /*
-            resp = await this.setTimeoutExt(300);
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-            */
-            // geting file info of locked files
+            // getting file info of locked files
             resp = await this._chocoRequest("getImageStatus");
-
+            
             let files = resp.files;
-            for (let i = 0; i < resp.images; i++) {
-                // file retreiving API command
-                files[i].filePath = await this._chocoFileRequest(files[i].file);
-                // converting timestamp to ISO expression
-                files[i].startTime = files[i].startTime.replace(/\./g, "-").replace(" ", "T");
-                files[i].endTime = files[i].endTime.replace(/\./g, "-").replace(" ", "T");
+            const fileNamePattern = /\d{3}[A-H|JKL]\d{4}/;
+            // read only locked files
+            for(let i = 0; i < files.length; i++){
+                if((this.closeFlag === false) && (files[i].file.match(fileNamePattern))){
+                    // file retreiving API command
+                    files[i].filePath = await this._chocoFileRequest(files[i].file);
+                    // converting timestamp to ISO expression
+                    files[i].startTime = files[i].startTime.replace(/\./g, "-").replace(" ", "T");
+                    files[i].endTime = files[i].endTime.replace(/\./g, "-").replace(" ", "T");
+                }
             }
-            // delete locked file that has read from choco watcher
-            for (let i = 0; i < resp.images; i++) {
-                resp = await this.deleteImage(files[i].file);
-                if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
+            
+            if (this.closeFlag === false){
+                for(let i=0; i<files.length; i++){
+                    resp = await this.deleteImage(files[i].file);
+                }
             }
 
-            // get chocoW REC mode back
-            resp = await this.setCamMode("rec");
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
             // make choco watcher rec. start mode
-            resp = await this.startRecMovie();
-            if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
-
+            await this.getSetting(); 
+            await this.getHome();
+            await this.setCamMode("rec");
+            await this.startRecMovie();
             // return with stored file infomation
             return files;
         }
@@ -233,6 +241,7 @@ class chocoWatcher {
     async updateChocoInfo(params) {
         try{
             let resp = await this.endRecMovie();
+            let status = await this.getChocoStatus();
             if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
             // get into Setting mode. takes 0.3 sec
             await this.getSetting(); 
@@ -242,6 +251,7 @@ class chocoWatcher {
             await this.getHome(); 
             // make choco watcher rec. start mode back
             resp = await this.startRecMovie();
+            status = await this.getChocoStatus();
             if (!(resp.resp === "0")) throw new CHOCOWHTTPERROR();
         }
         catch (err) {
@@ -370,6 +380,16 @@ class chocoWatcher {
             throw err;
         }
     }
+
+    async getCheckLoopStatus(checkLoopFlag){
+        try{
+            let checkLoopStatus =  checkLoopFlag;
+            return checkLoopStatus;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
 }
 module.exports = chocoWatcher;
- 
+

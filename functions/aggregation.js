@@ -118,11 +118,13 @@ module.exports = function(RED) {
             // get current time
             let currentTime = moment();
             let act = true;
-            // 10 minute2 ?
+            // ３ minuteｓ ?
+            if (period === "3min" && currentTime.minute() % 3 !== 0) act = false;
+            // 10 minuteｓ ?
             if (period === "10min" && currentTime.minute() % 10 !== 0) act = false;
             // 30 mminutes
             if (period === "30min" && currentTime.minute() % 30 !== 0) act = false;
-            if (period !== "1min" && period !== "10min" && period !== "30min") {
+            if (period !== "1min" && period !== "3min" && period !== "10min" && period !== "30min") {
                 // hour end ?
                 if (currentTime.minute() !== 0) act = false;
                 // 12 hour ?
