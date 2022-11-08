@@ -26,6 +26,8 @@
  const CHECK_INTERVAL = 10 * 1000;
  // clook adjustment interval
  const CLOCK_SYNC_INTERVAL = 100;
+ // delay time until temp. file deleted
+ const FILEDELETDELAY = 10 * 1000;
  
  // directory name for temp files store
  const TEMPDIRNAME = "temp-dir-ia-cloud/";
@@ -53,6 +55,7 @@
  
      // ia-cloud object properties
      let objectKey = config.objectKey, objectDescription = config.objectDescription;
+     let server = config.server, serverInfo = config.serverInfo;
      let AnE = config.AnE, AnEobjectKey = config.AnEobjectKey, AnEobjectDescription = config.AnEobjectDescription;
      let status, preStatus;
  
@@ -75,7 +78,7 @@
        camAngle: angle !== "asis" ? angle : "",
      };
  
-     fs.rmdirSync(TEMPDIRNAME, { recursive: true });
+     if (fs.existsSync(TEMPDIRNAME)) fs.rmSync(TEMPDIRNAME, {foce: true, recursive: true });
  
      node.status({ fill: "green", shape: "dot", text: "runtime.ready" });
  
@@ -153,11 +156,12 @@
              if (capOut === "both" || capOut === "ia-cloud")
                await _sendImageFile(filePath);
              if (capOut === "both" || capOut === "nodeOut") {
-               let pl = fs.readFileSync(filePath).toString("base64");
-               node.send([, {
-                   payload: pl
-                 }
-               ]);
+              //which output port used for direct image output 
+               let index = server ? 2 : 1;
+               let msgs = [];
+               msgs[index]={payload: fs.readFileSync(filePath).toString("base64")};
+               node.send(msgs);
+               node.status({fill: "green", shape: "dot", text: "runtime.image-out"});
              }
            }
          }
@@ -178,108 +182,162 @@
        }
      }
  
-     // Send video files as ia-cloud objects
-     async function _sendVideoFiles(files) {
-       let msgs = [];
-       let filePathB64;
-       for (let i = 0; i < files.length; i++) {
-         // if no file exist, just through to next
-         if (!fs.existsSync(files[i].filePath)) continue;
- 
-         // make unique file name for locked video file
-         filePathB64 =
-           "ChocoW-video_" + moment(files[i].endTime).format("YYYYMMDD[T]HHmmss") + ".mov.b64";
- 
-         // Promisify
-         await new Promise((resolve, reject) => {
-           // read stream
-           const rs = fs.createReadStream(files[i].filePath);
-           // base64 encoding stream
-           const b64s = new Base64Encode();
-           // write stream
-           const ws = fs.createWriteStream(TEMPDIRNAME + filePathB64);
- 
-           // connecting each stram with pipe
-           rs.pipe(b64s).pipe(ws);
-           // Write Stream finished ?
-           ws.on("finish", async () => {
-             resolve();
-           });
-           ws.on("error", async (err) => {
-             reject(err);
-           });
-         });
-         // remove original .mov file
-         fs.unlinkSync(files[i].filePath);
- 
-         // preparing node output message of ia-cloud object
-         let msg = {
-           request: "store",
-           dataObject: { objectType: "iaCloudObject", objectContent: {} },
-         };
-         msg.dataObject.objectKey = objectKey;
-         msg.dataObject.objectDescription = objectDescription;
-         msg.dataObject.timestamp = moment(files[i].endTime).format();
-         msg.dataObject.objectContent.contentType = "Filedata";
-         msg.dataObject.objectContent.contentData = [
-           { commonName: "File Name", dataValue: filePathB64 },
-           { commonName: "MIME Type", dataValue: "video/quicktime" },
-           { commonName: "Encoding", dataValue: "base64" },
-           { commonName: "Size", dataValue: fs.statSync(TEMPDIRNAME + filePathB64).size},
-           { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 },
-         ];
-         msgs.push(msg);
-       }
-       node.send([msgs]);
-       node.status({ fill: "green", shape: "dot", text: "runtime.v-file-sent" });
-       await watcher.endRecMovie();
-       node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
-       await watcher.getSetting(); 
-       await watcher.getHome();
-       await watcher.setCamMode("rec");
-       await watcher.startRecMovie();
-     }
- 
-     // Send image file as ia-cloud objects
-     async function _sendImageFile(imageFile) {
-       // if the file not exist, just through out
-       if (!fs.existsSync(imageFile)) return;
-       // make unique file name for locked video file
-       let filePathB64 = "ChocoW-image_" + moment().format("YYYYMMDD[T]HHmmss") + ".jpg.b64";
- 
-       // promisify
-       await new Promise((resolve, reject) => {
-         const rs = fs.createReadStream(imageFile);
-         const b64s = new Base64Encode();
-         const ws = fs.createWriteStream(TEMPDIRNAME + filePathB64);
-         // connect each stream with pipe
-         rs.pipe(b64s).pipe(ws);
- 
-         // Write Stream finished ?
-         ws.on("finish", async () => {
-           resolve();
-         });
-         ws.on("error", async (err) => {
-           reject(err);
-         });
-       });
- 
-       // preparing node output message of ia-cloud object
-       let msg = {request: "store", dataObject: { objectType: "iaCloudObject", objectContent: {} }};
-       msg.dataObject.objectKey = objectKey;
-       msg.dataObject.objectDescription = objectDescription;
-       msg.dataObject.timestamp = moment(fs.statSync(imageFile).timestamp).format();
-       msg.dataObject.objectContent.contentType = "Filedata";
-       msg.dataObject.objectContent.contentData = [
-         { commonName: "File Name", dataValue: filePathB64 },
-         { commonName: "MIME Type", dataValue: "image/jpeg" },
-         { commonName: "Encoding", dataValue: "base64" },
-         { commonName: "Size", dataValue: fs.statSync(TEMPDIRNAME + filePathB64).size},
-         { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 },
-       ];
-       node.send([msg]);
-       node.status({ fill: "green", shape: "dot", text: "runtime.i-file-sent" });
-     }
+    // Send video files as ia-cloud objects
+    async function _sendVideoFiles(files) {
+      let msg1s = [], msg2s = [];
+      let filePath, filePathB64;
+      for (let i = 0; i < files.length; i++) {
+        // if no file exist, just through to next
+        if (!fs.existsSync(files[i].filePath)) continue;
+
+        // preparing node output message of ia-cloud object
+        let msg = {
+          request: "store",
+          dataObject: { objectType: "iaCloudObject", objectContent: {} },
+        };
+        msg.dataObject.objectKey = objectKey;
+        msg.dataObject.objectDescription = objectDescription;
+        msg.dataObject.timestamp = moment(files[i].endTime).format();
+
+        // make unique file name for locked video file
+        filePath = "ChocoW-video_" + moment(files[i].endTime).format("YYYYMMDD[T]HHmmss") + ".mov";
+
+        // sending file data to ia-cloud CCS
+        if (!server) {
+          // Base64 encoded file name
+          filePathB64 = filePath + ".b64";
+
+          // Promisify
+          await new Promise((resolve, reject) => {
+            // read stream
+            const rs = fs.createReadStream(files[i].filePath);
+            // base64 encoding stream
+            const b64s = new Base64Encode();
+            // write stream
+            const ws = fs.createWriteStream(TEMPDIRNAME + filePathB64);
+  
+            // connecting each stram with pipe
+            rs.pipe(b64s).pipe(ws);
+            // Write Stream finished ?
+            ws.on("finish", async () => {
+              resolve();
+            });
+            ws.on("error", async (err) => {
+              reject(err);
+            });
+          });
+          // ia-cloud object to ia-cloud-cnct node(msg[0])
+          msg.dataObject.objectContent.contentType = "Filedata";
+          msg.dataObject.objectContent.contentData = [
+            { commonName: "File Name", dataValue: filePathB64 },
+            { commonName: "MIME Type", dataValue: "video/quicktime" },
+            { commonName: "Encoding", dataValue: "base64" },
+            { commonName: "Size", dataValue: fs.statSync(TEMPDIRNAME + filePathB64).size},
+            { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 }
+          ];
+        }
+        // sending file data to strage server
+        else {
+          // file name output to strage server node(msg[1])
+          msg2s.push({
+            payload: "",
+            filename: filePath, 
+            localFilename: files[i].filePath
+          });
+          // ia-cloud object to ia-cloud-cnct node(msg[0])
+          msg.dataObject.objectContent.contentType = "Fileinfo";
+          msg.dataObject.objectContent.contentData = [
+            { commonName: "File Name", dataValue: filePath },
+            { commonName: "MIME Type", dataValue: "video/quicktime" },
+            { commonName: "Encoding", dataValue: "base64" },
+            { commonName: "server Info", dataValue: serverInfo }
+          ];
+        }
+        // remove original .mov file with time delay
+        setTimeout(fs.unlinkSync, FILEDELETDELAY, files[i].filePath);
+
+        msg1s.push(msg);
+      }
+      node.send([msg1s, msg2s]);
+      node.status({ fill: "green", shape: "dot", text: "runtime.v-file-sent" });
+      await watcher.endRecMovie();
+      node.status({ fill: "blue", shape: "ring", text: "runtime.preparing" });
+      await watcher.getSetting(); 
+      await watcher.getHome();
+      await watcher.setCamMode("rec");
+      await watcher.startRecMovie();
+    }
+
+    // Send image file as ia-cloud objects
+    async function _sendImageFile(imageFile) {
+
+      // if the file not exist, just through out
+      if (!fs.existsSync(imageFile)) return;
+  
+      let filePath, filePathB64;
+    
+      // preparing node output message of ia-cloud object
+      let msg1 = {request: "store", dataObject: { objectType: "iaCloudObject", objectContent: {} }};
+      msg1.dataObject.objectKey = objectKey;
+      msg1.dataObject.objectDescription = objectDescription;
+      msg1.dataObject.timestamp = moment(fs.statSync(imageFile).timestamp).format();
+
+      let msg2;
+
+      // make unique file name for locked video file
+      filePath = "ChocoW-image_" + moment().format("YYYYMMDD[T]HHmmss") + ".jpg";
+
+      // sending file data to ia-cloud CCS
+      if (!server) {
+        // Base64 encoded file name
+        filePathB64 = filePath + ".b64";
+
+        // promisify
+        await new Promise((resolve, reject) => {
+          const rs = fs.createReadStream(imageFile);
+          const b64s = new Base64Encode();
+          const ws = fs.createWriteStream(TEMPDIRNAME + filePathB64);
+          // connect each stream with pipe
+          rs.pipe(b64s).pipe(ws);
+  
+          // Write Stream finished ?
+          ws.on("finish", async () => {
+            resolve();
+          });
+          ws.on("error", async (err) => {
+            reject(err);
+          });
+        });
+
+        msg1.dataObject.objectContent.contentType = "Filedata";
+        msg1.dataObject.objectContent.contentData = [
+          { commonName: "File Name", dataValue: filePathB64 },
+          { commonName: "MIME Type", dataValue: "image/jpeg" },
+          { commonName: "Encoding", dataValue: "base64" },
+          { commonName: "Size", dataValue: fs.statSync(TEMPDIRNAME + filePathB64).size},
+          { commonName: "file path", dataValue: TEMPDIRNAME + filePathB64 }
+        ];
+      }
+      else{
+        // file name output to strage server node(msg[1] or msg[2])
+        msg2 = {
+          payload: "",
+          filename: filePath, 
+          localFilename: imageFile
+        };
+        // ia-cloud object to ia-cloud-cnct node(msg[0])
+        msg1.dataObject.objectContent.contentType = "Fileinfo";
+        msg1.dataObject.objectContent.contentData = [
+          { commonName: "File Name", dataValue: filePath },
+          { commonName: "MIME Type", dataValue: "image/jpeg" },
+          { commonName: "Encoding", dataValue: "base64" },
+          { commonName: "Server Info", dataValue: serverInfo }
+        ];
+      }
+
+      node.send([msg1,msg2]);
+      node.status({ fill: "green", shape: "dot", text: "runtime.i-file-sent" });
+    }
  
      // Send alarm&event as ia-cloud objects
      function _sendAnE(status, preStatus={}) {
@@ -339,13 +397,13 @@
              if (capOut === "both" || capOut === "ia-cloud")
                _sendImageFile(filePath);
              if (capOut === "both" || capOut === "nodeOut") {
-               let pl = fs.readFileSync(filePath).toString("base64");
-               // let now = moment().unix();
-               node.status({fill: "green", shape: "dot", text: "runtime.image-out"});
-               node.send([, {
-                   payload: pl
-                 }
-               ]);
+
+              //which output port used for direct image output 
+              let index = server ? 2 : 1;
+              let msgs = [];
+              msgs[index]={payload: fs.readFileSync(filePath).toString("base64")};
+              node.send(msgs);
+              node.status({fill: "green", shape: "dot", text: "runtime.image-out"});
              }
            }
          } catch(error) {

@@ -47,11 +47,13 @@
         "nodeOut": "ローカルモニタ出力",
         "both": "両方",
         "capPeriod": "取得周期",
-
         "objectKey": "オブジェクトキー",
         "objectKeyholder": "必須: 固有のキー",
         "objectDescription": "オブジェクトの説明",
-        "qInfo": "品質情報を使う",
+        "server": "ストレージサーバを使う",
+        "serverInfo": "ストレージ情報",
+        "serverInfoPH": "ストレージに関する説明情報",
+        "tip-server": "大きなファイルはia-cloudサービスではなく、AWS S3などのファイルストレージサービスへ直接送ることができます。",
         "AnE": "アラーム＆イベントを出力する",
         "AnEobjectKey": "A&Eのオブジェクトキー",
         "AnEobjectDescription": "A&Eのオブジェクトの説明"

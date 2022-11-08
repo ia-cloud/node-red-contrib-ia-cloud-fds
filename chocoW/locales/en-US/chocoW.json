@@ -52,6 +52,10 @@
         "objectKey": "Object key",
         "objectKeyholder": "Required: Specific Key",
         "objectDescription": "Object description",
+        "server": "use storage server",
+        "serverInfo": "server info",
+        "serverInfoPH": "Description of storage server",
+        "tip-server": "Large files can be sent directly to a file storage service such as AWS S3 instead of the ia-cloud service.",
         "AnE": "Output alarms & events",
         "AnEobjectKey": "A&E object key",
         "AnEobjectDescription": "A&E object description"

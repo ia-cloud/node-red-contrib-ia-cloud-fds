@@ -264,7 +264,7 @@ class iaCloudConnection {
             let ind = contD.findIndex(obj => {
                 return obj.commonName === "file path";
             });
-            if (ind === -1) throw "no file path";
+            if (ind === -1) throw new Error("no file path");
             let path = contD[ind].dataValue;
             // delete file path entry from contentData 
             contD.splice(ind, 1);

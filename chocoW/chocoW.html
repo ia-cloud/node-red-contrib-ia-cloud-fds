@@ -151,6 +151,17 @@
                 <input type="text" style="width: 300px" id="node-input-objectDescription">
             </div>
             <hr>
+            <div class="form-tips" style="margin-left:20px" id="tip-server"><span data-i18n="editor.tip-server"></span></div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-server"><span data-i18n="editor.server"></span></label>
+                <input type="checkbox" id="node-input-server" checked="chedked" style="display: inline-block; width: auto;" >
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-serverInfo"><span data-i18n="editor.serverInfo"></span></label>
+                <input class="form-control" type="text" style="width: 300px"
+                  id="node-input-serverInfo" data-i18n="[placeholder]editor.serverInfoPH">
+            </div> 
+            <hr>
             <div class="form-row" style="margin-left:20px">
                 <label for="node-input-AnE"><span data-i18n="editor.AnE"></span></label>
                 <input type="checkbox" id="node-input-AnE" style="display: inline-block; width: auto;" >
@@ -207,6 +218,8 @@ RED.nodes.registerType('choco-watcher',{
         // object properties
         objectKey: {value:"", required: true},
         objectDescription: {value:""},
+        server: {value:true},
+        serverInfo:{value:""},
         AnE: {value: false},
         AnEobjectKey: {value:""},
         AnEobjectDescription: {value:""},
@@ -218,9 +231,19 @@ RED.nodes.registerType('choco-watcher',{
     inputs:1,
     outputs:1,
     outputLabels: function(index) {
-        return index === 1 ? "ia-cloud object": "image data";
+        switch(index) {
+            case 0:
+                return "ia-cloud object";
+            case 1:
+                if (this.server) return "file to server";
+                else return "snap shot";
+            case 2:
+                return  "snap shot";
+            default:
+                return;
+        }
     },
-    icon: "ia-cloud.png",  //アイコンはTBD
+    icon: "ia-cloud.png",
     label: function() {
         return this.name||this._("editor.paletteLabel");
     },
@@ -288,6 +311,17 @@ RED.nodes.registerType('choco-watcher',{
         });
         $("#node-input-capOut").trigger("change");
 
+        // when server checkbox changed
+        $("#node-input-server").on("change", function() {
+            if ($("#node-input-server").prop("checked")) {
+                $("#node-input-serverInfo").prop("disabled", false);
+            }
+            else {
+                $("#node-input-serverInfo").prop("disabled", true);
+            }
+        });
+        $("#node-input-server").trigger("change");
+
         // when alarm&event checkbox changed
         $("#node-input-AnE").on("change", function() {
             if (!$("#node-input-AnE").prop("checked")) {
@@ -310,9 +344,12 @@ RED.nodes.registerType('choco-watcher',{
         let configReady = "ready";
 
         // sets output port number
+        let outputs = 1;
         if ($("#node-input-capOut").val() === "both" || $("#node-input-capOut").val() === "nodeOut")
-             $("#node-input-outputs").val(2);
-        else  $("#node-input-outputs").val(1);
+            outputs ++;
+        if ($("#node-input-server").prop("checked"))
+            outputs ++;
+        $("#node-input-outputs").val(outputs);
 
         // objectKeyはある？
         if (!$("#node-input-objectKey").val()) configReady = "";

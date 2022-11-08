@@ -39,6 +39,12 @@
             <dd>ia-cloudオブジェクトのobjectKeyとして利用。</dd>
             <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
             <dd>ia-cloudオブジェクトのobjectDescriptionとして利用。</dd>
+            <dt>ストレージサーバを使う<span class="property-type">チェック</span></dt>
+            <dd>ファイルデータを別のストレージサービスやファイルサーバー送る。</dd>
+            <dd>このチェックを有効にすると、2番目の出力ポートから、格納するファイルのローカルファイル名(msg.localFilename)と、</dd>
+            <dd>格納先のファイル名(msg.filename)が出力され、node-red-node-awsの[amazon S3 out]ノードなどへつなげられます。</dd>
+            <dt>ストレージ情報<span class="property-type">文字列</span></dt>
+            <dd>ファイルデータを送るストレージサービスなどの情報。ia-cloudへ格納されるメタ情報の server Infoとして使用される。</dd>
             <dt>アラーム＆イベントを出力する<span class="property-type">チェック</span></dt>
             <dd>チョコ停ウォッチャーとのエラー情報をia-cloudアラーム＆イベントデータオブジェクトとして出力する場合にチェックする。</dd>
             <dt>A&Eのオブジェクトキー<span class="property-type">文字列</span></dt>
