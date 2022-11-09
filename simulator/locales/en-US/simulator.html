@@ -1,38 +1,36 @@
-<script type="text/html" data-help-name="tmp-ctrl-omron">
-    <p>Omron Temperature Controller Data Acquisition Node</p>
+<script type="text/html" data-help-name="ia-cloud-simulator">
+    <p>ia-cloud-fds simulator</p>
 
     <h3>Property list</h3>
     <dl class="message-properties">
-        <dt>Communication node <span class="property-type">Modbus communication setting node</span></dt>
-        <dd>Selecting/creating a new communication setting node for Modbus communication</dd>
-        <dd>Modbus communication node can select ModbusTCP/ModbusRTU/ModbusASCII as its communication method, but note that E5-D can only use ModbusRTU</dd>
         <dt>Object properties<span class="property-type">Tab</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>Cyclic acquisition interval<span class="property-type">Number</span></dt>
-            <dd>Period (seconds) when acquiring PLC data periodically</dd>
+            <dd>Period (seconds) when acquiring data periodically</dd>
             <dt>Asynchronous acquisition<span class="property-type">Check</span></dt>
-            <dd>Setting to send data when there is a change in PLC data</dd>
+            <dd>Setting to send data when there is a change in input data</dd>
             <dt>Object key<span class="property-type">string</span></dt>
-            <dd>Unique key string assigned to PLC data item</dd>
+            <dd>Unique key string assigned to ia-cloud object</dd>
             <dt>Object description<span class="property-type">string</span></dt>
-            <dd>Description of the PLC data item</dd>
+            <dd>Description of data object</dd>
             <dt>use quality information <span class="property-type">check</span></dt>
-            <dd>Check to output quality information when a communication error occurs with the temperature controller</dd>
+            <dd>Check to output quality information. When outputting the ia-cloud object 
+                before updating the data, "not good" is output. </dd>
         </dl>
         <dt>Data Item properties<span class="property-type">Tab</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>Data model<span class="property-type">String</span></dt>
-            <dd>ia-cloud data model of temperature controller data. The format can be user-defined, but the default is the general data structure iaCloudData</dd>
+            <dd>The format can be user-defined, but the default is the basic data structure iaCloudData</dd>
             <dt>Data item list <span class="property-type">Data item list</span></dt>
             <dl class="message-properties" style="margin-left: 8px">
                 <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
                 <dd>Data item number. Automatically generated</dd>
-                <dt>Data item <span class="property-type">Selection</span></dt>
-                <dd>Select from the list of readable data items that the temperature controller has</dd>
-                <dt>Data name <span class="property-type">strings</span></dt>
-                <dd>Name given to the data item. By default, the data item name is set as is</dd>
+                <dt>Data Item<span class="property-type">String</span></dt>
+                <dd>Name of the data item to be collected, contained in the input message. (msg.topic)</dd>
+                <dt>Data name<span class="property-type">String</span></dt>
+                <dd>Name to give to the data item. By default, the data item name is set as is</dd>
                 <dd>You can change the name freely, but set it so that it does not overlap within the same object key</dd>
-                <dt>unit<span class="property-type">strings</span></dt>
+                <dt>unit<span class="property-type">string</span></dt>
                 <dd>Unit assigned to data item</dd>
             </dl>
         </dl>
@@ -43,8 +41,12 @@
     <h3>Input message</h3>
     <dl class="message-properties">
         <dt>msg.payload<span class="property-type">string</span></dt>
-        <dd>A trigger message that indicates when to send an ia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
-    </dl>
+        <dd>data value. Assigned to dataValue of contentData of ia-cloud object. </dd>
+        <dt>msg.topic<span class="property-type">string</span></dt>
+        <dd>data item name. An ia-cloud object is generated and output from the message that matches the data item name. </dd>
+        <dt>msg.trigger<span class="property-type">any</span></dt>
+        <dd>A message that indicates when to send an ia-cloud object. When not NULL, 0, or false, 
+            generate and output the ia-cloud object at that point. </dd>    </dl>
 
     <h3>Output message</h3>
     <dl class="message-properties">
@@ -57,6 +59,8 @@
     </dl>
 
     <h3>Detailed description</h3>
-    <p>A node that collects data from an Omron temperature controller</p>
-    <p>This node is a node that collects the internal data of Omron's temperature controller E5-D using RS485 Modbus communication and outputs it as an ia-cloud object to an output message. </p>
+    <p>Simulator node that generates ia-cloud objects from input messages</p>
+    <p>Generate an ia-cloud object from an input message containing the same msg.topic as the data item property.
+        The value of msg.payload is set to dataValue. Dashboard slider node, etc.
+        are supposed to be connected as input messages</p>
 </script>

@@ -1,0 +1,28 @@
+{
+    "editor": {
+        "name": "Node name",
+        "paletteLabel": "sensor Sim.",
+        "tab": {
+          "object-settings": "Object properties.",
+          "data-settings": "Data item"
+        },
+        "period": "period",
+        "async": "Async. ",
+        "qInfo": "quality info",
+        "objectKey": "object key",
+        "objectKeyholder": "unique key",
+        "objectDescription": "object description",
+        "contentType": "content type",
+        "itemNumber": "item number",
+        "del": "delete",
+        "add": "add",
+        "dtopic": "data item",
+        "dname": "data name",
+        "unit": "unit"
+    },
+    "runtime": {
+        "ready": "Ready",
+        "preparing": "preparing",
+        "sent": "data sent"
+    }
+}

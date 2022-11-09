@@ -1,35 +1,33 @@
 
-<script type="text/html" data-help-name="tmp-ctrl-omron">
-    <p>Omron 温度調節計データ収集ノード</p>
+<script type="text/html" data-help-name="ia-cloud-simulator">
+    <p>ia-cloud-fds シミュレータ</p>
 
-    <h3>プロパティ項目</h3>
+    <h3>Property list</h3>
     <dl class="message-properties">
-        <dt>通信ノード<span class="property-type">Modbus通信設定ノード</span></dt>
-        <dd>Modbus通信に使用する通信設定ノードの選択・新規作成</dd>
-        <dd>Modbus通信ノードはその通信方式として、ModbusTCP/ModbusRTU/ModbusASCIIを選択できるが、形E5□DはModbusRTUのみ利用できるので注意</dd>
         <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>定期収集周期<span class="property-type">数値</span></dt>
-            <dd>PLCデータを定期的に収集する場合の周期（秒）</dd>
+            <dd>データを定期的に収集する場合の周期（秒）</dd>
             <dt>非同期収集<span class="property-type">チェック</span></dt>
-            <dd>PLCデータに変化のあった場合データを送出する設定</dd>
+            <dd>データに変化のあった場合データを送出する設定</dd>
             <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
-            <dd>PLCデータ項目に付与するユニークなキー文字列</dd>
+            <dd>ia-loud オブジェクトに付与するユニークなキー文字列</dd>
             <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
-            <dd>PLCデータ項目のわかりやすい説明</dd>
+            <dd>オブジェクトのわかりやすい説明</dd>
             <dt>品質情報を使う<span class="property-type">チェック</span></dt>
-            <dd>温調計との通信エラー時に品質情報を出力する場合にチェックを入れる</dd>
+            <dd>データ項目毎に品質情報を挿入する。データの更新前にia-cloudオブジェクトの
+                出力する際には、"not good"が出力される。</dd>
         </dl>
         <dt>データ項目の設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>データ構造<span class="property-type">文字列</span></dt>
-            <dd>温調計データのデータ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
+            <dd>データ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
             <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
             <dl class="message-properties" style="margin-left: 8px">
                 <dt>項目番号<span class="property-type">数値（自動）</span></dt>
                 <dd>データ項目の番号。自動で生成される</dd>
-                <dt>データ項目<span class="property-type">選択</span></dt>
-                <dd>温調計の持つ読み取り可能なデータ項目のリストが示されるので選択する</dd>
+                <dt>データ項目<span class="property-type">文字列</span></dt>
+                <dd>入力メッセージに含まれる、収集対象のデータ項目名。（msg.topic）</dd>
                 <dt>データ名称<span class="property-type">文字列</span></dt>
                 <dd>データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
                 <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
@@ -43,21 +41,27 @@
     </dl>
     <h3>入力メーッセージ</h3>
     <dl class="message-properties">
-        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dt>msg.payload<span class="property-type">文字列</span></dt>
+        <dd>データの値。ia-cloudオブジェクトのcontentDtataのdataValueに代入される。</dd>
+        <dt>msg.topic<span class="property-type">文字列</span></dt>
+        <dd>データ項目名。データ項目名が一致したメッセージからia-cloudオブジェクトが生成され出力される。</dd>
+        <dt>msg.trigger<span class="property-type">論理</span></dt>
         <dd>ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
     </dl>
 
     <h3>出力メッセージ</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">string | object</span></dt>
+        <dt>payload <span class="property-type">文字列 | オブジェクト</span></dt>
         <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
-        <dt>request <span class="property-type">string</span></dt>
+        <dt>request <span class="property-type">文字列</span></dt>
         <dd>ia-cloudリクエスト内容。"store"固定</dd>
-        <dt>dataObject <span class="property-type">object</span></dt>
+        <dt>dataObject <span class="property-type">オブジェクト</span></dt>
         <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
     </dl>
 
     <h3>詳細説明</h3>
-    <p>Omron 温度調節計のデータを収集するノード</p>
-    <p>本Nodeは、オムロン製の温度調節計 形E5□D の内部データを、RS485Modbus通信を利用して収集しia-cloudオブジェクトとして出力メッセージに出力するNodeである。</p>
+    <p>入力メッセージからia-cloudオブジェクトを生成するシミュレータノードである。</p>
+    <p>データ項目プロパティと同じmsg.topicを含む入力メッセージから、ia-cloudオブジェクトを生成する。
+        msg.payloadの値がdataValueに設定される。Dashboard slider ノードなど
+        からのメッセージを接続することを想定している。</p>
 </script>
