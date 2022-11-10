@@ -1,0 +1,125 @@
+
+<script type="text/html" data-help-name="choco-watcher">
+    <p>チョコ停ウォッチャーから録画データや静止画データを読み出し、ia-cloudオブジェクトを生成するノード</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>ネットワークアドレス<span class="property-type">文字列</span></dt>
+        <dd>接続するチョコ停ウォッチャーのネットワークアドレス</dd>
+        <dt>本体の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>PC時刻同期<span class="property-type">チェック</span></dt>
+            <dd>起動時、または100秒ごとにチョコ停ウォッチャーの時計を接続したPCと同期する場合にチェックする。</dd>        
+            <dt>録画モード<span class="property-type">選択</span></dt>
+            <dd>チョコ停ウォッチャーの録画モード。「トリガーオンリー」、「ループ&トリガーロック」、「本体のまま」のいずれか。</dd>
+            <dt>録画単位<span class="property-type">選択</span></dt>
+            <dd>録画の単位時間。録画モードが「トリガーオンリー」モードの場合、「20秒」、「40秒」、「本体のまま」のいずれか。
+                「ループ&トリガーロック」モードの場合、「1分」、「3分」、「5分」、「10分」、「本体のまま」のいずれか。</dd>
+            <dt>スピーカー音量<span class="property-type">選択</span></dt>
+            <dd>チョコ停ウォッチャーのスピーカーの設定音量。「大」、「中」、「小」、「OFF」、「本体のまま」のいずれか。</dd>
+            <dt>カメラアングル<span class="property-type">選択</span></dt>
+            <dd>チョコ停ウォッチャーのカメラアングル。「110度」、「180度」、「本体のまま」のいずれか。</dd>
+        </dl>
+        <dt>機能の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>チェック周期<span class="property-type">選択</span></dt>
+            <dd>チョコ停ウォッチャーに保存された録画データ(ロックファイル)をチェックする周期。「都度チェック」、「定期チェック」のいずれか。</dd>
+            <dt>チェック周期単位<span class="property-type">選択</span></dt>
+            <dd>ロックファイルを定期チェックする場合に選択可能なチェック周期単位。「6時間」、「12時間」、「24時間」のいずれか。</dd>
+            <dt>静止画出力<span class="property-type">選択</span></dt>
+            <dd>静止画の出力先。「無し」、「ia-cloudオブジェクト出力」、「ローカルモニタ出力」、「両方」のいずれか。
+                「無し」を選択した場合、チョコ停ウォッチャーから静止画データを取得しない。</dd>
+            <dd>「ローカルモニタ出力」か「両方」を選択した場合、ノードの2番目の出力への接続が可能。</dd>
+            <dt>取得周期<span class="property-type">選択</span></dt>
+            <dd>静止画データを取得する場合の周期。「msg.getImage入力時のみ」、「10分」、「30分」、「1時間」、「3時間」、「6時間」、「12時間」、「24時間」のいずれか。</dd>
+        </dl>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトのobjectKeyとして利用。</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトのobjectDescriptionとして利用。</dd>
+            <dt>ストレージサーバを使う<span class="property-type">チェック</span></dt>
+            <dd>ファイルデータを別のストレージサービスやファイルサーバー送る。</dd>
+            <dd>このチェックを有効にすると、2番目の出力ポートから、格納するファイルのローカルファイル名(msg.localFilename)と、</dd>
+            <dd>格納先のファイル名(msg.filename)が出力され、node-red-node-awsの[amazon S3 out]ノードなどへつなげられます。</dd>
+            <dt>ストレージ情報<span class="property-type">文字列</span></dt>
+            <dd>ファイルデータを送るストレージサービスなどの情報。ia-cloudへ格納されるメタ情報の server Infoとして使用される。</dd>
+            <dt>アラーム＆イベントを出力する<span class="property-type">チェック</span></dt>
+            <dd>チョコ停ウォッチャーとのエラー情報をia-cloudアラーム＆イベントデータオブジェクトとして出力する場合にチェックする。</dd>
+            <dt>A&Eのオブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudアラーム＆イベントデータオブジェクトのobjectKeyとして利用。</dd>
+            <dt>A&Eのオブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudアラーム＆イベントデータオブジェクトのobjectDescriptionとして利用。</dd>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>ノード名称<span class="property-type">文字列</span></dt>
+        <dd>個別のノードの名称</dd>
+    </dl>
+    <h3>入力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.trigger<span class="property-type">文字列 | 数値 | オブジェクト</span></dt>
+        <dd>NULL、0、false 以外の時、チョコ停ウォッチャーへトリガーコマンドを入力する。チョコ停ウォッチャーがトリガーを受信すると、ロックファイルが保存される。</dd>
+        <dt>msg.getImage<span class="property-type">文字列 | 数値 | オブジェクト</span></dt>
+        <dd>NULL、0、false 以外の時、チョコ停ウォッチャーから静止画データを取得し、「静止画出力」プロパティの設定に応じた形式で出力する。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.request <span class="property-type">文字列</span></dt>
+        <dd>ia-cloud APIのリクエスト。"store"固定。</dd>
+        <dt>msg.dataObject <span class="property-type">object</span></dt>
+        <dd>動画ファイルあるいは静止画ファイルのia-cloudデータオブジェクト。</dd>
+        <dt>msg.payload <span class="property-type">文字列</span></dt>
+        <dd>ノードの2番目の出力からの静止画を表示するための出力メッセージ。MIME type が image/jpeg の静止画データをBase64形式で出力する。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>チョコ停ウォッチャーは、生産現場で搬送ラインなどをカメラで撮影し、異常があったタイミングの映像を後から確認できるように記録するための製品である。異常のあったタイミングは、トリガーと呼ぶ信号をチョコ停ウォッチャーに入力することで伝える。トリガーが入力されると、トリガーの入力タイミング前後の録画データをロックファイルとして保存する。また、チョコ停ウォッチャーと接続したPCでブラウザからチョコ停ウォッチャーViewer(チョコ停ウォッチャーのネットワークアドレス)にアクセスすることで、チョコ停ウォッチャーの設定変更や録画されたデータを閲覧することができる。
+        チョコ停ウォッチャーノードは、チョコ停ウォッチャーから録画データや静止画データをhttp通信を利用して読み出し、ia-cloudオブジェクトとして出力するノードである。</p>
+    <p>msg.triggerがNULL、0、false 以外で入力された場合、チョコ停ウォッチャーへトリガーコマンドを入力する。チョコ停ウォッチャーがトリガーを受信すると、ロックファイルが保存される。</p>
+
+    <dt>ロックファイルチェック機能</dt>
+    <dd>チョコ停ウォッチャーに保存された録画データ(ロックファイル)を設定周期毎にチェックする。ロックファイルが存在した場合、すべてのロックファイルについてia-cloudファイルデータオブジェクト形式に変換して出力すると共に、チョコ停ウォッチャーから削除する。
+        また、誤動作の原因となるため、動画ファイル取得中にフローをデプロイしないでください。
+        ロックファイルのチェック周期は、以下の2種類から選択できる。</dd>
+    <dl class="message-properties">
+        <dt>都度チェック</dt>
+        <dd>10秒毎にチョコ停ウォッチャーのロックファイルをチェックする。</dd>
+        <dt>定期チェック</dt>
+        <dd>6、12、24時間のいずれかの設定周期でチョコ停ウォッチャーのロックファイルをチェックする。</dd>
+    </dl>
+    <dt>静止画取得機能</dt>
+    <dd>チョコ停ウォッチャーから静止画データを取得する。 静止画は定期、もしくはメッセージ入力時に取得できる。</dd>
+    <dd>また、静止画データはia-cloudファイルデータオブジェクト、ローカルモニタ用静止画出力、その両方で出力できる。</dd>
+    <dl class="message-properties">
+        <dt>-静止画取得タイミング</dt>
+        <dd>
+            <dl class="message-properties">
+                <dt>定期取得</dt>
+                <dd>10、30分、1、2、6、12、24時間のいずれかの設定周期で、チョコ停ウォッチャーから静止画データを取得し、出力できる。</dd>
+                <dt>入力メッセージによる静止画取得</dt>
+                <dd>msg.getImageがNULL、0、false 以外で入力された場合に、チョコ停ウォッチャーから静止画データを取得し、出力できる。定期取得に設定している場合も、msg.getImageが入力された場合は同様に動作する。</dd>
+            </dl>  
+        </dd>
+        <dt>-静止画データ出力形式</dt>
+        <dd>
+            <dl class="message-properties">
+                <dt>静止画のia-cloudデータオブジェクト出力</dt>
+                <dd>「静止画出力」プロパティが「ia-cloud格納」か「両方」に設定されている場合、チョコ停ウォッチャーから取得した静止画データをia-cloudデータオブジェクトで出力する。</dd>
+                <dt>ローカルモニタ用静止画出力</dt>
+                <dd>「静止画出力」プロパティが「ローカルモニタ出力」か「両方」に設定されている場合、チョコ停ウォッチャーから取得された静止画データをノードの2番目の出力からmsg.payloadとして出力する。</dd>
+                <dd>ノードの2番目の出力は、「静止画出力」プロパティで「ローカルモニタ出力」か「両方」を選択した場合に接続できるようになる。</dd>
+            </dl>  
+        </dd>
+    </dl>
+    
+    <dt>チョコ停ウォッチャーの設定機能</dt>
+    <dd>「本体の設定」タブからチョコ停ウォッチャーの「PC時刻同期」、「録画モード」、「録画単位」、「スピーカー音量」、「カメラアングル」の設定を変更することができる。Node-REDで既存の設定を確認することはできない。設定変更はフローをデプロイすることでチョコ停ウォッチャーと接続された場合に反映される。</dd>
+    <dd>また、設定変更はブラウザをリロードすることで、チョコ停ウォッチャーViewerの設定表示に反映される。</dd>
+
+    <dt>チョコ停ウォッチャー監視機能</dt>
+    <dd>10秒ごとに、エラーコードとアラート状態を取得する。「アラーム＆イベントを出力する」プロパティがチェックされていれば、エラーコードが変化した時、またはエラーコードがE000以外の時にia-cloudアラーム＆イベントデータオブジェクトを出力する。</dd>
+    
+</script>
