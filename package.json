@@ -20,7 +20,8 @@
     "@serialport/parser-inter-byte-timeout": "^9.0.0",
     "@serialport/parser-delimiter": "^9.0.0",
     "ws": "^7.1.2",
-    "got": "^11.5.2"
+    "got": "^11.5.2",
+    "base64-stream": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
@@ -86,6 +87,7 @@
       "rename-data": "functions/rename-data.js",
       "PLC-sim": "PLC-Nodes/PLC-sim.js",
       "arrgregation": "functions/aggregation.js",
+      "chocoW": "chocoW/chocoW.js"
       "simulator": "simulator/simulator.js"
     }
   },
