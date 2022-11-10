@@ -88,6 +88,7 @@
       "PLC-sim": "PLC-Nodes/PLC-sim.js",
       "arrgregation": "functions/aggregation.js",
       "chocoW": "chocoW/chocoW.js"
+      "simulator": "simulator/simulator.js"
     }
   },
   "repository": {

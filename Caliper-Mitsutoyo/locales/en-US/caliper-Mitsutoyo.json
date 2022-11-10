@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "node name",
+        "rpiKB": "use rpi-keyboard node",
         "tab": {
           "object-settings": "object configuration",
           "data-settings": "dataitem configuration"
@@ -11,11 +12,14 @@
         "objectDescription": "object description",
         "contentType": "content type",
         "dName": "data name",
-        "dNameHldr": "required:"
+        "dNameHldr": "required:",
+        "paletteLabel": "Mitsutoyo Caliper"
     },
     "runtime": {
         "ready": "Ready",
         "preparing": "preparing",
-        "sent": "data sent"
+        "sent": "data sent",
+        "noData": "no data",
+        "reset": "reset"
     }
 }

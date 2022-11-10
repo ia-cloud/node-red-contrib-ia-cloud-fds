@@ -1,0 +1,66 @@
+<script type="text/html" data-help-name="ia-cloud-simulator">
+    <p>ia-cloud-fds simulator</p>
+
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>Object properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Cyclic acquisition interval<span class="property-type">Number</span></dt>
+            <dd>Period (seconds) when acquiring data periodically</dd>
+            <dt>Asynchronous acquisition<span class="property-type">Check</span></dt>
+            <dd>Setting to send data when there is a change in input data</dd>
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Unique key string assigned to ia-cloud object</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>Description of data object</dd>
+            <dt>use quality information <span class="property-type">check</span></dt>
+            <dd>Check to output quality information. When outputting the ia-cloud object 
+                before updating the data, "not good" is output. </dd>
+        </dl>
+        <dt>Data Item properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data model<span class="property-type">String</span></dt>
+            <dd>The format can be user-defined, but the default is the basic data structure iaCloudData</dd>
+            <dt>Data item list <span class="property-type">Data item list</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                <dd>Data item number. Automatically generated</dd>
+                <dt>Data Item<span class="property-type">String</span></dt>
+                <dd>Name of the data item to be collected, contained in the input message. (msg.topic)</dd>
+                <dt>Data name<span class="property-type">String</span></dt>
+                <dd>Name to give to the data item. By default, the data item name is set as is</dd>
+                <dd>You can change the name freely, but set it so that it does not overlap within the same object key</dd>
+                <dt>unit<span class="property-type">string</span></dt>
+                <dd>Unit assigned to data item</dd>
+            </dl>
+        </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>data value. Assigned to dataValue of contentData of ia-cloud object. </dd>
+        <dt>msg.topic<span class="property-type">string</span></dt>
+        <dd>data item name. An ia-cloud object is generated and output from the message that matches the data item name. </dd>
+        <dt>msg.trigger<span class="property-type">any</span></dt>
+        <dd>A message that indicates when to send an ia-cloud object. When not NULL, 0, or false, 
+            generate and output the ia-cloud object at that point. </dd>    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item in contentData is output according to the setting. </dd>
+    </dl>
+
+    <h3>Detailed description</h3>
+    <p>Simulator node that generates ia-cloud objects from input messages</p>
+    <p>Generate an ia-cloud object from an input message containing the same msg.topic as the data item property.
+        The value of msg.payload is set to dataValue. Dashboard slider node, etc.
+        are supposed to be connected as input messages</p>
+</script>

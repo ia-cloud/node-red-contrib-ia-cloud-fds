@@ -1,0 +1,62 @@
+<script type="text/html" data-help-name="evaluationAE">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Evaluate ia-cloud data items and send output messages of ia-cloud alarm & event data model</p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Object properties <span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Unique key string assigned to alarm & event objects</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>Any description of alarm & event objects</dd>
+        </dl>
+        <dt>Evaluation Condition List<span class="property-type">List</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Object key to evaluate to. If left blank, all iaCloud objects are evaluated</dd>
+            <dt>Data name<span class="property-type">String</span></dt>
+            <dd>Data name of the target data item to be evaluated. </dd>
+            <dt>Evaluation Method<span class="property-type">Selection</span></dt>
+            <dd>How to evaluate the data value:</dd>
+            <dd>Select Equals, Not Equals, Within Range, or Outside Range</dd>
+            <dt>value to match <span class="property-type">number|string</span></dt>
+            <dd>Data equivalence evaluation value (blanks are not applicable)</dd>
+            <dt>Upper limit <span class="property-type">Number</span></dt>
+            <dd>Upper limit for data evaluation (blanks are not applicable)</dd>
+            <dt>lower limit<span class="property-type">number</span></dt>
+            <dd>Lower limit for data evaluation (blanks are not applicable)</dd>
+            <dt>A&E code<span class="property-type">string</span></dt>
+            <dd>Alarm code. a code to assign to individual alarms and events</dd>
+            <dt>A&E description<span class="property-type">string</span></dt>
+            <dd>Optional description of individual alarms & events</dd>
+        </dl>
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Valid only for "store"</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>An object of the ia-cloud dataObject structure. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Alarm and event data created based on the results of evaluation based on the evaluation condition list. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Evaluate each data item of the iaCloud object in the input message with the evaluation condition list, and output the message including alarm & event data. </p>
+    <p>Evaluation rules are applied in order from the top, and only the combination of the same object key/data name that appears first, including blanks, is applied</p>
+    <p>For conditional evaluation, if the data value is a number, it will be evaluated as a number.</p>
+    <p>If the data value is a string, it will be evaluated as a string evaluation.</p>
+    <p>The output message is with the ia-cloud object with the Alarms & Events data model. </p>
+</script>

@@ -1,0 +1,56 @@
+<script type="text/html" data-help-name="ia-cloud-cnct2">
+    <p>ia-cloud CCS connection node</p>
+    
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>CCS connection configration node<span class="property-type">configration node</span></dt>
+        <dd>ia-cloud CCS connection configration node set in ia-cloud connection node (ia-cloud-cnct)</dd>
+        <dt>Data source unique key <span class="property-type">string</span></dt>
+        <dd>A unique key for the device of the ia-cloud connection node. Set to the FDSKey of the ia-cloud object</dd>
+        <dt>Data source description <span class="property-type">string</span></dt>
+        <dd>Description of ia-cloud connection node</dd>
+        <dt>Enable Advanced Settings<span class="property-type">Check</span></dt>
+        <dd>Advanced settings for connecting to ia-cloud</dd>
+        <dt>Detailed settings</dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>CCS Connection Retry Interval<span class="property-type">Number</span></dt>
+            <dd>Retry interval when connection request to CCS becomes an error. </dd>
+            <dd>Initial value is 1 minute. Gradually lengthens and the maximum is to make a connection request every hour. </dd>
+            <dt>Connection Check Interval<span class="property-type">Number</span></dt>
+            <dd>Interval for checking connection to CCS. Default value is 24 hours</dd>
+        </dl>
+        <dt>node name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>Contents of <code>request</code> to be sent to CCS, defined by ia-cloud Web API. Must be one of "store", "retrieve" or "convey". </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd><code>dataObject</code><span class="property-type">object</span></dd> to send with <code>request</code> to CCS
+    </dl>
+    
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>Response received from CCS. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>Contents of request sent to ia-cloud CCS. Same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>dataObject sent to ia-cloud CCS. Same as received as input message. </dd>
+    </dl>
+    
+    <h3>Details</h3>
+    <p>Holds a connection to the specified ia-cloud Cloud Center Server (CCS) and sends out the request and data object described in the input message. </p>
+    <h4>Advanced</h4>
+    <p>The maximum retry interval for connection to CCS can specified.</p>
+    <p>Even if there is no input message, the connection confirmation to CCS is automatically performed. The connection check interval can be specified. </p>
+    
+    <h4>Proxy</h4>
+    <p>When using a proxy server, please set it with <code>http_proxy=...</code> for the OS environment line. A Node-RED restart is required. </p>
+    
+    <h4>Data Source Unique Key</h4>
+    <p>Multiple ia-cloud-cnct nodes can be used at the same time, but do not duplicate the FDSKey (unique key of data source).</p>
+      
+    </script>

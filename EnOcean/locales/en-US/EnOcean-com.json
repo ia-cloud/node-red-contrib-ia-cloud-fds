@@ -1,7 +1,7 @@
 {
-    "serial": {
-        "label": {
-            "serialport": "Serial Port"
-        }
+    "editor": {
+        "serialPort": "Serial Port",
+        "name": "node name",
+        "label": "EnOcean com. node"
     }
 }

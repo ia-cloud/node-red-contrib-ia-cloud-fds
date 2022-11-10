@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "node name",
+        "paletteLabel": "ModbusPLC A&E",
         "UIconfig": "conf. by UI",
         "fileconfig": "conf. by file",
         "tab": {
@@ -11,6 +12,7 @@
         "filename": "configration file path",
         "period": "period",
         "async": "asyn. store",
+        "qInfo": "use quality info",
         "objectname": "object name",
         "objectKey": "object key",
         "objectKeyholder": "required: unique key",
@@ -31,10 +33,10 @@
         "AnECode": "A&E code",
         "AnEDescription": "A$E description",
         "modbusNode": "modbus com. node",
-        "dev-Coil": "Coil",
-        "dev-IS": "IS",
-        "dev-HR": "HR",
-        "dev-IR": "IR"
+        "dev-Coil": "FC1:Coil",
+        "dev-IS": "FC2:IS",
+        "dev-HR": "FC3:HR",
+        "dev-IR": "FC4:IR"
     },
     "runtime": {
         "badFilePath": "bad file path",

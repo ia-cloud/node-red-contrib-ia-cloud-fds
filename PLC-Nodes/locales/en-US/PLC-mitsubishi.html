@@ -1,0 +1,100 @@
+<script type="text/html" data-help-name="PLC-Mitsubishi">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Mitsubishi PLC data acquisition node</p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Communication node<span class="property-type">Mitsubishi MC-protocol setting node</span></dt>
+        <dd>Selecting/creating a new communication setting node for Mitsubishi MC-protocol</dd>
+        <dt>Object properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Cyclic acquisition interval<span class="property-type">Number</span></dt>
+            <dd>Period (seconds) for periodical acquisition of Mitsubishi PLC data</dd>
+            <dt>Asynchronous acquisition<span class="property-type">Check</span></dt>
+            <dd>Setting to send data when it changes in the Mitsubishi PLC data</dd>
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Unique key string assigned to Mitsubishi PLC data item</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>Description of the Mitsubishi PLC data item</dd>
+            <dt>use quality information <span class="property-type">check</span></dt>
+            <dd>Check to output quality information when communication with Mitsubishi PLC fails</dd>
+        </dl>
+        <dt>Data Item properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data Structure<span class="property-type">String</span></dt>
+            <dd> Mitsubishi PLC data structure. User-defined combinations can be defined, but the default is MitsubishiPLC</dd>
+            <dt>Data item list <span class="property-type">Data item list</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                <dd>Data item number. Automatically generated</dd>
+                <dt>Data Type<span class="property-type">Selection</span></dt>
+                <dt>bit: Gets bit data and outputs it in the specified format. </dt>
+                <dl>
+                    <dd> Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd> Device: The device type and start address of the Mitsubishi PLC to acquire bit data. One of X, Y, M, L, SM and its address</dd>
+                    <dd> format: Format for outputting bit data. </dd>
+                    <dl>
+                        <dd>opStatus: Equipment operation state. Output one of "start","stop","on","off"</DD>
+                        <dd>onoff: String. Output either "on"/"off"</DD>
+                        <dd>A&E: Alarms & Events. Output one of "set","reset","on","off"</DD>
+                        <dd>A&E: Number. Output either 1/0</DD>
+                        <dd>A&E: Boolean. Output either true/false</DD>
+                    </dl>
+                    <dd>Logic: Logic to judge true/false of bit data. positive or negative logic</dd>
+                </dl>
+                <dt> bit array: Get bit array data and output array of true/false. </dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: The device type and start address of the Mitsubishi PLC to acquire the bit array data. One of X, Y, M, L, SM and its address</dd>
+                    <dd>Number of Bits: Number of bits to get bit array data. Output an array of true/false</dd>
+                    <dd>Logic: Logic to get bit string data and output true/false. positive or negative logic</dd>
+                </dl>
+                <dt>Numerical value: Read the word device of the Mitsubishi PLC and output numerical data</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: The device type and start address of the Mitsubishi PLC to acquire word data. One of D, W, TN, CN, R, ZR and its address</dd>
+                    <dd>Word type: Word type of numeric data to retrieve. Selection of 1 word (1W)/double word (2Wl)/double word (2Wb)</dd>
+                    <dd>Sign: Encoded data type. unsigned, two's complement, BCD selection</dd>
+                    <dd>Zero Scale: Offset and gain in data. </dd>
+                    <dd>Unit: Unit assigned to data value</dd>
+                </dl>
+                <dt>String: Read Mitsubishi PLC word device and output string</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: Device type and start address of the Mitsubishi PLC to get the string. One of D, W, R, ZR and its address</dd>
+                    <dd>Word count: The word count of the Mitsubishi PLC device to get the string. The number of words in the original data, not the number of characters in the string</dd>
+                    <dd>Encode: ncode type. Selection of Shift-JIS/EUC-JP/UTF-8</dd>
+                </dl>
+                <dt>Numeric array: Read Mitsubishi PLC word device and output numeric array</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: The device type and start address of the Mitsubishi PLC to acquire the numeric array. One of D, W, R, ZR and its address</dd>
+                    <dd>Word count: The word count of the Mitsubishi PLC device to get the numeric string. </dd>
+                    <dd>Word type: Word type of numeric data to retrieve. Selection of 1 word (1W)/double word (2Wl)/double word (2Wb)</dd>
+                    <dd>Sign: Encoded data type. unsigned, two's complement, BCD selection</dd>
+                </dl>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>A trriger message that indicates when to send an ia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item in contentData is output according to the setting. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Mitsubishi PLC MC-protocol device

@@ -1,6 +1,7 @@
 {
     "editor": {
         "name": "node name",
+        "label": "Modbus Com",
         "cycle": "cycle time",
         "maxDataNum": "max consec.",
         "noBlanck": "no blanck",
@@ -15,6 +16,7 @@
         "ModbusTCP": "ModbusTCP",
         "ModbusRTU": "ModbusRTU",
         "ModbusASCII": "ModbusASCII",
+        "PLCSim": "PLC Simulator",
         "odd": "Odd",
         "even": "Even",
         "none": "None",

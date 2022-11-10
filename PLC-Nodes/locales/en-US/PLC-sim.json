@@ -1,0 +1,10 @@
+{
+    "editor": {
+        "name": "node name",
+        "paletteLabel": "PLCSimulator",
+        "interval": "cycle"
+    },
+    "runtime": {
+        "ready": "Active"
+    }
+}

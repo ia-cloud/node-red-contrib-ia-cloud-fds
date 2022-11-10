@@ -1,0 +1,23 @@
+{
+    "editor": {
+        "paletteLabel": "Nois ReducII.",
+        "name": "node name",
+        "obj-filter": "del. non scope Object",
+        "objFlag": "whole object del.",
+        "condetionList": "condetion list",
+        "objkey": "object key",
+        "dName": "data name",
+        "limit": "limit",
+        "range": "range",
+        "sec": "sec",
+        "minute": "min",
+        "hour": "hour",
+        "day": "day"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

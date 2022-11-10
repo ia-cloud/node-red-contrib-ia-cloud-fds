@@ -1,0 +1,64 @@
+<script type="text/html" data-help-name="tmp-ctrl-omron-AE">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Omron Temperature Controller Alarm & Event Node</p>
+ 
+    <h3>Property list</h3>
+    <dl class="message-properties">
+         <dt>Communication node <span class="property-type">Modbus communication setting node</span></dt>
+         <dd>Selecting/creating a new communication setting node for Modbus communication</dd>
+         <dd>Modbus communication node can select ModbusTCP/ModbusRTU/ModbusASCII as its communication method, but note that E5-D can only use ModbusRTU</dd>
+         <dt>Object properties<span class="property-type">Tab</span></dt>
+         <dl class="message-properties" style="margin-left: 8px">
+             <dt>Cyclic acquisition interval<span class="property-type">Number</span></dt>
+             <dd>Period (seconds) when acquiring alarms and events periodically</dd>
+             <dt>SET/REST notification <span class="property-type">Check (fixed)</span></dt>
+             <dd>Settings to send data when an alarm or event SET or RESET. Always checked</dd>
+             <dt>Object key<span class="property-type">string</span></dt>
+             <dd>Unique key string assigned to alarm & event objects</dd>
+             <dt>Object description<span class="property-type">string</span></dt>
+             <dd>Description of alarm & event objects</dd>
+             <dt>use quality information <span class="property-type">check</span></dt>
+             <dd>Check to output quality information when a communication error occurs with the temperature controller</dd>
+         </dl>
+         <dt>Alarm Item properties<span class="property-type">Tab</span></dt>
+         <dl class="message-properties" style="margin-left: 8px">
+            <dt>ia-cloud data model<span class="property-type">string (Fixed)</span></dt>
+            <dd>Alarm&Event data structure (Alarm&Event) fixed</dd>
+            <dt>A&E item list<span class="property-type">Alarm item list</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                <dd> Alarm item number. Automatically generated</dd>
+                <dt>Item to be alarmed <span class="property-type">selected</span></dt>
+                <dd>Temperature controller alarm bits and events that are sources of alarm and event information</dd>
+                <dt>A&E code<span class="property-type">string</span></dt>
+                <dd>Alarm&Event code. Any code to assign to individual alarms and events</dd>
+                <dt>A&E description<span class="property-type">string</span></dt>
+                <dd>Optional description of individual alarms & events</dd>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>A trigger message that indicates when to send an iia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
+    </dl>
+ 
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item of contentData is alarm & event data according to the settings. </dd>
+    </dl>
+ 
+    <h3>Detailed description</h3>
+    <p>A node that collects Omron temperature controller alarms and events</p>
+    <p>This node is a node that collects the internal data of OMRON's E5-D temperature controller using RS485 Modbus communication and outputs it as an ia-cloud object containing ia-cloud Alarm & Event data to an output message. </p>
+ 
+ </script>

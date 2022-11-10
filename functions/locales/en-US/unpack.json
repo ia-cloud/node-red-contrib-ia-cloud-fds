@@ -1,9 +1,18 @@
 {
     "editor": {
+        "paletteLabel": "extract dataValue",
+        "objKey": "object key",
         "name": "node name",
-        "dataName": "data name"
+        "rules": "rule list",
+        "dataName": "data name",
+        "dataLabel": "output label",
+        "dataLabelPH": "label",
+        "bool10": "1/0 output"
     },
     "runtime": {
-        "output": "data sent"
+        "ready": "waiting",
+        "output": "sent",
+        "nomatch": "no match",
+        "norule": "no rule"
     }
 }

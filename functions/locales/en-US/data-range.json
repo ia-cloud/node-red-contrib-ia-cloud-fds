@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "paletteLabel": "Data range",
+        "name": "node name",
+        "obj-filter": "対象外オブジェクト削除",
+        "ruleList": "rule list",
+        "objkey": "object key",
+        "dataName": "data name",
+        "scale": "offset/gain",
+        "limit": "limit",
+        "offset": "offset",
+        "gain": "gain",
+        "Hlimit": "Hi limit",
+        "Llimit": "Low limit"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

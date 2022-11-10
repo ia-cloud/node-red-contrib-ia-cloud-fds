@@ -1,0 +1,42 @@
+<script type="text/html" data-help-name="unpack">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Output data value with specified data name from ia-cloud contentData. </p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Convert boolean output to numeric value (1/0)<span class="property-type">Check</span></dt>
+        <dd>Convert boolean data (true/false) to numerical value (1/0) and output. Use for connecting the result to the dashboard chart</dd>
+        <dt>condition list<span class="property-type">list</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data name<span class="property-type">String</span></dt>
+            <dd>Data name to extract. If it matches either the data name (dataName) or the common name (commonName), it will be extracted. </dd>
+            <dt>Destination output port number<span class="property-type">Number (automatic)</span></dt>
+            <dd>Port number where the extracted dataValue will be output. Assigned automatically in order of entry. It is possible to change the order with the handle on the left end. </dd>
+            <dt>Output name<span class="property-type">string</span></dt>
+            <dd>Name of data output(msg.topic/msg.label) at the same time as extracted dataValue</dd>
+            <dd>Used to label dashboard charts</dd>
+        </dl>
+        <dt>node name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>payload<span class="property-type">iaCloud contentData object</span></dt>
+        <dd>Object array contentData specified by ia-cloud Web API</dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">iaCloud dataValue</span></dt>
+        <dd>According to the set properties, output the dataValue extracted from contentData to the specified output port of Node. </dd>
+        <dt>topic <span class="property-type">iaCloud dataValue</span></dt>
+        <dd>The value of the output name property is output here. Used for data name of bare chart on dashboard</dd> </dd>
+        <dt>label<span class="property-type">iaCloud dataValue</span></dt>
+        <dd>The value of the output name property is output here. Used for data name of bare chart on dashboard</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Extract dataValue with specified dataName from contentData and output to specified output port. </p>
+    <p>You can specify multiple dataNames and distribute them to multiple output ports. </p>
+
+</script>
