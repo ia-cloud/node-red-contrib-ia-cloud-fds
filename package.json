@@ -87,7 +87,7 @@
       "rename-data": "functions/rename-data.js",
       "PLC-sim": "PLC-Nodes/PLC-sim.js",
       "arrgregation": "functions/aggregation.js",
-      "chocoW": "chocoW/chocoW.js"
+      "chocoW": "chocoW/chocoW.js",
       "simulator": "simulator/simulator.js"
     }
   },
