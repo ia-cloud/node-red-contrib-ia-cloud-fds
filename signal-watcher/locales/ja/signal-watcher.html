@@ -2,6 +2,14 @@
 <script type="text/html" data-help-name="signal-watcher">
    <!-- ここにNode機能の概要を、50文字以内で記述-->
    <p>シグナルウッチャーのデータ収集ノード</p>
+   <p>シグナルウォッチャーの点灯状態は、,</p>
+   <p>"off",</p>
+   <p>"on",</p>
+   <p>"slowBlink",</p>
+   <p>"fastBlink",</p>
+   <p>"momentaryOff",</p>
+   <p>"momentaryOn"</p>
+   <p>のいずれかの文字列で表される</p>
 
    <h3>プロパティ項目</h3>
    <dl class="message-properties">
@@ -29,9 +37,9 @@
                 <dt>項目番号<span class="property-type">数値（自動）</span></dt>
                 <dd>データ項目の番号。自動で生成される</dd>
                 <dt>データ項目<span class="property-type">選択</span></dt>
-                <dt>シグナルウォッチャーの持つ読み取り可能なデータ項目のリストが示されるので選択する</dt>
-                <dd>データ名称: データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
-                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd> 
+                <dd>シグナルウォッチャーの持つ読み取り可能なデータ項目のリストが示されるので選択する</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する。デフォルトでデータ項目と同じ名称が設定される</dd> 
             </dl>
    </dl>
    <dl class="message-properties">
@@ -56,7 +64,14 @@
 
    <h3>詳細説明</h3>
    <p>シグナルウォッチャーの点灯状態を送出するノード</p>
-   <p>本Nodeは、稲葉電機産業製の積層表示灯の発光状態を、シグナルウォッチャーのEnOcean通信を利用して収集し、
+   <p>本Nodeは、因幡電機産業製の積層表示灯の発光状態を、シグナルウォッチャーのEnOcean通信を利用して収集し、
     ia-cloudオブジェクトとして出力メッセージに出力するNodeである。</p>
-
+    <p>シグナルウォッチャーの点灯状態は、,</p>
+    <p>"off",</p>
+    <p>"on",</p>
+    <p>"slowBlink",</p>
+    <p>"fastBlink",</p>
+    <p>"momentaryOff",</p>
+    <p>"momentaryOn"</p>
+    <p>のいずれかの文字列で表される</p>
 </script>
