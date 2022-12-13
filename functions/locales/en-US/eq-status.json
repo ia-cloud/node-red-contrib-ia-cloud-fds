@@ -1,0 +1,34 @@
+{
+    "editor": {
+        "paletteLabel": "data eval.",
+        "name": "node name",
+        "obj-filter": "del. non scope object",
+        "action": "action",
+        "bool": "Boolean output",
+        "eqSt": "opStatus output",
+        "01": "0/1 output",
+        "indiv": "del. indiv. data",
+        "whole": "Del. whole object",
+        "condetionList": "condetion list",
+        "objkey": "object key",
+        "dataName": "data name",
+        "equal": "equal",
+        "notequal": "not equal",
+        "range": "Range",
+        "notrange": "outRange",
+        "equalValue": "Value",
+        "Hlimit": "Hi limit",
+        "Llimit": "low Limit",
+        "equallbl": "Value = ",
+        "notequallbl": "Value <> ",
+        "rangelbl": " < Value < ",
+        "rangelblL": "Value < ",
+        "rangelblH": " < Value"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

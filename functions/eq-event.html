@@ -1,0 +1,391 @@
+<!--
+ * Copyright 2022 Hiro Hashimukai on the ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<script type="text/html" data-template-name="eq-event">
+
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+            <div class="form-row">
+                <label for="node-input-storeInterval">
+                    <span data-i18n="editor.period"></span></label>
+                <input type="number" id="node-input-storeInterval" min="0" step="1"
+                    value="300" style="display: inline-block; width: auto;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
+                    <span data-i18n="editor.async"></span></label>
+                <input type="checkbox" checked="checked" id="node-input-storeAsync"
+                    style="display: inline-block; width: auto;" >
+            </div>
+            <hr>
+            <div class="form-row">
+                <label for="node-input-objectKey" style="margin-left: 10px; width:140px"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 250px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectDescription" style="margin-left: 10px; width:140px"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 250px" id="node-input-objectDescription">
+            </div>
+            <hr>
+            <div class="form-row">
+                <label for="node-input-AnEItem" style="margin-left: 10px; width:120px"><span data-i18n="editor.AnEItem"></span></label>
+                <input id="node-input-AnECode" data-i18n="[placeholder]editor.AnECode" type="text" required="required"
+                    style="width:100px; display:inline-block; text-align:left; margin-right:10px;">
+                <input type="text" id="node-input-AnEDescription" data-i18n="[placeholder]editor.AnEDesc"
+                    style="width:200px; display:inline-block; text-align:left;">
+            </div>   
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <div class="form-row">
+                <label for="node-input-andor" style="margin-left:10px; width:80px"><span data-i18n="editor.andor"></span></label>
+                <select id="node-input-andor" style="width:180px">
+                    <option selected="selected" value="and" data-i18n="editor.and"></option>
+                    <option value="or" data-i18n="editor.or"></option>
+                </select>
+            </div>
+
+            <!-- dataItemの設定 -->
+            <div class="row">
+                <label><span data-i18n="editor.rules"></span></label>
+            </div>
+            <div class="form-row node-input-rule-container-row">
+                <ol id="node-input-rule-container">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <div > <hr> </div>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('eq-event',{
+        category: 'iaCloud functions',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+
+            // object properties
+            storeInterval: {value:"60"},
+            storeAsync: {value: false},
+            objectKey: {value:"", required: true},
+            objectDescription: {value:""},
+
+            contentType: {value: "Alarm&Event"},
+            commonName: {value: "Status"},
+            dataName: {value:""},
+            trueStatus: {value:""},
+            falseStatus: {value:""},
+
+            AnECode: {value: ""},
+            AnEDesc: {value: ""},
+
+            andor: {value:"and", required: true},
+            // rules property（editableListで使用する。）
+            rules: {value:[{}]},
+
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "Equi-status";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblobjkey = node._("editor.objkey");
+            const lbldName = node._("editor.dataName");
+            const lblequal = node._("editor.equal");
+            const lblnotequal = node._("editor.notequal");
+            const lblrange = node._("editor.range");
+            const lblnotrange = node._("editor.notrange");
+            const lblequalValue = node._("editor.equalValue");
+            const lblHlimit = node._("editor.Hlimit");
+            const lblLlimit = node._("editor.Llimit");
+            const lblequallbl = node._("editor.equallbl");
+            const lblnotequallbl = node._("editor.notequallbl");
+            const lblrangelbl = node._("editor.rangelbl");
+            const lblrangelblL = node._("editor.rangelblL");
+            const lblrangelblH = node._("editor.rangelblH");
+
+
+            // editableList item のhtml要素
+            // 1行目のデータ名称、動作、正逆設定
+            const paraForm0 =`
+            <span style="display:inline-block; width:30px"> </span>
+            <label style="width:auto; text-align: left; margin-right: 10px;">${lblobjkey}</label>
+            <input class="objkey"" placeholder="${lblobjkey}" type="text" required="required"
+                style="width:150px; display:inline-block; text-align:left; margin-right:20px;">
+            `;
+            const paraForm1 =`
+                <label style="width:70px; text-align: right; margin-right: 10px;">${lbldName}</label>
+                <input class="dataName"" placeholder="${lbldName}" type="text" required="required" 
+                    style="width:150px; display:inline-block; text-align:left; margin-right:20px;">
+                <select class="mode" style="width:80px; display:inline-block; text-align:right;">
+                    <option value="equal" selected>${lblequal}</option>
+                    <option value="notequal">${lblnotequal}</option>
+                    <option value="range">${lblrange}</option>
+                    <option value="notrange">${lblnotrange}</option>
+                </select>
+            `;
+            // 2行目の等号、上下限値
+            const paraForm2 =`
+                <div class= "equal-div">
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                        <span style="font-weight: bold">${lblequallbl}</span>
+                    </label>
+                    <input type="text" class="equal" required="required" placeholder="${lblequalValue}"
+                        style="width:100px; display:inline-block; text-align:left;">
+                </div>
+                <div class="notequal-div" hidden>
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                        <span style="font-weight: bold">${lblnotequallbl}</span>
+                    </label>
+                    <input type="text" class="notequal" required="required" placeholder="${lblequalValue}"
+                        style="width:100px; display:inline-block; text-align:left;">
+                </div>
+                <div class="range-div" hidden>
+                    <span style="display:inline-block; width:30px"> </span>
+                    <input type="text" class="rangeLo" placeholder="${lblLlimit}"
+                        style="width:100px; display:inline-block; text-align:left;">
+                    <label style="width:100px; text-align: center; margin-right: 10px;">
+                        <span style="font-weight: bold">${lblrangelbl}</span>
+                    </label>
+                    <input type="text" class="rangeHi" placeholder="${lblHlimit}"
+                        style="width:100px; display:inline-block; text-align:left;">
+                </div>
+                <div class="notrange-div" hidden>
+                    <span style="display:inline-block; width:30px"> </span>
+                    <label style="width:70px; text-align: right; margin-right: 10px;">
+                        <span style="font-weight: bold">${lblrangelblL}</span>
+                    </label>
+                    <input type="text" class="notrangeLo" placeholder="${lblLlimit}"
+                        style="width:70px; display:inline-block; text-align:left;">
+                    <span style="font-weight: bold"> or </span>
+                    <input type="text" class="notrangeHi" placeholder="${lblHlimit}"
+                        style="width:70px; display:inline-block; text-align:left;">
+                    <label style="width:70px; text-align: right; margin-right: 10px;">
+                        <span style="font-weight: bold">${lblrangelblH}</span>
+                    </label>
+                </div>
+            `;
+
+            // Tab
+            const tabs = RED.tabs.create({
+                id: 'red-tabs',
+                onchange(tab) {
+                    $('#tabs-content').children().hide();
+                    $("#" + tab.id).show();
+                    $("#red-tabs").resize();
+                },
+            });
+            tabs.addTab({
+                id: 'tab-object-properties',
+                label: this._('editor.tab.object-settings'),
+            });
+            tabs.addTab({
+                id: 'tab-dataItem-properties',
+                label: this._('editor.tab.data-settings'),
+            });
+
+            // Define editableList.
+            $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 360,
+                
+                addItem: function(container,index,rule) {
+
+                    let div0 = $('<div></div>').appendTo(container);
+                    let div1 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+                    let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                    $(paraForm0).appendTo(div0);
+                    $('<span></span>',{class:"index", 
+                        style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                        .text((index + 1) + " :")
+                        .appendTo(div1);
+                    $(paraForm1).appendTo(div1);
+
+                    // 2nd row of parameter list
+                    $(paraForm2).appendTo(div2);
+
+                    // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
+                    if(!rule.hasOwnProperty("dataName")) {
+                        rule = {dataName: "", mode: "equal"}
+                    };
+                    // restore parameters
+                    div0.find(".objkey").val(rule.objectKey);
+                    div1.find(".dataName").val(rule.dataName);
+                    div1.find(".mode").val(rule.mode);
+                    div2.find(".equal").val(rule.equal);
+                    div2.find(".notequal").val(rule.notequal);
+                    div2.find(".rangeLo").val(rule.rangeLo);
+                    div2.find(".rangeHi").val(rule.rangeHi);
+                    div2.find(".notrangeLo").val(rule.notrangeLo);
+                    div2.find(".notrangeHi").val(rule.notrangeHi);
+
+                    div1.find(".mode").change(function() {
+                        let mode = $(this).val();
+                        // 該当するhtml要素を表示、他を隠す
+                        div2.find(".equal-div").hide();
+                        div2.find(".notequal-div").hide();
+                        div2.find(".range-div").hide();
+                        div2.find(".notrange-div").hide();
+                        switch(mode) {
+                            case "equal":
+                                div2.find(".equal-div").show();
+                                break;
+                            case "notequal":
+                                div2.find(".notequal-div").show();
+                                break;
+                            case "range":
+                                div2.find(".range-div").show();
+                                break;
+                            case "notrange":
+                                div2.find(".notrange-div").show();
+                                break;
+                            default:
+                        }
+                    });
+                    div1.find(".mode").change();
+
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-rule-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.rules.length;i++) {
+                var rule = node.rules[i];
+                $("#node-input-rule-container").editableList('addItem',rule);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-rule-container").editableList('items');
+
+            if (!$("#node-input-objectKey").val()) configReady = "";
+            if (!$("#node-input-AnECode").val()) configReady = "";
+
+
+            // ruleデータ設定を作成
+            node.rules = [];
+            items.each(function(i, elm){
+                let rule = {
+                    // reatore parameters
+                    objectKey: elm.find(".objkey").val(),
+                    dataName: elm.find(".dataName").val(),
+                    actionType: elm.find(".actionType").val(),
+                    mode: elm.find(".mode").val(),
+                    equal: elm.find(".equal").val(),
+                    notequal: elm.find(".notequal").val(),
+                    rangeLo: (Number(elm.find(".rangeLo").val()) !== NaN)? elm.find(".rangeLo").val(): "",
+                    rangeHi: (Number(elm.find(".rangeHi").val()) !== NaN)? elm.find(".rangeHi").val(): "",
+                    notrangeLo: (Number(elm.find(".notrangeLo").val()) !== NaN)? elm.find(".notrangeLo").val(): "",
+                    notrangeHi: (Number(elm.find(".notrangeHi").val()) !== NaN)? elm.find(".notrangeHi").val(): "",
+                }
+                node.rules.push(rule);
+
+                // dataName is not null
+                if (!rule.dataName) configReady = "";
+                if (rule.mode === "equal" && !rule.equal) configReady = "";
+                if (rule.mode === "notequal" && !rule.notequal) configReady = "";
+                if (rule.mode === "range" && (!rule.rangeLo && !rule.rangeHi)) configReady = "";
+                if (rule.mode === "notrange" && (!rule.notrangeLo && !rule.notrangeHi)) configReady = "";
+
+            });
+
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // node name block height
+            height -= $("#name-block").outerHeight(true);
+
+            // editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>*:not(.node-input-rule-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // tab label height
+            height -= 50;
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-rule-container").editableList('height',height);
+        }
+    });
+
+</script>

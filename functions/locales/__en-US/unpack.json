@@ -1,9 +1,0 @@
-{
-    "editor": {
-        "name": "node name",
-        "dataName": "data name"
-    },
-    "runtime": {
-        "output": "data sent"
-    }
-}

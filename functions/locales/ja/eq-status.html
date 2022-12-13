@@ -1,0 +1,62 @@
+
+<script type="text/html" data-help-name="eq-status">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>運転状態を判定し、装置ステータスモデルのia-cloudオブジェクトを送出する</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>PLCデータを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>PLCデータに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>出力するia-cloudオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>イベントオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>バックグラウンド状態<span class="property-type">選択・文字列</span></dt>
+            <dd>全ての条件が成立しない時た場合の装置運転状態（ステータス）。自由に設定可能</dd> 
+            <dd>ISO22400-2Time modelTime modelで定義される装置状態から選択することも可能</dd> 
+            <dt>評価条件リスト<span class="property-type">リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+                <dd>評価する対象のオブジェクトキー</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>評価する対象データ項目のデータ名称。</dd>
+                <dt>判定方法<span class="property-type">選択</span></dt>
+                <dd>正論理・負論理の選択</dd> 
+                <dt>装置状態<span class="property-type">選択</span></dt>
+                <dd>条件が成立した場合の装置状態。自由に設定可能</dd> 
+                <dd>ISO22400-2Time modelTime modelで定義される装置状態から選択することも可能</dd> 
+            </dl>
+        </dl>
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"のみ有効</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject構造のオブジェクト。Alarm&Eventモデルのオブジェクトを想定</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。デフォルトでは入力メッセージとして受けたものと同じ。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。評価条件リストの内容で評価した結果に基づき生成された装置状態モデルのia-cloudオブジェクト</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>装置イベントノードなど、装置等のイベントia-cloudのオブジェクトから対象装置の運転状態を判定し、
+        装置ステータスモデルのia-cloudオブジェクトを出力メッセージとして送出する</p>
+
+</script>
