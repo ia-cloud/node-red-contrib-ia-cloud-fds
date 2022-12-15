@@ -13,7 +13,7 @@
         "objectDescription": "オブジェクトの説明",
         "commonName": "コモン名称",
         "dataName": "データ名称",
-        "status": "判定状態",
+
         "BGStatus": "条件外状態",
         "wunit": "KPI-E:製造設備",
         "altWU": "KPI-E:製造設備II",
@@ -44,16 +44,10 @@
         "DPT": "DPT",
         "RWT": "RWT",
 
-        "pos": "正論理",
-        "neg": "負論理",
-
         "item": "対象イベント",
         "objkey": "オブジェクトキー",
         "eName": "イベント名称",
-        "equal": "等しい",
-        "notequal": "不等",
-        "range": "範囲内"
-       
+        "status": "判定状態"
     },
     "runtime": {
         "ready": "入力待ち",

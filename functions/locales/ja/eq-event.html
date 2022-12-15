@@ -16,15 +16,15 @@
             <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
             <dd>イベントオブジェクトのわかりやすい説明</dd>
             <dt>イベント設定<span class="property-type">文字列</span></dt>
-            <dd>イベント名称：装置イベントの名称やコード</dd>
-            <dd>イベント説明：装置イベントオブジェクトのわかりやすい説明</dd>
+            <dd>イベント名称:装置イベントの名称やコード。アラーム&イベントモデルのAnECodeとして設定される</dd>
+            <dd>イベント説明:装置イベントオブジェクトのわかりやすい説明</dd>
         </dl>
         <dt>データ項目の設定<span class="property-type">タブ</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
             <dt>動作<span class="property-type">選択</span></dt>
             <dd>各項目の全てのAND(論理積)を取る</dd>
             <dd>各項目の全てのOR(論理和)を取る</dd>
-            <dt>評価条件リスト<span class="property-type">リスト</span></dt>
+            <dt>イベント判定要素<span class="property-type">リスト</span></dt>
             <dl class="message-properties" style="margin-left: 8px">
                 <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
                 <dd>評価する対象のオブジェクトキー</dd>
@@ -60,6 +60,7 @@
         <dd>ia-cloudリクエスト内容。"store"固定。</dd>
         <dt>dataObject <span class="property-type">object</span></dt>
         <dd>ia-cloud dataObject。評価条件リストで判定された装置イベントのdataObject。</dd>
+        <dd>ia-cloudアラーム&イベントデータモデルのオブジェクト</dd>
     </dl>
 
     <h3>詳細説明</h3>

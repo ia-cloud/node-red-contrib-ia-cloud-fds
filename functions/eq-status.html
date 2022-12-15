@@ -309,6 +309,12 @@
                     });
                     div1.find(".KEImodel").change();
 
+                    div0.find(".eventName").change(function() {
+                        if(div1.find(".user-status").val() === "") {
+                            div1.find(".user-status").val(div0.find(".eventName").val())
+                        }
+                    });
+                    div0.find(".eventName").change();
                 },
 
                 sortItems: function(items) {
