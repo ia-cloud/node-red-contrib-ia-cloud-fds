@@ -50,7 +50,7 @@
         "status": "judgment status"
     },
     "runtime": {
-        "ready": "waitong",
+        "ready": "waiting",
         "output": "data sent",
         "norule": "No rule"
     }

@@ -15,9 +15,9 @@
         "AnECode": "A&E Code",
         "AnEDesc": "A&E Description",
        
-        "andor": "logical",
-        "and": "logical AND of each item",
-        "or": "logical OR of each item",
+        "andor": "AND/OR",
+        "and": "AND of each item",
+        "or": "OR of each item",
         "rules": "Event conditions",
 
         "item": "object",
@@ -30,11 +30,11 @@
         "equalValue": "Value to match",
         "Hlimit": "Upper Limit",
         "Llimit": "lower limit",
-        "equalbl": "data value = ",
-        "notequallbl": "data value <> ",
-        "rangelbl": " < data value < ",
-        "rangelblL": "data value < ",
-        "rangelblH": " < data value"
+        "equallbl": "data = ",
+        "notequallbl": "data <> ",
+        "rangelbl": " < data < ",
+        "rangelblL": "data < ",
+        "rangelblH": " < data "
     },
     "runtime": {
         "ready": "Ready for input",
