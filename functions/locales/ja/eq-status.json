@@ -52,7 +52,6 @@
     "runtime": {
         "ready": "入力待ち",
         "output": "データ送出",
-        "norule": "ルールがありません",
-        "nomatch": "条件不成立"
+        "norule": "ルールがありません"
     }
 }

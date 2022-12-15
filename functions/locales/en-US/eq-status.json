@@ -1,34 +1,57 @@
 {
     "editor": {
-        "paletteLabel": "data eval.",
+        "paletteLabel": "Equip. status",
         "name": "node name",
-        "obj-filter": "del. non scope object",
-        "action": "action",
-        "bool": "Boolean output",
-        "eqSt": "opStatus output",
-        "01": "0/1 output",
-        "indiv": "del. indiv. data",
-        "whole": "Del. whole object",
-        "condetionList": "condetion list",
-        "objkey": "object key",
+        "tab": {
+            "object-settings": "object-properties",
+            "data-settings": "data-properties"
+        },
+        "period": "periodic collection period",
+        "async": "asynchronous collection",
+        "objectKeyholder": "required: unique key",
+        "objectKey": "object key",
+        "objectDescription": "object description",
+        "commonName": "common name",
         "dataName": "data name",
-        "equal": "equal",
-        "notequal": "not equal",
-        "range": "Range",
-        "notrange": "outRange",
-        "equalValue": "Value",
-        "Hlimit": "Hi limit",
-        "Llimit": "low Limit",
-        "equallbl": "Value = ",
-        "notequallbl": "Value <> ",
-        "rangelbl": " < Value < ",
-        "rangelblL": "Value < ",
-        "rangelblH": " < Value"
+
+        "BGStatus": "Unconditional status",
+        "wunit": "KPI-E: Work unit",
+        "altWU": "KPI-E: Work unit II",
+        "pOrder": "KPI-E: Production Order",
+        "psnl": "KPI-E: Worker",
+        "user": "user defined",
+        "rules": "status determination condition",
+
+        "AUBT": "AUBT",
+        "ADOT": "ADOT",
+        "AUPT": "AUPT",
+        "ADET": "ADET",
+        "APT": "APT",
+        "AUST": "AUST",
+
+        "ATT": "ATT",
+        "AQT": "AQT",
+        "APAT": "APAT",
+        "APWT": "APWT",
+        "NWT": "NWT",
+
+        "OPT": "OPT",
+        "AST": "AST",
+        "NOT": "NOT",
+        "MST": "MST",
+        "WT": "WT",
+        "VOT": "VOT",
+        "DPT": "DPT",
+        "RWT": "RWT",
+
+        "item": "target event",
+        "objkey": "object key",
+        "eName": "Event Name",
+        "status": "judgment status"
     },
     "runtime": {
-        "ready": "waiting",
-        "output": "sent",
-        "norule": "no rule",
-        "nomatch": "no match"
+        "ready": "waitong",
+        "output": "data sent",
+        "norule": "No rule"
     }
 }

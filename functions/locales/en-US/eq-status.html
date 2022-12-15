@@ -1,29 +1,39 @@
-<script type="text/html" data-help-name="evaluation">
+<script type="text/html" data-help-name="eq-status">
     <!-- Enter a summary of Node functionality here in 50 characters or less-->
-    <p>Evaluate ia-cloud data items and send (not) an output message according to the result</p>
+    <p>Determine the operating status and send the ia-cloud object of the equipment status data model</p>
 
     <h3>Property Items</h3>
     <dl class="message-properties">
-        <dt>action<span class="property-type">selection</span></dt>
-        <dd>Change to logical output: Output the evaluation result as a boolean value (true/false) for each individual data item</dd>
-        <dd>Change to logical output: Output the evaluation result with a numerical value of 0/1 for each individual data item</dd>
-        <dd>Delete individual data items: Delete data items whose evaluation result is false from contentData</dd>
-        <dd>All data output: If even one evaluation result is false, do not output whole ia-cloud object</dd>
-        <dt>Evaluation Condition List<span class="property-type">List</span></dt>
+        <dt>Object properties<span class="property-type">Tab</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
+            <dt>Periodical Collection Period<span class="property-type">Number</span></dt>
+            <dd>Period (seconds) when collecting data periodically</dd>
+            <dt>Asynchronous Collection<span class="property-type">Check</span></dt>
+            <dd>Setting to send data when there is a change in data</dd>
             <dt>Object key<span class="property-type">string</span></dt>
-            <dd>Object key to evaluate to. If left blank, all iaCloud objects to evaluate</dd>
+            <dd>Unique key string assigned to output ia-cloud object</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>A descriptive description of the event object</dd>
+            <dt>Common Name<span class="property-type">String</span></dt>
+            <dd>Common name given to the data item of the output ia-cloud object. "Status" fixed</dd>
             <dt>Data name<span class="property-type">String</span></dt>
-            <dd>Data name of the target data item to be evaluated. </dd>
-            <dt>evaluation Method<span class="property-type">Selection</span></dt>
-            <dd>How to evalueate the data value:</dd>
-            <dd>Select Equals, Not Equals, Within Range, or Outside Range</dd>
-            <dt>value to match <span class="property-type">number|string</span></dt>
-            <dd>Data equivalence evaluation value (blanks are not applicable)</dd>
-            <dt>Upper limit <span class="property-type">Number</span></dt>
-            <dd>Upper limit for data evaluation (blanks are not applicable)</dd>
-            <dt>lower limit<span class="property-type">number</span></dt>
-            <dd>Lower limit for data evaluation (blanks are not applicable)</dd>
+            <dd>User set name given to the data item of the output ia-cloud object. Optional</dd>
+        </dl>
+        <dt>Data Item properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Unconditional status<span class="property-type">Selection/string</span></dt>
+            <dd>Equipment operating status (status) when all the conditions are false. Set a user-defined status or </dd>
+            <dd>you can also choose from equipment status defined in Definitions and descriptions of ISO22400-2 KPIs for manufacturing operations management. </dd>
+            <dt>Status condition element <span class="property-type">List</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Target event<span class="property-type">string</span></dt>
+                <dd>Object key: Object key of the target data item to evaluate</dd>
+                <dd>Event name: Event name of the target data item to be evaluated. Use AnECode of alarm & event model as event name</dd>
+                <dt>Device status <span class="property-type">selection</span></dt>
+                <dd>Device status when the condition is met. Set a user-defined status or </dd>
+                <dd>you can also choose from equipment status defined in Definitions and descriptions of ISO22400-2 KPIs for manufacturing operations management. </dd>
+                <dd>By default, the event name of condition item is set by user definition as it is. </dd>
+            </dl>
         </dl>
         <dt>name<span class="property-type">string</span></dt>
         <dd>Name to give to individual Node</dd>
@@ -33,27 +43,21 @@
         <dt>request <span class="property-type">string</span></dt>
         <dd>ia-cloud request content. Valid only for "store"</dd>
         <dt>dataObject <span class="property-type">object</span></dt>
-        <dd>An object of the ia-cloud dataObject structure. </dd>
+        <dd>An object of the ia-cloud dataObject structure. Assuming Alarm&Event model objects</dd>
     </dl>
 
     <h3>Output message</h3>
     <dl class="message-properties">
-        <dt>payload <span class="property-type">string | object</span></dt>
-        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
         <dt>request <span class="property-type">string</span></dt>
-        <dd>ia-cloud request content. Defaults to the same as received as input message. </dd>
+        <dd>ia-cloud request content. Default is the same as received as input message. </dd>
         <dt>dataObject <span class="property-type">object</span></dt>
-        <dd>ia-cloud dataObject. A dataObject that has been modified based on the results of evaluating the contents of the evaluation condition list. </dd>
+        <dd>ia-cloud dataObject. ia-cloud object of the Equipment status model generated based on the result of evaluation with the contents of the evaluation condition list</dd>
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. </dd>
     </dl>
 
-    <h3>Details</h3>
-    <p>Evaluate each data item of the iaCloud object of the input message with the evaluation conditions and output the output message based on the evaluation result. </p>
-    <p>Evaluation rules are applied in order from the top, and only the combination of the same object key/data name that appears first, including blanks, is applied</p>
-    <p>For conditional evaluation, if the data value is a number, it will be evaluated as a number.</p>
-    <p>If the data value is a string, it will be evaluated as a string evaluation.</p>
-    <p>One of the following output methods can be selected</p>
-    <p>Output the iaClod object with the evaluation result as a logical value (true/false)</p>
-    <p>Output an iaClod object with the evaluation result as a numerical value (0/1)</p>
-    <p>Output the iaCloud object with the data items whose evaluation result was "false" deleted</p>
-    <p>If there is even one data item with a evaluation result of "false", no output message will be output. </p>
+    <h3>Detailed description</h3>
+    <p>Determine the operating status of the target equipment from the ia-cloud object of the alarm & event model of the equipment, such as the equipment event node,
+        Send the ia-cloud object of the equipment status model as an output message</p>
+
 </script>
