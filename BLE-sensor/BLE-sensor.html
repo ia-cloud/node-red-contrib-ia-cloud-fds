@@ -1,0 +1,358 @@
+<!--
+ * Copyright 2022 Hiro Hashimukai on the ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <script type="text/html" data-template-name="BLE-sensor">
+
+    <div id="id-block">
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+        <!-- Sensor ID -->
+        <div class="form-row">
+            <label for="node-input-sensorId"><span data-i18n="editor.sensorId"></span></label>
+            <input class="form-control" type="text" required="required" style="width: 300px"
+            id="node-input-sensorId" data-i18n="[placeholder]editor.sensorId">
+        </div>
+        <hr>     
+    </div>
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+            <div class="form-row">
+                <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label 
+                    for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
+            </div>           
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+            <!-- dataItemの設定 -->
+            <div class="form-row">
+                <!-- preset BLE sensor -->
+<!--               <label for="node-input-preset"><span data-i18n="editor.preset"></span></label>
+                <select style="width: 150px;" id="node-input-preset">
+                    <option selected="selected" value="undef" data-i18n="editor.undef"></option>
+                    <option value="2JCIE-BU" data-i18n="editor.2JCIE-BU"></option>
+                    <option value="EnOcean" data-i18n="editor.EnOcean"></option>
+                </select>
+                -->
+                <label><span data-i18n="editor.preset"></span></label>
+                <input type="button" id="preset-omron" style="width: 80px; margin-right:5px;" value="2JCIE-BU">
+                <input type="button" id="preset-EnOcean" style="width: 80px; margin-right:10px;" value="ST550B">                
+                <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
+                <input type="text" style="width: 80px;" id="node-input-contentType">
+            </div>
+            <div class="form-row">
+                <!-- input msg property -->
+                <label for="node-input-propertyId" style="width: 50px"><span data-i18n="editor.propertyId"></span></label>
+                <input type="text" style="width: 80px" id="node-input-propertyId">
+                <label for="node-input-propertyData" style="width: 80px; margin-left:10px;"><span data-i18n="editor.propertyData"></span></label>
+                <input type="text" style="width: 80px" id="node-input-propertyData">
+                <label for="node-input-propertyRssi" style="width: 60px; margin-left:10px;"><span data-i18n="editor.propertyRssi"></span></label>
+                <input type="text" style="width: 80px" id="node-input-propertyRssi">
+            </div>
+
+            <label style="width: 150px;"><span data-i18n="editor.ruleList"></span></label>
+            <div class="node-input-dItemcontainer-row">
+                <ol id="node-input-dItemcontainer">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+          <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+          <input type="text" class="form-control" id="node-input-name">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+const ENOCEAN_ST550B = [
+        {dataName: "ENELEVEL", posi: "1", type: "1B", sign: "unsigned", gain: "0.5", offset: "0", unit: "%"},
+        {dataName: "ILLM", posi: "3", type: "2LE", sign: "unsigned", gain: "1", offset: "0", unit: "lx"},
+        {dataName: "TEMP", posi: "6", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "°C"},
+        {dataName: "HUM", posi: "9", type: "1B", sign: "signed", gain: "0.5", offset: "0", unit: "%"}
+];
+
+const OMRON_2JCIE_BU = [
+        {dataName: "TEMP", posi: "4", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "°C"},
+        {dataName: "HUM", posi: "6", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "%"},
+        {dataName: "ALIGHT", posi: "8", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "lx"},
+        {dataName: "BPRESS", posi: "10", type: "4LE", sign: "signed", gain: "0.001", offset: "0", unit: "hPa"},
+        {dataName: "SNOISE", posi: "14", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "dB"},
+        {dataName: "eTVOC", posi: "16", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "ppb"},
+        {dataName: "eCO2", posi: "18", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "ppm"}
+    ];
+
+RED.nodes.registerType('BLE-sensor',{
+
+    category: 'iaCloud devices',
+    color:"rgb(231, 180, 100)",
+    defaults: {
+        name: {value:""},
+        // sensor ID
+        sensorId: {value:"", required: true},
+        // object properties
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+
+        contentType: {value: "iaCloudData", required: true},
+        propertyId: {value: "payload.id", required: true},
+        propertyData: {value: "payload.advertisement.manufacturerData", required: true},
+        propertyRssi: {value:  "payload.rssi"},
+
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
+
+        // dataItems property（editableListで使用する。）
+        dataItems : {value: [{},]},
+    },
+    inputs:1,
+    outputs:1,
+    icon: "ia-cloud.png",  //アイコンはTBD
+    label: function() {
+        return this.name||this._("editor.paletteLabel");
+    },
+    labelStyle: function() {
+        return this.name?"node_label_italic":"";
+    },
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "tmp-ctrl-omron";
+    },
+    oneditprepare: function() {
+        let node = this;
+
+        const lblDname = node._("editor.Dname");
+        const lblposi = node._("editor.posi");
+        const lblUnit = node._("editor.unit");
+        const lblUsign = node._("editor.unsigned");
+        const lblSign = node._("editor.signed");
+        const lblBCD = node._("editor.BCD");
+        const lblOff = node._("editor.offset");
+        const lblGain = node._("editor.gain");
+
+        // editableList item のhtml要素
+        // 1行目のデータタイプとデータ名称
+        const paraForm1 =`
+            <label style="width:90px; display:inline-block; text-align:left;">${lblDname}</label>
+            <input required="required" type="text" style="display:inline-block; width:100px; text-align:left;"
+                class="dataName" placeholder=${lblDname}>
+            <label style="width:80px; display:inline-block; text-align:left; margin-left:10px;">${lblposi}</label>
+            <input required="required" value="0" type="number" min="0"
+                style="width:80px; display:inline-block; text-align:right; padding-right:5px;"
+                class="position">
+        `;
+        const paraForm2 =`
+            <span style="display:inline-block; width:30px"> </span> 
+            <select class="type" 
+                style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <option selected="selected" value="1B">1Byte</option>
+                <option value="2LE">2B-LE</option>
+                <option value="2BE">2B-BE</option>
+                <option value="4LE">4B-LE</option>
+                <option value="4BE">4B-BE</option>
+            </select>
+            <select class="sign" style="width:80px; display:inline-block; text-align:right; padding-right:5px;">
+                <option selected="selected" value="unsigned">${lblUsign}</option>
+                <option value="signed">${lblSign}</option>
+            </select>
+            <input value="0" type="number" step="any" class="offset" required="required" placeholder=${lblOff}
+                style="width:70px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">                     
+            <input value="1" type="number" step="any" class="gain" required="required" placeholder=${lblGain}
+                style="width:70px; display:inline-block; text-align:right; padding-right:5px;">
+            <input type="text" class="unit" placeholder=${lblUnit}
+                style="width:50px; display:inline-block; text-align:right; padding-right:5px; margin-left:10px;">
+        `;
+
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-settings'),
+        });
+        tabs.addTab({
+            id: 'tab-dataItem-properties',
+            label: this._('editor.tab.data-settings'),
+        });
+
+        $('#node-input-dItemcontainer').css('min-height', '150px').css('min-width', '450px').editableList({
+            removable: true,
+            sortable: true,
+            height: 500,
+
+            // Process when click add button.
+            addItem: function(container, index, dItem) {
+                let div1 = $('<div></div>').appendTo(container);
+                let div2 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                $('<span></span>',{class:"index", 
+                    style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                    .text((index + 1) + " :")
+                    .appendTo(div1);
+                $(paraForm1).appendTo(div1);
+
+                // second row of the list
+                $(paraForm2).appendTo(div2);
+
+                // 追加ボタンが押されたら、dItemは 空{} で呼ばれるので、デフォルトセット
+                if(!dItem.hasOwnProperty("dataName")) {
+                    dItem.dataName = "";
+                    dItem.posi = 0,
+                    dItem.type = "2LE"
+                    dItem.sign= "unsigned",
+                    dItem.gain = 1,
+                    dItem.offset =  0,
+                    dItem.unit = ""
+                }
+
+                // set back dataItem properties on row1
+                div1.find(".dataName").val(dItem.dataName);
+                div1.find(".position").val(dItem.posi);
+                div2.find(".type").val(dItem.type);
+                div2.find(".sign").val(dItem.sign);
+                div2.find(".gain").val(dItem.gain);
+                div2.find(".offset").val(dItem.offset);
+                div2.find(".unit").val(dItem.unit);
+
+            },
+            // リストの順番が変わったら呼ばれる。
+            sortItems: function(items) {
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            },
+            // リストの項目が削除されたら呼ばれる。
+            removeItem: function(dItem){
+                let items = $('#node-input-dItemcontainer').editableList("items");
+                items.each(function(i, elm){
+                    // 番号を降り直し
+                    elm.find(".index").text((i + 1) + ":");
+                });
+            }
+        });
+        // sensor preset
+        $("#preset-omron").on("click", function () {
+            $("#node-input-dItemcontainer").editableList('empty');
+            node.dataItems = OMRON_2JCIE_BU;
+            for (let i=0; i<node.dataItems.length; i++) {
+                $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+            }
+        });
+        $("#preset-EnOcean").on("click", function () {
+            $("#node-input-dItemcontainer").editableList('empty');
+            node.dataItems = ENOCEAN_ST550B;
+            for (let i=0; i<node.dataItems.length; i++) {
+                $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+            }
+        });
+
+        // Nodeの設定パラメータを取り出し、editableListに登録
+        for (let i=0; i<node.dataItems.length; i++) {
+            $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+        }  
+
+    },
+
+    oneditsave: function() {
+        let node = this;
+        let configReady = "ready";
+        let items = $("#node-input-dItemcontainer").editableList('items');
+        // データ設定を作成
+        node.dataItems = [];
+
+        items.each(function(i, elm){
+            let item = {
+                dataName: elm.find(".dataName").val(),
+                posi: elm.find(".position").val(),
+                type: elm.find(".type").val(),
+                sign: elm.find(".sign").val(),
+                gain: elm.find(".gain").val(),
+                offset: elm.find(".offset").val(),
+                unit: elm.find(".unit").val(),
+            };
+
+            // 必須propertyが揃っているか？
+            if (!item.dataName || !item.posi || !item.offset || !item.gain) 
+                configReady = "";
+
+            // dataItemをプロパティリストにプッシュ
+            node.dataItems.push(item);
+        });
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+         // contentTypeはある？
+         if (!$("#node-input-contentType").val()) configReady = "";
+        // データ設定が一つはある？
+        if (!node.dataItems[0]) configReady = "";
+        // 設定完了フラグをセット
+        $("#node-input-configReady").val(configReady);
+    },
+
+    oneditresize: function (size) {
+        if ($("#tab-dataItem-properties").is(":visible")) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // Tab以外の部分の高さを引く
+            height -= $("#id-block").outerHeight(true);
+            height -= $("#name-block").outerHeight(true);
+            // dataItemプロパティTab内の、editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>div:not(.node-input-dItemcontainer-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // タブの部分の高さ（大体）
+            height -= 80;
+
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-dItemcontainer-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-dItemcontainer").editableList('height',height);
+        }
+    }
+});
+
+</script>
