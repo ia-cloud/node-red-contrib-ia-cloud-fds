@@ -56,13 +56,6 @@
             <!-- dataItemの設定 -->
             <div class="form-row">
                 <!-- preset BLE sensor -->
-<!--               <label for="node-input-preset"><span data-i18n="editor.preset"></span></label>
-                <select style="width: 150px;" id="node-input-preset">
-                    <option selected="selected" value="undef" data-i18n="editor.undef"></option>
-                    <option value="2JCIE-BU" data-i18n="editor.2JCIE-BU"></option>
-                    <option value="EnOcean" data-i18n="editor.EnOcean"></option>
-                </select>
-                -->
                 <label><span data-i18n="editor.preset"></span></label>
                 <input type="button" id="preset-omron" style="width: 80px; margin-right:5px;" value="2JCIE-BU">
                 <input type="button" id="preset-EnOcean" style="width: 80px; margin-right:10px;" value="ST550B">                
@@ -78,8 +71,9 @@
                 <label for="node-input-propertyRssi" style="width: 60px; margin-left:10px;"><span data-i18n="editor.propertyRssi"></span></label>
                 <input type="text" style="width: 80px" id="node-input-propertyRssi">
             </div>
-
-            <label style="width: 150px;"><span data-i18n="editor.ruleList"></span></label>
+            <div class="form-row">
+                <label style="width: 150px;"><span data-i18n="editor.ruleList"></span></label>
+            </div>
             <div class="node-input-dItemcontainer-row">
                 <ol id="node-input-dItemcontainer">
                 </ol>
@@ -92,22 +86,31 @@
     <div id="name-block">
         <hr>
         <div class="form-row">
-          <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
-          <input type="text" class="form-control" id="node-input-name">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name">
         </div>
     </div>
 </script>
 
 <script type="text/javascript">
 
-const ENOCEAN_ST550B = [
+const ENOCEAN_ST550B = {
+    id: "payload.id",
+    rssi: "payload.rssi",
+    data: "payload.other",
+    contentData: [
         {dataName: "ENELEVEL", posi: "1", type: "1B", sign: "unsigned", gain: "0.5", offset: "0", unit: "%"},
         {dataName: "ILLM", posi: "3", type: "2LE", sign: "unsigned", gain: "1", offset: "0", unit: "lx"},
         {dataName: "TEMP", posi: "6", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "°C"},
-        {dataName: "HUM", posi: "9", type: "1B", sign: "signed", gain: "0.5", offset: "0", unit: "%"}
-];
+        {dataName: "HUM", posi: "9", type: "1B", sign: "signed", gain: "0.5", offset: "0", unit: "%"} 
+    ]
+};
 
-const OMRON_2JCIE_BU = [
+const OMRON_2JCIE_BU = {
+    id: "payload.id",
+    rssi: "payload.rssi",
+    data: "payload.advertisement.manufacturerData",
+    contentData: [
         {dataName: "TEMP", posi: "4", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "°C"},
         {dataName: "HUM", posi: "6", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "%"},
         {dataName: "ALIGHT", posi: "8", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "lx"},
@@ -115,7 +118,8 @@ const OMRON_2JCIE_BU = [
         {dataName: "SNOISE", posi: "14", type: "2LE", sign: "signed", gain: "0.01", offset: "0", unit: "dB"},
         {dataName: "eTVOC", posi: "16", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "ppb"},
         {dataName: "eCO2", posi: "18", type: "2LE", sign: "signed", gain: "1", offset: "0", unit: "ppm"}
-    ];
+    ]
+};
 
 RED.nodes.registerType('BLE-sensor',{
 
@@ -130,9 +134,9 @@ RED.nodes.registerType('BLE-sensor',{
         objectDescription: {value:""},
 
         contentType: {value: "iaCloudData", required: true},
-        propertyId: {value: "payload.id", required: true},
-        propertyData: {value: "payload.advertisement.manufacturerData", required: true},
-        propertyRssi: {value:  "payload.rssi"},
+        propertyId: {value: "", required: true},
+        propertyData: {value: "", required: true},
+        propertyRssi: {value:  ""},
 
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true},
@@ -274,17 +278,23 @@ RED.nodes.registerType('BLE-sensor',{
         // sensor preset
         $("#preset-omron").on("click", function () {
             $("#node-input-dItemcontainer").editableList('empty');
-            node.dataItems = OMRON_2JCIE_BU;
+            node.dataItems = OMRON_2JCIE_BU.contentData;
             for (let i=0; i<node.dataItems.length; i++) {
                 $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
             }
+            $("#node-input-propertyId").val(OMRON_2JCIE_BU.id);
+            $("#node-input-propertyData").val(OMRON_2JCIE_BU.data);
+            $("#node-input-propertyRssi").val(OMRON_2JCIE_BU.rssi);
         });
         $("#preset-EnOcean").on("click", function () {
             $("#node-input-dItemcontainer").editableList('empty');
-            node.dataItems = ENOCEAN_ST550B;
+            node.dataItems = ENOCEAN_ST550B.contentData;
             for (let i=0; i<node.dataItems.length; i++) {
                 $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
             }
+            $("#node-input-propertyId").val(ENOCEAN_ST550B.id);
+            $("#node-input-propertyData").val(ENOCEAN_ST550B.data);
+            $("#node-input-propertyRssi").val(ENOCEAN_ST550B.rssi);
         });
 
         // Nodeの設定パラメータを取り出し、editableListに登録

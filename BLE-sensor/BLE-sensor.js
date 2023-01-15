@@ -103,6 +103,14 @@ module.exports = function(RED) {
                 dItem.dataValue = dItem.dataValue * Number(item.gain) + Number(item.offset);
                 outMsg.dataObject.objectContent.contentData.push(dItem);
             }
+            if (rssi) {
+                outMsg.dataObject.objectContent.contentData.push({
+                dataName: "rssi",
+                dataValue: rssi,
+                unit: "dBm"
+            });
+            }
+           
             outMsg.dataObject.objectKey = myObjKey;
             outMsg.dataObject.timestamp = moment().format();
             outMsg.dataObject.objectType = "iaCloudObject";
