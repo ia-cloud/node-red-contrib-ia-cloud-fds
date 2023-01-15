@@ -257,8 +257,14 @@ class iaCloudConnection {
         delete opts.body;
         
         let reqbodyJson, reqBodyStream;
+
+        let fileF = false;
+        if (obj.objectType === "iaCloudObject") {
+            if (obj.objectContent.contentType === "Filedata") fileF = true;
+        }
+
         // file data contentType, make requestbody stream from file
-        if (obj.objectContent.contentType === "Filedata")  {
+        if (fileF)  {
             let contD = obj.objectContent.contentData;
             // find file path to read
             let ind = contD.findIndex(obj => {
