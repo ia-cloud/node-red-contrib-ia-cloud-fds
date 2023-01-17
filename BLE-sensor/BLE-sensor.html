@@ -58,18 +58,15 @@
                 <!-- preset BLE sensor -->
                 <label><span data-i18n="editor.preset"></span></label>
                 <input type="button" id="preset-omron" style="width: 80px; margin-right:5px;" value="2JCIE-BU">
-                <input type="button" id="preset-EnOcean" style="width: 80px; margin-right:10px;" value="ST550B">                
+                <input type="button" id="preset-EnOcean" style="width: 80px; margin-right:15px;" value="ST550B">                
                 <label for="node-input-contentType"><span data-i18n="editor.contentType"></span></label>
-                <input type="text" style="width: 80px;" id="node-input-contentType">
+                <input type="text" style="width: 100px;" id="node-input-contentType">
             </div>
             <div class="form-row">
                 <!-- input msg property -->
-                <label for="node-input-propertyId" style="width: 50px"><span data-i18n="editor.propertyId"></span></label>
-                <input type="text" style="width: 80px" id="node-input-propertyId">
-                <label for="node-input-propertyData" style="width: 80px; margin-left:10px;"><span data-i18n="editor.propertyData"></span></label>
-                <input type="text" style="width: 80px" id="node-input-propertyData">
-                <label for="node-input-propertyRssi" style="width: 60px; margin-left:10px;"><span data-i18n="editor.propertyRssi"></span></label>
-                <input type="text" style="width: 80px" id="node-input-propertyRssi">
+                <input type="text" style="width: 100px" id="node-input-propertyId" data-i18n="[placeholder]editor.propertyId">
+                <input type="text" style="margin-left:5px; width: 280px" id="node-input-propertyData" data-i18n="[placeholder]editor.propertyData">
+                <input type="text" style="margin-left:5px; width: 100px" id="node-input-propertyRssi" data-i18n="[placeholder]editor.propertyRssi">
             </div>
             <div class="form-row">
                 <label style="width: 150px;"><span data-i18n="editor.ruleList"></span></label>
@@ -278,22 +275,22 @@ RED.nodes.registerType('BLE-sensor',{
         // sensor preset
         $("#preset-omron").on("click", function () {
             $("#node-input-dItemcontainer").editableList('empty');
-            node.dataItems = OMRON_2JCIE_BU.contentData;
-            for (let i=0; i<node.dataItems.length; i++) {
-                $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+            let items = OMRON_2JCIE_BU.contentData;
+            for (let i=0; i<items.length; i++) {
+                $("#node-input-dItemcontainer").editableList('addItem',items[i]);
             }
-            $("#node-input-propertyId").val(OMRON_2JCIE_BU.id);
-            $("#node-input-propertyData").val(OMRON_2JCIE_BU.data);
+            $("#node-input-propertyId").val(OMRON_2JCIE_BU.id).change();
+            $("#node-input-propertyData").val(OMRON_2JCIE_BU.data).change();
             $("#node-input-propertyRssi").val(OMRON_2JCIE_BU.rssi);
         });
         $("#preset-EnOcean").on("click", function () {
             $("#node-input-dItemcontainer").editableList('empty');
-            node.dataItems = ENOCEAN_ST550B.contentData;
-            for (let i=0; i<node.dataItems.length; i++) {
-                $("#node-input-dItemcontainer").editableList('addItem',node.dataItems[i]);
+            let items = ENOCEAN_ST550B.contentData;
+            for (let i=0; i<items.length; i++) {
+                $("#node-input-dItemcontainer").editableList('addItem',items[i]);
             }
-            $("#node-input-propertyId").val(ENOCEAN_ST550B.id);
-            $("#node-input-propertyData").val(ENOCEAN_ST550B.data);
+            $("#node-input-propertyId").val(ENOCEAN_ST550B.id).change();
+            $("#node-input-propertyData").val(ENOCEAN_ST550B.data).change();
             $("#node-input-propertyRssi").val(ENOCEAN_ST550B.rssi);
         });
 
