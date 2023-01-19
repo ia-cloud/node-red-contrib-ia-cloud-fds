@@ -90,6 +90,8 @@
       "arrgregation": "functions/aggregation.js",
       "chocoW": "chocoW/chocoW.js",
       "simulator": "simulator/simulator.js",
+      "eq-event": "functions/eq-event.js",
+      "eq-status": "functions/eq-status.js",
       "BLE-sensor": "BLE-sensor/BLE-sensor.js"
     }
   },

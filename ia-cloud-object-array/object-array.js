@@ -26,7 +26,7 @@ module.exports = function(RED) {
         var dataObject = [{}];
         var storeObj;
         var minCycle = 10; // 最小収集周期を10秒に設定
-        var timeCount = config.storeInterval;
+        var timeCount = config.interval;
         var lengthCount = 0;
         var objArray = [];
 
@@ -36,11 +36,11 @@ module.exports = function(RED) {
         var sendObjectId = setInterval(function(){
             // 10秒周期でカウントし、カウントアップしたら、メッセージ出力を行う。
             
-            if(config.storeInterval != "0") {
+            if(config.interval != "0") {
               // 収集周期前であれば何もせず
               if (timeCount -= minCycle > 0) return;
               // 収集周期がきた。収集周期を再設定。
-              timeCount = config.storeInterval;
+              timeCount = config.interval;
               objectArraySend();
             }
         }, (minCycle * 1000));
@@ -59,7 +59,7 @@ module.exports = function(RED) {
                 msg.dataObject.objectType = "iaCloudObjectArray";
                 msg.dataObject.objectDescription = config.objectDescription;
                 msg.dataObject.length = lengthCount;
-                msg.dataObject.objectArray = objArray;
+                msg.dataObject.objectArray = Object.assign({}, objArray);
 
                 msg.payload = RED._("runtime.sent");
                 node.send(msg);

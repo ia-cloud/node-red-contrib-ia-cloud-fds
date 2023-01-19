@@ -1,0 +1,69 @@
+<script type="text/html" data-help-name="eq-event">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Determine the operating status of the target equipment from the data items of ia-cloud data and send out alarm and event output messages</p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Object properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Periodical Collection Period<span class="property-type">Number</span></dt>
+            <dd>Period (seconds) when collecting data periodically</dd>
+            <dt>Asynchronous Collection<span class="property-type">Check</span></dt>
+            <dd>Setting to send data when there is a change in data</dd>
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Unique key string assigned to ia-cloud object</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>A description of the event object</dd>
+            <dt>Event setting<span class="property-type">string</span></dt>
+            <dd>Event name: Equipment event name or code. Set as AnECode in alarm & event model</dd>
+            <dd>Event Description: User-friendly description of the device event object</dd>
+        </dl>
+        <dt>Data Item properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>action<span class="property-type">selection</span></dt>
+            <dd>take all ANDs of each item</dd>
+            <dd>Take OR (logical OR) of all items</dd>
+            <dt>Event detection conditions <span class="property-type">List</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Object key<span class="property-type">string</span></dt>
+                <dd>Object key to evaluate</dd>
+                <dt>Data name<span class="property-type">String</span></dt>
+                <dd>Data name of the target data item to be evaluated. </dd>
+                <dt>Judgment Method<span class="property-type">Selection</span></dt>
+                <dd>How to determine the data value:</dd>
+                <dd>Select Equals, Not Equals, Within Range, or Outside Range</dd>
+                <dt>value to match <span class="property-type">number|string</span></dt>
+                <dd>Data equivalence evaluation value (blanks are not applicable)</dd>
+                <dt>Upper limit <span class="property-type">Number</span></dt>
+                <dd>Upper limit for data evaluation (blanks are not applicable)</dd>
+                <dt>lower limit<span class="property-type">number</span></dt>
+                <dd>Lower limit for data evaluation (blanks are not applicable)</dd>
+            </dl>
+            <dt>name<span class="property-type">string</span></dt>
+            <dd>Name to give to individual Node</dd>
+        </dl>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Valid only for "store"</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>An object of the ia-cloud dataObject structure. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. dataObject of the device event determined by the evaluation condition list. </dd>
+        <dd>Objects of the ia-cloud alarms & events data model</dd>
+    </dl>
+
+    <h3>Detailed description</h3>
+    <p>Evaluate each data item of the iaCloud object from the input message with a logical value, evaluate with AND or OR of all items,
+        and send the ia-cloud object of the device event (Alarm&Event model). </p>
+
+</script>
