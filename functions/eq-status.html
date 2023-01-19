@@ -1,0 +1,408 @@
+<!--
+ * Copyright 2022 Hiro Hashimukai on the ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<script type="text/html" data-template-name="eq-status">
+
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+        <!-- objectの設定 -->
+        <div id="tab-object-properties">
+            <div class="form-row">
+                <label for="node-input-storeInterval">
+                    <span data-i18n="editor.period"></span></label>
+                <input type="number" id="node-input-storeInterval" min="0" step="1"
+                    value="300" style="display: inline-block; width: auto;">
+                <label for="node-input-storeAsync" style="margin-left: 20px;">
+                    <span data-i18n="editor.async"></span></label>
+                <input type="checkbox" checked="checked" id="node-input-storeAsync"
+                    style="display: inline-block; width: auto;" >
+            </div>
+            <hr>
+            <div class="form-row">
+                <label for="node-input-objectKey" style="margin-left: 10px; width:140px"><span data-i18n="editor.objectKey"></span></label>
+                <input type="text" required="required" style="width: 250px"
+                    id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row">
+                <label for="node-input-objectDescription" style="margin-left: 10px; width:140px"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 250px" id="node-input-objectDescription">
+            </div>
+            <hr>
+            <div class="form-row">
+                <label for="node-input-commonName" style="margin-left: 10px; width:140px"><span data-i18n="editor.commonName"></span></label>
+                <input type="text" style="width:250px" id="node-input-commonName" disabled="disabled">
+            </div>
+            <div class="form-row">
+                <label for="node-input-dataName" style="margin-left: 10px; width:140px"><span data-i18n="editor.dataName"></span></label>
+                <input type="text" style="width: 250px" id="node-input-dataName">
+            </div>
+        </div>
+        <!-- tab-object-properties ends -->
+
+        <!-- tab-dataItem-properties starts-->
+        <div id="tab-dataItem-properties">
+
+            <div class="form-row">
+                <label for="node-input-BGStatus" style="margin-left:10px; width:80px"><span data-i18n="editor.BGStatus"></span></label>
+
+                <select id="node-input-KEImodel" style="width:150px">
+                    <option selected="selected" value="user" data-i18n="editor.user"></option>
+                    <option value="wunit" data-i18n="editor.wunit"></option>
+                    <option value="altWU" data-i18n="editor.altWU"></option>
+                    <option value="pOrder" data-i18n="editor.pOrder"></option>
+                    <option value="psnl" data-i18n="editor.psnl"></option>
+                </select> 
+                <input type="hidden" id="node-input-BGStatus" ></select>
+                <input type="text" id="node-input-userBGStatus" required= "required" style="width:150px">
+                <select id="node-input-KEIBGStatus" style="width:120px"></select>               
+                <div id="wunitList" style="display:none">
+                    <option data-i18n="editor.AUBT"></option>
+                    <option data-i18n="editor.ADOT"></option>
+                    <option selected="selected" data-i18n="editor.AUPT"></option>
+                    <option data-i18n="editor.ADET"></option>
+                    <option data-i18n="editor.APT"></option>
+                    <option data-i18n="editor.AUST"></option>
+                </div>
+                <div id="pOrderList" style="display:none">
+                    <option data-i18n="editor.ATT"></option>
+                    <option data-i18n="editor.AQT"></option>
+                    <option data-i18n="editor.AUBT"></option>
+                    <option selected="selected" data-i18n="editor.AUPT"></option>
+                    <option data-i18n="editor.ADET"></option>
+                    <option data-i18n="editor.APT"></option>
+                    <option data-i18n="editor.AUST"></option>
+                </div>
+                <div id="psnlList" style="display:none">
+                    <option data-i18n="editor.APAT"></option>
+                    <option selected="selected" data-i18n="editor.APWT"></option>
+                    <option data-i18n="editor.NWT"></option>
+                </div>
+                <div id="altWUList" style="display:none">
+                    <option selected="selected" data-i18n="editor.OPT"></option>
+                    <option data-i18n="editor.AST"></option>
+                    <option data-i18n="editor.ADOT"></option>
+                    <option data-i18n="editor.NOT"></option>
+                    <option data-i18n="editor.MST"></option>
+                    <option data-i18n="editor.WT"></option>
+                    <option data-i18n="editor.VOT"></option>
+                    <option data-i18n="editor.DPT"></option>
+                    <option data-i18n="editor.RWT"></option>
+                </div>
+            </div>
+
+            <!-- rule list -->
+            <div class="row">
+                <label><span data-i18n="editor.rules"></span></label>
+            </div>
+            <div class="form-row node-input-rule-container-row">
+                <ol id="node-input-rule-container">
+                </ol>
+            </div>
+        </div>
+        <!-- tab-dataItem-propertiesends -->
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <div > <hr> </div>
+        <div class="form-row">
+            <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+            <input type="text" class="form-control" id="node-input-name" data-i18n="[placeholder]editor.name">
+        </div>
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+    </div>
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('eq-status',{
+        category: 'iaCloud functions',
+        color:"rgb(231, 180, 100)",
+        align: "left",
+        defaults: {
+            name: {value:""},
+
+            // object properties
+            storeInterval: {value:"60"},
+            storeAsync: {value: true},
+            objectKey: {value:"", required: true},
+            objectDescription: {value:""},
+            commonName: {value: "Status", required: true},
+            dataName: {value:""},
+
+            contentType: {value: "EquipmntStatus"},
+            KEImodel: {value:"user"},
+            KEIBGStatus: {value:""},
+            userBGStatus: {value:"", required: true},
+            BGStatus: {value:"", required: true},
+            // rules property（editableListで使用する。）
+            rules: {value:[{}]},
+
+            // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+            configReady: {value:"", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "ia-cloud.png",
+        label: function() {
+            return this.name||this._("editor.paletteLabel");
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        paletteLabel: function() {
+            return this._("editor.paletteLabel") || "Equi-status";
+        },
+        oneditprepare: function() {
+            var node = this;
+
+            const lblitem = node._("editor.item");
+            const lblobjkey = node._("editor.objkey");
+            const lbleName = node._("editor.eName");
+            const lbllogic = node._("editor.logic");
+            const lblstatus = node._("editor.status");
+
+            const lblwunit = node._("editor.wunit");
+            const lblaltWU = node._("editor.altWU");
+            const lblpOrder = node._("editor.pOrder");
+            const lblpsnl = node._("editor.psnl");
+            const lbluser = node._("editor.user");
+
+            // editableList item のhtml要素
+            // 1行目のデータ名称、動作、正逆設定
+            const paraForm0 =`
+            <span style="display:inline-block; width:30px"> </span>
+            <label style="width:auto; text-align: left; margin-right: 10px;">${lblitem}</label>
+            <input class="objkey"" placeholder="${lblobjkey}" type="text" required="required"
+                style="width:120px; display:inline-block; text-align:left; margin-right:10px;">
+            <input class="eventName"" placeholder="${lbleName}" type="text" required="required" 
+                style="width:120px; display:inline-block; text-align:left; margin-right:10px;">
+            `;
+            const paraForm1 =`
+                <label style="width:70px; text-align: right; margin-right: 10px;">${lblstatus}</label>
+                <select class="KEImodel" style="width:150px">
+                    <option selected="selected" value="user" data-i18n="editor.user">${lbluser}</option>
+                    <option value="wunit">${lblwunit}</option>
+                    <option value="altWU">${lblaltWU}</option>
+                    <option value="pOrder">${lblpOrder}</option>
+                    <option value="psnl">${lblpsnl}</option>
+                </select> 
+                <input type="hidden" class="status" >
+                <select class="KEI-status" style="width:120px"></select> 
+                <input class="user-status" type="text" required="required" 
+                    style="width:120px; display:inline-block; text-align:left; margin-right:20px;">
+            `;
+
+            // Tab
+            const tabs = RED.tabs.create({
+                id: 'red-tabs',
+                onchange(tab) {
+                    $('#tabs-content').children().hide();
+                    $("#" + tab.id).show();
+                    $("#red-tabs").resize();
+                },
+            });
+            tabs.addTab({
+                id: 'tab-object-properties',
+                label: this._('editor.tab.object-settings'),
+            });
+            tabs.addTab({
+                id: 'tab-dataItem-properties',
+                label: this._('editor.tab.data-settings'),
+            });
+
+            // when KEI model changed
+            $("#node-input-KEImodel").on("change", function() {
+                if ($("#node-input-KEImodel").val() === "user"){
+                    $("#node-input-userBGStatus").show();
+                    $("#node-input-KEIBGStatus").hide();
+                } else {
+                    $("#node-input-userBGStatus").hide();
+                    $("#node-input-KEIBGStatus>option").remove();
+                    if ($("#node-input-KEImodel").val() === "wunit") $("#node-input-KEIBGStatus").append($("#wunitList>option").clone());
+                    else if ($("#node-input-KEImodel").val() === "altWU") $("#node-input-KEIBGStatus").append($("#altWUList>option").clone());
+                    else if ($("#node-input-KEImodel").val() === "pOrder") $("#node-input-KEIBGStatus").append($("#pOrderList>option").clone());
+                    else if ($("#node-input-KEImodel").val() === "psnl") $("#node-input-KEIBGStatus").append($("#psnlList>option").clone());
+                    $("#node-input-KEIBGStatus").show();
+                }
+            });
+            $("#node-input-KEImodel").trigger("change");
+
+            // Define editableList.
+            $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
+                
+                sortable: true,
+                removable: true,
+                height: 360,
+                
+                addItem: function(container,index,rule) {
+
+                    let div0 = $('<div></div>').appendTo(container);
+                    let div1 = $('<div></div>',{style:"margin-top:8px;"}).appendTo(container);
+
+                    $(paraForm0).appendTo(div0);
+                    $('<span></span>',{class:"index", 
+                        style:"display:inline-block;text-align:right; width:30px; padding-right:5px;"})
+                        .text((index + 1) + " :")
+                        .appendTo(div1);
+                    $(paraForm1).appendTo(div1);
+
+                    // 追加ボタンが押されたら、ruleは 空{} で呼ばれます。
+                    if(!rule.hasOwnProperty("eventName")) {
+                        rule = {
+                            objectKey: "",
+                            eventName: "",
+                            KEImodel: "user",
+                            KEIstatus: "", 
+                            userStatus: "", 
+                            status: ""
+                        }
+                    };
+                    // restore parameters
+                    div0.find(".objkey").val(rule.objectKey);
+                    div0.find(".eventName").val(rule.eventName);
+                    div1.find(".KEImodel").val(rule.KEImodel);
+                    div1.find(".KEI-status").val(rule.KEIstatus);
+                    div1.find(".user-status").val(rule.userStatus);
+                    div1.find(".status").val(rule.status);
+
+                    div1.find(".KEImodel").change(function() {
+                        let keiModel = $(this).val();
+                        $(".status").val("");
+                        if (keiModel === "user"){
+                            div1.find(".user-status").show();
+                            div1.find(".KEI-status").hide();
+                        } else {
+                            div1.find(".user-status").hide();
+                            div1.find(".KEI-status>option").remove();
+                            if (keiModel === "wunit") div1.find(".KEI-status").append($("#wunitList>option").clone());
+                            else if (keiModel === "altWU") div1.find(".KEI-status").append($("#altWUList>option").clone());
+                            else if (keiModel === "pOrder") div1.find(".KEI-status").append($("#pOrderList>option").clone());
+                            else if (keiModel === "psnl") div1.find(".KEI-status").append($("#psnlList>option").clone());
+                            div1.find(".KEI-status").show();
+                        }
+                    });
+                    div1.find(".KEImodel").change();
+
+                    div0.find(".eventName").change(function() {
+                        if(div1.find(".user-status").val() === "") {
+                            div1.find(".user-status").val(div0.find(".eventName").val())
+                        }
+                    });
+                    div0.find(".eventName").change();
+                },
+
+                sortItems: function(items) {
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+                removeItem: function(dItem){
+                    let items = $('#node-input-rule-container').editableList("items");
+                    items.each(function(i, elm){
+                        elm.find(".index").text((i + 1));
+                    });
+                },
+            });
+
+            for (var i=0;i<node.rules.length;i++) {
+                var rule = node.rules[i];
+                $("#node-input-rule-container").editableList('addItem',rule);
+            }
+        },
+        
+        oneditsave: function() {
+
+            let node = this;
+            let configReady = "ready";
+            let items = $("#node-input-rule-container").editableList('items');
+
+            if (!$("#node-input-objectKey").val()) configReady = "";
+            if ($("#node-input-KEImodel").val() === "user") {
+                $("#node-input-BGStatus").val($("#node-input-userBGStatus").val());
+                if (!$("#node-input-userBGStatus").val()) configReady = "";
+            } else {
+                $("#node-input-BGStatus").val($("#node-input-KEIBGStatus").val());
+                if (!$("#node-input-KEIBGStatus").val()) configReady = "";
+            }
+
+
+            // ruleデータ設定を作成
+            node.rules = [];
+            items.each(function(i, elm){
+                let rule = {
+                    // reatore parameters
+                    objectKey: elm.find(".objkey").val(),
+                    eventName: elm.find(".eventName").val(),
+                    KEImodel: elm.find(".KEImodel").val(),
+                    KEIstatus: elm.find(".KEI-status").val(),
+                    userStatus: elm.find(".user-status").val(),
+                    status: elm.find(".status").val()
+                }
+                if (rule.KEImodel === "user") elm.find(".status").val(rule.userStatus);
+                else elm.find(".status").val(rule.KEIstatus);
+                rule.status = elm.find(".status").val();
+
+                node.rules.push(rule);
+
+                // dataName is not null
+                if (!rule.objectKey) configReady = "";
+                if (!rule.eventName) configReady = "";
+                if (rule.KEImodel === "user" && !rule.userStatus) configReady = "";
+                if (rule.KEImodel !== "user" && !rule.KEIstatus) configReady = "";
+            });
+
+            // 設定完了フラグをセット
+            $("#node-input-configReady").val(configReady);
+        },
+
+        oneditresize: function(size) {
+            // エディタがリサイズされたら
+            let height = size.height;
+
+            // node name block height
+            height -= $("#name-block").outerHeight(true);
+
+            // editableList以外の行の高さを引く
+            let rows = $("#tab-dataItem-properties>*:not(.node-input-rule-container-row)");
+            for (let i=0; i<rows.length; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            // editableListのマージンを引く
+            const editorRow = $("#tab-dataItem-properties>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+
+            // tab label height
+            height -= 50;
+
+            // editableListの高さを設定。editableListが非表示の時は正しく動作しない。
+            $("#node-input-rule-container").editableList('height',height);
+        }
+    });
+
+</script>
