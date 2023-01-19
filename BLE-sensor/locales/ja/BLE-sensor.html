@@ -1,0 +1,60 @@
+
+<script type="text/html" data-help-name="BLE-sensor">
+    <p>BLEアドバタイジングパケットからセンサ情報を取り出し、ia-cloudオブジェクトを送出する</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>Adv.パケット<span class="property-type">文字列</span></dt>
+        <dd>Adv.パケットを含むメッセージメンバー</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列</span></dt>
+            <dd>温調計データのデータ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
+            <dt>プリセット機種<span class="property-type">選択</span></dt>
+            <dd>プリセットされたBLEセンサ機種の選択。</dd>
+            <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データ位置<span class="property-type">数値</span></dt>
+                <dd>アドバタジングパケット内のデータ位置</dd>
+                <dt>データ型<span class="property-type">選択</span></dt>
+                <dd>アドバタジングパケット内のデータの型。</dd>
+                <dt>ゼロ・倍率<span class="property-type">数値</span></dt>
+                <dd>データを解釈する際のオフセットとゲイン。</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>データ項目につける名称。</dd>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+                <dt>単位<span class="property-type">文字列</span></dt>
+                <dd>データ項目に付与する単位</dd>  
+            </dl>
+        </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+        <dt>msg<span class="property-type">string</span></dt>
+        <dd>BLEアドバタイジングパケットを含むbufferオブジェクト</dd>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>BLEアドバタイジングパケットからセンサ情報を取り出し、ia-cloudオブジェクトを送出するノード</p>
+    <p>いくつかのBLEセンサ機種のデータ構造はプリセットされている</p>
+</script>

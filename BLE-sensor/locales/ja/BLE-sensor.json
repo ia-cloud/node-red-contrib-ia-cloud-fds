@@ -1,0 +1,39 @@
+{
+    "editor": {
+        "paletteLabel": "BLEセンサ",
+        "name": "ノード名称",
+        "tab": {
+            "object-settings": "オブジェクト設定",
+            "data-settings": "データ設定"
+        },
+        "advPacket": "メッセージ入力",
+        "sensorId": "センサID",
+        "rssi": "電波強度",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "contentType": "データ構造型",
+        "propertyId": "id項目",
+        "propertyData": "データ項目",
+        "propertyRssi": "rssi項目",
+        "ruleList": "データ項目リスト",
+        "preset": "プリセット機種",
+        "undef": "ユーザ設定",
+        "2JCIE-BU": "omron 2JCIE-BU",
+        "EnOcean": "EnOceanBLE",
+        "Dname": "データ名称",
+        "posi": "データ位置",
+        "unsigned": "符号無",
+        "signed": "符号付",
+        "BCD": "BCD",
+        "offset": "ゼロ点",
+        "gain": "ゲイン",
+        "unit": "単位"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "sent": "データ送出",
+        "nochange": "データ不変",
+        "nomatch": "データ無効"
+    }
+}
