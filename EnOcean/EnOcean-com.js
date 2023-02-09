@@ -16,6 +16,7 @@
 
 const util = require('util');
 const SerialPort = require('serialport');
+const stream = require("stream");
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
 const INTERBYTETIMEOUT = 60;   // set inter byte timeout 100ms
@@ -238,7 +239,24 @@ module.exports = function (RED) {
     function EnOceanComNode(config) {
         RED.nodes.createNode(this, config);
 
-        this.port = new SerialPort(config.serialPort, { baudRate: BAUDRATE });
+        try {
+            if (config.emu) {
+                // read data form globalcontext
+                let gContext = this.context().global;
+                let EnOceanSim = gContext.get ("EnOceanSimulator");
+    
+                // make buffer from data
+                // puy it to a stream
+                this.port = stream.Readable.from(EnOceanSim);
+            } else {
+                this.port = new SerialPort(config.serialPort, { baudRate: BAUDRATE });
+            }
+        }
+        catch (err){
+            node.error("Invalid serial port");
+            return;
+        }
+
         const InterByteTimeout = require('@serialport/parser-inter-byte-timeout');
         this.parser = this.port.pipe(new InterByteTimeout({ interval: INTERBYTETIMEOUT }));
         var node = this;

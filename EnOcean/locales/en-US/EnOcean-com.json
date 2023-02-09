@@ -1,5 +1,6 @@
 {
     "editor": {
+        "emu": "Use EnOcean Simulator",
         "serialPort": "Serial Port",
         "name": "node name",
         "label": "EnOcean com. node"
