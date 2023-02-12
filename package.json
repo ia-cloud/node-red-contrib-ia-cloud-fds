@@ -20,7 +20,7 @@
     "@serialport/parser-inter-byte-timeout": "^9.0.0",
     "@serialport/parser-delimiter": "^9.0.0",
     "ws": "^7.1.2",
-    "got": "^11.5.2",
+    "got": "^12.5.3",
     "base64-stream": "^1.0.0"
   },
   "devDependencies": {
