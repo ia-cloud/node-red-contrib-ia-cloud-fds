@@ -16,7 +16,7 @@
 
 const util = require('util');
 const SerialPort = require('serialport');
-const stream = require("stream");
+
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
                                 parity none, stopbit 1, databit 8 are serialport defaults */
 const INTERBYTETIMEOUT = 60;   // set inter byte timeout 100ms
@@ -245,19 +245,35 @@ module.exports = function (RED) {
             }
         });
     };
+
+    const ShiftHexOfData = (data) => {
+        // Shift one to each hex values (e.g. '019AEF' to '12ABF0')
+        const dataArray = [...(data.replace('0x', ''))];
+        const shiftedDataArray = dataArray.map((datum) => (parseInt(datum, 16) + 1).toString(16).slice(-1));
+        return `${shiftedDataArray.join('')}`;
+    };
+
     // EnOcean-com node function definition
     function EnOceanComNode(config) {
         RED.nodes.createNode(this, config);
 
+        //  for simulation
+        this.intervalId = undefined;
         try {
             if (config.emu) {
-                // read data form globalcontext
-                let gContext = this.context().global;
-                let EnOceanSim = gContext.get ("EnOceanSimulator");
-    
-                // make buffer from data
-                // puy it to a stream
-                this.port = stream.Readable.from(EnOceanSim);
+                // read data form global context
+                const dummySensorId = config.dummySensorId.toLowerCase();
+                const { cycle } = config;
+                let dummyData = '0123456789ABCDEF';
+                const dummyOptionalData = '0232';
+
+                this.intervalId = setInterval(() => {
+                    // push data to a stream
+                    const listeners = propagateReceivedValue(dummySensorId, dummyData, dummyOptionalData);
+                    EmitToLinstener(listeners, node);
+                    // Shift dummyData
+                    dummyData = ShiftHexOfData(dummyData);
+                }, (cycle * 1000));
             } else {
                 this.port = new SerialPort(config.serialPort, { baudRate: BAUDRATE });
             }
@@ -414,6 +430,9 @@ module.exports = function (RED) {
         });
 
         this.on('close', function (done) {
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+            }
             if (this.port) {
                 this.port.close(done);
             } else {
