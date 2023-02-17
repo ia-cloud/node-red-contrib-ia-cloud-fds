@@ -235,6 +235,16 @@ module.exports = function (RED) {
         return uniqueArray;
     };
 
+    // 通知先のノード（EnOcean-obj）があればそちらに通知する
+    const EmitToLinstener = (listeners, node) => {
+        listeners.filter((l) => l.nodeId).forEach((listener) => {
+            const enObjNode = RED.nodes.getNode(listener.nodeId);
+            node.debug(util.inspect(enObjNode));
+            if (enObjNode) {
+                enObjNode.emit('changeListener', listener.objectKey);
+            }
+        });
+    };
     // EnOcean-com node function definition
     function EnOceanComNode(config) {
         RED.nodes.createNode(this, config);
@@ -351,13 +361,7 @@ module.exports = function (RED) {
                     node.debug(`listeners = ${JSON.stringify(listeners)}`);
 
                     // 通知先のノード（EnOcean-obj）があればそちらに通知する
-                    listeners.filter((l) => l.nodeId).forEach((listener) => {
-                        const enObjNode = RED.nodes.getNode(listener.nodeId);
-                        node.debug(util.inspect(enObjNode));
-                        if (enObjNode) {
-                            enObjNode.emit('changeListener', listener.objectKey);
-                        }
-                    });
+                    EmitToLinstener(listeners, node);
                 });
             });
         } else {
