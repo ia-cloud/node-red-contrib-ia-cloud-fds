@@ -19,6 +19,15 @@
         <label for="node-config-input-emu" style="width: 200px;"><span data-i18n="editor.emu"></span></label>
         <input type="checkbox" id="node-config-input-emu" style="display: inline-block; width: auto;" >
     </div>
+    <div class="form-row" id="dummySensorId">
+        <label for="node-config-input-dummySensorId" style="width: 200px;"><span data-i18n="editor.dummySensorId"></span></label>
+        <input type="text" id="node-config-input-dummySensorId" style="display: inline-block; width: auto;" readonly>
+    </div>
+    <div class="form-row" id="cycle">
+        <label for="node-config-input-cycle" style="width: 200px;"><span data-i18n="editor.cycle"></span></label>
+        <input type="number" id="node-config-input-cycle" style="display: inline-block; width: auto;" readonly>
+        <label for="node-config-input-cycleSec"><span data-i18n="editor.cycleSec"></span></label>
+    </div>
     <div class="form-row" id="serialPort-block">
         <label for="node-config-input-serialPort" style="width: 120px;"><i class="fa fa-random"></i><span data-i18n="editor.serialPort"></span></label>
         <input type="text" id="node-config-input-serialPort" required="required" style="width:60%;" data-i18n="[placeholder]editor.serialPort">
@@ -40,6 +49,8 @@
         defaults: {
             name: {value:""},
             emu: {value: false,},
+            dummySensorId: {value: 'FFFFFFFF',},
+            cycle: {value: 30,},
             serialPort:{value:"" },
         },
         label: function () {
@@ -52,10 +63,14 @@
             // when emulation checkbox changed
             $("#node-config-input-emu").on("change", function() {
                 if ($("#node-config-input-emu").prop("checked")) {
+                    $("#dummySensorId").prop("hidden", false);
+                    $("#cycle").prop("hidden", false);
                     $("#serialPort-block").prop("hidden", true);
                     $("#node-config-input-serialPort").prop("required", false);
                 }
                 else {
+                    $("#dummySensorId").prop("hidden", true);
+                    $("#cycle").prop("hidden", true);
                     $("#serialPort-block").prop("hidden", false);
                     $("#node-config-input-serialPort").prop("required", true);
                 }

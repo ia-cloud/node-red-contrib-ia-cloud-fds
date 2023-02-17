@@ -1,5 +1,8 @@
 {
     "editor": {
+        "cycle": "送信周期",
+        "cycleSec": "[s]",
+        "dummySensorId": "センサーID",
         "emu": "EnOceanシミュレータを使う",
         "serialPort": "シリアルポート",
         "name": "ノード名称",
