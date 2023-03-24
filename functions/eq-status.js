@@ -29,7 +29,7 @@ module.exports = function(RED) {
         const rules = config.rules;
 
         // buffer for each data item evalueation 
-        let status = "", preStatus = "";
+        let status = "", preStatus = [config.BGStatus,];
 
         // no rule found
         if (rules.length === 0)
@@ -73,8 +73,9 @@ module.exports = function(RED) {
             statusMsg.dataObject.objectContent.contentData = [{
                 commonName: config.commonName,
                 dataName: config.dataName,
-                dataValue: preStatus
+                dataValue: status
             }];
+            statusMsg.payload = statusMsg.dataObject.objectContent.contentData;
 
             node.send(statusMsg);
             node.status({fill:"green", shape:"dot", text:"runtime.output"});
@@ -103,18 +104,26 @@ module.exports = function(RED) {
                 if (!rule) continue;
 
                 if (dataItem.hasOwnProperty("dataValue")) {
-                    if (dataItem.dataValue.AnEStatus == "on" || dataItem.dataValue.AnEStatus === "set")
-                        rule.result = true;
-                    else rule.result = false;
+                    if (dataItem.dataValue.AnEStatus === "set")
+                        rule.result = "set";
+                    else if (dataItem.dataValue.AnEStatus === "reset")
+                        rule.result = "reset";
+                    else rule.result = "";
                 } 
             }
-            let rule = rules.find(rl => rl.result === true);
-            status = rule? rule.eventName: config.BGStatus
+            let rule = rules.find(rl => rl.result !== "");
+            if (!rule || !rule.result) return;
 
-            if (status !== preStatus) {
-                preStatus = status;
-                iaCloudObjectSend ();
+            if (rule.result === "set") {
+                status = rule.status;
+                preStatus.push(status);
             }
+            else if (rule.result === "reset") {
+                if (preStatus.length > 1) preStatus.pop();
+                status = preStatus.slice(-1)[0];
+            };
+            rule.result = "";
+            iaCloudObjectSend ();
         }); 
 
         this.on("close",function() {

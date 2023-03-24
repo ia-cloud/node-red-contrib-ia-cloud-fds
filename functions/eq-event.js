@@ -79,9 +79,10 @@ module.exports = function(RED) {
                 dataValue: {
                     AnEStatus : AnEStatus,
                     AnECode : config.AnECode,
-                    AnEDescription : config.AnEDesc
+                    AnEDescription : config.AnEDescription
                 }
             }];
+            statusMsg.payload = statusMsg.dataObject.objectContent.contentData;
 
             node.send(statusMsg);
             node.status({fill:"green", shape:"dot", text:"runtime.output"});
@@ -118,18 +119,18 @@ module.exports = function(RED) {
                     switch (rule.mode) {
                         case "equal":
                             if (typeof dataValue === "boolean" || typeof dataValue === "number" 
-                                || typeof dataVaule === "string" )
+                                || typeof dataValue === "string" )
                                 // check equality, (not identity)
                                 result = (dataValue == rule.equal)? true: false;
                             break;
                         case "notequal":
                             if (typeof dataValue === "boolean" || typeof dataValue === "number" 
-                                || typeof dataVaule === "string" )
+                                || typeof dataValue === "string" )
                                 // check inequality, (not nonidentity)
-                                result = (dataValue != rule.equal)? true: false;
+                                result = (dataValue != rule.notequal)? true: false;
                             break;
                         case "range":
-                            if (typeof dataValue === "number" || typeof dataVaule === "string" ) {
+                            if (typeof dataValue === "number" || typeof dataValue === "string" ) {
                                 if (rule.rangeLo !== "" && rule.rangeHi !== "") {
                                     if (rule.rangeLo < dataValue && dataValue < rule.rangeHi) result = true;
                                 } else if (rule.rangeLo === "") {
@@ -141,7 +142,7 @@ module.exports = function(RED) {
                             }
                             break;
                         case "notrange":
-                            if (typeof dataValue === "number" || typeof dataVaule === "string" ) {
+                            if (typeof dataValue === "number" || typeof dataValue === "string" ) {
                                 if (rule.notrangeLo !== "" && rule.notrangeHi !== "") {
                                     if (dataValue < rule.notrangeLo || rule.notrangeHi < dataValue) result = true;
                                 } else if (rule.notrangeLo === "") {
