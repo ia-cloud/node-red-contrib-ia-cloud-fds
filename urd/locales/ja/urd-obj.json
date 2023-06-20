@@ -17,6 +17,7 @@
             "objectDesc": "オブジェクトの説明",
             "objectKey": "オブジェクトキー",
             "qInfo": "品質情報を使う",
+            "qResetFlg": "タイムアウト時データリセット",
             "qInterval": "最大送信間隔",
             "qIntervalSec": "[s]",
             "selectFile": "設定ファイル名を選択してください",

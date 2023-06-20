@@ -23,6 +23,11 @@ module.exports = class UrdAC1ch extends SensorInterface {
     static process(data, contentDataConfig) {
         const dataLength = 8; // 4Byte * 2
 
+        // dataを正常に処理できるようにする
+        if (data === '0') {
+            data = '0'.repeat(dataLength);
+        }
+
         if (typeof data === 'undefined' || data.replace('0x', '').length < dataLength) {
             // 4Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message: '', sendFlg: false };
