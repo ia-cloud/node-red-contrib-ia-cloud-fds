@@ -20,7 +20,7 @@
             "qInfo": "Quality info",
             "qInterval": "Max interval",
             "qIntervalSec": "[s]",
-            "qResetFlg": "Reset data on timeout",
+            "qResetFlg": "use range minimum on timeout",
             "sensorKind": "Sensor type",
             "wattyHyco": "Watty HYCO CO2 sensor",
             "wattyHyhq": "Watty HYHQ 2ch Temp sensor",
