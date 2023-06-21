@@ -6,7 +6,8 @@
         "tab": {
           "device-prop": "本体の設定",
           "func-prop": "機能の設定",
-          "object-prop": "オブジェクトの設定"
+          "object-prop": "オブジェクト設定",
+          "strage-prop": "ストレージ設定"
         },
         "dateSync": "PC時刻同期",
         "triggerMode": "録画モード",
@@ -50,13 +51,16 @@
         "objectKey": "オブジェクトキー",
         "objectKeyholder": "必須: 固有のキー",
         "objectDescription": "オブジェクトの説明",
+        "AnE": "アラーム＆イベントを出力する",
+        "AnEobjectKey": "A&Eのオブジェクトキー",
+        "AnEobjectDescription": "A&Eのオブジェクトの説明",
         "server": "ストレージサーバを使う",
         "serverInfo": "ストレージ情報",
         "serverInfoPH": "ストレージに関する説明情報",
         "tip-server": "大きなファイルはia-cloudサービスではなく、AWS S3などのファイルストレージサービスへ直接送ることができます。",
-        "AnE": "アラーム＆イベントを出力する",
-        "AnEobjectKey": "A&Eのオブジェクトキー",
-        "AnEobjectDescription": "A&Eのオブジェクトの説明"
+        "filePreF": "特定のプリフィックスを使う",
+        "filePre": "ファイル名プリフィックス",
+        "tip-filePre": "ストレージサービスにファイルを格納する際のファイル名のプリフィックスを指定できます。"
     },
     "runtime": {
         "badFilePath": "ファイルが見つかりません。",

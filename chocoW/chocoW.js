@@ -32,7 +32,11 @@
  // directory name for temp files store
  const TEMPDIRNAME = "temp-dir-ia-cloud/";
  const TEMPIMAGEFILENAME = "choco-live.jpg";
- 
+
+// default file name prefix for a strage service
+const IMAGE_FILE_NAME_PREFIX = "ChocoW-image_";
+const VIDEO_FILE_NAME_PREFIX = "ChocoW-video_";
+
  module.exports = function (RED) {
    function chocoWCtrl(config) {
      RED.nodes.createNode(this, config);
@@ -58,6 +62,10 @@
      let server = config.server, serverInfo = config.serverInfo;
      let AnE = config.AnE, AnEobjectKey = config.AnEobjectKey, AnEobjectDescription = config.AnEobjectDescription;
      let status, preStatus;
+
+     //file name prefix
+     let imageFilePre = config.filePreF ? config.filePre : IMAGE_FILE_NAME_PREFIX;
+     let videoFilePre = config.filePreF ? config.filePre : VIDEO_FILE_NAME_PREFIX;
  
      const watcher = new chocoWatcher(netAddress, false, false);
  
@@ -200,7 +208,7 @@
         msg.dataObject.timestamp = moment(files[i].endTime).format();
 
         // make unique file name for locked video file
-        filePath = "ChocoW-video_" + moment(files[i].endTime).format("YYYYMMDD[T]HHmmss") + ".mov";
+        filePath = videoFilePre + moment(files[i].endTime).format("YYYYMMDD[T]HHmmss") + ".mov";
 
         // sending file data to ia-cloud CCS
         if (!server) {
@@ -285,7 +293,7 @@
       let msg2;
 
       // make unique file name for locked video file
-      filePath = "ChocoW-image_" + moment().format("YYYYMMDD[T]HHmmss") + ".jpg";
+      filePath = imageFilePre + moment().format("YYYYMMDD[T]HHmmss") + ".jpg";
 
       // sending file data to ia-cloud CCS
       if (!server) {

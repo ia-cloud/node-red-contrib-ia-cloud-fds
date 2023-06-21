@@ -6,9 +6,10 @@
         "ui-config": "UI config",
         "fileConfig": "File config",
         "tab": {
-            "device-prop": "Device settings",
-            "func-prop": "Function setting",
-            "object-prop": "Object Settings"
+            "device-prop": "Device Props",
+            "func-prop": "Function Props",
+            "object-prop": "Object Props",
+            "strage-prop": "Strage Props"
           },
         "dateSync": "PC clock synchronization",
         "triggerMode": "Recording mode",
@@ -42,9 +43,9 @@
         "storeTiming": "Check cycle",
         "each": "Each time check",
         "periodic": "Periodic check",
-        "storePeriod": "check cycle unit",
+        "storePeriod": "check cycle time",
         "capOut": "Image output",
-        "none": "Without",
+        "none": "none",
         "ia-cloud": "ia-cloud storing",
         "nodeOut": "Output on local monitor",
         "both": "Both",
@@ -52,13 +53,16 @@
         "objectKey": "Object key",
         "objectKeyholder": "Required: Specific Key",
         "objectDescription": "Object description",
+        "AnE": "Output alarms & events",
+        "AnEobjectKey": "A&E object key",
+        "AnEobjectDescription": "A&E object description",
         "server": "use storage server",
         "serverInfo": "server info",
         "serverInfoPH": "Description of storage server",
         "tip-server": "Large files can be sent directly to a file storage service such as AWS S3 instead of the ia-cloud service.",
-        "AnE": "Output alarms & events",
-        "AnEobjectKey": "A&E object key",
-        "AnEobjectDescription": "A&E object description"
+        "filePreF": "use a file name prefix",
+        "filePre": "file name prefix",
+        "tip-filePre": "You can specify a prefix for the file name when storing files in a storage service."
     },
     "runtime": {
         "badFilePath": "Bad file path",

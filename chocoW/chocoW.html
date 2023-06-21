@@ -151,17 +151,6 @@
                 <input type="text" style="width: 300px" id="node-input-objectDescription">
             </div>
             <hr>
-            <div class="form-tips" style="margin-left:20px" id="tip-server"><span data-i18n="editor.tip-server"></span></div>
-            <div class="form-row" style="margin-left:20px">
-                <label for="node-input-server"><span data-i18n="editor.server"></span></label>
-                <input type="checkbox" id="node-input-server" checked="chedked" style="display: inline-block; width: auto;" >
-            </div>
-            <div class="form-row" style="margin-left:20px">
-                <label for="node-input-serverInfo"><span data-i18n="editor.serverInfo"></span></label>
-                <input class="form-control" type="text" style="width: 300px"
-                  id="node-input-serverInfo" data-i18n="[placeholder]editor.serverInfoPH">
-            </div> 
-            <hr>
             <div class="form-row" style="margin-left:20px">
                 <label for="node-input-AnE"><span data-i18n="editor.AnE"></span></label>
                 <input type="checkbox" id="node-input-AnE" style="display: inline-block; width: auto;" >
@@ -178,6 +167,32 @@
             </div> 
         </div>
         <!-- tab object properties ends -->
+
+        <!-- tab strage properties -->
+        <div id="tab-strage-properties">
+
+            <div class="form-tips" style="margin-left:20px" id="tip-server"><span data-i18n="editor.tip-server"></span></div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-server"><span data-i18n="editor.server"></span></label>
+                <input type="checkbox" id="node-input-server" style="display: inline-block; width: auto;" >
+            </div>            
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-serverInfo"><span data-i18n="editor.serverInfo"></span></label>
+                <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-serverInfo" data-i18n="[placeholder]editor.serverInfoPH">
+            </div> 
+            <hr>
+            <div class="form-tips" style="margin-left:20px" id="tip-filePre"><span data-i18n="editor.tip-filePre"></span></div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-filePreF"><span data-i18n="editor.filePreF"></span></label>
+                <input type="checkbox" id="node-input-filePreF" style="display: inline-block; width: auto;" >
+            </div>            
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-filePre"><span data-i18n="editor.filePre"></span></label>
+                <input class="form-control" type="text" style="width: 300px" id="node-input-filePre">
+            </div> 
+        </div>
+        <!-- tab stragr properties ends -->
 
     </div>
     <!-- tab ends -->
@@ -222,8 +237,14 @@ RED.nodes.registerType('choco-watcher',{
         serverInfo:{value:""},
         AnE: {value: false},
         AnEobjectKey: {value:""},
-        AnEobjectDescription: {value:""},
+        AnEobjectDescription: {value:""}, 
 
+        // strage properties
+        server: {value:false},
+        serverInfo: {value:""},
+        filePreF: {value:false},
+        filePre: {value:""},
+        
         // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
         configReady: {value: "", required: true},
         outputs: {value: 1}
@@ -277,6 +298,10 @@ RED.nodes.registerType('choco-watcher',{
             id: 'tab-object-properties',
             label: this._('editor.tab.object-prop'),
         });
+        tabs.addTab({
+            id: 'tab-strage-properties',
+            label: this._('editor.tab.strage-prop'),
+        });
         // when triggerMode changed
         $("#node-input-triggerMode").on("change", function() {
             let val = $("#node-input-triggerMode").val();
@@ -318,6 +343,19 @@ RED.nodes.registerType('choco-watcher',{
             }
             else {
                 $("#node-input-serverInfo").prop("disabled", true);
+            }
+        });
+        $("#node-input-server").trigger("change");
+
+        // when file prefix checkbox changed
+        $("#node-input-filePreF").on("change", function() {
+            if ($("#node-input-filePreF").prop("checked")) {
+                $("#node-input-filePre").prop("disabled", false);
+                if ($("#node-input-filePre").val() === "" ) 
+                    $("#node-input-filePre").val($("#node-input-objectKey").val() + "_");
+            }
+            else {
+                $("#node-input-filePre").prop("disabled", true);
             }
         });
         $("#node-input-server").trigger("change");
