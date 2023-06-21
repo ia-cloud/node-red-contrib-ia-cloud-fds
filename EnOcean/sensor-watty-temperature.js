@@ -23,6 +23,10 @@ module.exports = class WattyTemperature extends SensorInterface {
     static process(data) {
         const dataLength = 10; // 5Byte * 2
         const ret = [];
+        // dataを正常に処理できるようにする
+        if (data === '0') {
+            data = '0'.repeat(dataLength);
+        }
         // 処理に必要なデータ長を抽出
         const fixedLengthData = data.replace('0x', '').slice(0, dataLength);
         if (fixedLengthData.length < dataLength) {

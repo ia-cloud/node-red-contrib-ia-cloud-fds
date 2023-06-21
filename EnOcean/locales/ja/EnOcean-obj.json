@@ -21,6 +21,7 @@
             "qInfo": "品質情報を使う",
             "qInterval": "最大送信間隔",
             "qIntervalSec": "[s]",
+            "qResetFlg": "タイムアウト時データリセット",
             "wattyHyco": "Watty HYCO CO2センサー",
             "wattyHyhq": "Watty HYHQ 2ch 温度センサー送信機",
             "wattyHyhqFf": "Watty HYHQ-FF 4ch 温度センサー送信機",

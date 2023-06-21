@@ -32,6 +32,11 @@ module.exports = class UrdAC3ch extends SensorInterface {
 
         let message = '';
 
+        // dataを正常に処理できるようにする
+        if (serialData === '0') {
+            serialData = '0'.repeat(dataLength);
+        }
+
         if (typeof serialData === 'undefined' || serialData.replace('0x', '').length < dataLength) {
             // 5Byte以上でなければ送信対象外のデータとし、sendFlg: falseのデータを返却
             return { contentData: [], message, sendFlg: false };
