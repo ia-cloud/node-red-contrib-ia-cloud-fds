@@ -48,15 +48,6 @@
                 <label for="node-input-objectDescription" style="margin-left: 10px; width:140px"><span data-i18n="editor.objectDescription"></span></label>
                 <input type="text" style="width: 250px" id="node-input-objectDescription">
             </div>
-            <hr>
-            <div class="form-row">
-                <label for="node-input-commonName" style="margin-left: 10px; width:140px"><span data-i18n="editor.commonName"></span></label>
-                <input type="text" style="width:250px" id="node-input-commonName" disabled="disabled">
-            </div>
-            <div class="form-row">
-                <label for="node-input-dataName" style="margin-left: 10px; width:140px"><span data-i18n="editor.dataName"></span></label>
-                <input type="text" style="width: 250px" id="node-input-dataName">
-            </div>
         </div>
         <!-- tab-object-properties ends -->
 
@@ -64,16 +55,22 @@
         <div id="tab-dataItem-properties">
 
             <div class="form-row">
-                <label for="node-input-BGStatus" style="margin-left:10px; width:80px"><span data-i18n="editor.BGStatus"></span></label>
 
-                <select id="node-input-KEImodel" style="width:150px">
+                <label for="node-input-KEImodel" style="margin-left:10px; width:80px"><span data-i18n="editor.KEImodel"></span></label>
+                <select id="node-input-KEImodel" style="width:140px">
                     <option selected="selected" value="user" data-i18n="editor.user"></option>
                     <option value="wunit" data-i18n="editor.wunit"></option>
                     <option value="altWU" data-i18n="editor.altWU"></option>
                     <option value="pOrder" data-i18n="editor.pOrder"></option>
                     <option value="psnl" data-i18n="editor.psnl"></option>
-                </select> 
-                <input type="hidden" id="node-input-BGStatus" ></select>
+                </select>
+                <label for="node-input-dataName" style="margin-left:10px; width:80px"><span data-i18n="editor.dataName"></span></label>
+                <input type="text" style="width: 140px" id="node-input-dataName">
+                <input type="hidden" id="node-input-commonName">
+            </div>
+            <div class="form-row">    
+                <label for="node-input-BGStatus" style="margin-left:10px; width:80px"><span data-i18n="editor.BGStatus"></span></label>
+                <input type="hidden" id="node-input-BGStatus" >
                 <input type="text" id="node-input-userBGStatus" required= "required" style="width:150px">
                 <select id="node-input-KEIBGStatus" style="width:120px"></select>               
                 <div id="wunitList" style="display:none">
@@ -197,25 +194,18 @@
             // 1行目のデータ名称、動作、正逆設定
             const paraForm0 =`
             <span style="display:inline-block; width:30px"> </span>
-            <label style="width:auto; text-align: left; margin-right: 10px;">${lblitem}</label>
+            <label style="width:80; text-align: right; margin-right: 10px;">${lblitem}</label>
             <input class="objkey"" placeholder="${lblobjkey}" type="text" required="required"
                 style="width:120px; display:inline-block; text-align:left; margin-right:10px;">
             <input class="eventName"" placeholder="${lbleName}" type="text" required="required" 
-                style="width:120px; display:inline-block; text-align:left; margin-right:10px;">
+                style="width:120px; display:inline-block; text-align:left;">
             `;
             const paraForm1 =`
-                <label style="width:70px; text-align: right; margin-right: 10px;">${lblstatus}</label>
-                <select class="KEImodel" style="width:150px">
-                    <option selected="selected" value="user" data-i18n="editor.user">${lbluser}</option>
-                    <option value="wunit">${lblwunit}</option>
-                    <option value="altWU">${lblaltWU}</option>
-                    <option value="pOrder">${lblpOrder}</option>
-                    <option value="psnl">${lblpsnl}</option>
-                </select> 
+                <label style="width:100px; text-align: right; margin-right: 10px;">${lblstatus}</label>
                 <input type="hidden" class="status" >
                 <select class="KEI-status" style="width:120px"></select> 
                 <input class="user-status" type="text" required="required" 
-                    style="width:120px; display:inline-block; text-align:left; margin-right:20px;">
+                    style="width:120px; display:inline-block; text-align:left;">
             `;
 
             // Tab
@@ -235,23 +225,6 @@
                 id: 'tab-dataItem-properties',
                 label: this._('editor.tab.data-settings'),
             });
-
-            // when KEI model changed
-            $("#node-input-KEImodel").on("change", function() {
-                if ($("#node-input-KEImodel").val() === "user"){
-                    $("#node-input-userBGStatus").show();
-                    $("#node-input-KEIBGStatus").hide();
-                } else {
-                    $("#node-input-userBGStatus").hide();
-                    $("#node-input-KEIBGStatus>option").remove();
-                    if ($("#node-input-KEImodel").val() === "wunit") $("#node-input-KEIBGStatus").append($("#wunitList>option").clone());
-                    else if ($("#node-input-KEImodel").val() === "altWU") $("#node-input-KEIBGStatus").append($("#altWUList>option").clone());
-                    else if ($("#node-input-KEImodel").val() === "pOrder") $("#node-input-KEIBGStatus").append($("#pOrderList>option").clone());
-                    else if ($("#node-input-KEImodel").val() === "psnl") $("#node-input-KEIBGStatus").append($("#psnlList>option").clone());
-                    $("#node-input-KEIBGStatus").show();
-                }
-            });
-            $("#node-input-KEImodel").trigger("change");
 
             // Define editableList.
             $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
@@ -277,7 +250,6 @@
                         rule = {
                             objectKey: "",
                             eventName: "",
-                            KEImodel: "user",
                             KEIstatus: "", 
                             userStatus: "", 
                             status: ""
@@ -286,28 +258,23 @@
                     // restore parameters
                     div0.find(".objkey").val(rule.objectKey);
                     div0.find(".eventName").val(rule.eventName);
-                    div1.find(".KEImodel").val(rule.KEImodel);
                     div1.find(".KEI-status").val(rule.KEIstatus);
                     div1.find(".user-status").val(rule.userStatus);
                     div1.find(".status").val(rule.status);
 
-                    div1.find(".KEImodel").change(function() {
-                        let keiModel = $(this).val();
-                        $(".status").val("");
-                        if (keiModel === "user"){
-                            div1.find(".user-status").show();
-                            div1.find(".KEI-status").hide();
-                        } else {
-                            div1.find(".user-status").hide();
-                            div1.find(".KEI-status>option").remove();
-                            if (keiModel === "wunit") div1.find(".KEI-status").append($("#wunitList>option").clone());
-                            else if (keiModel === "altWU") div1.find(".KEI-status").append($("#altWUList>option").clone());
-                            else if (keiModel === "pOrder") div1.find(".KEI-status").append($("#pOrderList>option").clone());
-                            else if (keiModel === "psnl") div1.find(".KEI-status").append($("#psnlList>option").clone());
-                            div1.find(".KEI-status").show();
-                        }
-                    });
-                    div1.find(".KEImodel").change();
+                    let KEImodel = $("#node-input-KEImodel").val();
+                    if (KEImodel === "user"){
+                        div1.find(".user-status").show();
+                        div1.find(".KEI-status").hide();
+                    } else {
+                        div1.find(".user-status").hide();
+                        div1.find(".KEI-status>option").remove();
+                        if (KEImodel === "wunit") div1.find(".KEI-status").append($("#wunitList>option").clone());
+                        else if (KEImodel === "altWU") div1.find(".KEI-status").append($("#altWUList>option").clone());
+                        else if (KEImodel === "pOrder") div1.find(".KEI-status").append($("#pOrderList>option").clone());
+                        else if (KEImodel === "psnl") div1.find(".KEI-status").append($("#psnlList>option").clone());
+                        div1.find(".KEI-status").show();
+                    }
 
                     div0.find(".eventName").change(function() {
                         if(div1.find(".user-status").val() === "") {
@@ -334,6 +301,55 @@
                 var rule = node.rules[i];
                 $("#node-input-rule-container").editableList('addItem',rule);
             }
+
+            // when KEI model changed
+            $("#node-input-KEImodel").on("change", function() {
+
+                let KEImodel = $("#node-input-KEImodel").val();
+                if (KEImodel === "user"){
+                    $("#node-input-userBGStatus").show();
+                    $("#node-input-KEIBGStatus").hide();
+                    $("#node-input-commonName").val("Status");
+
+                    $("#node-input-rule-container").editableList('items').each(function(i, elm){
+                        elm.find(".user-status").show();
+                        elm.find(".KEI-status").hide();
+                    });
+
+                } else {
+                    $("#node-input-userBGStatus").hide();
+                    $("#node-input-KEIBGStatus>option").remove();
+                    if (KEImodel === "wunit") {
+                        $("#node-input-KEIBGStatus").append($("#wunitList>option").clone());
+                        $("#node-input-commonName").val("KEI-WU");
+                    }
+                    else if (KEImodel === "altWU") {
+                        $("#node-input-KEIBGStatus").append($("#altWUList>option").clone());
+                        $("#node-input-commonName").val("KEI-WULT");
+                    }
+                    else if (KEImodel === "pOrder") {
+                        $("#node-input-KEIBGStatus").append($("#pOrderList>option").clone());
+                        $("#node-input-commonName").val("KEI-PO");
+                    }
+                    else if (KEImodel === "psnl") {
+                        $("#node-input-KEIBGStatus").append($("#psnlList>option").clone());
+                        $("#node-input-commonName").val("KEI-PSNL");
+                    }
+                    $("#node-input-KEIBGStatus").show();
+
+                    $("#node-input-rule-container").editableList('items').each(function(i, elm){
+                        elm.find(".user-status").hide();
+                        elm.find(".KEI-status>option").remove();
+                        if (KEImodel === "wunit") elm.find(".KEI-status").append($("#wunitList>option").clone());
+                        else if (KEImodel === "altWU") elm.find(".KEI-status").append($("#altWUList>option").clone());
+                        else if (KEImodel === "pOrder") elm.find(".KEI-status").append($("#pOrderList>option").clone());
+                        else if (KEImodel === "psnl") elm.find(".KEI-status").append($("#psnlList>option").clone());
+                        elm.find(".KEI-status").show();
+                    });
+                }
+            });
+            $("#node-input-KEImodel").trigger("change");
+
         },
         
         oneditsave: function() {
@@ -341,9 +357,10 @@
             let node = this;
             let configReady = "ready";
             let items = $("#node-input-rule-container").editableList('items');
+            let KEImodel = $("#node-input-KEImodel").val()
 
             if (!$("#node-input-objectKey").val()) configReady = "";
-            if ($("#node-input-KEImodel").val() === "user") {
+            if (KEImodel === "user") {
                 $("#node-input-BGStatus").val($("#node-input-userBGStatus").val());
                 if (!$("#node-input-userBGStatus").val()) configReady = "";
             } else {
@@ -359,12 +376,11 @@
                     // reatore parameters
                     objectKey: elm.find(".objkey").val(),
                     eventName: elm.find(".eventName").val(),
-                    KEImodel: elm.find(".KEImodel").val(),
                     KEIstatus: elm.find(".KEI-status").val(),
                     userStatus: elm.find(".user-status").val(),
                     status: elm.find(".status").val()
                 }
-                if (rule.KEImodel === "user") elm.find(".status").val(rule.userStatus);
+                if (KEImodel === "user") elm.find(".status").val(rule.userStatus);
                 else elm.find(".status").val(rule.KEIstatus);
                 rule.status = elm.find(".status").val();
 
@@ -373,8 +389,8 @@
                 // dataName is not null
                 if (!rule.objectKey) configReady = "";
                 if (!rule.eventName) configReady = "";
-                if (rule.KEImodel === "user" && !rule.userStatus) configReady = "";
-                if (rule.KEImodel !== "user" && !rule.KEIstatus) configReady = "";
+                if (KEImodel === "user" && !rule.userStatus) configReady = "";
+                if (KEImodel !== "user" && !rule.KEIstatus) configReady = "";
             });
 
             // 設定完了フラグをセット

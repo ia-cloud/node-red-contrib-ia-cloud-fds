@@ -13,12 +13,12 @@
         "objectDescription": "object description",
         "commonName": "common name",
         "dataName": "data name",
-
+        "KEImodel": "KEI model",
         "BGStatus": "Unconditional status",
-        "wunit": "KPI-E: Work unit",
-        "altWU": "KPI-E: Work unit II",
-        "pOrder": "KPI-E: Production Order",
-        "psnl": "KPI-E: Worker",
+        "wunit": "KEI: Work unit",
+        "altWU": "KEI: Work unit II",
+        "pOrder": "KEI: Production Order",
+        "psnl": "KEI: Worker",
         "user": "user defined",
         "rules": "status determination condition",
 

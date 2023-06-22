@@ -13,12 +13,12 @@
         "objectDescription": "オブジェクトの説明",
         "commonName": "コモン名称",
         "dataName": "データ名称",
-
+        "KEImodel": "KEIモデル",
         "BGStatus": "条件外状態",
-        "wunit": "KPI-E:製造設備",
-        "altWU": "KPI-E:製造設備II",
-        "pOrder": "KPI-E:製造オーダ",
-        "psnl": "KPI-E:作業員",
+        "wunit": "KEI:製造設備",
+        "altWU": "KEI:製造設備II",
+        "pOrder": "KEI:製造オーダ",
+        "psnl": "KEI:作業員",
         "user": "ユーザ定義",
         "rules": "状態判定要素",
 
