@@ -41,7 +41,7 @@ class ModbusCom extends PLCCom {
             }
             else {
                 let stopB;
-                (config.parity === "none") ? stopB = 2: stopB = 1;
+                (config.stop === "2B") ? stopB = 2: stopB = 1;
                 let portConfig = {
                     baudRate: Number(config.baud),
                     dataBits: 8,
