@@ -26,7 +26,7 @@ class PLCCom {
         let linkObj = this.linkObj;
         let addTbl = this.addTbl;
         let maxDataNum = Number(this.config.maxDataNum);
-        let noBlanck = this.config.noBlanck;
+        let noblank = this.config.noblank;
 
         // まず、現在の通信フレーム情報をクリア
         comList.length = 0;
@@ -58,10 +58,10 @@ class PLCCom {
                     saddr = address;
                     maxAdd = address + maxDataNum;
                 }
-                else if (noBlanck && address == (saddr + dataNum)) {
+                else if (noblank && address == (saddr + dataNum)) {
                     dataNum = address - saddr + 1;
                 }
-                else if (!noBlanck && address < maxAdd) {
+                else if (!noblank && address < maxAdd) {
                     dataNum = address - saddr + 1;
                 }else {
                     //PLC通信フレーム情報を追加
