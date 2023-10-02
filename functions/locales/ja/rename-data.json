@@ -10,7 +10,8 @@
         "reserve": "元データ保持",
         "dataName": "データ名称",
         "change": "名称変更",
-        "right": "-->"
+        "right": "-->",
+        "unit": "単位"
     },
     "runtime": {
         "ready": "入力待ち",

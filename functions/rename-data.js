@@ -65,6 +65,7 @@ module.exports = function(RED) {
                         // make copy of oreginal dataItem and change dataName and push
                         dataItem = Object.assign({}, contentData[i]);
                         dataItem.dataName = rule.chDataName;
+                        if (rule.chUnit) dataItem.unit = rule.chUnit;
                         dataItems.push(dataItem);
                     }
                     else if (!dItemFilter) dataItems.push(contentData[i]);

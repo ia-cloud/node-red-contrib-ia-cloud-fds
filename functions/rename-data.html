@@ -84,6 +84,7 @@
             const lbldName = node._("editor.dataName");
             const lblchange = node._("editor.change");
             const lblright = node._("editor.right");
+            const lblunit = node._("editor.unit");
 
             // editableList item のhtml要素
             const paraForm1 =`
@@ -98,12 +99,14 @@
             // 2行目のparameter
             const paraForm2 =`
                 <span style="display:inline-block; width:30px"> </span>
-                <label style="width:70px; text-align: left;">${lblchange}</label>
+                <label style="width:60px; text-align: left;">${lblchange}</label>
                 <input class="orDataName"" placeholder="${lbldName}" type="text"
-                    style="width:120px; display:inline-block; text-align:left;">
-                <label style="width:40px; text-align: center;">${lblright}</label>    
+                    style="width:100px; display:inline-block; text-align:left;">
+                <label style="width:20px; text-align: center;">${lblright}</label>    
                 <input class="chDataName"" placeholder="${lbldName}" type="text"
-                    style="width:120px; display:inline-block; text-align:left;">
+                    style="width:100px; display:inline-block; text-align:left;">
+                <input class="chUnit" placeholder="${lblunit}" type="text"
+                    style="margin-left:5px; width:60px; display:inline-block; text-align:left;">
             `;
 
             $("#node-input-rule-container").css('min-height','150px').css('min-width','450px').editableList({
@@ -135,6 +138,7 @@
                     row1.find(".reserve").prop("checked", rule.reserve);
                     row2.find(".orDataName").val(rule.orDataName);
                     row2.find(".chDataName").val(rule.chDataName);
+                    row2.find(".chUnit").val(rule.chUnit);
 
                     row2.find(".orDataName").change(function () {
                         if (!row2.find(".orDataName").val()) row2.find(".orDataName").prop("required", true);
@@ -178,7 +182,8 @@
                     objKey: elm.find(".objKey").val(),
                     reserve: elm.find(".reserve").prop("checked"),
                     orDataName: elm.find(".orDataName").val(),
-                    chDataName: elm.find(".chDataName").val()
+                    chDataName: elm.find(".chDataName").val(),
+                    chUnit: elm.find(".chUnit").val()
                 }
                 // check property
                 if (!item.orDataName || !item.chDataName) configReady = "";

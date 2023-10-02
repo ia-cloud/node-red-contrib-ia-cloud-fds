@@ -85,6 +85,7 @@
             const lbllimit = node._("editor.limit");
             const lbloffset = node._("editor.offset");
             const lblgain = node._("editor.gain");
+            const lblunit = node._("editor.unit");
             const lblHlimit = node._("editor.Hlimit");
             const lblLlimit = node._("editor.Llimit");
 
@@ -110,16 +111,18 @@
             const paraForm2 =`
                 <div class="scale-div">
                     <span style="display:inline-block; width:30px"> </span>
-                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                    <label style="width:80px; text-align:left;">
                         <span>${lbloffset}</span>
                     </label>
                     <input type="text" class="offset" placeholder="${lbloffset}" required="required"
                         style="width:80px; display:inline-block; text-align:left;">
-                    <label style="width:80px; text-align: right; margin-right: 10px;">
+                    <label style="width:50px; text-align: right;">
                         <span>${lblgain}</span>
                     </label>
                     <input type="text" class="gain" placeholder="${lblgain}" required="required"
                         style="width:80px; display:inline-block; text-align:left;">
+                    <input type="text" class="unit" placeholder="${lblunit}" 
+                        style="width:50px; display:inline-block; margin-left: 5px;text-align:left;">
                 </div>
                 <div class="limit-div" hidden>
                     <span style="display:inline-block; width:30px"> </span>
@@ -169,6 +172,7 @@
                     div1.find(".mode").val(rule.mode);
                     div2.find(".offset").val(rule.offset);
                     div2.find(".gain").val(rule.gain);
+                    div2.find(".unit").val(rule.unit);
                     div2.find(".Hlimit").val(rule.Hlimit);
                     div2.find(".Llimit").val(rule.Llimit);
 
@@ -224,6 +228,7 @@
                     mode: elm.find(".mode").val(),
                     offset: (Number(elm.find(".offset").val()) !== NaN)? elm.find(".offset").val(): "",
                     gain: (Number(elm.find(".gain").val()) !== NaN)? elm.find(".gain").val(): "",
+                    unit: elm.find(".unit").val(),
                     Hlimit: (Number(elm.find(".Hlimit").val()) !== NaN)? elm.find(".Hlimit").val(): "",
                     Llimit: (Number(elm.find(".LLimit").val()) !== NaN)? elm.find(".Llimit").val(): "",
                 }

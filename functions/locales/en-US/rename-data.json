@@ -10,7 +10,8 @@
         "reserve": "reserve original",
         "dataName": "data name",
         "change": "change",
-        "right": "-->"
+        "right": "-->",
+        "unit": "unit"
     },
     "runtime": {
         "ready": "waiting",
