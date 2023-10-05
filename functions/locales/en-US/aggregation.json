@@ -1,0 +1,48 @@
+{
+    "editor": {
+        "paletteLabel": "Aggregation",
+        "name": "node name",
+        "nodata": "output on nodata",
+        "period": "period",
+        "1min": "1min",
+        "3min": "3min",
+        "10min": "10min",
+        "30min": "30min",
+        "1hour": "1hour",
+        "12hour": "12hour",
+        "1day": "1day",
+        "1week": "1week",
+        "1mon": "1month",
+        "tab": {
+            "object-settings": "object configuration",
+            "data-settings": "dataitem configuration"
+        },
+        "outObject": "Outpu Object",
+        "objectKey": "object key",
+        "objectKeyholder": "required: unique key",
+        "objectDescription": "object description",
+        "contentType": "content type",
+        "progress": "Progress output",
+        "aggOutput": "Aggr. output",
+        "progOutput": "Progress output",
+        "condetionList": "Aggr. list",
+        "objkey": "Object key",
+        "dName": "data name",
+        "aggdName": "output data name",
+        "unit": "unit",
+        "sum": "Sum",
+        "count": "Count",
+        "ave": "Ave.",
+        "var": "Var,",
+        "stdev": "StDev",
+        "max": "Max",
+        "min": "Min",
+        "med": "Median"
+    },
+    "runtime": {
+        "ready": "running",
+        "sent": "sent",
+        "buffOver": "overflow",
+        "norule": "no rule"
+    }
+}

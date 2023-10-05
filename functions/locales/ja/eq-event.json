@@ -1,0 +1,44 @@
+{
+    "editor": {
+        "paletteLabel": "装置イベント",
+        "name": "ノード名称",
+        "tab": {
+            "object-settings": "オブジェクト設定",
+            "data-settings": "データ設定"
+        },
+        "period": "定期収集周期",
+        "async": "非同期収集あり",
+        "objectKeyholder": "必須：ユニークキー",
+        "objectKey": "オブジェクトキー",
+        "objectDescription": "オブジェクトの説明",
+        "AnEItem": "イベント設定",
+        "AnECode": "A&Eコード",
+        "AnEDesc": "A&E説明",
+        
+        "andor": "判定",
+        "and": "各項目の論理積(AND)",
+        "or": "各項目の論理和(OR)",
+        "rules": "イベント判定要素",
+
+        "item": "オブジェクト",
+        "objkey": "オブジェクトキー",
+        "dataName": "データ名称",
+        "equal": "等しい",
+        "notequal": "不等",
+        "range": "範囲内",
+        "notrange": "範囲外",
+        "equalValue": "照合する値",
+        "Hlimit": "上限値",
+        "Llimit": "下限値",
+        "equallbl": "データ値 = ",
+        "notequallbl": "データ値 <> ",
+        "rangelbl": " < データ値 < ",
+        "rangelblL": "データ値 < ",
+        "rangelblH": " < データ値"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}

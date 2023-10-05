@@ -1,0 +1,67 @@
+
+<script type="text/html" data-help-name="ia-cloud-simulator">
+    <p>ia-cloud-fds シミュレータ</p>
+
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>データを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>データに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-loud オブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>オブジェクトのわかりやすい説明</dd>
+            <dt>品質情報を使う<span class="property-type">チェック</span></dt>
+            <dd>データ項目毎に品質情報を挿入する。データの更新前にia-cloudオブジェクトの
+                出力する際には、"not good"が出力される。</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列</span></dt>
+            <dd>データ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
+            <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データ項目<span class="property-type">文字列</span></dt>
+                <dd>入力メッセージに含まれる、収集対象のデータ項目名。（msg.topic）</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>データ項目につける名称。デフォルトでデータ項目名がそのまま設定されている</dd>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+                <dt>単位<span class="property-type">文字列</span></dt>
+                <dd>データ項目に付与する単位</dd>  
+            </dl>
+        </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">文字列</span></dt>
+        <dd>データの値。ia-cloudオブジェクトのcontentDtataのdataValueに代入される。</dd>
+        <dt>msg.topic<span class="property-type">文字列</span></dt>
+        <dd>データ項目名。データ項目名が一致したメッセージからia-cloudオブジェクトが生成され出力される。</dd>
+        <dt>msg.trigger<span class="property-type">論理</span></dt>
+        <dd>ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">文字列 | オブジェクト</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">文字列</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">オブジェクト</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力メッセージからia-cloudオブジェクトを生成するシミュレータノードである。</p>
+    <p>データ項目プロパティと同じmsg.topicを含む入力メッセージから、ia-cloudオブジェクトを生成する。
+        msg.payloadの値がdataValueに設定される。Dashboard slider ノードなど
+        からのメッセージを接続することを想定している。</p>
+</script>

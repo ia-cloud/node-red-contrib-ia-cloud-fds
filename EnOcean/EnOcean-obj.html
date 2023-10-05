@@ -95,10 +95,14 @@
                 <label for="node-input-qInfo"><span data-i18n="enoceanDataItem.label.qInfo"></span></label>
                 <input type="checkbox" id="node-input-qInfo" style="display: inline-block; width: auto;" >
             </div>
-            <div class="form-row" id="qInterval">
+            <div class="form-row" id="qInterval" style="margin-left: 20px;">
                 <label for="node-input-qInterval"><span data-i18n="enoceanDataItem.label.qInterval"></span></label>
                 <input type="number" id="node-input-qInterval" min="0" step="1" value="60" style="display: inline-block; width: auto;">
                 <label for="node-input-qInterval"><span data-i18n="enoceanDataItem.label.qIntervalSec"></span></label>
+            </div>
+            <div class="form-row" id="qResetFlg" style="margin-left: 20px;">
+                <label for="node-input-qResetFlg"><span data-i18n="enoceanDataItem.label.qResetFlg"></span></label>
+                <input type="checkbox" id="node-input-qResetFlg" style="display: inline-block; width: auto;" >
             </div>
         </div>
     </div>
@@ -148,6 +152,8 @@
     <h3>Quality information</h3>
     <p>
         When "Quality info" is checked, quality parameter is added to msg.dataObject.
+        If the sensor data is not recieved in setting interval, quality is set to "not updated".
+        At that time, the sending data is the minimum value when the setting of reset data is on, otherwise previous sensor parameter.
         If the sensor data is not recieved in setting interval, quality is set to "not updated", and previous sensor parameter is set to sending data.
         (If sensor data has never been recieved, this node will not send data)
         If sensor data recieved, quality is set to "good".
@@ -273,6 +279,7 @@ RED.nodes.registerType('EnOcean-obj', {
         selectSensor: { value: '', required: true },
         qInfo: { value: false, required: true },
         qInterval: { value: '0' },
+        qResetFlg: { value: false },
     },
     color: 'rgb(231, 180, 100)',
     inputs: 1,
@@ -376,8 +383,10 @@ RED.nodes.registerType('EnOcean-obj', {
         $('#node-input-qInfo').change(function () {
             if($('#node-input-qInfo').prop('checked')) {
                 $('#qInterval').show();
+                $('#qResetFlg').show();
             } else {
                 $('#qInterval').hide();
+                $('#qResetFlg').hide();
             };
         });
     },
@@ -408,9 +417,10 @@ RED.nodes.registerType('EnOcean-obj', {
             selectSensor = $('#node-input-optex_occupancy_sensor').val();
         }
         $('#node-input-selectSensor').val(selectSensor);
-        // 品質情報チェックがない場合は周期を0に初期化
+        // 品質情報チェックがない場合は各品質情報設定を初期化
         if(!$('#node-input-qInfo').prop('checked') || isNaN($('#node-input-qInterval').val())) {
             $('#node-input-qInterval').val('0');
+            $('#node-input-qResetFlg').prop('checked', false);
         };
     },
 });

@@ -1,0 +1,63 @@
+<script type="text/html" data-help-name="signal-watcher">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Signal Watcher Data Collection Node</p>
+ 
+    <h3>Property list</h3>
+    <dl class="message-properties">
+            <dt>Communication Node<span class="property-type">EnOcean Communication Configuration Node</span></dt>
+            <dd>Selecting/creating a new communication setting node for EnOcean communication</dd>
+            <dd>Specify the serial communication port to be used as a setting item of the EnOcean communication setting node. </dd>
+            <dt>Object properties<span class="property-type">Tab</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>EnOcean ID<span class="property-type">string</span></dt>
+                <dd>EnOcean module identification number</dd>
+                <dt>Cyclic acquition interval<span class="property-type">Number</span></dt>
+                <dd>Period (seconds) when periodically collecting the lighting status data of the signal watcher</dd>
+                <dt>Asynchronous acquition<span class="property-type">Check</span></dt>
+                <dd>Setting to send data when there is a change in the lighting status data of the signal watcher</dd>
+                <dt>Object key<span class="property-type">string</span></dt>
+                <dd>Unique key string assigned to signal watcher ia-cloud object</dd>
+                <dt>Object description<span class="property-type">string</span></dt>
+                <dd>Description of signal watcher ia-cloud object</dd>
+            </dl>
+            <dt>Data Item properties<span class="property-type">Tab</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Data Structure<span class="property-type">String (Fixed)</span></dt>
+                <dd>Structure of signal watcher lighting state data. A user-defined format is acceptable, but the default is a general data structure iaCloudData<(Alarm&Event) fixed</dd>
+                    <dl class="message-properties" style="margin-left: 8px">
+                        <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                        <dd> Data item number. Automatically generated</dd>
+                        <dt>Data item <span class="property-type">Selection</span></dt>
+                        <dd>Select from the list of readable data items that the signal watcher has</dd>
+                        <dt>Data item <span class="property-type">string</span></dt>
+                        <dd>You can change the name freely, but set it so that it does not overlap within the same object key</dd>
+                    </dl>
+            </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>A trigger message that indicates when to send an ia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item of contentData is a data item according to the setting. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Node that sends the lighting status of the signal watcher</p>
+    <p>This node collects the light emission status of Inaba Electric Industry's multi-layered indicator light using EnOcean communication of signal watcher,
+        A node that outputs to the output message as an ia-cloud object. </p>
+
+</script>

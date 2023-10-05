@@ -1,0 +1,43 @@
+{
+    "editor": {
+        "name": "Node name",
+        "paletteLabel": "Signal Watcher AE",
+
+        "tab": {
+            "object-settings": "object prop.",
+            "data-settings": "alarm&event item"
+        },
+        "enOceanId": "EnOcean ID",
+        "enOceanIdHolder": "required: EnOcean ID",
+        "period": "period",
+        "async": "Async. ",
+        "objectKey": "object key",
+        "objectKeyholder": "unique key",
+        "objectDescription": "object description",
+        "comNode": "EnOcean Com. node",
+        "contentType": "content type",
+        "itemNumber": "item number",
+        "del": "delete",
+        "add": "add",
+        "CH1": "CH1 status",
+        "CH2": "CH2 status",
+        "CH3": "CH3 status",
+        "CH4": "CH4 status",
+        "bat": "battery",
+        "on": "ON",
+        "off": "OFF",
+        "fastBlink": "Fast Blk",
+        "slowBlink": "Slow Blk",
+        "momentaryOn": "Mom. ON",
+        "momentaryOff": "Mom. OFF",
+        "AnECode": "A&E code",
+        "AnEDesc": "A&E Description",
+        "AnE": "A&E"
+    },
+    "runtime": {
+        "ready": "Ready",
+        "preparing": "preparing...",
+        "comError": "com.error!!",
+        "sent": "data sent"
+    }
+}

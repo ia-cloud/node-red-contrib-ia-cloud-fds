@@ -1,0 +1,16 @@
+{
+    "editor": {
+        "paletteLabel": "chnage object key",
+        "name": "node name",
+        "obj-filter": "del. non scope object",
+        "rules": "rule list",
+        "objectKey": "object key",
+        "change": "change",
+        "right": "-->"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule"
+    }
+}

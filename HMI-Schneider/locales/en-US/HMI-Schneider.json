@@ -1,6 +1,7 @@
 {
   "editor": {
     "name": "node name",
+    "paletteLabel": "Schneider HMI",
     "hmiSchneiderNode": "communication node",
     "tab": {
       "object-settings": "object configuration",

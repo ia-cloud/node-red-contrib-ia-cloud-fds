@@ -1,0 +1,57 @@
+{
+    "editor": {
+        "paletteLabel": "Equip. status",
+        "name": "node name",
+        "tab": {
+            "object-settings": "object-properties",
+            "data-settings": "data-properties"
+        },
+        "period": "periodic collection period",
+        "async": "asynchronous collection",
+        "objectKeyholder": "required: unique key",
+        "objectKey": "object key",
+        "objectDescription": "object description",
+        "commonName": "common name",
+        "dataName": "data name",
+        "KEImodel": "KEI model",
+        "BGStatus": "Unconditional status",
+        "wunit": "KEI: Work unit",
+        "altWU": "KEI: Work unit II",
+        "pOrder": "KEI: Production Order",
+        "psnl": "KEI: Worker",
+        "user": "user defined",
+        "rules": "status determination condition",
+
+        "AUBT": "AUBT",
+        "ADOT": "ADOT",
+        "AUPT": "AUPT",
+        "ADET": "ADET",
+        "APT": "APT",
+        "AUST": "AUST",
+
+        "ATT": "ATT",
+        "AQT": "AQT",
+        "APAT": "APAT",
+        "APWT": "APWT",
+        "NWT": "NWT",
+
+        "OPT": "OPT",
+        "AST": "AST",
+        "NOT": "NOT",
+        "MST": "MST",
+        "WT": "WT",
+        "VOT": "VOT",
+        "DPT": "DPT",
+        "RWT": "RWT",
+
+        "item": "target event",
+        "objkey": "object key",
+        "eName": "Event Name",
+        "status": "judgment status"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "data sent",
+        "norule": "No rule"
+    }
+}

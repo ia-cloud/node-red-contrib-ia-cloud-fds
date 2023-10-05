@@ -79,10 +79,15 @@
         </div>
         <div class="form-row">
             <label for="node-config-input-parity"><span data-i18n="editor.parity"></span></label>
-            <select style="width: 150px;" id="node-config-input-parity">
+            <select style="width: 120px;" id="node-config-input-parity">
                 <option selected="selected" value="even" data-i18n="editor.even"></option>
                 <option value="odd" data-i18n="editor.odd"></option>
                 <option value="none" data-i18n="editor.none"></option>
+            </select>
+            <label for="node-config-input-stop" style="margin-left: 20px;"><span data-i18n="editor.stop"></span></label>
+            <select style="width: 60px;" id="node-config-input-stop">
+                <option selected="selected" value="1" data-i18n="editor.1B"></option>
+                <option value="2" data-i18n="editor.2B"></option>
             </select>
         </div>
     </div>
@@ -114,6 +119,7 @@
             serialAdd:{value:1 },
             baud:{value:115200 },
             parity:{value:"even" },
+            stop:{value:"1" },
             configJson:{value:""},
 
             requiredSet: {value: "", required:true},

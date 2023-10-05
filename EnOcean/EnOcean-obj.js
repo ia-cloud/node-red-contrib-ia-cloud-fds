@@ -33,6 +33,7 @@ module.exports = function (RED) {
         this.selectSensor = config.selectSensor;
         this.qInfo = config.qInfo;
         this.qInterval = parseInt(config.qInterval, 10);
+        this.qResetFlg = config.qResetFlg;
         this.intervalId = [];
 
         const { serialPool } = config.enoceancom;
@@ -172,6 +173,10 @@ module.exports = function (RED) {
                     if (linkDataList && linkDataList.length > 0 && linkDataList[0].value) {
                         // linkDataの品質情報ステータスを"not updated"にする
                         linkDataList[0].quality = 'not updated';
+                        if (this.qResetFlg) {
+                            // linkDataList[0].valueを初期化する
+                            linkDataList[0].value = '0';
+                        }
                         // 引数に [objectKey, radio_data] を受け取る
                         iaCloudObjectSend([obj.objectKey, linkDataList[0].value], linkDataList[0].quality);
                         node.status({ fill: 'yellow', shape: 'ring', text: 'status.notUpdated' });

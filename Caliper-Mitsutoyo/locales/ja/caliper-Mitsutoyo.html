@@ -1,52 +1,53 @@
-
 <script type="text/html" data-help-name="caliper-Mitsutoyo">
-    <p>ミツトヨ製ノギスノード</p>
+    <p>Mitsutoyo caliper node</p>
 
-<h3>プロパティ項目</h3>
+<h3>Property list</h3>
+<dt>Using the rpi-keyboard node<span class="property-type">check</span></dt>
+<dd>Use the rpi-keyboard node to input the vernier caliper node. </dd>
 <dl class="message-properties">
-    <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+    <dt>Object properties <span class="property-type">Tab</span></dt>
     <dl class="message-properties" style="margin-left: 8px">
-        <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
-        <dd>アラーム＆イベントオブジェクトに付与するユニークなキー文字列</dd>
-        <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
-        <dd>アラーム＆イベントオブジェクトのわかりやすい説明</dd>
+        <dt>Object key<span class="property-type">string</span></dt>
+        <dd>Unique key string assigned to alarm & event objects</dd>
+        <dt>Object description<span class="property-type">string</span></dt>
+        <dd>Description of alarm & event objects</dd>
     </dl>
-    <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+    <dt>Data Item properties<span class="property-type">Tab</span></dt>
     <dl class="message-properties" style="margin-left: 8px">
-        <dt>測定項目リスト<span class="property-type">データ項目リスト</span></dt>
+        <dt>Measurement item list<span class="property-type">Data item list</span></dt>
         <dl class="message-properties" style="margin-left: 8px">
-            <dt>項目番号<span class="property-type">数値（自動）</span></dt>
-            <dd>データ項目の番号。自動で生成される</dd>
-            <dt>データ名称<span class="property-type">文字列</span></dt>
-            <dd>各測定データに付与する名称。測定箇所の数だけ必要</dd>
+            <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+            <dd>Data item number. Automatically generated</dd>
+            <dt>Data name<span class="property-type">String</span></dt>
+            <dd>Name given to each measurement data. Required for the number of measurement points</dd>
         </dl>
     </dl>
-    <dt>名前<span class="property-type">文字列</span></dt>
-    <dd>個別のNodeに付与する名前</dd>
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>Name to give to individual Node</dd>
 </dl>
 
-<h3>入力メーッセージ</h3>
+<h3>Input message</h3>
 <dl class="message-properties">
     <dt>msg.payload<span class="property-type">string</span></dt>
-    <dd>msrg.payloadの値が"send"の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
-    <dd>msrg.payloadの値が"reset"の時、その時点での測定データを削除し、最初からの入力待ちとなる。</dd>
+    When the value of <dd>msrg.payload is "send", generate and output the current ia-cloud object. </dd>
+    When the value of <dd>msrg.payload is "reset", delete the measurement data at that point and wait for input from the beginning. </dd>
 </dl>
 
-<h3>出力メッセージ</h3>
+<h3>Output message</h3>
 <dl class="message-properties">
     <dt>msg.request<span class="property-type">string</span></dt>
-    <dd>ia-cloud-cnct Nodeへ渡すrequest文字列、"store"固定。</dd>
-    <dt>msg.dataObject<span class="property-type">オブジェクト</span></dt>
-    <dd>ia-cloud-cnct Nodeへ渡すia-cloudオブジェクト</dd>
-    <dt>msg.payload<span class="property-type">オブジェクト</span></dt>
-    <dd>計測ボタンが押された測定項目のデータ</dd>
+    <dd>The request string passed to ia-cloud-cnct Node, fixed to "store". </dd>
+    <dt>msg.dataObject<span class="property-type">Object</span></dt>
+    <dd>ia-cloud object passed to ia-cloud-cnct Node</dd>
+    <dt>msg.payload<span class="property-type">Object</span></dt>
+    <dd>Measurement data for which the measurement button was pressed</dd>
 </dl>
 
-<h3>詳細説明</h3>
-<p>ミツトヨ製デジタルノギスの有線USBケーブルに対応したデータ入力ノード。</p>
-<p>計測ボタンを押す度に、設定された計測項目に順次データが格納され、ボタンを2回連続で押下すると、
-    一連の計測データがia-cloudオブジェクトとして送出される。</p>
-<p>設定されたデータ名称の数以上、計測ボタンが押されれも超過分は無効。データ名称の数に達する前に、計測ボタンが2回連続で押されると、計測されたところまでのデータを送出。</p>
-<p>計測ボタンを3回連続で押下すると、全ての計測項目のデータが削除され、最初からの入力となる。</p>
+<h3>Details</h3>
+<p>A data input node that supports wired USB cables for Mitutoyo digital calipers. </p>
+<p>Every time you press the measurement button, the data is stored in the set measurement item in sequence, and if you press the button twice in a row,
+    A series of measurement data is sent as an ia-cloud object. </p>
+<p>Even if the measurement button is pressed more than the number of data names set, the excess is invalid. If the measurement button is pressed twice in succession before the number of data names is reached, the data up to the measured point is sent. </p>
+<p>If you press the measurement button three times in a row, the data of all the measurement items will be deleted and you will start from the beginning. </p>
 
 </script>

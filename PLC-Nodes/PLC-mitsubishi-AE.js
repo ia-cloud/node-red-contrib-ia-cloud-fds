@@ -40,7 +40,7 @@ module.exports = function(RED) {
         });
 
         this.on("input",function(msg) {
-            if (msg.payload) iaCloudObjectSend(config.objectKey);
+            if (msg.payload) plcmc.iaCloudObjectSend(config.objectKey);
         });
         this.on("close",function() {
             plcmc.close();

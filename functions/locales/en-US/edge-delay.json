@@ -1,0 +1,19 @@
+{
+    "editor": {
+        "paletteLabel": "Change&Delay",
+        "name": "node name",
+        "obj-filter": "del. non scope Object",
+        "condetionList": "condetion list",
+        "objkey": "object key",
+        "dName": "data name",
+        "ondelay": "ON delay",
+        "offdelay": "OFF Delay",
+        "num": "num"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

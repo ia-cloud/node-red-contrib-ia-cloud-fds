@@ -1,0 +1,399 @@
+/**
+ * Copyright 2019 Hiro Hashimukai on ia-cloud project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+<script type="text/html" data-template-name="choco-watcher">
+
+    <div id="com-block">
+        <!-- 隠しのNodeプロパティ -->
+        <input type="hidden" id="node-input-configReady">
+        <input type="hidden" id="node-input-outputs">
+        <!-- Network address -->
+        <div class="form-row">
+            <label for="node-input-netAddress"><span data-i18n="editor.netAddress"></span></label>
+            <input class="form-control" type="text" style="width: 300px"
+              id="node-input-netAddress" data-i18n="[placeholder]editor.netAddress">
+        </div>
+        <hr>
+    </div>
+    <!-- Tab, ownself -->
+    <div class="form-row">
+        <ul style="min-width: 500px; margin-bottom: 20px;" id="red-tabs">
+        </ul>
+    </div>
+    <!-- Tab contents -->
+    <div id="tabs-content" style="min-height:250px;">
+
+        <!-- tab-object-properties starts -->
+
+        <!-- tab properties for device starts-->
+        <div id="tab-device-properties">
+            <!-- device properties -->
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-dateSync"><span data-i18n="editor.dateSync"></span></label>
+                <input type="checkbox" checked="checked" id="node-input-dateSync" style="display: inline-block; width: auto;">
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.triggerMode"></span></label>
+                <select style="width: 300px;" id="node-input-triggerMode">
+                    <option selected="selected" value="asis" data-i18n="editor.asis"></option>
+                    <option value="DRAM" data-i18n="editor.DRAM"></span></option>
+                    <option value="SD" data-i18n="editor.SD"></option>
+                </select>
+            </div>
+            <div class="form-row" style="margin-left:20px" id="div-recTime">
+                <label ><span data-i18n="editor.recTime"></span></label>
+                <select style="width: 150px;" id="node-input-eachRecTime">
+                    <option selected="selected" value="asis" data-i18n="editor.asis"></option>
+                    <option value="20" data-i18n="editor.20s"></option>
+                    <option value="40" data-i18n="editor.40s"></option>
+                </select>
+                <select style="width: 150px;" id="node-input-periodicRecTime">
+                    <option selected="selected" value="asis" data-i18n="editor.asis"></option>
+                    <option value="60" data-i18n="editor.1m"></option>
+                    <option value="180" data-i18n="editor.3m"></option>
+                    <option value="300" data-i18n="editor.5m"></option>
+                    <option value="600" data-i18n="editor.10m"></option>
+                </select>
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.speaker"></span></label>
+                <select style="width: 150px;" id="node-input-speaker">
+                    <option selected="selected" value="asis" data-i18n="editor.asis"></option>
+                    <option value="L" data-i18n="editor.big"></span></option>
+                    <option value="M" data-i18n="editor.mid"></option>
+                    <option value="S" data-i18n="editor.small"></span></option>
+                    <option value="OFF" data-i18n="editor.off"></option>
+                </select>
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.angle"></span></label>
+                <select style="width: 150px;" id="node-input-angle">
+                    <option selected="selected" value="asis" data-i18n="editor.asis"></option>
+                    <option value="110" data-i18n="editor.110deg"></span></option>
+                    <option value="180" data-i18n="editor.180deg"></option>
+                </select>
+            </div>
+        </div>
+        <!--  tab properties for device ends -->
+
+        <!-- tab properties for functionality starts-->
+        <div id="tab-functionality-properties">
+            <hr>
+            <label ><span data-i18n="editor.video"></span></label>
+            <!-- functionality properties -->
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.storeTiming"></span></label>
+                <select style="width: 180px;" id="node-input-storeTiming">
+                    <option selected="selected" value="each" data-i18n="editor.each"></option>
+                    <option value="periodic" data-i18n="editor.periodic"></span></option>
+                </select>
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.storePeriod"></span></label>
+                <select style="width: 180px;" id="node-input-storePeriod" disabled = "disabled">
+                    <option value="6" data-i18n="editor.6h"></option>
+                    <option value="12" data-i18n="editor.12h" ></option>
+                    <option selected="selected" value="24" data-i18n="editor.24h" ></option>
+                </select>
+            </div>
+            <hr>
+            <label ><span data-i18n="editor.image"></span></label>
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.capOut"></span></label>
+                <select style="width: 180px;" id="node-input-capOut">
+                    <option selected="selected" value="none" data-i18n="editor.none"></option>
+                    <option value="ia-cloud" data-i18n="editor.ia-cloud"></option>
+                    <option value="nodeOut" data-i18n="editor.nodeOut"></option>
+                    <option value="both" data-i18n="editor.both"></option>
+                </select>
+            </div>
+
+            <div class="form-row" style="margin-left:20px">
+                <label ><span data-i18n="editor.capPeriod"></span></label>
+                <select style="width: 180px;" id="node-input-capPeriod" disabled = "disabled">
+                    <option selected="selected" value="msgOnly" data-i18n="editor.msgOnly"></option>
+                    <option value="10" data-i18n="editor.10m"></option>
+                    <option value="30" data-i18n="editor.30m"></option>
+                    <option value="60" data-i18n="editor.1h"></option>
+                    <option value="180" data-i18n="editor.3h"></option>
+                    <option value="360" data-i18n="editor.6h"></option>
+                    <option value="720" data-i18n="editor.12h"></option>
+                    <option value="1440" data-i18n="editor.24h"></option>
+                </select>
+            </div>
+
+        </div>
+        <!--  tab properties for functionality ends -->
+
+        <!-- tab object properties -->
+        <div id="tab-object-properties">
+
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-objectKey"><span data-i18n="editor.objectKey"></span></label>
+                <input class="form-control" type="text" required="required" style="width: 300px"
+                  id="node-input-objectKey" data-i18n="[placeholder]editor.objectKeyholder">
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-objectdescription"><span data-i18n="editor.objectDescription"></span></label>
+                <input type="text" style="width: 300px" id="node-input-objectDescription">
+            </div>
+            <hr>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-AnE"><span data-i18n="editor.AnE"></span></label>
+                <input type="checkbox" id="node-input-AnE" style="display: inline-block; width: auto;" >
+            </div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-AnEobjectKey"><span data-i18n="editor.AnEobjectKey"></span></label>
+                <input class="form-control" type="text" style="width: 300px"
+                  id="node-input-AnEobjectKey" required="required">
+            </div> 
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-AnEobjectDescription"><span data-i18n="editor.AnEobjectDescription"></span></label>
+                <input class="form-control" type="text" style="width: 300px"
+                  id="node-input-AnEobjectDescription">
+            </div> 
+        </div>
+        <!-- tab object properties ends -->
+
+        <!-- tab strage properties -->
+        <div id="tab-strage-properties">
+
+            <div class="form-tips" style="margin-left:20px" id="tip-server"><span data-i18n="editor.tip-server"></span></div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-server"><span data-i18n="editor.server"></span></label>
+                <input type="checkbox" id="node-input-server" style="display: inline-block; width: auto;" >
+            </div>            
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-serverInfo"><span data-i18n="editor.serverInfo"></span></label>
+                <input class="form-control" type="text" style="width: 300px"
+                    id="node-input-serverInfo" data-i18n="[placeholder]editor.serverInfoPH">
+            </div> 
+            <hr>
+            <div class="form-tips" style="margin-left:20px" id="tip-filePre"><span data-i18n="editor.tip-filePre"></span></div>
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-filePreF"><span data-i18n="editor.filePreF"></span></label>
+                <input type="checkbox" id="node-input-filePreF" style="display: inline-block; width: auto;" >
+            </div>            
+            <div class="form-row" style="margin-left:20px">
+                <label for="node-input-filePre"><span data-i18n="editor.filePre"></span></label>
+                <input class="form-control" type="text" style="width: 300px" id="node-input-filePre">
+            </div> 
+        </div>
+        <!-- tab stragr properties ends -->
+
+    </div>
+    <!-- tab ends -->
+
+    <div id="name-block">
+        <hr>
+        <div class="form-row">
+          <label for="node-input-name" ><i class="fa fa-tag"></i><span data-i18n="editor.name"></span></label>
+          <input type="text" class="form-control" id="node-input-name">
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+RED.nodes.registerType('choco-watcher',{
+
+    category: 'iaCloud devices',
+    color:"rgb(231, 180, 100)",
+    defaults: {
+        name: {value:""},
+        netAddress: {value:"", required: true},
+
+        // device properties
+        dateSync: {value:true},
+        triggerMode: {value:"asis"},
+        eachRecTime: {value:"asis"},
+        periodicRecTime: {value:"asis"},
+        speaker: {value:"asis"},
+        angle: {value:"asis"},
+
+        // functionallity properties
+        storeTiming: {value:"each"},
+        storePeriod: {value:"24"},
+        capOut: {value:"none"},
+        capPeriod: {value:"60"},
+
+        // object properties
+        objectKey: {value:"", required: true},
+        objectDescription: {value:""},
+        server: {value:true},
+        serverInfo:{value:""},
+        AnE: {value: false},
+        AnEobjectKey: {value:""},
+        AnEobjectDescription: {value:""}, 
+
+        // strage properties
+        server: {value:false},
+        serverInfo: {value:""},
+        filePreF: {value:false},
+        filePre: {value:""},
+        
+        // 必須項目が揃っているかのflag、Nodeに赤三角を表示するために必要
+        configReady: {value: "", required: true},
+        outputs: {value: 1}
+    },
+    inputs:1,
+    outputs:1,
+    outputLabels: function(index) {
+        switch(index) {
+            case 0:
+                return "ia-cloud object";
+            case 1:
+                if (this.server) return "file to server";
+                else return "snap shot";
+            case 2:
+                return  "snap shot";
+            default:
+                return;
+        }
+    },
+    icon: "ia-cloud.png",
+    label: function() {
+        return this.name||this._("editor.paletteLabel");
+    },
+    labelStyle: function() {
+        return this.name?"node_label_italic":"";
+    },
+    paletteLabel: function() {
+        return this._("editor.paletteLabel") || "choco-watcher";
+    },
+    oneditprepare: function() {
+        let node = this;
+
+        // Tab
+        const tabs = RED.tabs.create({
+            id: 'red-tabs',
+            onchange(tab) {
+                $('#tabs-content').children().hide();
+                $("#" + tab.id).show();
+                $("#red-tabs").resize();
+            },
+        });
+        tabs.addTab({
+            id: 'tab-device-properties',
+            label: this._('editor.tab.device-prop'),
+        });
+        tabs.addTab({
+            id: 'tab-functionality-properties',
+            label: this._('editor.tab.func-prop'),
+        });
+        tabs.addTab({
+            id: 'tab-object-properties',
+            label: this._('editor.tab.object-prop'),
+        });
+        tabs.addTab({
+            id: 'tab-strage-properties',
+            label: this._('editor.tab.strage-prop'),
+        });
+        // when triggerMode changed
+        $("#node-input-triggerMode").on("change", function() {
+            let val = $("#node-input-triggerMode").val();
+            switch ($("#node-input-triggerMode").val()) {
+                case "asis":
+                    $("#div-recTime").hide();
+                    break;
+                case "DRAM":
+                    $("#div-recTime").show();   
+                    $("#node-input-eachRecTime").show();
+                    $("#node-input-periodicRecTime").hide();
+                    break;
+                case "SD":
+                    $("#div-recTime").show(); 
+                    $("#node-input-eachRecTime").hide();
+                    $("#node-input-periodicRecTime").show();
+                    break;
+                default:
+            }
+        });
+        $("#node-input-triggerMode").trigger("change");
+        // when store timing changed
+        $("#node-input-storeTiming").on("change", function() {
+            if ($("#node-input-storeTiming").val() === "each") $("#node-input-storePeriod").prop("disabled", true);
+            else $("#node-input-storePeriod").prop("disabled", false);
+        });
+        $("#node-input-storeTiming").trigger("change");
+        // when capture image output changed
+        $("#node-input-capOut").on("change", function() {
+            if ($("#node-input-capOut").val() === "none") $("#node-input-capPeriod").prop("disabled", true);
+            else $("#node-input-capPeriod").prop("disabled", false);
+        });
+        $("#node-input-capOut").trigger("change");
+
+        // when server checkbox changed
+        $("#node-input-server").on("change", function() {
+            if ($("#node-input-server").prop("checked")) {
+                $("#node-input-serverInfo").prop("disabled", false);
+            }
+            else {
+                $("#node-input-serverInfo").prop("disabled", true);
+            }
+        });
+        $("#node-input-server").trigger("change");
+
+        // when file prefix checkbox changed
+        $("#node-input-filePreF").on("change", function() {
+            if ($("#node-input-filePreF").prop("checked")) {
+                $("#node-input-filePre").prop("disabled", false);
+                if ($("#node-input-filePre").val() === "" ) 
+                    $("#node-input-filePre").val($("#node-input-objectKey").val() + "_");
+            }
+            else {
+                $("#node-input-filePre").prop("disabled", true);
+            }
+        });
+        $("#node-input-server").trigger("change");
+
+        // when alarm&event checkbox changed
+        $("#node-input-AnE").on("change", function() {
+            if (!$("#node-input-AnE").prop("checked")) {
+                $("#node-input-AnEobjectKey").prop("disabled", true);
+                $("#node-input-AnEobjectKey").prop("required", false);
+                $("#node-input-AnEobjectDescription").prop("disabled", true);
+            }
+            else {
+                $("#node-input-AnEobjectKey").prop("disabled", false);
+                $("#node-input-AnEobjectKey").prop("required", true);
+                $("#node-input-AnEobjectDescription").prop("disabled", false);
+            }
+        });
+        $("#node-input-AnE").trigger("change");
+
+    },
+
+    oneditsave: function() {
+        let node = this;
+        let configReady = "ready";
+
+        // sets output port number
+        let outputs = 1;
+        if ($("#node-input-capOut").val() === "both" || $("#node-input-capOut").val() === "nodeOut")
+            outputs ++;
+        if ($("#node-input-server").prop("checked"))
+            outputs ++;
+        $("#node-input-outputs").val(outputs);
+
+        // objectKeyはある？
+        if (!$("#node-input-objectKey").val()) configReady = "";
+        if (!$("#node-input-netAddress").val()) configReady = "";
+        $("#node-input-configReady").val(configReady);
+    }
+});
+
+</script>

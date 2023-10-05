@@ -1,7 +1,11 @@
 {
-    "serial": {
-        "label": {
-            "serialport": "Serial Port"
-        }
+    "editor": {
+        "cycle": "Sending cycle",
+        "cycleSec": "[s]",
+        "dummySensorId": "Sensor ID",
+        "emu": "Use EnOcean Simulator",
+        "serialPort": "Serial Port",
+        "name": "node name",
+        "label": "EnOcean com. node"
     }
 }

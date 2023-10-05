@@ -1,0 +1,47 @@
+<script type="text/html" data-help-name="smoothing">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Output the moving average of ia-cloud data values</p>
+
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>Rule List<span class="property-type">Rule List</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Object key of target object for moving average. If left blank, a moving average of data for all objects will be used. </dd>
+            <dt>Data name<span class="property-type">String</span></dt>
+            <dd>Data name of target data item for moving average. If it is blank, the data of all data items will be moving averaged. </dd>
+            <dt>Moving Average Range<span class="property-type">Number</span></dt>
+            <dd>Range for moving average</dd>
+            <dd>The range can be specified by time (seconds, minutes, hours, days) or the number of data. </dd>
+            <dt>initialization time<span class="property-type">number</span></dt>
+            <dd>Time in seconds to clear moving average data. If data is not input for a certain period of time, clear the moving average of data. </dd>
+            <dd>When 0 or blank, disabled</dd>
+        </dl>
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Valid only for "store"</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>An object of the ia-cloud dataObject structure. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item of contentData will be the moving average value according to the setting. </dd>
+        <dd>The iaCloud objects that are not subject to the moving average are output as is. </dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>Extracts the contentData of the set object key from the iaCloud object of the input message, applies the moving average with the rules, and outputs it as the output message. </p>
+    <p>All data items are smoothed equally. </p>
+    <p>The iaCloud objects that are not subject to the moving average are output as is. </p>
+
+</script>

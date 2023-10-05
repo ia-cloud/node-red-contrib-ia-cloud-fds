@@ -1,0 +1,68 @@
+<script type="text/html" data-help-name="signal-watcher-AE">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>Alarm & Event Node in Signal Watcher</p>
+ 
+    <h3>Property list</h3>
+    <dl class="message-properties">
+         <dt>Communication Node<span class="property-type">EnOcean Communication Configuration Node</span></dt>
+         <dd>Selecting/creating a new communication setting node for EnOcean communication</dd>
+         <dd>Specify the serial communication port to be used as a setting item of the EnOcean communication setting node. </dd>
+         <dt>Object properties<span class="property-type">Tab</span></dt>
+         <dl class="message-properties" style="margin-left: 8px">
+             <dt>EnOcean ID<span class="property-type">string</span></dt>
+             <dd>EnOcean module identification number</dd>
+             <dt>Cyclic acquition interval<span class="property-type">Number</span></dt>
+             <dd>Period (seconds) when acquiring alarms and events periodically</dd>
+             <dt>SET/REST notification <span class="property-type">Check (fixed)</span></dt>
+             <dd>Settings to send data when an alarm or event occurs or recovers. Always checked</dd>
+             <dt>Object key<span class="property-type">string</span></dt>
+             <dd>Unique key string assigned to alarm & event objects</dd>
+             <dt>Object description<span class="property-type">string</span></dt>
+             <dd>Description of alarm & event objects</dd>
+         </dl>
+         <dt>Alarm Item properties<span class="property-type">Tab</span></dt>
+         <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data Structure<span class="property-type">String (Fixed)</span></dt>
+            <dd>Alarm&Event data structure (Alarm&Event) fixed</dd>
+            <dt>Setting list<span class="property-type">Alarm item list</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                <dd>Alarm item number. Automatically generated</dd>
+                <dt>Alarm Target CH<span class="property-type">Select</span></dt>
+                <dd>Channel of signal watcher from which alarm & event information is sourced. CH1-4</dd>
+                <dt>Status to be alarmed <span class="property-type">selected</span></dt>
+                <dd>Lighting status of the signal watcher that is the source of alarm and event information</dd>
+                <dt>A&E code<span class="property-type">string</span></dt>
+                <dd>Alarm&Event code. Arbitrary code to assign to individual alarms and events</dd>
+                <dt>A&E description<span class="property-type">string</span></dt>
+                <dd>Optional description of individual alarms & events</dd>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>A trigger message that indicates when to send an iia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
+    </dl>
+ 
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item of contentData is alarm and event data according to the settings. </dd>
+    </dl>
+ 
+    <h3>Details</h3>
+    <p>A node that sends out the lighting status of the signal watcher according to the alarm and event data model</p>
+    <p>This Node is a signal watcher that remotely monitors the light emission status of the stacked indicator lamps manufactured by Inaba Electric Industry Co., Ltd.
+        As an ia-cloud object containing ia-cloud Alarm & Event data collected using EnOcean communication,
+        Node to output to the output message. </p>
+ 
+ </script>

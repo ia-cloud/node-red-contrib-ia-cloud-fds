@@ -1,0 +1,57 @@
+{
+    "editor": {
+        "paletteLabel": "装置状態判定",
+        "name": "ノード名称",
+        "tab": {
+            "object-settings": "オブジェクト設定",
+            "data-settings": "データ設定"
+        },
+        "period": "定期収集周期",
+        "async": "非同期収集あり",
+        "objectKeyholder": "必須：ユニークキー",
+        "objectKey": "オブジェクトキー",
+        "objectDescription": "オブジェクトの説明",
+        "commonName": "コモン名称",
+        "dataName": "データ名称",
+        "KEImodel": "KEIモデル",
+        "BGStatus": "条件外状態",
+        "wunit": "KEI:製造設備",
+        "altWU": "KEI:製造設備II",
+        "pOrder": "KEI:製造オーダ",
+        "psnl": "KEI:作業員",
+        "user": "ユーザ定義",
+        "rules": "状態判定要素",
+
+        "AUBT": "AUBT",
+        "ADOT": "ADOT",
+        "AUPT": "AUPT",
+        "ADET": "ADET",
+        "APT": "APT",
+        "AUST": "AUST",
+
+        "ATT": "ATT",
+        "AQT": "AQT",
+        "APAT": "APAT",
+        "APWT": "APWT",
+        "NWT": "NWT",
+
+        "OPT": "OPT",
+        "AST": "AST",
+        "NOT": "NOT",
+        "MST": "MST",
+        "WT": "WT",
+        "VOT": "VOT",
+        "DPT": "DPT",
+        "RWT": "RWT",
+
+        "item": "対象イベント",
+        "objkey": "オブジェクトキー",
+        "eName": "イベント名称",
+        "status": "判定状態"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "output": "データ送出",
+        "norule": "ルールがありません"
+    }
+}

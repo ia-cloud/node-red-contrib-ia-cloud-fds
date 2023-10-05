@@ -1,0 +1,37 @@
+{
+    "editor": {
+        "paletteLabel": "Data2A&E",
+        "name": "node name",
+        "tab": {
+            "object-settings": "object configuration",
+            "data-settings": "dataitem configuration"
+          },
+        "objectKey": "object key",
+        "objectKeyholder": "required: unique key",
+        "objectDescription": "object description",
+        "contentType": "data Type",
+        "ruleList": "condetion list",
+        "objkey": "object key",
+        "dataName": "data name",
+        "equal": "equal",
+        "notequal": "not equal",
+        "range": "Range",
+        "notrange": "outRange",
+        "equalValue": "Value",
+        "Hlimit": "Hi limit",
+        "Llimit": "low Limit",
+        "equallbl": "Value = ",
+        "notequallbl": "Value <> ",
+        "rangelbl": " < Value < ",
+        "rangelblL": "Value < ",
+        "rangelblH": " < Value",
+        "AnECode": "A&E code",
+        "AnEDesc": "A&E description"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule",
+        "nomatch": "no match"
+    }
+}

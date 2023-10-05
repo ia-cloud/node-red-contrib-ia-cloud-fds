@@ -247,9 +247,12 @@ class PLC {
                         if (options.type == "2w-b") value = uValue + lValue;
                         if (options.type == "2w-l") value = lValue + uValue;
                     }
-                    if (options.encode == "signed") dItem.dataValue = -1 - ~parseInt(value, 16);
-                    if (options.encode == "unsigned") dItem.dataValue = parseInt("0" + value, 16);
-                    if (options.encode == "BCD") dItem.dataValue = parseInt(value, 10);
+                    if (options.encode == "signed") {
+                        dItem.dataValue = options.type === "1w" ? parseInt(value, 16) | ~0xffff:
+                                                                  parseInt(value, 16) | ~0xffffffff;
+                    }
+                    else if (options.encode == "unsigned") dItem.dataValue = parseInt("0" + value, 16);
+                    else if (options.encode == "BCD") dItem.dataValue = parseInt(value, 10);
                     dItem.dataValue = dItem.dataValue * options.gain + Number(options.offset);
                     if(options.unit) dItem.unit = options.unit;
                     break;

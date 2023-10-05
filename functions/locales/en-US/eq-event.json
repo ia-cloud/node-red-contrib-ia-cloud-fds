@@ -1,0 +1,44 @@
+{
+    "editor": {
+        "paletteLabel": "Equip. event",
+        "name": "node name",
+        "tab": {
+            "object-settings": "object-properties",
+            "data-settings": "data-properties"
+        },
+        "period": "periodic collection period",
+        "async": "asynchronous collection",
+        "objectKeyholder": "required: unique key",
+        "objectKey": "object key",
+        "objectDescription": "object description",
+        "AnEItem": "Event Settings",
+        "AnECode": "A&E Code",
+        "AnEDesc": "A&E Description",
+       
+        "andor": "AND/OR",
+        "and": "AND of each item",
+        "or": "OR of each item",
+        "rules": "Event conditions",
+
+        "item": "object",
+        "objkey": "object key",
+        "dataName": "data name",
+        "equal": "equal",
+        "notequal": "not equal",
+        "range": "within range",
+        "notrange": "out of range",
+        "equalValue": "Value to match",
+        "Hlimit": "Upper Limit",
+        "Llimit": "lower limit",
+        "equallbl": "data = ",
+        "notequallbl": "data <> ",
+        "rangelbl": " < data < ",
+        "rangelblL": "data < ",
+        "rangelblH": " < data "
+    },
+    "runtime": {
+        "ready": "Ready for input",
+        "output": "data output",
+        "norule": "No rule"
+    }
+}

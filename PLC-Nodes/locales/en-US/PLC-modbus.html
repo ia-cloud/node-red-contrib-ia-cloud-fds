@@ -1,26 +1,204 @@
 
 <script type="text/html" data-help-name="PLC-Modbus">
-    <p>ia-cloud object node for Modbus devices(e.g. PLCs) deta items </p>
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>ModbusPLCのデータ収集ノード</p>
 
-<h3>Inputs</h3>
-<dl class="message-properties">
-  <dt>msg.payload<span class="property-type">string</span></dt>
-  <dd>The other than NULL, 0 and false, a ia-cloud object would be created and an putput message would be sent.</dd>
-</dl>
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>通信ノード<span class="property-type">Modbus通信設定ノード</span></dt>
+        <dd>Modbus通信に使用する通信設定ノードの選択・新規作成</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>PLCデータを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>PLCデータに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>PLCデータ項目に付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>PLCデータ項目のわかりやすい説明</dd>
+            <dt>品質情報を使う<span class="property-type">チェック</span></dt>
+            <dd>PLCとの通信エラー時に品質情報を出力する場合にチェックを入れる</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列</span></dt>
+            <dd>ModbusPLCのデータ構造。ユーザ定義の組合せ定義しても良いが、デフォルトはModbusPLC</dd>
+            <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データタイプ<span class="property-type">選択</span></dt>
+                <dt>ビット: ビットデータを取得し指定された形式で出力する。</dt>
+                <dl>
+                    <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
+                    <dd>デバイス: ビットデータを取得するPLCのデバイス種別と先頭アドレス。コイル/ISのいずれかとそのアドレス</dd>
+                    <dd>形式: ビットデータを出力する形式。</dd>
+                    <dl>
+                        <dd>稼働：装置稼働状態。"start","stop","on","off" のいずれかを出力</DD>
+                        <dd>A&E：アラーム＆イベント。"set","reset","on","off" のいずれかを出力</DD>
+                        <dd>onoff：文字列。"on"/"off" のいずれかを出力</DD>
+                        <dd>A&E：数値。1/0のいずれかを出力</DD>
+                        <dd>A&E：論理値。true/false のいずれかを出力</DD>
+                    </dl>
+                    <dd>論理: ビットデータのtrue/falseを判断する論理。正/負論理</dd>
+                </dl>
+                <dt>ビット列: ビット列データを取得しtrue/falseを出力する。</dt>
+                <dl>
+                    <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
+                    <dd>デバイス: ビット列データを取得するPLCのデバイス種別と先頭アドレス。コイル/ISのいずれかとそのアドレス</dd>
+                    <dd>ビット数: ビット列データを取得するビット数。true/falseの配列を出力する</dd>
+                    <dd>論理: ビット列データを取得しtrue/falseを出力するの論理。正/負論理</dd>
+                </dl>
+                <dt>数値: PLCのワードデバイスを読み数値データを出力する</dt>
+                <dl>
+                    <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
+                    <dd>デバイス: ワードデータを取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>ワード数: 取得する数値データのワード型。１ワード(1W)/ダブルワード(2Wl)/ダブルワード(2Wb)の選択</dd>
+                    <dd>符号: データを解釈する際の型。符号無し、２の補数、BCDの選択</dd>
+                    <dd>ゼロ・倍率: データを解釈する際のオフセットとゲイン。</dd>
+                    <dd>単位: データ項目に付与する単位</dd>
+                </dl>
+                <dt>文字列: PLCのワードデバイスを読み文字列を出力する</dt>
+                <dl>
+                    <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
+                    <dd>デバイス: 文字列を取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>ワード数: 文字列を取得するPLCデバイスのワード数。文字列の文字数ではなく元データのワード数</dd>
+                    <dd>文字コード: 文字列を解釈する文字コード。シフトJIS/EUC-JP/UTF-8の選択</dd>
+                </dl>
+                <dt>数値列: PLCのワードデバイスを読み数値列を出力する</dt>
+                <dl>
+                    <dd>データ名称: データ項目につける名称。同一オブジェクトキー内では重複しないよう設定する</dd>
+                    <dd>デバイス: 数値列を取得するPLCのデバイス種別と先頭アドレス。HR/IRのいずれかとそのアドレス</dd>
+                    <dd>ワード数: 数値列を取得するPLCデバイスのワード数。</dd>
+                    <dd>文字コード: 文字列を解釈する文字コード。シフトJIS/EUC-JP/UTF-8の選択</dd>
+                </dl>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>ia-cloudオブジェクトを送出するタイミングを指示するメッセージ。NULL, 0, false 以外の時、その時点でのia-cloudオブジェクトを生成して出力する。</dd>
+    </dl>
 
-<h3>Outputs</h3>
-<dl class="message-properties">
-    <dt>msg.request<span class="property-type">string</span></dt>
-    <dd>"store" fixed string to send to ia-cloud-cnct Node</dd>
-    <dt>msg.dataObject<span class="property-type">object</span></dt>
-    <dd>ia cloud object supporsed to be send to ia cloud CCS</dd>
-</dl>
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
 
-<h3>Details</h3>
-<p>
-  Reads bit data and/or word data from Modbus devices, get ia-cloud object configured to store to ia-cloud CCS.
-  Periodically and/or Asynchronously, send message for an ia-cloud-cnct node.
-  A Modbus-com and a Modbus-dataItems would be used as configrastion nodes properties.
-</p>
+    <h3>詳細説明</h3>
+    <p>Modbus通信機器の持つビットデータ・ワードデータを読み出しia-cloudオブジェクトを生成するNode</p>
+    <p>設定Nodeとして、Modbus-comを使用する。</p>
 
 </script>
+
+<script type="text/html" data-help-name="PLC-Modbus">
+    <!-- Enter a summary of Node functionality here in 50 characters or less-->
+    <p>ModbusPLC Data Acquisition Node</p>
+
+    <h3>Property list</h3>
+    <dl class="message-properties">
+        <dt>Communication node <span class="property-type">Modbus communication setting node</span></dt>
+        <dd>Selecting/creating a new communication setting node for Modbus communication</dd>
+        <dt>Object properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>periodic acquisition interval<span class="property-type">Number</span></dt>
+            <dd>Period (seconds) when acquiring PLC data periodically</dd>
+            <dt>Asynchronous Collection<span class="property-type">Check</span></dt>
+            <dd>Setting to send data when there is a change in PLC data</dd>
+            <dt>Object key<span class="property-type">string</span></dt>
+            <dd>Unique key string assigned to PLC data item</dd>
+            <dt>Object description<span class="property-type">string</span></dt>
+            <dd>Description of the PLC data item</dd>
+            <dt>use quality information <span class="property-type">check</span></dt>
+            <dd>Check to output quality information when a communication error occurs with the PLC</dd>
+        </dl>
+        <dt>Data Item properties<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data Structure<span class="property-type">String</span></dt>
+            <dd>Modbus PLC data structure. User-defined combinations may be defined, but the default is ModbusPLC</dd>
+            <dt>Data item list <span class="property-type">Data item list</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>Item number<span class="property-type">Number (Automatic)</span></dt>
+                <dd>Data item number. Automatically generated</dd>
+                <dt>Data Type<span class="property-type">Selection</span></dt>
+                <dt>bit: Gets bit data and outputs it in the specified format. </dt>
+                <dl>
+                    <dd> Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd> Device: PLC device type and top address to get bit data. One of FC1:Coil/FC2:IS and its address</dd>
+                    <dd> format: Format for outputting bit data. </dd>
+                    <dl>
+                        <dd>Working: Equipment working state. Output one of "start","stop","on","off"</DD>
+                        <dd>A&E: Alarms & Events. Output one of "set","reset","on","off"</DD>
+                        <dd>onoff: String. Output either "on"/"off"</DD>
+                        <dd>A&E: Number. Output either 1/0</DD>
+                        <dd>A&E: Boolean. Output either true/false</DD>
+                    </dl>
+                    <dd>Logic: Logic to judge true/false of bit data. positive/negative logic</dd>
+                </dl>
+                <dt> bit string: Get bit string data and output true/false. </dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: PLC device type and start address to get bit string data. One of FC1:Coil/FC2:IS and its address</dd>
+                    <dd>Number of Bits: Number of bits to get bit string data. Output an array of true/false</dd>
+                    <dd>Logic: Logic to get bit string data and output true/false. positive/negative logic</dd>
+                </dl>
+                <dt>Numerical value: Read the PLC word device and output numerical data</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: Device type and top address of PLC to get word data. Either FC3:HR/FC4IR and its address</dd>
+                    <dd>Word type: Word type of numeric data to retrieve. Selection of 1 word (1W)/double word (2Wl)/double word (2Wb)</dd>
+                    <dd>Sign: The type for interpreting the data. unsigned, two's complement, BCD selection</dd>
+                    <dd>Zero Scale: Offset and gain in interpreting data. </dd>
+                    <dd>Unit: Unit assigned to data item</dd>
+                </dl>
+                <dt>String: Read PLC word device and output string</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: PLC device type and start address to get the string. Either FC3:HR/FC4IR and its address</dd>
+                    <dd>Word count: The word count of the PLC device to get the string from. The number of words in the original data, not the number of characters in the string</dd>
+                    <dd>Encode: Character code that interprets the string. Selection of Shift-JIS/EUC-JP/UTF-8</dd>
+                </dl>
+                <dt>Numerical string: Read the PLC word device and output the numeric string</dt>
+                <dl>
+                    <dd>Data name: Name given to the data item. Set not to duplicate within the same object key</dd>
+                    <dd>Device: Device type and top address of PLC to get numeric string. Either FC3:HR/FC4IR and its address</dd>
+                    <dd>Word count: The word count of the Mitsubishi PLC device to get the numeric string. </dd>
+                    <dd>Word type: Word type of numeric data to retrieve. Selection of 1 word (1W)/double word (2Wl)/double word (2Wb)</dd>
+                    <dd>Character code: Character code that interprets the string. Selection of Shift-JIS/EUC-JP/UTF-8</dd>
+                </dl>
+            </dl>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>name<span class="property-type">string</span></dt>
+        <dd>Name to give to individual Node</dd>
+    </dl>
+    <h3>Input message</h3>
+    <dl class="message-properties">
+        <dt>msg.payload<span class="property-type">string</span></dt>
+        <dd>A trigger message that indicates when to send an ia-cloud object. When not NULL, 0, or false, generate and output the ia-cloud object at that point. </dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>contentData of the ia-cloud object. Error comment, if an error occurred. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. "store" fixed</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item in contentData is output according to the setting. </dd>
+    </dl>
+
+    <h3>Detailed description</h3>
+    <p>Node that reads bit data/word data from Modbus communication device and creates ia-cloud object</p>

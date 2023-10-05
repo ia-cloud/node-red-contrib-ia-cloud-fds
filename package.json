@@ -1,7 +1,7 @@
 {
   "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
-  "version": "0.1.21",
+  "version": "0.1.29",
   "author": "ia-cloud project members",
   "bugs": {
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
@@ -21,7 +21,8 @@
     "@serialport/parser-delimiter": "^9.0.0",
     "ws": "^7.1.2",
     "got": "^11.5.2",
-    "websocket-as-promised": "^2.0.1"
+    "websocket-as-promised": "^2.0.1",
+    "base64-stream": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^6.5.0",
@@ -87,7 +88,12 @@
       "rename-object": "functions/rename-object.js",
       "rename-data": "functions/rename-data.js",
       "PLC-sim": "PLC-Nodes/PLC-sim.js",
-      "arrgregation": "functions/aggregation.js"
+      "arrgregation": "functions/aggregation.js",
+      "chocoW": "chocoW/chocoW.js",
+      "simulator": "simulator/simulator.js",
+      "eq-event": "functions/eq-event.js",
+      "eq-status": "functions/eq-status.js",
+      "BLE-sensor": "BLE-sensor/BLE-sensor.js"
     }
   },
   "repository": {

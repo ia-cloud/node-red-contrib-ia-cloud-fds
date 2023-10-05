@@ -1,0 +1,151 @@
+
+<script type="text/html" data-help-name="choco-watcher">
+    <p>reads recorded Video data and/or still image data from Choco-Tei watcher and generates ia-cloud object</p>
+
+    <h3>properties</h3>
+    <dl class="message-properties">
+        <dt>network address<span class="property-type">string</span></dt>
+        <dd>Network address of Choco-Tei watcher to connect</dd>
+        <dt>Device Props<span class="property-type">tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>time adjustment<span class="property-type">check</span></dt>
+            <dd>at startup or  every 100 seconds, adjust Choco-Tei watcher's clock with the connected PC</dd>        
+            <dt>record mode<span class="property-type">selection</span></dt>
+            <dd>Choco-Tei watcher recording mode. Either "trigger only", "loop & trigger lock", or "as is of it".</dd>
+            <dt>recording time<span class="property-type">selection</span></dt>
+            <dd>If the recording mode is "trigger only", either "20 seconds", "40 seconds", or "as is of it".
+                In the case of "loop & trigger lock" mode, either "1 minute", "3 minutes", "5 minutes", "10 minutes", or "as is of it".</dd>
+            <dt>Volume<span class="property-type">selection</span></dt>
+            <dd>Choco-Tei watcher speaker volume setting. One of "Large", "Medium", "Small", "OFF", and "as is of it".</dd>
+            <dt>Camera Angle<span class="property-type">selection</span></dt>
+            <dd>Camera angles for Choco-Tei watchers. Either "110 degrees", "180 degrees", or "as is of it".</dd>
+        </dl>
+        <dt>Function Props<span class="property-type">tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Check cycle<span class="property-type">selection</span></dt>
+            <dd>The cycle to check the recorded data (lock file) saved in Choco-Tei watcher. Either "check every time" or "interval check".</dd>
+            <dt>chek interval<span class="property-type">selection</span></dt>
+            <dd>The interval for the lock files check. Either "6 hours", "12 hours", or "24 hours".</dd>
+            <dt>Still Image Output<span class="property-type">selection</span></dt>
+            <dd>Destination for still images. One of "none", "ia-cloud object output", "local monitor output", or "both".
+                If "None" is selected, still image data is not acquired from Choco-Tei Watcher.</dd>
+            <dd>the node's last output port will be used for "local monitor output" or "both".</dd>
+            <dt>Acquisition interval<span class="property-type">selection</span></dt>
+            <dd>interval for still image data Acquisition. 
+                One of "only when msg.getImage is entered", "10 minutes", "30 minutes", "1 hour", "3 hours", "6 hours", "12 hours", "24 hours". </dd>
+        </dl>
+        <dt>Object Props<span class="property-type">tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>object key<span class="property-type">string</span></dt>
+            <dd>the object key of a ia-cloud object</dd>
+            <dt>object description<span class="property-type">string</span></dt>
+            <dd>the object description of a ia-cloud object</dd>
+            <dt>use alarm & event<span class="property-type">check</span></dt>
+            <dd>if this checked, error information of Choco-Tei Watcher wlii be output as an ia-cloud alarm & event data object. </dd>
+             <dt>A&E object key<span class="property-type">string</span>
+            </dd>
+            <dt>ia-cloud A&E object key<span class="property-type">string</span></dt>
+            <dd>object key for ia-cloud A&E object</dd>
+            <dt>ia-cloud A&E object description<span class="property-type">string</span></dt>
+            <dd>object description for ia-cloud A&E object</dd>
+        </dl>
+        <dt>strage props<span class="property-type">tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>use storage server<span class="property-type">check</span></dt>
+            <dd>Send file data to another storage service or file server, instead of ia-cloud ccs.</dd>
+            <dd>When checked, from the second output port, the local filename of the file to be stored (msg.localFilename) and </dd>
+            <dd>the file name of the storage destination (msg.filename) are output, this message can be connected to the [amazon S3 out] node of node-red-node-aws. </dd>
+            <dt>Storage information <span class="property-type">string</span></dt>
+            <dd>Information such as the storage service that sends the file data to. Used as server info for meta information stored in ia-cloud. </dd>
+            <dt>Use a specific prefix<span class="property-type">check</span></dt>
+            <dd>When checked, the storage file name prefix to save file data to another storage service or file server can be used. If not checked, "ChocoW-video_" is used for videos and "ChocoW-image_" is used for still images. </dd>
+            <dt>File name prefix <span class="property-type">string</span></dt>
+            <dd> Prefix string when storing to storage services that send file data. (The same applies to still images and movies.)
+                When the Use a specific prefix check is checked, if the object key of the object props item is set as default, this can be changed.</dd>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>node name<span class="property-type">string</span></dt>
+        <dd>indevidual node name</dd>
+    </dl>
+    <h3>input messsage</h3>
+    <dl class="message-properties">
+        <dt>msg.trigger<span class="property-type">string | number | object</span></dt>
+        <dd>other than NULL、0、false, makes the trigger to save a lock file of Choco-Tei watcher.</dd>
+        <dt>msg.getImage<span class="property-type">string | number | object</span></dt>
+        <dd>other than NULL、0、false, makes the trigger to get a still image of Choco-Tei watcher.</dd>
+    </dl>
+
+    <h3>Output message</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloud request content. Same as received as input message. </dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject. Each data item of contentData is alarm & event data according to the settings. </dd>
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>Output message to display a still image from the second output of the node. 
+            Output still image data MIME type is image/jpeg in Base64 format. </dd>
+    </dl>
+
+    <p>Choco-Tei Watcher is a video camera for the manufacturing line. It records the video of the timing 
+       when there is an abnormality to check later. By inputting a signal called a trigger, the Choco-Tei watcher
+       records video data before and after the trigger input timing and saves as a lock file. Also, by accessing Choco-Tei 
+       Watcher Viewer (Choco-Tei Watcher's network address) from a browser on a PC connected to Cho-Stop Watcher, you can change 
+       Choco-Tei Watcher settings and view recorded data.
+       The Choco-Tei Watcher node is a node-RED node that reads recorded data and still image data from the Cho-Stop 
+       Watcher using http communication and outputs it as an ia-cloud object. </p>
+    <p>If msg.trigger is input other than NULL, 0, or false, the node sends the trigger command to the choc watcher to save a lock file.</p>
+
+    <dt>checking Lock file</dt>
+     <dd>Check the recorded video data (lock file) saved in the Choco-Tei Watcher every set cycle. 
+        If lock files exist, all lock files are converted to ia-cloud file data object format and output, 
+        and are deleted from the Choco-Tei watcher.
+        Don't deploy the node-red flow while getting the video file, as it will cause malfunction.
+        The lock file check interval can be selected from two types. </dd>        
+     <dl class="message-properties">
+         <dt>Each time check</dt>
+         <dd>Checks lockfile for Choco-Tei watcher every 10 seconds. </dd>
+         <dt>interval check</dt>
+         <dd>Check the lockfile for short stop watchers at a set interval of 6, 12, or 24 hours. </dd>
+     </dl>
+
+    <dt>Still image acquisition function</dt>
+    <dd>Get still image data from Choco-Tei Watcher. Still images can be acquired periodically or when a message is entered.
+        Also, still image data can be output as an ia-cloud file data object, still image output for local monitor, or both. </dd>
+    <dl class="message-properties">
+        <dt>Still image acquisition timing</dt>
+        <dd>
+            <dl class="message-properties">
+                <dt>Cyclic acquisition</dt>
+                <dd>You can acquire and output still image data from Choco-Tei Watcher at a set cycle of 10, 30 minutes, 1, 2, 6, 12, or 24 hours. </dd>
+                <dt>by input message</dt>
+                <dd>If msg.getImage is input other than NULL, 0, or false, still image data can be obtained and output from a Choco-Tei watcher node.
+                    Even if it is set to periodical acquisition, it works in the same way. </dd>
+            </dl>
+        </dd>
+        <dt>still image data output format</dt>
+        <dd>
+            <dl class="message-properties">
+                <dt>still image ia-cloud file data object output</dt>
+                <dd>If the "still image output" property is set to "ia-cloud storage" or "both", 
+                    the still image data obtained from Choco-Tei watcher will be output as an ia-cloud data object. </dd>
+                <dt>still image output for local monitor</dt>
+                <dd>If the "still image output" property is set to "local monitor output" or "both", 
+                    output the still image data obtained from the Choco-Tei watcher as msg.payload from the last output of the node . 
+                    The last output of the node becomes available when you select "Local Monitor Output" or 
+                    "Both" in the "Still Image Output" property. </dd>
+            </dl>
+        </dd>
+    </dl>  
+
+    <dt>Choco-Tei watcher setting function</dt>
+    <dd>You can change Choco-Tei Watcher's "PC Time Synchronization", "Recording Mode", "Recording Unit", "Speaker Volume", 
+        "Camera Angle" settings from the "Settings" tab. It is not possible to check existing settings in Node-RED. 
+        Configuration changes will be reflected when connected to Chocho-Tei Watcher by deploying the flow. </dd>
+    <dd>In addition, by reloading the browser, the setting change will be reflected in the setting display of Chocho Watcher Viewer. </dd>
+
+    <dt>Choco-Tei stop watcher monitoring function</dt>
+    <dd>Get error code and alert status every 10 seconds. If the "Output Alarm & Event" property is checked, the ia-cloud alarm & event 
+        data object will be output when the error code changes or when the error code is other than E000. </dd>
+
+</script>

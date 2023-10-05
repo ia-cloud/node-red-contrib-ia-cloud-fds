@@ -1,0 +1,28 @@
+{
+    "editor": {
+        "name": "ノード名称",
+        "paletteLabel": "センサシミュレータ",
+        "tab": {
+          "object-settings": "オブジェクト設定",
+          "data-settings": "データ設定"
+        },
+        "period": "定期収集周期",
+        "async": "非同期収集有り",
+        "qInfo": "品質情報を使う",
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "contentType": "データ構造型",
+        "itemNumber": "項目番号",
+        "del": "削除",
+        "add": "追加",
+        "dtopic": "データ項目名",
+        "dname": "データ名称",
+        "unit": "単位"
+    },
+    "runtime": {
+        "ready": "Ready",
+        "preparing": "データ準備中...",
+        "sent": "データ送出"
+    }
+}

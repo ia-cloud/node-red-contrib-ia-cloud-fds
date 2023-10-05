@@ -68,6 +68,7 @@ module.exports = function(RED) {
                     switch (rule.mode) {
                         case "scale":
                             dataValue = Number(rule.offset) + Number(rule.gain) * dataValue;
+                            if (rule.unit) dataItem.unit = rule.unit;
                             break;
                         case "limit":
                             if (dataValue > Number(rule.Hlimit)) dataValue = Number(rule.Hlimit);

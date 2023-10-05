@@ -1,0 +1,21 @@
+{
+    "editor": {
+        "paletteLabel": "Data name change",
+        "name": "node name",
+        "obj-filter": "del. not specified object",
+        "dItem-filter": "del. not specified data",
+        "rules": "rule list",
+        "object": "object",
+        "objectKey": "object key",
+        "reserve": "reserve original",
+        "dataName": "data name",
+        "change": "change",
+        "right": "-->",
+        "unit": "unit"
+    },
+    "runtime": {
+        "ready": "waiting",
+        "output": "sent",
+        "norule": "no rule"
+    }
+}

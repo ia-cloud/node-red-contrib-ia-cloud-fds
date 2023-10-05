@@ -10,6 +10,7 @@
         "limit": "上下限",
         "offset": "オフセット",
         "gain": "ゲイン",
+        "unit": "単位",
         "Hlimit": "上限値",
         "Llimit": "下限値"
     },

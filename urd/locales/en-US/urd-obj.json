@@ -19,6 +19,7 @@
             "qInfo": "Quality info",
             "qInterval": "Max interval",
             "qIntervalSec": "[s]",
+            "qResetFlg": "use range minimum on timeout",
             "selectFile": "Select setting file.",
             "sensor": "Sensor type",
             "sensorConfig": "Sensor config",

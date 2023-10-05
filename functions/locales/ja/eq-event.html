@@ -1,0 +1,70 @@
+
+<script type="text/html" data-help-name="eq-event">
+    <!-- ここにNode機能の概要を、50文字以内で記述-->
+    <p>ia-cloudのデータ項目から対象装置の運転状態を判定しアラーム＆イベント出力メッセージを送出する</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>定期収集周期<span class="property-type">数値</span></dt>
+            <dd>データを定期的に収集する場合の周期（秒）</dd>
+            <dt>非同期収集<span class="property-type">チェック</span></dt>
+            <dd>データに変化のあった場合データを送出する設定</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>イベントオブジェクトのわかりやすい説明</dd>
+            <dt>イベント設定<span class="property-type">文字列</span></dt>
+            <dd>イベント名称:装置イベントの名称やコード。アラーム&イベントモデルのAnECodeとして設定される</dd>
+            <dd>イベント説明:装置イベントオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>動作<span class="property-type">選択</span></dt>
+            <dd>各項目の全てのAND(論理積)を取る</dd>
+            <dd>各項目の全てのOR(論理和)を取る</dd>
+            <dt>イベント判定要素<span class="property-type">リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+                <dd>評価する対象のオブジェクトキー</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>評価する対象データ項目のデータ名称。</dd>
+                <dt>判定方法<span class="property-type">選択</span></dt>
+                <dd>データ値の判定方法：</dd> 
+                <dd>等しい・等しくない・範囲内・範囲外のいずれかを選択</dd> 
+                <dt>照合する値<span class="property-type">数値|文字列</span></dt>
+                <dd>データの等価評価の値（空欄は非適用）</dd>
+                <dt>上限値<span class="property-type">数値</span></dt>
+                <dd>データ評価の上限値（空欄は非適用）</dd>
+                <dt>下限値<span class="property-type">数値</span></dt>
+                <dd>データ評価の下限値（空欄は非適用）</dd>
+            </dl>
+            <dt>名前<span class="property-type">文字列</span></dt>
+            <dd>個別のNodeに付与する名前</dd>
+        </dl>
+    </dl>
+    <h3>入力メーッセージ</h3>
+    <dl class="message-properties">
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"のみ有効</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject構造のオブジェクト。</dd>
+    </dl>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定。</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。評価条件リストで判定された装置イベントのdataObject。</dd>
+        <dd>ia-cloudアラーム&イベントデータモデルのオブジェクト</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>入力メッセージのiaCloudオブジェクトの各データ項目を論理値で評価し、全項目のAND（論理積）あるいはOR（論理話）で評価し、
+        装置イベント（Alarm&Eventモデル）のia-cloudオブジェクトを送出する。</p>
+
+</script>
