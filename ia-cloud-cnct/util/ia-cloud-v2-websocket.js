@@ -31,7 +31,8 @@ class iaCloudV2websocket {
             packMessage: data => JSON.stringify(data),
             unpackMessage: data => JSON.parse(data),
             attachRequestId: (data, requestId) => Object.assign({id: requestId}, data), // attach requestId to message as `id` field
-            extractRequestId: data => data && data.id
+            extractRequestId: data => data && data.id,
+            timeout: options.timeout
         });
     };
 

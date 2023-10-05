@@ -151,6 +151,7 @@ module.exports = function(RED) {
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        msg.payload = error.message;
                     } finally {
                         node.send(msg);
                     }
@@ -160,27 +161,39 @@ module.exports = function(RED) {
 
         this.on("input",function(msg) {
 
-            info = fContext.get(cnctInfoName);
+            let info = fContext.get(cnctInfoName);
 
             //非接続状態の時は、何もしない。
             if (info.status === "Disconnected") return;
             
-            if (msg.request === "store"
-                || msg.request === "retrieve" || msg.request === "convey"){
+            if (msg.request === "store" || msg.request === "retrieve" || msg.request === "retrieveArray"
+                || msg.request === "convey" || msg.request === "getStatus" || msg.request === "terminate"){
 
                 // node status をReqesting に
                 node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
                 info.status = "requesting";
 
-                let dataObject = msg.dataObject;
+                let object;
+                if (msg.dataObject) object  = msg.dataObject;
+                else if (msg.retrieveObject) object  = msg.retrieveObject;
+                else if (msg.retrieveObjects) object  = msg.retrieveObjects;
+
                 (async () => {
                     // リクエスト
                     try {
                         let res;
-                        if (msg.request === "store") res = await iaC.store(dataObject);
-                        if (msg.request === "retrieve") res = await iaC.retrieve();
-                        if (msg.request === "convey") res = await iaC.convey();
-                        node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
+                        if (msg.request === "terminate") {
+                            res = await iaC.terminate();  
+                            node.status({fill:"yellow", shape:"dot", text:"runtime.disconnected"});
+                        }
+                        else {
+                            if (msg.request === "store") res = await iaC.store(object);
+                            else if (msg.request === "retrieve") res = await iaC.retrieve(object);
+                            else if (msg.request === "retrieveArray") res = await iaC.retrieveArray(object);
+                            else if (msg.request === "convey") res = await iaC.convey();
+                            else if (msg.request === "getStatus") res = await iaC.getStatus();        
+                            node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
+                        }
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
@@ -193,6 +206,8 @@ module.exports = function(RED) {
         });
 
         this.on("close",function(done) {
+
+            let info = fContext.get(cnctInfoName);
 
             // stop timers for the retry and the tapping
             clearTimeout(cnctRtryId);

@@ -75,7 +75,7 @@ class iaCloudV2Connection {
                         Authorization: cnctInfo.Authorization,
                         maxRedirects: 21,
                         proxy: cnctInfo.proxy,
-                        reqTimeout: cnctInfo.reqTimeout
+                        timeout: {request: cnctInfo.reqTimeout}
                     };
 
                     this.cnnt = new rest(this.opts);
@@ -90,7 +90,7 @@ class iaCloudV2Connection {
                         Authorization: cnctInfo.Authorization,
                         maxRedirects: 21,
                         proxy: cnctInfo.proxy,
-                        reqTimeout: cnctInfo.reqTimeout
+                        timeout: cnctInfo.reqTimeout
                     };
 
                     this.cnnt = new wbs(this.opts);
@@ -113,7 +113,7 @@ class iaCloudV2Connection {
     // a external method for a ia-cloud connect request
     async connect() {
 
-        let info = this.cnctInfo;
+        let info = this.fContext.get(this.cnctInfoName);
         let opts = this.opts;
 
         // connect リクエストのリクエストボディ
@@ -153,7 +153,7 @@ class iaCloudV2Connection {
 
     async getStatus() {
 
-        let info = this.cnctInfo;
+        let info = this.fContext.get(this.cnctInfoName);
 
         // getStatus リクエストのリクエストボディ
 
@@ -174,7 +174,7 @@ class iaCloudV2Connection {
                 info.serviceID = res.newServiceID;
                 info.status = "Connected";
                 info.lastReqTs = moment().format();
-
+                return res;
             } else {
                 throw new IaCloudAPIError();
             }
@@ -190,7 +190,7 @@ class iaCloudV2Connection {
 
     async store(obj) {
     
-        let info = this.cnctInfo;
+        let info = this.fContext.get(this.cnctInfoName);
 
         // リクエストのリクエストボディ
         let reqbody = {
@@ -257,15 +257,51 @@ class iaCloudV2Connection {
         }
     };
     
-    async convey(obj) {
+    async retrieveArray(obj) {
 
         let info = this.cnctInfo;
+
+        // node status をReqesting に
+        info.status = "requesting";
+
+        // リクエストのリクエストボディ
+        let reqbody = {
+            request: "retrieveArray",
+            serviceID: info.serviceID,
+            retrieveObjects: obj
+        }
+
+        try {
+            let res = await this.cnnt.iaCloudRequest(reqbody);
+
+            if (res.serviceID === reqbody.serviceID && res.status.toLowerCase() === "ok" )  {
+
+                // ここで、serviceIDをconfiguration nodeである自身の接続情報にセットする
+                info.serviceID = res.newServiceID;
+                info.status = "Connected";
+                info.lastReqTs = moment().format();
+                return res;
+            } else {
+                throw new IaCloudAPIError();
+            }
+        } catch(error) {
+            info.serviceID = "";
+            info.status = "Disconnected";
+            throw error;
+        } finally {
+            this.fContext.set(this.cnctInfoName, info);
+        }
+    };
+
+    async convey(obj) {
+
+        let info = this.fContext.get(this.cnctInfoName);
 
     };
 
     async terminate() {
 
-        let info = this.cnctInfo;
+        let info = this.fContext.get(this.cnctInfoName);
         let opts = this.opts;
 
         //terminateリクエストのリクエストボディ
