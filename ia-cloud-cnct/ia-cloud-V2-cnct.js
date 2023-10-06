@@ -18,10 +18,10 @@
 
 module.exports = function(RED) {
 
-    const iaCloudConnection = require("./util/ia-cloud-connection.js");
+    const iaCloudV2Connection = require("./util/ia-cloud-V2-connection.js");
     const CNCT_RETRY_INIT = 1 * 60 * 1000;      //リトライ間隔の初期値1分
 
-    function iaCloudCnct2(config) {
+    function iaCloudV2Cnct(config) {
         RED.nodes.createNode(this,config);
 
         let node = this;
@@ -31,13 +31,16 @@ module.exports = function(RED) {
         
         // ia-cloud connection config node instance
         const ccsConnectionConfigNode = RED.nodes.getNode(config.ccsConnectionConfig);
+        let username = String(ccsConnectionConfigNode.credentials.userId);
+        let password = String(ccsConnectionConfigNode.credentials.password);
 
         // 接続情報を保持するオブジェクト
         let info = {
             status: "Disconnected",
             serviceID: "",
             url: ccsConnectionConfigNode.url,
-        //    userID: ccsConnectionConfigNode.credentials.userId,
+            username: username,
+            Authorization: "Basic " + Buffer.from(username + ":" + password).toString("base64"),
             FDSKey: config.FDSKey,
             FDSType: "iaCloudFDS",
             cnctTs:"",
@@ -48,11 +51,6 @@ module.exports = function(RED) {
 
             proxy: null,
             reqTimeout: 12000
-        };
-
-        let auth = {
-            user: ccsConnectionConfigNode.credentials.userId,
-            pass: ccsConnectionConfigNode.credentials.password,
         };
 
         // proxy設定を取得
@@ -86,11 +84,11 @@ module.exports = function(RED) {
         }
         else { info.reqTimeout = 120000; }
 
-        let cnctInfoName = "ia-cloud-connection-" + info.FDSKey.replace(/\s+/g, "_");
+        let cnctInfoName = "ia-cloud-connection-" + info.FDSKey;
         let fContext = this.context().flow;
         fContext.set(cnctInfoName, info);
 
-        const iaC = new iaCloudConnection(fContext, cnctInfoName);
+        const iaC = new iaCloudV2Connection(fContext, cnctInfoName);
 
         //connect request を送出（接続状態にないときは最大cnctRetryIntervalで繰り返し）
 
@@ -109,7 +107,7 @@ module.exports = function(RED) {
 
                 // connect リクエスト
                 try {
-                    let res = await iaC.connect(auth);
+                    let res = await iaC.connect();
                     node.status({fill:"green", shape:"dot", text:"runtime.connected"});
                     msg.payload = res;
 
@@ -148,11 +146,12 @@ module.exports = function(RED) {
                 (async () => {
                     // getStatus リクエスト
                     try {
-                        let res = await iaC.getStatus(auth);
+                        let res = await iaC.getStatus();
                         node.status({fill:"green", shape:"dot", text:"runtime.connected"});
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        msg.payload = error.message;
                     } finally {
                         node.send(msg);
                     }
@@ -162,27 +161,39 @@ module.exports = function(RED) {
 
         this.on("input",function(msg) {
 
-            info = fContext.get(cnctInfoName);
+            let info = fContext.get(cnctInfoName);
 
             //非接続状態の時は、何もしない。
             if (info.status === "Disconnected") return;
             
-            if (msg.request === "store"
-                || msg.request === "retrieve" || msg.request === "convey"){
+            if (msg.request === "store" || msg.request === "retrieve" || msg.request === "retrieveArray"
+                || msg.request === "convey" || msg.request === "getStatus" || msg.request === "terminate"){
 
                 // node status をReqesting に
                 node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
                 info.status = "requesting";
 
-                let dataObject = msg.dataObject;
+                let object;
+                if (msg.dataObject) object  = msg.dataObject;
+                else if (msg.retrieveObject) object  = msg.retrieveObject;
+                else if (msg.retrieveObjects) object  = msg.retrieveObjects;
+
                 (async () => {
                     // リクエスト
                     try {
                         let res;
-                        if (msg.request === "store") res = await iaC.store(auth, dataObject);
-                        if (msg.request === "retrieve") res = await iaC.retrieve(auth);
-                        if (msg.request === "convey") res = await iaC.convey(auth);
-                        node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
+                        if (msg.request === "terminate") {
+                            res = await iaC.terminate();  
+                            node.status({fill:"yellow", shape:"dot", text:"runtime.disconnected"});
+                        }
+                        else {
+                            if (msg.request === "store") res = await iaC.store(object);
+                            else if (msg.request === "retrieve") res = await iaC.retrieve(object);
+                            else if (msg.request === "retrieveArray") res = await iaC.retrieveArray(object);
+                            else if (msg.request === "convey") res = await iaC.convey();
+                            else if (msg.request === "getStatus") res = await iaC.getStatus();        
+                            node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
+                        }
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
@@ -196,6 +207,8 @@ module.exports = function(RED) {
 
         this.on("close",function(done) {
 
+            let info = fContext.get(cnctInfoName);
+
             // stop timers for the retry and the tapping
             clearTimeout(cnctRtryId);
             clearInterval(tappTimerId);
@@ -208,7 +221,7 @@ module.exports = function(RED) {
                 (async () => {
                     // terminate request
                     try {
-                        let res = await iaC.terminate(auth);
+                        let res = await iaC.terminate();
                         node.status({fill:"green", shape:"dot", text:"runtime.connected"});
 
                     } catch (error) {
@@ -222,7 +235,7 @@ module.exports = function(RED) {
         });
     }
     
-    RED.nodes.registerType("ia-cloud-cnct2",iaCloudCnct2,{
+    RED.nodes.registerType("ia-cloud-V2-cnct",iaCloudV2Cnct,{
         credentials: {
             userID: {type:"text"},
             password: {type: "password"}
