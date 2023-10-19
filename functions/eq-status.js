@@ -111,7 +111,7 @@ module.exports = function(RED) {
                     else rule.result = "";
                 } 
             }
-            let rule = rules.find(rl => rl.result !== "");
+            let rule = rules.find(rl => rl.result === "set" || rl.result === "reset");
             if (!rule || !rule.result) return;
 
             if (rule.result === "set") {
@@ -119,8 +119,20 @@ module.exports = function(RED) {
                 preStatus.push(status);
             }
             else if (rule.result === "reset") {
-                if (preStatus.length > 1) preStatus.pop();
-                status = preStatus.slice(-1)[0];
+                let index = preStatus.findIndex((elm) => elm === rule.status);
+                if (index !== -1) {
+
+                    if (index === preStatus.length - 1) {
+                        preStatus.splice(index,1);
+                        status = preStatus.slice(-1)[0];
+                    }
+                    else {
+                        preStatus.splice(index,1);
+                        rule.result === "";
+                        return;
+                    }
+                }
+                else return;
             };
             rule.result = "";
             iaCloudObjectSend ();
