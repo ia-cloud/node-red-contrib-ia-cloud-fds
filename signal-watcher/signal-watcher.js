@@ -158,7 +158,7 @@ module.exports = function(RED) {
 
                 msg.dataObject = {
                     objectKey: obj.objectKey,
-                    timeStamp: moment().format(),
+                    timestamp: moment().format(),
                     objectType: 'iaCloudObject',
                     objectDescription: config.objectDescription,
                     objectContent: {
