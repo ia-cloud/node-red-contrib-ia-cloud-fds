@@ -15,7 +15,7 @@
  */
 
 const util = require('util');
-const SerialPort = require('serialport');
+const {SerialPort} = require('serialport');
 const fs = require('fs');
 
 const BAUDRATE = 57600;         /* set baudrate 57600bps (enocean default)
@@ -294,7 +294,7 @@ module.exports = function (RED) {
         } else {
             try {
                 fs.accessSync(config.serialPort, fs.constants.W_OK | fs.constants.R_OK);
-                this.port = new SerialPort(config.serialPort, { baudRate: BAUDRATE });
+                this.port = new SerialPort({ path:config.serialPort, baudRate: BAUDRATE });
             } catch (err) {
                 node.error('Invalid serial port');
                 return;

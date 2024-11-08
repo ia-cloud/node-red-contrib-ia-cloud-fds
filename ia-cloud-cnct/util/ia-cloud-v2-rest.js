@@ -15,7 +15,17 @@
  */
 
 "use strict";
-const got = require('got');
+
+// The readme of the Got package V12 says
+/*
+Warning: This package is native ESM and no longer provides a CommonJS export.
+If your project uses CommonJS, you will have to convert to ESM. 
+Please don't open issues for questions regarding CommonJS / ESM.
+
+Got v11 is no longer maintained and we will not accept any backport requests. */
+
+// const got = require('got');
+
 const moment = require("moment");
 
 class JsonParseError extends Error {
@@ -46,6 +56,10 @@ class iaCloudV2Rest {
 
     // a innternal method for http requests
     async iaCloudRequest(body){
+
+        // The Got package became native ESM from ver.12
+        const { got } = await import('got');
+
         // make sharrow copy of opts
         let options = {};
         Object.assign(options, this.opts);

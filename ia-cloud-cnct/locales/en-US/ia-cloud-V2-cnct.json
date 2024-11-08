@@ -1,5 +1,7 @@
 {
     "editor": {
+        "paletteLabel": "ia-cloud-V2 connect",
+        "name": "Node name",
         "ccs-connection-config": "CCS",
         "details": "use details",
         "FDSKey": "Unique Key of the data source",

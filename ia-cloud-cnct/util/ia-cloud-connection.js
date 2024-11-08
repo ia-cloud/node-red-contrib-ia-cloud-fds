@@ -15,7 +15,17 @@
  */
 
 "use strict";
-const got = require('got');
+
+// The readme of the Got package V12 says
+/*
+Warning: This package is native ESM and no longer provides a CommonJS export.
+If your project uses CommonJS, you will have to convert to ESM. 
+Please don't open issues for questions regarding CommonJS / ESM.
+
+Got v11 is no longer maintained and we will not accept any backport requests. */
+
+// const got = require('got');
+
 const moment = require("moment");
 const stream = require("stream");
 const fs = require("fs");
@@ -66,8 +76,8 @@ class iaCloudConnection {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 maxRedirects: 21,
-                proxy: cnctInfo.proxy,
-                reqTimeout: cnctInfo.reqTimeout
+//                proxy: cnctInfo.proxy,
+//                reqTimeout: cnctInfo.reqTimeout
             };   
             
         }
@@ -76,6 +86,9 @@ class iaCloudConnection {
 
     // a innternal method for http requests
     async _iaCloudRequest(opts, reqBodyStream){
+
+        // The Got package became native ESM from ver.12
+        const { got } = await import('got');
 
         // make sharrow copy of opts
         let options = {};
@@ -87,10 +100,10 @@ class iaCloudConnection {
         options.responseType = "text";
 
         // Got issue#1169, have to make Authorization header manually
-        options.headers["Authorization"] = "Basic " 
-            + Buffer.from(options.username + ":" + options.password).toString("base64");
-        delete options["username"];
-        delete options["password"];
+//        options.headers["Authorization"] = "Basic " 
+//            + Buffer.from(options.username + ":" + options.password).toString("base64");
+//        delete options["username"];
+//        delete options["password"];
 
         // if request body stream not exits
         if (!reqBodyStream) {
