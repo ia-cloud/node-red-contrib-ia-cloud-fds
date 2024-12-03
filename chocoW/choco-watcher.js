@@ -52,54 +52,82 @@ class chocoWatcher {
 
         // prepaing http header for choco watcher API for GET method
         const getHeaders = {
-            "Connection": "keep-alive",
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "X-Requested-With": "XMLHttpRequest",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
+            headers: {
+                "Connection": "keep-alive",
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept-Encoding": "gzip, deflate",
+                "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
+            }, rawHeaders: [
+                "Connection",
+                "Accept",
+                "X-Requested-With",
+                "Accept-Encoding",
+                "Accept-Language"
+            ]     
         }
         // prepaing http header for choco watcher API for POST method
         const postHeaders = {
-            "Content-Type": "application/json",
-            "Connection": "keep-alive",
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "X-Requested-With": "XMLHttpRequest",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
-        }
+            headers: {
+                "Content-Type": "application/json",
+                "Connection": "keep-alive",
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept-Encoding": "gzip, deflate",
+                "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
+            }, rawHeaders: [
+                "Content-Type",
+                "Connection",
+                "Accept",
+                "X-Requested-With",
+                "Accept-Encoding",
+                "Accept-Language"
+            ]
+        }  
         // prepaing http header for choco watcher API for GET method with parameter
         const fileHeaders = {
-            "Connection": "keep-alive",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-            "Accept": "*/*",
-            // the next header must be exist for the chocoW's get file API
-            "If-Modified-Since": "Thu, 01 Jun 1970 00:00:00 GMT",
-            "X-Requested-With": "XMLHttpRequest",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
+            headers: {
+                "Connection": "keep-alive",
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache",
+                "Accept": "*/*",
+                // the next header must be exist for the chocoW's get file API
+                "If-Modified-Since": "Thu, 01 Jun 1970 00:00:00 GMT",
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept-Encoding": "gzip, deflate",
+                "Accept-Language": "ja,en-US;q=0.9,en;q=0.8"
+        }, rawHeaders: [
+                "Connection",
+                "Cache-Control",
+                "Pragma",
+                "Accept",
+                "If-Modified-Since",
+                "X-Requested-With",
+                "Accept-Encoding",
+                "Accept-Language"
+            ]
         }
         // preparing Http request option for each API command
         this.command = {
-            getHome: {url: urlPref, method: "GET", headers: getHeaders},
-            getSetting: {url: urlPref + "/Setting.html", method: "GET", headers: getHeaders},
-            getCamMode: {url: urlPref + "/xaccja/getCamMode", method: "GET", headers: getHeaders},
-            setCamMode: {url: urlPref + "/xaccja/setCamMode", method: "POST", headers: postHeaders},
-            setTimeoutExt: {url: urlPref + "/xaccja/setTimeoutExt", method: "POST", headers: postHeaders},//使ってない？
-            setTrigger: {url: urlPref + "/xaccja/setTrigger", method: "POST", headers: postHeaders},
-            getCamInfo: {url: urlPref + "/xaccja/getCamInfo", method: "GET", headers: getHeaders},
-            setCamInfo: {url: urlPref + "/xaccja/setCamInfo", method: "POST", headers: postHeaders},
-            getImageStatus: {url: urlPref + "/xaccja/getImageStatus", method: "GET", headers: getHeaders},
-            getImage: {url: urlPref + "/xaccja/getImage", method: "GET", headers: fileHeaders, isStream: true},
-            deletImage: {url: urlPref + "/xaccja/deletImage", method: "POST", headers: postHeaders},
-            getCamImage: {url: urlPref + "/xaccja/getCamImage", method: "GET", headers: fileHeaders, isStream: true},
-            getRemainingCapacity:{url: urlPref + "/xaccja/getRemainingCapacity", method: "GET", headers: getHeaders},
-            getErrorLog: {url: urlPref + "/xaccja/getErrorLog", method: "GET", headers: getHeaders},//使ってない？
-            getErrorCode: {url: urlPref + "/xaccja/getErrorCode", method: "GET", headers: getHeaders},
-            getAlertStatus: {url: urlPref + "/xaccja/getAlertStatus", method: "GET", headers: getHeaders},
-            startRecMovie: {url: urlPref + "/xaccja/startRecMovie",  method: "POST", headers: postHeaders},
-            endRecMovie: {url: urlPref + "/xaccja/endRecMovie",  method: "POST", headers: postHeaders},
-            deleteImage: {url: urlPref + "/xaccja/deleteImage",  method: "POST", headers: postHeaders}
+            getHome: {url: urlPref, method: "GET", ...getHeaders},
+            getSetting: {url: urlPref + "/Setting.html", method: "GET", ...getHeaders},
+            getCamMode: {url: urlPref + "/xaccja/getCamMode", method: "GET", ...getHeaders},
+            setCamMode: {url: urlPref + "/xaccja/setCamMode", method: "POST", ...postHeaders},
+            setTimeoutExt: {url: urlPref + "/xaccja/setTimeoutExt", method: "POST", ...postHeaders},//使ってない？
+            setTrigger: {url: urlPref + "/xaccja/setTrigger", method: "POST", ...postHeaders},
+            getCamInfo: {url: urlPref + "/xaccja/getCamInfo", method: "GET", ...getHeaders},
+            setCamInfo: {url: urlPref + "/xaccja/setCamInfo", method: "POST", ...postHeaders},
+            getImageStatus: {url: urlPref + "/xaccja/getImageStatus", method: "GET", ...getHeaders},
+            getImage: {url: urlPref + "/xaccja/getImage", method: "GET", ...fileHeaders, isStream: true},
+            deletImage: {url: urlPref + "/xaccja/deletImage", method: "POST", ...postHeaders},
+            getCamImage: {url: urlPref + "/xaccja/getCamImage", method: "GET", ...fileHeaders, isStream: true},
+            getRemainingCapacity:{url: urlPref + "/xaccja/getRemainingCapacity", method: "GET", ...getHeaders},
+            getErrorLog: {url: urlPref + "/xaccja/getErrorLog", method: "GET", ...getHeaders},//使ってない？
+            getErrorCode: {url: urlPref + "/xaccja/getErrorCode", method: "GET", ...getHeaders},
+            getAlertStatus: {url: urlPref + "/xaccja/getAlertStatus", method: "GET", ...getHeaders},
+            startRecMovie: {url: urlPref + "/xaccja/startRecMovie",  method: "POST", ...postHeaders},
+            endRecMovie: {url: urlPref + "/xaccja/endRecMovie",  method: "POST", ...postHeaders},
+            deleteImage: {url: urlPref + "/xaccja/deleteImage",  method: "POST", ...postHeaders}
         }
     }
 
