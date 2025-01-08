@@ -20,8 +20,6 @@ const fs = require("fs");
 
 // because choco-watcher HTTP server cloud not accept lowercase headers,
 // despite it is deprecated, the request module has to be used.
-//const got = require('got');
-const got = require("./alternative4got");
 
 class CHOCOWAPIERROR extends Error {
     constructor(...args) {
