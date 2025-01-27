@@ -31,7 +31,7 @@ module.exports = function(RED) {
     }
 
     const {iaCloudConnection} = require("@ia-cloud/node-red-contrib-ia-cloud-common-nodes");
-    const CNCT_RETRY_INIT = 1 * 60 * 1000;      //リトライ間隔の初期値1分
+    const CNCT_RETRY_INIT = 30 * 1000;      //リトライ間隔の初期値30秒
 
     function iaCloudCnct2(config) {
         RED.nodes.createNode(this,config);
@@ -57,6 +57,7 @@ module.exports = function(RED) {
             cnctTs:"",
             lastReqTs: "",
             comment: config.comment,
+            // max retry interval
             cnctRetryInterval: config.cnctRetryInterval * 60 * 1000,
             tappingInterval: config.tappingInterval * 60 * 60 * 1000,
             proxy: ccsConnectionConfigNode.proxy,
@@ -123,10 +124,8 @@ module.exports = function(RED) {
 
             //非接続状態なら接続トライ
             if (info.status === "Disconnected") {
-console.log("retry: " + moment().format('HH:mm:ss.SS'));
                 // node status をconnecting に
                 node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
-
                 // nodeの出力メッセージ（CCS接続状態）
                 let msg = {};
 
@@ -176,6 +175,7 @@ console.log("retry: " + moment().format('HH:mm:ss.SS'));
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        node.error(error.message);
                     } finally {
                         node.send(msg);
                     }
@@ -208,6 +208,7 @@ console.log("retry: " + moment().format('HH:mm:ss.SS'));
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        node.error(error.message);
                         msg.payload = error.message;
                     } finally {
                         node.send(msg);
@@ -229,14 +230,15 @@ console.log("retry: " + moment().format('HH:mm:ss.SS'));
                     // terminate request
                     try {
                         let res = await iaC.terminate();
-                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
+                        node.status({fill:"green", shape:"dot", text:"runtime.disconnected"});
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        node.error(error.message);
                     }
                     await iaC.closeConnection();
                 }
+                done();
             })();
-            done();
         });
     }
     
