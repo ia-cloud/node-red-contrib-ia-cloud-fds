@@ -299,8 +299,8 @@ module.exports = function (RED) {
                 node.error('Invalid serial port');
                 return;
             }
-            const InterByteTimeout = require('@serialport/parser-inter-byte-timeout');
-            this.parser = this.port.pipe(new InterByteTimeout({ interval: INTERBYTETIMEOUT }));
+            const { InterByteTimeoutParser } = require('@serialport/parser-inter-byte-timeout');
+            this.parser = this.port.pipe(new InterByteTimeoutParser({ interval: INTERBYTETIMEOUT }));
     
             if (this.parser) {
                 this.parser.on('data', function (data) {
