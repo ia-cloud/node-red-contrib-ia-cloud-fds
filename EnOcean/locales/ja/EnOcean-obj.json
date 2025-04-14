@@ -11,6 +11,7 @@
         "label": {
             "paletteLabel": "EnOceanセンサー",
             "coreStaffTemp": "CoreStaff温湿度センサー", 
+            "ermineTemp": "ERMINE温湿度センサー",
             "enoceanCom": "EnOcean通信オブジェクト",
             "itecAC": "ITEC電流センサー", 
             "objectDesc": "オブジェクトの説明",
@@ -31,6 +32,7 @@
         },
         "sensors": {
             "coreStaff": "温湿度センサー (CoreStaff)",
+            "ermineTemp": "温湿度センサー (ERMINE)",
             "itec": "電流センサー (ITEC)",
             "optexOccupancy": "人感センサー (OPTEX)",
             "optexRocker": "ロッカースイッチ (OPTEX)",

@@ -15,6 +15,7 @@
  */
 
 const coreStaffTemperatureHumidity = require('./sensor-core-staff-temperature-humidity');
+const ermineTemperatureHumidity = require('./sensor-ermine-temperature-humidity');
 const itecCT = require('./sensor-itec-ct');
 const optexOccupancy = require('./sensor-optex-occupancy');
 const optexRockerSwitch = require('./sensor-optex-rocker-switch');
@@ -31,6 +32,12 @@ module.exports = [
         type: 'core_staff',
         process: coreStaffTemperatureHumidity.process,
         nodeRedFunction: coreStaffTemperatureHumidity.nodeRedFunction,
+    },
+    {
+        name: 'ERMINE Temperature/Humidity',
+        type: 'ermine_temp',
+        process: ermineTemperatureHumidity.process,
+        nodeRedFunction: ermineTemperatureHumidity.nodeRedFunction,
     },
     {
         name: 'iTEC CT',

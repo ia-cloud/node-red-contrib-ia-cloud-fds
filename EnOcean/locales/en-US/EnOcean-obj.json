@@ -11,6 +11,7 @@
         "label": {
             "paletteLabel": "EnOcean sensor",
             "coreStaffTemp": "CoreStaff Temp sensor",
+            "ermineTemp": "ERMINE Temp sensor",
             "enoceanCom": "EnOcean communication object",
             "itecAC": "ITEC AC Sensor",
             "objectDesc": "Object description",
@@ -31,6 +32,7 @@
         },
         "sensors": {
             "coreStaff": "Temperature / Humidity (CoreStaff)",
+            "ermineTemp": "Temperature / Humidity (ERMINE)",
             "itec": "Current sensor (ITEC)",
             "optexOccupancy": "Occupancy sensor (OPTEX)",
             "optexRocker": "Rocker switch (OPTEX)",
