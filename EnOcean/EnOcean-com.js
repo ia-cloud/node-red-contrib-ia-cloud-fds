@@ -294,7 +294,11 @@ module.exports = function (RED) {
         } else {
             try {
                 fs.accessSync(config.serialPort, fs.constants.W_OK | fs.constants.R_OK);
-                this.port = new SerialPort({ path:config.serialPort, baudRate: BAUDRATE });
+                this.port = new SerialPort({ path:config.serialPort, baudRate: BAUDRATE }, function (err) {
+                    if (err) {
+                        return node.error(`'Invalid serial port: ', ${config.serialPort}`);
+                    }
+                });
             } catch (err) {
                 node.error('Invalid serial port');
                 return;
