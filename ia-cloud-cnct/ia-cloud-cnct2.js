@@ -16,6 +16,7 @@
 
 "use strict";
 
+const { IaCloudAPIError } = require("@ia-cloud/node-red-contrib-ia-cloud-common-nodes/ia-cloud-net-util/ia-cloud-error");
 const moment = require("moment");
 
 module.exports = function(RED) {
@@ -163,20 +164,21 @@ module.exports = function(RED) {
                 //非接続状態の時は、何もしない。
                 if (info.status === "Disconnected") return;
 
-                // node status をconnecting に
-                node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
+                //set node status to requesting
+                node.status({fill:"blue",shape:"dot",text:"runtime.requesting"});
                 info.status = "requesting";
                 let msg = {};
                 (async () => {
-                    // getStatus リクエスト
+                    // getStatus request
                     try {
-                        let res = await iaC.getStatus();
+                        node.debug("getStatus");
+                        msg.payload = await iaC.getStatus();
                         node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-                        msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
                         node.error(error.message);
-                    } finally {
+                        msg.payload = error.message;
+                    } finally {                    
                         node.send(msg);
                     }
                 })();
@@ -195,15 +197,17 @@ module.exports = function(RED) {
                 // node status をReqesting に
                 node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
                 info.status = "requesting";
-
+                msg.request
                 let dataObject = msg.dataObject;
+
                 (async () => {
-                    // リクエスト
+                    // send request
+                    let res = null;
                     try {
-                        let res;
+                        node.debug(msg.request);
                         if (msg.request === "store") res = await iaC.store(dataObject);
-                        if (msg.request === "retrieve") res = await iaC.retrieve();
-                        if (msg.request === "convey") res = await iaC.convey();
+                        else if (msg.request === "retrieve") res = await iaC.retrieve();
+                        else if (msg.request === "convey") res = await iaC.convey();
                         node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
                         msg.payload = res;
                     } catch (error) {
