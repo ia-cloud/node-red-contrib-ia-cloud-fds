@@ -157,7 +157,7 @@ module.exports = function(RED) {
     RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
         SerialPort.list().then(
             ports => {
-                const a = ports.map(p => p.path);    // comName は 次のVersion で path にrenameされる。
+                const a = ports.map(p => p.path);
                 res.json(a);
             },
             err => {
