@@ -35,6 +35,9 @@
   ],
   "license": "Apache-2.0",
   "main": "ia-cloud-cnct/ia-cloud-cnct.js",
+  "engines": {
+    "node": ">=18"
+  },
   "node-red": {
     "nodes": {
       "ia-cloud-cnct2": "ia-cloud-cnct/ia-cloud-cnct2.js",
