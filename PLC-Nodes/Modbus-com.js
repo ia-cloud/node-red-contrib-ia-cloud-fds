@@ -153,16 +153,4 @@ module.exports = function(RED) {
     }
 
     RED.nodes.registerType("Modbus-com",modbusCom);
-
-    RED.httpAdmin.get("/ia-cloud-serialport-list", RED.auth.needsPermission('serial.read'), function(req,res) {
-        SerialPort.list().then(
-            ports => {
-                const a = ports.map(p => p.path);
-                res.json(a);
-            },
-            err => {
-                res.json([RED._("serial.errors.list")]);
-            }
-        )
-    });
 }
