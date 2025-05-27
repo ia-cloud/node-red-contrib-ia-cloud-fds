@@ -16,7 +16,6 @@
 
 module.exports = function(RED) {
     "use strict";
-    var request = require("request");
     var moment = require("moment");
 
     function objectArray(config) {

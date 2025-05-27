@@ -16,10 +16,23 @@
 
 "use strict";
 
+const { IaCloudAPIError } = require("@ia-cloud/node-red-contrib-ia-cloud-common-nodes/ia-cloud-net-util/ia-cloud-error");
+const moment = require("moment");
+
 module.exports = function(RED) {
 
-    const iaCloudConnection = require("./util/ia-cloud-connection.js");
-    const CNCT_RETRY_INIT = 1 * 60 * 1000;      //リトライ間隔の初期値1分
+    class IaCloudInvalidProtocol extends Error {
+        constructor(...args) {
+            super(...args);
+            this.name = this.constructor.name;
+            this.message = "ia-cloud invalid protocol";
+            this.code = "IACLOUD_INVALID_PROTOCOL";
+            if (Error.captureStackTrace) Error.captureStackTrace(this, IaCloudInvalidProtocol);
+        }
+    }
+
+    const {iaCloudConnection} = require("@ia-cloud/node-red-contrib-ia-cloud-common-nodes");
+    const CNCT_RETRY_INIT = 30 * 1000;      //リトライ間隔の初期値30秒
 
     function iaCloudCnct2(config) {
         RED.nodes.createNode(this,config);
@@ -28,7 +41,7 @@ module.exports = function(RED) {
         let cnctRtryId;     // connect retry timer ID
         let cnctRtryFlag = true;
         let tappTimerId;    // tapping CCS (getStatus()) interval timer ID
-        
+
         // ia-cloud connection config node instance
         const ccsConnectionConfigNode = RED.nodes.getNode(config.ccsConnectionConfig);
 
@@ -36,49 +49,61 @@ module.exports = function(RED) {
         let info = {
             status: "Disconnected",
             serviceID: "",
+            version: ccsConnectionConfigNode.version,
             url: ccsConnectionConfigNode.url,
-        //    userID: ccsConnectionConfigNode.credentials.userId,
+            protocol: "",
+            userID: ccsConnectionConfigNode.credentials.userId,
             FDSKey: config.FDSKey,
             FDSType: "iaCloudFDS",
             cnctTs:"",
             lastReqTs: "",
             comment: config.comment,
+            // max retry interval
             cnctRetryInterval: config.cnctRetryInterval * 60 * 1000,
             tappingInterval: config.tappingInterval * 60 * 60 * 1000,
-
-            proxy: null,
-            reqTimeout: 12000
+            proxy: ccsConnectionConfigNode.proxy,
+            reqTimeout: 120000
         };
 
         let auth = {
-            user: ccsConnectionConfigNode.credentials.userId,
-            pass: ccsConnectionConfigNode.credentials.password,
+            username: ccsConnectionConfigNode.credentials.userId,
+            password: ccsConnectionConfigNode.credentials.password,
         };
 
-        // proxy設定を取得
-        let prox;
-        let noprox;
-        if (process.env.http_proxy != null) { prox = process.env.http_proxy; }
-        if (process.env.HTTP_PROXY != null) { prox = process.env.HTTP_PROXY; }
-        if (process.env.no_proxy != null) { noprox = process.env.no_proxy.split(","); }
-        if (process.env.NO_PROXY != null) { noprox = process.env.NO_PROXY.split(","); }
-
-        let noproxy;
-
-        if (noprox) {
-            for (let i in noprox) {
-                if (info.url.indexOf(noprox[i]) !== -1) { noproxy=true; }
+        // environmental proxy setting
+        if (!info.proxy) {
+            let prox;
+            let noprox;
+            if (process.env.http_proxy != null) { prox = process.env.http_proxy; }
+            if (process.env.HTTP_PROXY != null) { prox = process.env.HTTP_PROXY; }
+            if (process.env.no_proxy != null) { noprox = process.env.no_proxy.split(","); }
+            if (process.env.NO_PROXY != null) { noprox = process.env.NO_PROXY.split(","); }
+            info.proxy = "";
+            if (noprox) {
+                for (let i in noprox) {
+                    if (info.url.indexOf(noprox[i]) === -1) { info.proxy = prox; }
+                }
             }
         }
-        if (prox && !noproxy) {
+        // proxy server address check
+        if (info.proxy) {
             let match = prox.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
-            if (match) {
-                info.proxy = prox;
-            } else {
+            if (!match) {
                 node.warn("Bad proxy url: "+ prox);
-                info.proxy = null;
+                info.proxy = "";
             }
         }
+        
+        // set ia-cloud api protocol
+        if (!info.version || info.version === "V1") info.protocol = "REST1";
+        else if (info.version === "V2") {
+            const url = new URL(info.url);
+            if (url.protocol === "https:") info.protocol = "REST2";
+            else if (url.protocol === "wss:" || url.protocol === "ws:") info.protocol = "websocket";
+            else {throw new IaCloudInvalidProtocol();}
+        }
+        else {throw new IaCloudInvalidProtocol();}
+
 
         // このタイムアウトの設定の詳細を調査する必要あり
         if (RED.settings.httpRequestTimeout) {
@@ -90,7 +115,7 @@ module.exports = function(RED) {
         let fContext = this.context().flow;
         fContext.set(cnctInfoName, info);
 
-        const iaC = new iaCloudConnection(fContext, cnctInfoName);
+        const iaC = new iaCloudConnection(fContext, cnctInfoName, auth);
 
         //connect request を送出（接続状態にないときは最大cnctRetryIntervalで繰り返し）
 
@@ -100,10 +125,8 @@ module.exports = function(RED) {
 
             //非接続状態なら接続トライ
             if (info.status === "Disconnected") {
-
                 // node status をconnecting に
                 node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
-
                 // nodeの出力メッセージ（CCS接続状態）
                 let msg = {};
 
@@ -112,7 +135,7 @@ module.exports = function(RED) {
                     let res = await iaC.connect(auth);
                     node.status({fill:"green", shape:"dot", text:"runtime.connected"});
                     msg.payload = res;
-
+                    rInt = CNCT_RETRY_INIT;   // reset retry interval
                 } catch (error) {
                     node.status({fill:"yellow", shape:"ring", text:error.message});
                     msg.payload = error.message;
@@ -141,19 +164,21 @@ module.exports = function(RED) {
                 //非接続状態の時は、何もしない。
                 if (info.status === "Disconnected") return;
 
-                // node status をconnecting に
-                node.status({fill:"blue",shape:"dot",text:"runtime.connecting"});
+                //set node status to requesting
+                node.status({fill:"blue",shape:"dot",text:"runtime.requesting"});
                 info.status = "requesting";
                 let msg = {};
                 (async () => {
-                    // getStatus リクエスト
+                    // getStatus request
                     try {
-                        let res = await iaC.getStatus(auth);
+                        node.debug("getStatus");
+                        msg.payload = await iaC.getStatus();
                         node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-                        msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
-                    } finally {
+                        node.error(error.message);
+                        msg.payload = error.message;
+                    } finally {                    
                         node.send(msg);
                     }
                 })();
@@ -163,7 +188,6 @@ module.exports = function(RED) {
         this.on("input",function(msg) {
 
             info = fContext.get(cnctInfoName);
-
             //非接続状態の時は、何もしない。
             if (info.status === "Disconnected") return;
             
@@ -173,19 +197,22 @@ module.exports = function(RED) {
                 // node status をReqesting に
                 node.status({fill:"blue", shape:"dot", text:"runtime.requesting"});
                 info.status = "requesting";
-
+                msg.request
                 let dataObject = msg.dataObject;
+
                 (async () => {
-                    // リクエスト
+                    // send request
+                    let res = null;
                     try {
-                        let res;
-                        if (msg.request === "store") res = await iaC.store(auth, dataObject);
-                        if (msg.request === "retrieve") res = await iaC.retrieve(auth);
-                        if (msg.request === "convey") res = await iaC.convey(auth);
+                        node.debug(msg.request);
+                        if (msg.request === "store") res = await iaC.store(dataObject);
+                        else if (msg.request === "retrieve") res = await iaC.retrieve();
+                        else if (msg.request === "convey") res = await iaC.convey();
                         node.status({fill:"green", shape:"dot", text:"runtime.request-done"});
                         msg.payload = res;
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
+                        node.error(error.message);
                         msg.payload = error.message;
                     } finally {
                         node.send(msg);
@@ -201,24 +228,21 @@ module.exports = function(RED) {
             clearInterval(tappTimerId);
             cnctRtryFlag = false;
 
-            //非接続状態の時は、何もせずdone()
-            if (info.status === "Disconnected") {
-                done();
-            } else {
-                (async () => {
+            (async () => {
+                //非接続状態の時は、何もせずdone()
+                if (info.status !== "Disconnected") {
                     // terminate request
                     try {
-                        let res = await iaC.terminate(auth);
-                        node.status({fill:"green", shape:"dot", text:"runtime.connected"});
-
+                        let res = await iaC.terminate();
+                        node.status({fill:"green", shape:"dot", text:"runtime.disconnected"});
                     } catch (error) {
                         node.status({fill:"yellow", shape:"ring", text:error.message});
-
-                    } finally {
-                        done();
+                        node.error(error.message);
                     }
-                })();
-            }
+                    await iaC.closeConnection();
+                }
+                done();
+            })();
         });
     }
     

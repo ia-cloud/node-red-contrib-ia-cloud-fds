@@ -71,7 +71,7 @@ var PLCComNodeConfig = {
         // シリアルポートルックアップが押されたら
         $("#node-config-lookup-serial").click(function() {
             $("#node-config-lookup-serial").addClass('disabled');
-            $.getJSON('serialPorts',function(data) {
+            $.getJSON('ia-cloud-serialport-list',function(data) {
                 $("#node-config-lookup-serial").removeClass('disabled');
                 var ports = data || [];
                 $("#node-config-input-serialPort").autocomplete({

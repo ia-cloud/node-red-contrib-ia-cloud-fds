@@ -35,14 +35,14 @@
         <div style="margin-left: 20px" class="node-input-details-row hide">
             <div class="form-row">
                 <label for="node-input-cnctRetryInterval"><span data-i18n="editor.cnctRetryInterval"></span></label>
-                <input type="number" min="0" id="node-input-cnctRetryInterval">
+                <input type="number" min="0" id="node-input-cnctRetryInterval" style="margin-bottom: 10px">
+                <div class="form-tips" id="tip-cnctRetryInterval"><span data-i18n="editor.tip-cnctRetryInterval"></span></div>
             </div>
-            <div class="form-tips" id="tip-cnctRetryInterval"><span data-i18n="editor.tip-cnctRetryInterval"></span></div>
             <div class="form-row">
                 <label for="node-input-tappingInterval"><span data-i18n="editor.tappingInterval"></span></label>
-                <input type="number"  min="0" id="node-input-tappingInterval">
+                <input type="number"  min="0" id="node-input-tappingInterval" style="margin-bottom: 10px">
+                <div class="form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-tappingInterval"></span></div>
             </div>
-            <div class="form-tips" id="tip-tappingInterval"><span data-i18n="editor.tip-tappingInterval"></span></div>
         </div>
     </div>
     <hr>
@@ -66,6 +66,7 @@
             name: {value:""},
             FDSKey: {value:"", required: true},
             comment:{value:""},
+            details:{value: false},
             cnctRetryInterval:{value:60, validate: RED.validators.number()},
             tappingInterval:{value:24, validate: RED.validators.number()}
         },

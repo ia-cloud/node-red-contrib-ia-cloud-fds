@@ -17,7 +17,7 @@
 "use strict";
 const path = require("path");
 const fs = require("fs");
-const serialp = require("serialport");
+const {SerialPort} = require("serialport");
 
 const PLCCom = require('./util/PLC-Com');
 const MCProtocol = require("./util/mc-protocol/mc-protocol");
@@ -140,16 +140,4 @@ module.exports = function(RED) {
     }
 
     RED.nodes.registerType("Mitsubishi-com", mitsubishiCom);
-
-    RED.httpAdmin.get("/serialports", RED.auth.needsPermission('serial.read'), function(req,res) {
-        serialp.list().then(
-            ports => {
-                const a = ports.map(p => p.path);    // comName は path にrenameされる。要変更 
-                res.json(a);
-            },
-            err => {
-                res.json([RED._("serial.errors.list")]);
-            }
-        )
-    });
 } 

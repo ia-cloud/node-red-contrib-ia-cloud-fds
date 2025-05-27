@@ -187,7 +187,7 @@ var NodeConfig = {
          // シリアルポートルックアップが押されたら
          $("#node-lookup-serial").click(function() {
             $("#node-lookup-serial").addClass('disabled');
-            $.getJSON('serialPorts',function(data) {
+            $.getJSON('ia-cloud-serialport-list',function(data) {
                 $("#node-lookup-serial").removeClass('disabled');
                 var ports = data || [];
                 $("#node-input-serialPort").autocomplete({
