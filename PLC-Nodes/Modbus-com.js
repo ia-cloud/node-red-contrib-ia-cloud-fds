@@ -36,7 +36,7 @@ class ModbusCom extends PLCCom {
 
         if (!mbObj.isOpen && !(config.comType === "PLCSim")) {
             if (config.comType === "TCP") {
-                await mbObj.connectTCP(config.IPAdd, {port: Number(config.TCPport)})
+                await mbObj.connectTCP(config.IPAdd, {port: Number(config.TCPPort)})
                 .then(mbObj.setID(Number(config.unitID)));
             }
             else {
