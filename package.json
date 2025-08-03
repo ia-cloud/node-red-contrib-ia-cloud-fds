@@ -1,7 +1,7 @@
 {
   "name": "@ia-cloud/node-red-contrib-ia-cloud-fds",
   "description": "ia-cloud Node-RED nodes",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "author": "ia-cloud project members",
   "bugs": {
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
@@ -41,6 +41,7 @@
   "node-red": {
     "nodes": {
       "ia-cloud-cnct2": "ia-cloud-cnct/ia-cloud-cnct2.js",
+      "ia-cloud-cnctII": "ia-cloud-cnct/ia-cloud-cnctII.js",
       "ia-cloud-serialport-list": "serialport-list/index.js",
       "object-array": "ia-cloud-object-array/object-array.js",
       "PLC-modbus": "PLC-Nodes/PLC-modbus.js",

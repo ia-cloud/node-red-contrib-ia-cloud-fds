@@ -1,0 +1,13 @@
+{
+    "editor": {
+        "paletteLabel": "ia-cloud接続II",
+        "name": "ノード名称",
+        "ccs-connection-configII": "接続先ノード"
+    },
+    "runtime": {
+        "connected": "接続済",
+        "disconnected": "切断",
+        "requesting": "要求中...",
+        "request-done": "要求完了"
+    }
+}
