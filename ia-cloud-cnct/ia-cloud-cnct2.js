@@ -87,9 +87,9 @@ module.exports = function(RED) {
         }
         // proxy server address check
         if (info.proxy) {
-            let match = prox.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
+            let match = info.proxy.match(/^(http:\/\/)?(.+)?:([0-9]+)?/i);
             if (!match) {
-                node.warn("Bad proxy url: "+ prox);
+                node.warn("Bad proxy url: "+ info.proxy);
                 info.proxy = "";
             }
         }
