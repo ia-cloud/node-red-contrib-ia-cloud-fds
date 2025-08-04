@@ -1,5 +1,6 @@
 {
     "editor": {
+        "tip-deprecated":"このノードの使用は非推奨です。古いアプリケーションフローの維持のため残してあります。新しいノード[ia-cloud接続II]を使用してください。",
         "paletteLabel": "ia-cloud接続",
         "name": "ノード名称",
         "ccs-connection-config": "接続先CCS",
