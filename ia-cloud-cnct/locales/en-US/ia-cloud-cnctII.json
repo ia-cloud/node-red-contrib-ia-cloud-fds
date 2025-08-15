@@ -1,0 +1,14 @@
+{
+    "editor": {
+        "paletteLabel": "ia-cloud connectII",
+        "name": "Node name",
+        "ccs-connection-configII": "CCS configration node"
+    },
+    "runtime": {
+        "connected": "connected",
+        "disconnected": "disconnected",
+        "connecting": "connecting...",
+        "requesting": "requesting...",
+        "request-done": "request-done"
+    }
+}

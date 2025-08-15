@@ -1,0 +1,35 @@
+<script type="text/html" data-help-name="ia-cloud-cnctII">
+<p>ia-cloud CCS接続設定ノード</p>
+
+<h3>プロパティ項目</h3>
+<dl class="message-properties">
+    <dt>接続先CCS<span class="property-type">CCS接続先設定ノード</span></dt>
+    <dd>接続先のia-cloud CCSの設定を保持し、接続の管理を行う設定ノード</dd>
+
+    <dt>ノード名前<span class="property-type">文字列</span></dt>
+    <dd>個別のNodeに付与する名前</dd>
+</dl>
+
+<h3>入力メーッセージ</h3>
+<dl class="message-properties">
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud Web API で定められている、CCSへ送出する<code>request</code>の内容。 "store"、 "retrieve" あるいは "convey"のいずれかでなければならない。</dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>CCSへ<code>request</code>と共に送出する<code>dataObject</code><span class="property-type">object</span></dd>
+</dl>
+
+<h3>出力メッセージ</h3>
+<dl class="message-properties">
+    <dt>payload <span class="property-type">string | object</span></dt>
+    <dd>CCSから受け取ったレスポンス。エラーが発生した場合は、エラーコメント。</dd>
+    <dt>request <span class="property-type">string</span></dt>
+    <dd>ia-cloud CCSへ送出したレクエスト内容。入力メッセージとして受けたものと同じ。</dd>
+    <dt>dataObject <span class="property-type">object</span></dt>
+    <dd>ia-cloud CCSへ送出したdataObject。入力メッセージとして受けたものと同じ。</dd>
+</dl>
+
+<h3>詳細説明</h3>
+<p>指定されたia-cloudの Cloud Center Server(CCS) への接続を保持・管理しし、入力メッセージに記述された
+    リクエストとデータオブジェクトを送出する。</p>
+
+</script>
