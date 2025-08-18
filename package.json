@@ -7,7 +7,7 @@
     "url": "https://github.com/ia-cloud/node-red-contrib-ia-cloud-fds/issues"
   },
   "dependencies": {
-    "@ia-cloud/node-red-contrib-ia-cloud-common-nodes": ">=0.1.0 <0.2.0",
+    "@ia-cloud/node-red-contrib-ia-cloud-common-nodes": "^0.2.1",
     "crc-full": "^1.1.0",
     "dateformat": "^5.0.3",
     "iconv-lite": "^0.6.3",
