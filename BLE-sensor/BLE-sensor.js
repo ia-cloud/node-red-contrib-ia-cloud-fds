@@ -39,14 +39,27 @@ module.exports = function(RED) {
 
         this.on("input",function(msg) {
 
-            const getMsgProperty = (msg, propertyPath ) => {
-                let value = msg;
-                let propNames = propertyPath.split(".");
-                for (let propName of propNames) {
-                    if (!value.hasOwnProperty(propName)) return undefined;
-                    value = value[propName];
+            const getMsgProperty = (msg, propertyPath) => {
+                if (!msg || typeof propertyPath !== 'string') return undefined;
+
+                // パスを . と [...] で分割する正規表現
+                const regex = /[^.\[\]]+|\[(\d+)\]/g;
+                const keys = [];
+                let match;
+                while ((match = regex.exec(propertyPath)) !== null) {
+                    // match[1] に数字（配列インデックス）があれば数値として扱う
+                    keys.push(match[1] !== undefined ? Number(match[1]) : match[0]);
                 }
-                return value;
+
+                let current = msg;
+                for (const key of keys) {
+                    if (current && key in current) {
+                    current = current[key];
+                    } else {
+                    return undefined;
+                    }
+                }
+                return current;
             }
             let rssi;
             let dataPacket = [];

@@ -1,0 +1,61 @@
+<script type="text/html" data-help-name="BLE-sensor">
+<p>Extracts sensor information from BLE advertising packets and sends an ia-cloud object.</p>
+<p>Intended for use as an output message input for the [BLE Scanner] node in the node-red-contrib-ble-sense package. </p>
+
+<h3>Property Items</h3>
+<dl class="message-properties">
+<dt>Adv. Packet<span class="property-type">String</span></dt>
+<dd>Message Members Including Adv. Packet</dd>
+<dt>Object Settings<span class="property-type">Tab</span></dt>
+<dl class="message-properties" style="margin-left: 8px">
+<dt>Object Key<span class="property-type">String</span></dt>
+<dd>Unique key string assigned to the ia-cloud object</dd>
+<dt>Object Description<span class="property-type">String</span></dt>
+<dd>A user-friendly description of the ia-cloud object</dd>
+</dl>
+<dt>Data Item Settings<span class="property-type">Tab</span></dt>
+<dl class="message-properties" style="margin-left: 8px">
+<dt>Data Structure<span class="property-type">String</span></dt>
+<dd>Temperature controller data data structure. A user-defined format is allowed, but the default is the general data structure iaCloudData</dd>
+<dt>Preset Model<span class="property-type">Select</span></dt>
+<dd>Select the preset BLE sensor model. </dd>
+<dt>Settings List<span class="property-type">Data Item List</span></dt>
+<dl class="message-properties" style="margin-left: 8px">
+<dt>Item Number<span class="property-type">Number (Automatic)</span></dt>
+<dd>Data item number. Automatically generated</dd>
+<dt>Data Position<span class="property-type">Number</span></dt>
+<dd>Data position in advertising packet</dd>
+<dt>Data Type<span class="property-type">Select</span></dt>
+<dd>Data type in advertising packet.</dd>
+<dt>Zero/Scale<span class="property-type">Number</span></dt>
+<dd>Offset and gain for interpreting the data.</dd>
+<dt>Data Name<span class="property-type">String</span></dt>
+<dd>Name assigned to the data item. </dd>
+<dd>You can change the name freely, but make sure it is unique within the same object key.</dd>
+<dt>Unit<span class="property-type">String</span></dt>
+<dd>Unit assigned to data item</dd>
+</dl>
+</dl>
+<dl class="message-properties">
+<dt>Name<span class="property-type">String</span></dt>
+<dd>Name assigned to individual node</dd>
+</dl>
+<h3>Input message</h3>
+<dt>msg<span class="property-type">String</span></dt>
+<dd>Buffer object containing BLE advertising packets</dd>
+<dd>Intended for use as the output message input for the [BLE Scanner] node in the node-red-contrib-ble-sense package. </dd>
+
+<h3>Output Message</h3>
+<dl class="message-properties">
+<dt>payload <span class="property-type">string | object</span></dt>
+<dd>The contentData of the ia-cloud object. If an error occurs, an error comment is returned. </dd>
+<dt>request <span class="property-type">string</span></dt>
+<dd>The ia-cloud request content. Fixed to "store"</dd>
+<dt>dataObject <span class="property-type">object</span></dt>
+<dd>The ia-cloud dataObject. Each data item in contentData is output according to the settings. </dd>
+</dl>
+
+<h3>Detailed Description</h3>
+<p>A node that extracts sensor information from BLE advertising packets and sends ia-cloud objects.</p>
+<p>The data structures for some BLE sensor models are preset.</p>
+</script>

@@ -1,0 +1,39 @@
+{
+    "editor": {
+        "paletteLabel": "BLE sensor",
+        "name": "Node name",
+        "tab": {
+            "object-settings": "Object settings",
+            "data-settings": "Data settings"
+        },
+        "advPacket": "Message input",
+        "sensorId": "Sensor ID",
+        "rssi": "Radio wave strength",
+        "objectKey": "Object key",
+        "objectKeyholder": "Required: Unique key",
+        "objectDescription": "Object description",
+        "contentType": "Data structure type",
+        "propertyId": "ID item",
+        "propertyData": "Data item",
+        "propertyRssi": "RSSI item",
+        "ruleList": "Data item list",
+        "preset": "Preset model",
+        "undef": "User settings",
+        "2JCIE-BU": "Omron 2JCIE-BU",
+        "EnOcean": "EnOceanBLE",
+        "Dname": "Data name",
+        "posi": "Data position",
+        "unsigned": "Unsigned",
+        "signed": "Signed",
+        "BCD": "BCD",
+        "offset": "Zero point",
+        "gain": "Gain",
+        "unit": "Unit"
+    },
+    "runtime": {
+        "ready": "Waiting for input",
+        "sent": "Sent data",
+        "nochange": "Data unchanged",
+        "nomatch": "Data invalid"
+    }
+}
