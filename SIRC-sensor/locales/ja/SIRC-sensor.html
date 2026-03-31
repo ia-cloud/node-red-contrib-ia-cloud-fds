@@ -1,0 +1,62 @@
+
+<script type="text/html" data-help-name="SiRC-sensor">
+    <p>SiRC電力センサからのBLEアドバタイジングパケットからセンサ情報を取り出し、ia-cloudオブジェクトを送出する</p>
+    <p>node-red-contrib-ble-senseパッケージの[BLE Scanner]ノードの出力メッセージを入力として使用することを想定している。</p>
+
+    <h3>プロパティ項目</h3>
+    <dl class="message-properties">
+        <dt>センサID<span class="property-type">数値</span></dt>
+        <dd>SiRC電力センサにシリアル番号</dd>
+        <dt>センサタイプ<span class="property-type">選択</span></dt>
+        <dd>SiRC電力センサの機種を選択</dd>
+        <dt>オブジェクトの設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>収集周期<span class="property-type">選択</span></dt>
+            <dd>ia-cloudオブジェクトを送出する周期</dd>
+            <dt>オブジェクトキー<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトに付与するユニークなキー文字列</dd>
+            <dt>オブジェクトの説明<span class="property-type">文字列</span></dt>
+            <dd>ia-cloudオブジェクトのわかりやすい説明</dd>
+        </dl>
+        <dt>データ項目の設定<span class="property-type">タブ</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>データ構造<span class="property-type">文字列</span></dt>
+            <dd>温調計データのデータ構造。ユーザ定義の形式としても良いが、デフォルトは一般のデータ構造iaCloudData</dd>
+            <dt>設定リスト<span class="property-type">データ項目リスト</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+                <dt>項目番号<span class="property-type">数値（自動）</span></dt>
+                <dd>データ項目の番号。自動で生成される</dd>
+                <dt>データ項目<span class="property-type">選択</span></dt>
+                <dd>SiRC電力センサのデータ項目を選択</dd>
+                <dt>データ名称<span class="property-type">文字列</span></dt>
+                <dd>データ項目につける名称。デフォルトでデータ項目と同じ名称が設定される</dd>
+                <dd>自由な名称に変更できるが、同一オブジェクトキー内では重複しないよう設定する</dd>
+                <dt>単位<span class="property-type">文字列</span></dt>
+                <dd>データ項目に付与する単位</dd>  
+            </dl>
+        </dl>
+    <dl class="message-properties">
+        <dt>名前<span class="property-type">文字列</span></dt>
+        <dd>個別のNodeに付与する名前</dd>
+    </dl>
+    <h3>入力メーッセージ</h3>
+        <dt>msg<span class="property-type">string</span></dt>
+        <dd>SiRC電力センサからのBLEアドバタイジングパケットを含むbufferオブジェクト</dd>
+        <dd>node-red-contrib-ble-senseパッケージの[BLE Scanner]ノードの出力メッセージ入力として使用することを想定している。</dd>
+
+    <h3>出力メッセージ</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>ia-cloudオブジェクトのcontentData。エラーが発生した場合は、エラーコメント。</dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>ia-cloudリクエスト内容。"store"固定</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>ia-cloud dataObject。contentDataの各データ項目は設定したがって出力されます。</dd>
+    </dl>
+
+    <h3>詳細説明</h3>
+    <p>SiRC電力センサからのBLEアドバタイジングパケットからセンサ情報を取り出し、センサ情報を取り出し、ia-cloudオブジェクトを送出するノード</p>
+    <p>node-red-contrib-ble-senseパッケージの[BLE Scanner]ノードの出力メッセージを入力として使用することを想定している。</p>
+    <p>SiRC電力センサから取得する積算電力から、30分毎のデマンド電力を算出する機能も持つ。</p>
+    <p>30分より短い収集周期を設定した場合、収集毎に送出するデマンド電力は30分後の線形予測電力である。</p>
+</script>

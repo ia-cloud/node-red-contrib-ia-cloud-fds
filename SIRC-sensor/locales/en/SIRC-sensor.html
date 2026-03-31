@@ -1,0 +1,61 @@
+<script type="text/html" data-help-name="SiRC-sensor">
+    <p>Extracts sensor information from BLE advertising packets from a SiRC power sensor and sends an ia-cloud object.</p>
+    <p>Assumes that the output message from the [BLE Scanner] node in the node-red-contrib-ble-sense package is used as input. </p>
+
+    <h3>Property Items</h3>
+    <dl class="message-properties">
+        <dt>Sensor ID<span class="property-type">Number</span></dt>
+        <dd>Serial number for the SiRC power sensor</dd>
+        <dt>Sensor Type<span class="property-type">Select</span></dt>
+        <dd>Select the model of the SiRC power sensor</dd>
+        <dt>Object Settings<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Collection Interval<span class="property-type">Select</span></dt>
+            <dd>Interval for sending ia-cloud objects</dd>
+            <dt>Object Key<span class="property-type">String</span></dt>
+            <dd>Unique key string assigned to the ia-cloud object</dd>
+            <dt>Object Description<span class="property-type">String</span></dt>
+            <dd>A user-friendly description of the ia-cloud object</dd>
+        </dl>
+        <dt>Data Item Settings<span class="property-type">Tab</span></dt>
+        <dl class="message-properties" style="margin-left: 8px">
+            <dt>Data Structure<span class="property-type">String</span></dt>
+            <dd>Data structure of the temperature controller data. A user-defined format is allowed, but the default is the general data structure iaCloudData</dd>
+            <dt>Settings List<span class="property-type">Data Item List</span></dt>
+            <dl class="message-properties" style="margin-left: 8px">
+            <dt>Item Number<span class="property-type">Number (Automatic)</span></dt>
+            <dd>Data item number. Automatically generated</dd>
+            <dt>Data Item<span class="property-type">Select</span></dt>
+            <dd>Select the SiRC Power Sensor data item</dd>
+            <dt>Data Name<span class="property-type">String</span></dt>
+            <dd>Name assigned to the data item. The default name is the same as the data item.</dd>
+            <dd>You can change the name freely, but make sure it is unique within the same object key.</dd>
+            <dt>Unit<span class="property-type">String</span></dt>
+            <dd>Unit assigned to the data item.</dd>
+        </dl>
+    </dl>
+    <dl class="message-properties">
+        <dt>Name<span class="property-type">String</span></dt>
+        <dd>Name assigned to each node.</dd>
+    </dl>
+    <h3>Input Message</h3>
+        <dt>msg<span class="property-type">String</span></dt>
+        <dd>Buffer object containing BLE advertising packets from the SiRC power sensor.</dd>
+        <dd>Intended for use as the output message input for the [BLE Scanner] node in the node-red-contrib-ble-sense package. </dd>
+
+    <h3>Output Message</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string | object</span></dt>
+        <dd>The contentData of the ia-cloud object. If an error occurs, an error comment is displayed. </dd>
+        <dt>request <span class="property-type">string</span></dt>
+        <dd>The content of the ia-cloud request. Fixed to "store".</dd>
+        <dt>dataObject <span class="property-type">object</span></dt>
+        <dd>The ia-cloud dataObject. Each data item in contentData is output according to its settings. </dd>
+    </dl>
+
+    <h3>Detailed Description</h3>
+    <p>Extracts sensor information from BLE advertising packets from a SiRC power sensor and sends an ia-cloud object.</p>
+    <p>It is intended to use the output messages of the [BLE Scanner] node in the node-red-contrib-ble-sense package as input.</p>
+    <p>It also has the function of calculating demand power every 30 minutes from the integrated power obtained from the SiRC power sensor.</p>
+    <p>If the collection period is set to shorter than 30 minutes, the demand power sent for each collection is the linearly predicted power 30 minutes later.</p>
+</script>
