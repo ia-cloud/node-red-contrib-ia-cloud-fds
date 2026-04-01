@@ -1,0 +1,45 @@
+{
+    "editor": {
+        "paletteLabel": "SiRC sensor",
+        "name": "Node name",
+        "tab": {
+            "object-settings": "Object settings",
+            "data-settings": "Data settings"
+        },
+        "sensorId": "Sensor ID",
+        "sensorType": "Sensor Type",
+        "s100": "Single-phase 100V",
+        "s200": "Single-phase 200V",
+        "t200": "Three-phase 200V",
+        "t400": "Three-phase 400V",
+        "sensor": "depends on Sensor",
+        "period": "Acquisition Period",
+        "1m": "1 min",
+        "10m": "10 min",
+        "30m": "30 min",
+        "objectKey": "Object Key",
+        "objectKeyholder": "Required: Unique Key",
+        "objectDescription": "Object Description",
+        "qInfo": "Use Quality Information",
+        "contentType": "Data model",
+        "ruleList": "Item List",
+        "itemNumber": "Number",
+        "dItem": "Data Item",
+        "dname": "Data Name",
+        "unit": "Unit",
+        "kWH": "Electorical energy",
+        "kW": "Active power",
+        "dmnd": "Demand power",
+        "kAV": "Apparent power",
+        "V": "Voltage",
+        "A": "Current",
+        "PF": "Power factor",
+        "BATT": "Battery level",
+        "RSSI": "Signal strength",
+        "ALM": "Sensor status"
+    },
+    "runtime": {
+        "ready": "Waiting for input",
+        "sent": "Sent data"
+    }
+}

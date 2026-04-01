@@ -1,0 +1,45 @@
+{
+    "editor": {
+        "paletteLabel": "SiRCセンサ",
+        "name": "ノード名称",
+        "tab": {
+            "object-settings": "オブジェクト設定",
+            "data-settings": "データ設定"
+        },
+        "sensorId": "センサID",
+        "sensorType": "センサタイプ",
+        "s100": "単相100V",
+        "s200": "単相200V",
+        "t200": "3相200V",
+        "t400": "3相400V",
+        "sensor": "センサー周期",
+        "period": "収集周期",
+        "1m": "1分",
+        "10m": "10分",
+        "30m": "30分",        
+        "objectKey": "objectキー",
+        "objectKeyholder": "必須: 固有のキー",
+        "objectDescription": "objectの説明",
+        "qInfo": "品質情報を使う",
+        "contentType": "データ構造型",
+        "ruleList": "データ項目リスト",
+        "itemNumber": "項目番号",
+        "dItem": "データ項目",
+        "dname": "データ名称",
+        "unit": "単位",
+        "kWH": "積算電力",
+        "kW": "実効電力",
+        "dmnd": "デマンド電力",
+        "kAV": "皮相電力",
+        "V": "電圧",
+        "A": "電流",
+        "PF": "力率",
+        "BATT": "電池残量",
+        "RSSI": "電波強度",
+        "ALM": "センサ状態"
+    },
+    "runtime": {
+        "ready": "入力待ち",
+        "sent": "データ送出"
+    }
+}
