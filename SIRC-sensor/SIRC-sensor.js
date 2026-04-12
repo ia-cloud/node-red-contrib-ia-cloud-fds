@@ -145,7 +145,7 @@ module.exports = function(RED) {
                         break;
                     case "A": dItem.dataValue = kVA / voltage;
                         break;
-                    case "PF": dItem.dataValue = (kVA !== 0 ? kW/kVA: undefined);
+                    case "PF": dItem.dataValue = (kVA !== 0 ? kW/kVA: NaN);
                         break;
                     case "RSSI": dItem.dataValue = rssi;
                         break;
